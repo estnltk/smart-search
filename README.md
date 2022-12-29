@@ -11,15 +11,22 @@
 |OS Type|64-bit|
 
 ## Kiirushinnangud
+
 ### flask
+
+#### Veebiserveri käivitamine
 
 ```bash
 venv/bin/python3 flask_morf.py
 ```
 
+#### Testprogrammi käivitamine
+
 ```bash
 time ./test.sh 5000
 ```
+
+#### Tulemused
 
 |real|user|sys|1 päring keskmiselt|
 |----|----|---|---|
@@ -29,13 +36,19 @@ time ./test.sh 5000
 
 ### gunicorn+flask
 
+#### Veebiserveri käivitamine
+
 ```bash
 /usr/bin/tini -s -- venv/bin/gunicorn --bind=0.0.0.0:7000 "--workers=1" "--timeout=30" "--worker-class=sync" --worker-tmp-dir=/dev/shm flask_morf:app
 ```
 
+#### Testprogrammi käivitamine
+
 ```bash
 time ./test.sh 7000
 ```
+
+#### Tulemused
 
 |real|user|sys|1 päring keskmiselt|
 |----|----|---|---|
@@ -45,14 +58,20 @@ time ./test.sh 7000
 
 ### docker+gunicorn+flask
 
+#### Veebiserveri käivitamine
+
 ```bash
 docker build -t test_time .
 docker run -p 7000:7000 test_time
 ```
 
+#### Testprogrammi käivitamine
+
 ```bash
 time ./test.sh 7000
 ```
+
+#### Tulemused
 
 |real|user|sys|1 päring keskmiselt|
 |----|----|---|---|
