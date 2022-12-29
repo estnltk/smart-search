@@ -1,3 +1,64 @@
-# smart_search
+# Kiirushinnang (ainult veebiliides ilma lemmatiseerijata)
 
-praegu veel lihtsalt tühi koht
+## Riist- ja tarkvara
+
+|   |   |
+|---|---|
+|Hardware Model|HP EliteBook 840 G3|
+|Mälu|16,0 GiB|
+|Protsessor|Intel® Core™ i5-6200U CPU @ 2.30GHz × 4|
+|OS Name|Ubuntu 22.04.1 LTS|
+|OS Type|64-bit|
+
+## Kiirushinnangud
+### flask
+
+```bash
+venv/bin/python3 flask_morf.py
+```
+
+```bash
+time ./test.sh 5000
+```
+
+|real|user|sys|1 päring keskmiselt|
+|----|----|---|---|
+|0m2,827s|0m0,489s|0m0,583s|0.00583s|
+|0m2,694s|0m0,390s|0m0,386s|0.00386s|
+|0m2,586s|0m0,338s|0m0,372s|0.00372s|
+
+### gunicorn+flask
+
+```bash
+/usr/bin/tini -s -- venv/bin/gunicorn --bind=0.0.0.0:7000 "--workers=1" "--timeout=30" "--worker-class=sync" --worker-tmp-dir=/dev/shm flask_morf:app
+```
+
+```bash
+time ./test.sh 7000
+```
+
+|real|user|sys|1 päring keskmiselt|
+|----|----|---|---|
+|0m3,127s|0m1,593s|0m1,282s|0.06282s|
+|0m2,918s|0m1,119s|0m1,081s|0.06081s|
+|0m3,103s|0m2,893s|0m2,478s|0.12478s|
+
+### docker+gunicorn+flask
+
+```bash
+docker build -t test_time .
+docker run -p 7000:7000 test_time
+```
+
+```bash
+time ./test.sh 7000
+```
+
+|real|user|sys|1 päring keskmiselt|
+|----|----|---|---|
+|0m3,566s|0m5,040s|0m4,564s|0.24564s|
+|0m3,788s|0m6,064s|0m5,341s|0.30341s|
+|0m3,770s|0m5,917s|0m5,822s|0.30822s|
+
+
+
