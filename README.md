@@ -3,6 +3,7 @@
 Märkused:
 * Lõplikud kiirushinnagud: [docker+gunicorn+flask](#tulemused-2)
 * Gunicorn paneb aega otsa, aga annab skaleeruvuse
+* Dockeri konteinerja curl'i päring tehakse samast arvutist, seega seal pole "päris internetti" vahel.
 
 ## Riist- ja tarkvara
 
