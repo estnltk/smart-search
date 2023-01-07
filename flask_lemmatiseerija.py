@@ -1,37 +1,54 @@
  #!/usr/bin/env python3
 
 """ 
-Virtuaalkeskkonna loomine:
+#Virtuaalkeskkonna loomine:
 $ ./create_venv
-Serveri käivitamine
-./venv/bin/python3 ./flask_vmetajson.py
-Päringute näited:
-curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Mees peeti kinni ."}' localhost:6000/morf|jq
-curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Mees peeti kinni .","params":{"vmetajson":["--guess"]}}' localhost:6000/morf|jq
+
+#Serveri käivitamine käsurealt
+$ ./venv/bin/python3 ./flask_lemmatiseerija.py
+
+#Päringute näited:
+$ curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Vanamehe kodujuustu peeti keaks ."}' localhost:5000/process|jq
+$ curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Vanamehe kodujuustu peeti keaks .","params":{"vmetltjson":["--guess"]}}' localhost:5000/process|jq
+
+#Konteineri tegemine:
+$ docker build -t vabamorf/lemmatizer . 
+
+#Konteineri käivitamine:
+$ docker run -p 7000:7000  vabamorf/lemmatizer
+
+#Päringute näited:
+$ curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Vanamehe kodujuustu peeti keaks ."}' localhost:7000/process|jq
+$ curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Vanamehe kodujuustu peeti keaks .","params":{"vmetltjson":["--guess"]}}' localhost:7000/process|jq
 """
 
-import os
+import subprocess
 import json
 import argparse
-from datetime import datetime
 from flask import Flask, request, jsonify
 
-app = Flask("vabamorf")
+proc = subprocess.Popen(['./vmetltjson', '--path=.'],  
+                            universal_newlines=True, 
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.DEVNULL)
 
-status_data = { 
-    "STARTED": "{:%Y.%m.%d_%H:%M:%S}".format(datetime.now()), 
-    "WORKERS":os.getenv('WORKERS'),"TIMEOUT":os.getenv('TIMEOUT'),
-    "WORKER_CLASS":os.getenv('WORKER_CLASS')
-    }
+app = Flask("vmetltjson")
 
-@app.route('/settings', methods=['GET', 'POST'])
-def settings():
-    """Tagastame pisut tehnilist infot
+@app.route('/process', methods=['POST']) #@app.route('/morf', methods=['GET', 'POST'])
+def morf():
+    """Lemmatiseerime JSONiga antud sõnesid ja kuvame tulemust JSONkujul
 
     Returns:
-        ~flask.Response: Pisut tehnilist infot
+        ~flask.Response: Lemmatiseerimise tulemused
     """
-    return jsonify(status_data)
+    proc.stdin.write(f'{json.dumps(request.json)}\n')
+    proc.stdin.flush()
+    return jsonify(json.loads(proc.stdout.readline()))
 
 if __name__ == '__main__':
-    app.run()
+    argparser = argparse.ArgumentParser(allow_abbrev=False)
+    argparser.add_argument('-d', '--debug', action="store_true", help='use debug mode')
+    args = argparser.parse_args()
+    app.run(debug=args.debug)
+

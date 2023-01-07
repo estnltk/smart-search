@@ -1,88 +1,147 @@
-# Kiirushinnang (ainult veebiliides ilma lemmatiseerijata)
+# Eestikeelsete sõnede lemmatisaator
 
-Märkused:
-* Lõplikud kiirushinnagud: [docker+gunicorn+flask](#tulemused-2)
-* Gunicorn paneb aega otsa, aga annab skaleeruvuse
-* Dockeri konteinerja curl'i päring tehakse samast arvutist, seega seal pole "päris internetti" vahel.
+## Mida sisaldab <a name="Mida_sisaldab"></a>
 
-## Riist- ja tarkvara
+* [Filosofti eesti keele lemmatisaatorit](https://github.com/Filosoft/vabamorf/tree/master/apps/cmdline/vmetltjson) ```vmetltjson``` ja sõnastik ```et.dct```.
+* Konteineri ja liidesega seotud lähtekood
 
-|   |   |
-|---|---|
-|Hardware Model|HP EliteBook 840 G3|
-|Mälu|16,0 GiB|
-|Protsessor|Intel® Core™ i5-6200U CPU @ 2.30GHz × 4|
-|OS Name|Ubuntu 22.04.1 LTS|
-|OS Type|64-bit|
+<!---
+## Konteineri allalaadimine Docker Hub'ist
 
-## Kiirushinnangud
+Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida (Windows'i/Mac'i käsurida on analoogiline):
 
-### flask
+```commandline
+docker pull tilluteenused/lemmatizer
+```
+--->
 
-#### Veebiserveri käivitamine
+Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine).
 
-```bash
-venv/bin/python3 flask_morf.py
+## Ise konteineri tegemine
+
+### Lähtekoodi allalaadimine
+
+<!---
+Lähtekood koosneb 2 osast
+1. json liides, veebiserver ja konteineri tegemise asjad
+2. FSi lemmatisaator
+---->
+
+```commandline
+mkdir ~/git ; cd ~/git 
+git clone --depth 1 https://github.com/estnltk/smart-search.git smart-search_github
 ```
 
-#### Testprogrammi käivitamine
+Repositoorium sisaldab kompileeritud [Filosofti morfoloogilist lemmatisaatorit](https://github.com/Filosoft/vabamorf/tree/master/apps/cmdline/vmetltjson) ja andmefaile:
 
-```bash
-time ./test.sh 5000
+* **_vmetltjson_** lemmatisaator
+* **_et.dct_** programmi poolt kasutatav leksikon.
+
+Kui soovite ise programmi (**_vmetltjson_**) kompileerida või leksikoni (**_et.dct_**) täiendada/muuta ja uuesti kokku panna,
+vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/doc/programmid_ja_sonastikud.md).
+
+### Konteineri kokkupanemine
+
+```commandline
+cd ~/git/smart-search_github
+docker build -t tilluteenused/lemmatizer .
 ```
 
-#### Tulemused
+## Konteineri käivitamine <a name="Konteineri_käivitamine"></a>
 
-|real|user|sys|1 päring keskmiselt|
-|----|----|---|---|
-|0m2,827s|0m0,489s|0m0,583s|0.00583s|
-|0m2,694s|0m0,390s|0m0,386s|0.00386s|
-|0m2,586s|0m0,338s|0m0,372s|0.00372s|
-
-### gunicorn+flask
-
-#### Veebiserveri käivitamine
-
-```bash
-/usr/bin/tini -s -- venv/bin/gunicorn --bind=0.0.0.0:7000 "--workers=1" "--timeout=30" "--worker-class=sync" --worker-tmp-dir=/dev/shm flask_morf:app
+```commandline
+docker run -p 7000:7000 tilluteenused/lemmatizer
 ```
 
-#### Testprogrammi käivitamine
+Käivitatud konteineri töö lõpetab Ctrl+C selles terminaliaknas, kust konteiner käivitati.
 
-```bash
-time ./test.sh 7000
+## Päringu json-kuju
+
+Tasub tähele panna, et Python'i json'i teek esitab teksti vaikimisi ASCII kooditabelis;
+täpitähed jms esitatakse Unicode'i koodidena, nt. õ = \u00f5.
+
+```json
+{
+  "content": string, /* Tühikuga eraldatud lemmatiseeritavate sõnede loend. */
+  "params": {"vmetltjson":["parameetrid",...]}
+}
 ```
 
-#### Tulemused
+Parameetrite kohta vaata [Lemmatisaatori kirjeldust](https://github.com/Filosoft/vabamorf/edit/master/apps/cmdline/vmetltjson/LOEMIND.md).
 
-|real|user|sys|1 päring keskmiselt|
-|----|----|---|---|
-|0m3,127s|0m1,593s|0m1,282s|0.06282s|
-|0m2,918s|0m1,119s|0m1,081s|0.06081s|
-|0m3,103s|0m2,893s|0m2,478s|0.12478s|
+## Vastuse json-kuju
 
-### docker+gunicorn+flask
+Väljundiks on JSON standard väljundis.
 
-#### Veebiserveri käivitamine
+Kui programmi töö katkes töö jätkamist mittevõimaldava vea tõttu on väljund kujul:
 
-```bash
-docker build -t test_time .
-docker run -p 7000:7000 test_time
+```json
+{
+  "failure":{"errors":["array of status messages"]}
+  ... /* algne sisendjson, kui vea tekkimise hetkeks oli sisendjson õnnestunult parsitud */
+}
 ```
 
-#### Testprogrammi käivitamine
+Kui sisend-jsoni  käsitlemine polnud mingi veasituatsiooni tõttu võimalik, aga programm on valmis järgmisi päringuid käsitlema, on väljundjson kujul:
 
-```bash
-time ./test.sh 7000
+```json
+{
+  "warnings":["array of status messages"],
+  ... /* algne sisendjson, kui vea tekkimise hetkeks oli sisendjson õnnestunult parsitud */
+}
 ```
 
-#### Tulemused
+Väljundis JSONi sõnedele lisatakse lemmaga seotud info. Muus osas sjääb sisen-JSON samaks.
+Kui sõne ei õnnestunud lemmatiseerida, siis selle sõne juurde lemmaga seotud väljasid ei lisata.
 
-|real|user|sys|1 päring keskmiselt|
-|----|----|---|---|
-|0m3,566s|0m5,040s|0m4,564s|0.24564s|
-|0m3,788s|0m6,064s|0m5,341s|0.30341s|
-|0m3,770s|0m5,917s|0m5,822s|0.30822s|
+```json
+{
+  "content": string, /* Tühikuga eraldatud lemmatiseeritavate sõnede loend. */
+  "params": {"vmetltjson":["parameetrid",...]},
+  "annotations":    
+  {
+    "features":
+    {
+        "tokens":
+        [
+            {
+                "token": SÕNE,  /* algne morf analüüsitav sõne */
+                "complexity": KEERUKUS,
+                "mrf" :           /* sisendsõne lemmade massiiv */
+                [
+                    {
+                        "lemma":    LEMMA,    /* lemma */
+                        "lemma_ma": LEMMA_MA, /* verbilemmale on lisatud ```ma```, muudel juhtudel sama mis LEMMA */
+                        "source":   ALLIKAS,  /* P:põhisõnastikust, L:lisasõnastikust, O:sõnepõhisest oletajast, S:lausepõhisest oletajast, X:ei tea kust */
+                    }
+                ]
+            }
+        ]
+    }
+  }
+}
+```
 
+Täpsemalt vaata näiteid.
 
+### ```SÕNE``` <a name=mrf_sone>
 
+Lemmatiseeritav sõne. Sõnega kleepunud punktuatsiooni ignoreeritakse. Reeglina peaks sõnaga kokkukleepunud punktuatsioon olema eelneva sõnestamise/lausestamise 
+käigus juba lahkutõstetud.
+
+### ```LEMMA``` <a name="mrf_LEMMA"></a>
+
+Algvorm. Kui sõna on liitmoodustis, siis eelnevast komponente eraldab alakriips ```_``` ja järelliidet võrdusmärk ```=```.
+Liitsõna puhul on ainult viimane  komponent algvormina.
+
+###  ```LEMMA_MA``` <a name="mrf_LEMMA"></a>
+
+Verbi lemmadele on lisatud ```ma```, muudel juhtudel ```LEMMA```.
+
+### ```ALLIKAS```
+
+**_"P"_** - põhisõnastikust, **_"L"_** - lisasõnastikust, **_"O"_** - sõnepõhisest oletajast, **_"S"_** - lausepõhisest oletajast, **_"X"_** - määratlemata.
+
+### ```KEERUKUS```
+
+Numbriline hinnand sellele, kui "keeruline" oli sõne analüüsi leida. Suurem number tähistab "keerulisemat" analüüsi. (Näiteks liitsõna analüüs on lihtsõna analüüsist "keerulisem".)

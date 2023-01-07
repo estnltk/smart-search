@@ -24,8 +24,8 @@ RUN ./venv/bin/python3 -m pip install --upgrade pip
 RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt 
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_morf.py ./
-RUN chmod +x docker-entrypoint.sh flask_morf.py
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_lemmatiseerija.py vmetltjson et.dct ./
+RUN chmod +x docker-entrypoint.sh flask_lemmatiseerija.py vmetltjson
 
 # parameters for gunicorn
 ENV WORKERS=1

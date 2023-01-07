@@ -8,4 +8,4 @@ exec /usr/bin/tini -- venv/bin/gunicorn --bind=0.0.0.0:7000 \
     "--timeout=${TIMEOUT}" \
     "--worker-class=${WORKER_CLASS}" \
     --worker-tmp-dir=/dev/shm "$@" \
-    flask_morf:app
+    flask_lemmatiseerija:app
