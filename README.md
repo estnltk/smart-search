@@ -3,7 +3,7 @@
 ## Mida sisaldab <a name="Mida_sisaldab"></a>
 
 * [Filosofti eesti keele lemmatisaatorit](https://github.com/Filosoft/vabamorf/tree/master/apps/cmdline/vmetltjson) ```vmetltjson``` ja sõnastik ```et.dct```.
-* Konteineri ja liidesega seotud lähtekood
+* Konteineri ja liidesega seotud lähtekoodi
 
 <!---
 ## Konteineri allalaadimine Docker Hub'ist
@@ -13,9 +13,9 @@ Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida 
 ```commandline
 docker pull tilluteenused/lemmatizer
 ```
---->
 
 Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine).
+--->
 
 ## Ise konteineri tegemine
 
