@@ -71,8 +71,6 @@ Parameetrite kohta vaata [Lemmatisaatori kirjeldust](https://github.com/Filosoft
 
 ## Vastuse json-kuju
 
-Väljundiks on JSON standard väljundis.
-
 Kui programmi töö katkes töö jätkamist mittevõimaldava vea tõttu on väljund kujul:
 
 ```json
