@@ -27,7 +27,7 @@ import json
 import argparse
 from flask import Flask, request, jsonify
 
-proc = subprocess.Popen(['./vmetltjson', '--path=.'],  
+proc = subprocess.Popen(['./vmetltjson', '--path=.', '--guess'],  
                             universal_newlines=True, 
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
