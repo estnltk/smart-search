@@ -1,23 +1,23 @@
  #!/usr/bin/env python3
 
 """ 
-#Virtuaalkeskkonna loomine:
+# Virtuaalkeskkonna loomine:
 $ ./create_venv
 
-#Serveri käivitamine käsurealt
+# Serveri käivitamine käsurealt
 $ ./venv/bin/python3 ./flask_lemmatiseerija.py
 
-#Päringute näited:
+# Päringute näited:
 $ curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Vanamehe kodujuustu peeti keaks ."}' localhost:5000/process|jq
 $ curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Vanamehe kodujuustu peeti keaks .","params":{"vmetltjson":["--guess"]}}' localhost:5000/process|jq
 
-#Konteineri tegemine:
+# Konteineri tegemine:
 $ docker build -t vabamorf/lemmatizer . 
 
-#Konteineri käivitamine:
+# Konteineri käivitamine:
 $ docker run -p 7000:7000  vabamorf/lemmatizer
 
-#Päringute näited:
+# Päringute näited:
 $ curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Vanamehe kodujuustu peeti keaks ."}' localhost:7000/process|jq
 $ curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"Vanamehe kodujuustu peeti keaks .","params":{"vmetltjson":["--guess"]}}' localhost:7000/process|jq
 """
