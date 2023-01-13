@@ -27,7 +27,7 @@ import json
 import argparse
 from flask import Flask, request, jsonify
 
-proc = subprocess.Popen(['./vmetltjson', '--path=.'],  
+proc = subprocess.Popen(['./vmetltjson', '--path=.', '--guess'],  
                             universal_newlines=True, 
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
@@ -35,7 +35,7 @@ proc = subprocess.Popen(['./vmetltjson', '--path=.'],
 
 app = Flask("vmetltjson")
 
-@app.route('/process', methods=['POST']) #@app.route('/morf', methods=['GET', 'POST'])
+@app.route('/process', methods=['POST']) #@app.route('/process', methods=['GET', 'POST'])
 def morf():
     """Lemmatiseerime JSONiga antud sõnesid ja kuvame tulemust JSONkujul
 

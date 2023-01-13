@@ -29,7 +29,6 @@ Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine
 
 ## Ise konteineri tegemine
 
-docker pull tilluteenused/lemmatizer:latest
 ### Lähtekoodi allalaadimine
 
 <!---
@@ -78,7 +77,9 @@ täpitähed jms esitatakse Unicode'i koodidena, nt. õ = \u00f5.
 }
 ```
 
-Parameetrite kohta vaata [Lemmatisaatori kirjeldust](https://github.com/Filosoft/vabamorf/edit/master/apps/cmdline/vmetltjson/LOEMIND.md).
+* Parameetrite kohta vaata [Lemmatisaatori kirjeldust](https://github.com/Filosoft/vabamorf/edit/master/apps/cmdline/vmetltjson/LOEMIND.md).
+* Konteineris olev lemmatiseerija käivitatakse vaikimisi ```--guess``` lipuga (vt
+[lemmatiseerja kirjaldust](https://github.com/Filosoft/vabamorf/edit/master/apps/cmdline/vmetltjson/LOEMIND.md))
 
 ## Vastuse json-kuju
 
@@ -154,3 +155,99 @@ Verbi lemmadele on lisatud ```ma```, muudel juhtudel ```LEMMA```.
 ### ```KEERUKUS```
 
 Numbriline hinnand sellele, kui "keeruline" oli sõne analüüsi leida. Suurem number tähistab "keerulisemat" analüüsi. (Näiteks liitsõna analüüs on lihtsõna analüüsist "keerulisem".)
+
+## Kasutusnäited
+
+### Lemmatiseerija sõnastikust puuduvate sõnade oletamisega
+
+```cmdline
+curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"peeti keaks"}' localhost:7000/process|jq
+```
+
+```json
+{
+  "annotations": {
+    "tokens": [
+      {
+        "features": {
+          "complexity": 1,
+          "mrf": [
+            {
+              "lemma": "peet",
+              "lemma_ma": "peet",
+              "source": "P"
+            },
+            {
+              "lemma": "pida",
+              "lemma_ma": "pidama",
+              "source": "P"
+            }
+          ],
+          "token": "peeti"
+        }
+      },
+      {
+        "features": {
+          "complexity": 0,
+          "mrf": [
+            {
+              "lemma": "kea",
+              "lemma_ma": "kea",
+              "source": "O"
+            },
+            {
+              "lemma": "keaks",
+              "lemma_ma": "keaks",
+              "source": "O"
+            }
+          ],
+          "token": "keaks"
+        }
+      }
+    ]
+  },
+  "content": "peeti keaks"
+}
+```
+
+### Lemmatiseerija sõnastikust puuduvate sõnade oletamiseta
+
+```cmdline
+curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"peeti keaks","params":{"vmetltjson":[]}}' localhost:7000/process|jq
+```
+
+```json
+{
+  "annotations": {
+    "tokens": [
+      {
+        "features": {
+          "complexity": 1,
+          "mrf": [
+            {
+              "lemma": "peet",
+              "lemma_ma": "peet",
+              "source": "P"
+            },
+            {
+              "lemma": "pida",
+              "lemma_ma": "pidama",
+              "source": "P"
+            }
+          ],
+          "token": "peeti"
+        }
+      },
+      {
+        "features": {
+          "token": "keaks"
+        }
+      }
+    ]
+  },
+  "content": "peeti keaks",
+  "params": {
+    "vmetltjson": []
+  }
+}
+```
