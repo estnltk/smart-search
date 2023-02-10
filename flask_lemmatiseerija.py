@@ -35,7 +35,7 @@ proc = subprocess.Popen(['./vmetltjson', '--path=.', '--guess'],
 
 app = Flask("vmetltjson")
 
-@app.route('/process', methods=['POST']) #@app.route('/morf', methods=['GET', 'POST'])
+@app.route('/process', methods=['POST']) #@app.route('/process', methods=['GET', 'POST'])
 def morf():
     """Lemmatiseerime JSONiga antud sõnesid ja kuvame tulemust JSONkujul
 
