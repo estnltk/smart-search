@@ -11,11 +11,14 @@
     
 '''
 
-
+import os
 import json
 import requests
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import cgi
+
+LEMMATIZER_IP=os.environ.get('LEMMATIZER_IP')
+LEMMATIZER_PORT=os.environ.get('LEMMATIZER_PORT')
 
 class WebServerHandler(BaseHTTPRequestHandler):
     form_html = \
@@ -91,7 +94,7 @@ if __name__ == '__main__':
     try:
         port = 7777
         server = HTTPServer(('', port), WebServerHandler)
-        print("Web server is running on port {}".format(port))
+        print(f'Web server is running on port {port}')
         server.serve_forever()
 
     except KeyboardInterrupt:
