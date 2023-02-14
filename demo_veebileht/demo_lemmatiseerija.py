@@ -6,6 +6,8 @@
 2. käivita lemmatiseerija konteineriga suhtlev veebiserver 
    (pythoni pakett requests peab olema installitud, ubuntu korral: sudo apt install -y python3-requests)
     $ cd demo_veebileht ; ./demo_lemmatiseerija.py
+
+    docker run --env LEMMATIZER_IP=localhost --env LEMMATIZER_PORT=7777 demo_lemmatiseerija 
 3. Ava brauseris localhost:7777/lemmad ja järgi brauseris avanenud veebilehe juhiseid
     $ google-chrome http://localhost:7777/lemmad
     
@@ -17,8 +19,8 @@ import requests
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import cgi
 
-LEMMATIZER_IP=os.environ.get('LEMMATIZER_IP')
-LEMMATIZER_PORT=os.environ.get('LEMMATIZER_PORT')
+LEMMATIZER_IP=os.environ.get('LEMMATIZER_IP') if os.environ.get('LEMMATIZER_IP') != None else 'localhost'
+LEMMATIZER_PORT=os.environ.get('LEMMATIZER_PORT') if os.environ.get('LEMMATIZER_PORT') != None else '7000'
 
 class WebServerHandler(BaseHTTPRequestHandler):
     form_html = \
@@ -80,7 +82,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
         """
         json_token=json.dumps(token)
         json_query=json.loads(f"{{\"content\":{json_token}}}")
-        json_response=json.loads(requests.post('http://localhost:7000/process', json=json_query).text)
+        json_response=json.loads(requests.post(f'http://{LEMMATIZER_IP}:{LEMMATIZER_PORT}/process', json=json_query).text)
         lemmad=""
         try:
             for tokens in json_response["annotations"]["tokens"]:
@@ -95,6 +97,7 @@ if __name__ == '__main__':
         port = 7777
         server = HTTPServer(('', port), WebServerHandler)
         print(f'Web server is running on port {port}')
+        print(f'LEMMATIZER_IP={LEMMATIZER_IP}, LEMMATIZER_PORT={LEMMATIZER_PORT}')
         server.serve_forever()
 
     except KeyboardInterrupt:

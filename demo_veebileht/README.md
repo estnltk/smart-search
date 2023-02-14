@@ -23,3 +23,9 @@
     ```cmdline
     google-chrome http://localhost:7777/lemmad
     ```
+
+
+```cmdline
+docker build -t tilluteenused/demo_veebileht .
+```
+
