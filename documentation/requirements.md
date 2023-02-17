@@ -17,4 +17,3 @@ Lisatingimused
 Näiteülesanne on üldotsing üle kõikide tekstide (madu -> madu, maoga, madusid...)
 
 Lisaülesanne on kontrollida indeksi asjakohasust.
-
