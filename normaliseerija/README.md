@@ -22,8 +22,7 @@ Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine
 Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida (Windows'i/Mac'i käsurida on analoogiline):
 
 ```commandline
-# TODO
-# docker pull tilluteenused/normaliseerija
+docker pull tilluteenused/normaliseerija
 ```
 
 Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine).
