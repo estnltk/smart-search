@@ -16,7 +16,7 @@
             "type": "python",
             "request": "launch",
             "program": "./töövoog_pre_alpha/korpus_test_1/lemmade_indeks.py",
-            "args": ["--indexout=./töövoog_pre_alpha/korpus_test_1/lemmas.index", "./töövoog_pre_alpha/korpus_test_1/Uudised.lemmas"]
+            "args": ["--indexout=./töövoog_pre_alpha/korpus_test_1/proov.index", "./töövoog_pre_alpha/korpus_test_1/proov1.lemmas", "./töövoog_pre_alpha/korpus_test_1/proov2.lemmas"]
         },     
     ]
 }

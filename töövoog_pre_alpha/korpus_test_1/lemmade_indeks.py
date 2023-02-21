@@ -6,6 +6,8 @@ import json
 import requests
 from typing import Dict #, List
 
+ignore_pos = "ZJ" # Z=kirjavahemärk, J=sidesõna
+
 '''
 Kasutusnäide
 * installi
@@ -15,29 +17,32 @@ Kasutusnäide
 '''
 
 
-def lisa_indeksisse(index:Dict, sisend:str)->None:
-    """Lemmade indeksi kontrueerimine
+def lisa_indeksisse(index:Dict, sisend:Dict)->None:
+    """_summary_
 
     Args:
-        text (str): Morfitud tekst json kujul
-
-    Returns:
-        lemmade indeks json-kujul
+        index (Dict): täiendatav indeksfail
+        sisend (Dict): morfi väljund, need lemmad lisame indeksisse
     """
 
-    # index["sources"][docid] = {"filename":str, "heading":str}
     sisendjson = json.loads(sisend)
     if sisendjson["docid"] in index["sources"]:
         sys.stderr(f'DocID {sisendjson["docid"]} on juba indeksis olemas\n')
         sys.exit(1)
-    index["sources"][sisendjson["docid"]] = {"filename":sisendjson["filename"],"heading": sisendjson["heading"]}
+    index["sources"][sisendjson["docid"]] = {"filename":sisendjson["filename"],"heading": sisendjson["heading"], "content": sisendjson["content"]}
     for token in sisendjson["annotations"]["tokens"]:
+        if "mrf" not in token["features"]:
+            continue # misiganes põhjusel, seda ei suutnud isegi oletamisega morfida 
         for mrf in token["features"]["mrf"]:
-            print(mrf["lemma"])
-    #        if mrf["lemma"] not in index["lemmas"]:
-    #            index["lemmas"].append({"lemma": mrf["lemma"], "source_idx": source_idx, {"positions":[{"start": , "end"}]}}})
+            if ignore_pos.find(mrf["pos"]) != -1:
+                continue # neid sõnaliike ei indekseeri
 
-    return None
+            if mrf["lemma_ma"] not in index["annotations"]["lemmas"]: # sellist lemmat kohtame üldse esimest korda
+                index["annotations"]["lemmas"][mrf["lemma_ma"]] = {sisendjson["docid"]:{token["start"]:token["end"]}}
+            elif sisendjson["docid"] not in index["annotations"]["lemmas"][mrf["lemma_ma"]]: # sellist lemmat oleme yteistes dokumentides kohanud
+                index["annotations"]["lemmas"][mrf["lemma_ma"]][sisendjson["docid"]] = {token["start"]:token["end"]}
+            elif token["start"] not in index["annotations"]["lemmas"][mrf["lemma_ma"]][sisendjson["docid"]]: # sellist lemmat oleme selles dokumendis kohanud, aga teise koha peal
+                index["annotations"]["lemmas"][mrf["lemma_ma"]][sisendjson["docid"]][token["start"]] = token["end"]
 
 
 if __name__ == '__main__':
@@ -49,8 +54,8 @@ if __name__ == '__main__':
     args = argparser.parse_args()
 
     # index["sources"][docid] = {"filename":str, "heading":str} # igal dokumendil peab olema unikaalne docid
-    # index["lemmas"][lemma] = {"lemma":str, [{"source": idx, ["start":int, "end":int]}]
-    index = {"annotations":{}, "sources":{}} # sources = [{"filename": str, "heading":str}]
+    # index["lemmas"][lemma_ma] = {"lemma_ma":str, [{"source": idx, ["start":int, "end":int]}]
+    index = {"annotations":{"lemmas":{}}, "sources":{}} # sources = [{"filename": str, "heading":str}]
     if args.indexin is not None:
         with open(args.indexin, 'r') as file_index_in:
             index = json.loads(file_index_in.read())
