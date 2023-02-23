@@ -14,6 +14,29 @@ Kasutusnäide
   * python
 * Lase pythoni programmil oma tekst morfida (väljundfaili nimi saadakse sisendfaili nimes laiendi asendamisega (.lemmas))
   > ./sonesta-lausesta.py --indexin=ALGNEINDEKSFAIL --indexout=TÄIENDATUDINDEKSFAIL INDEKSEERITAVFAIL.tokens [INDEKSEERITAVFAIL.tokens...]
+
+
+{
+    "sources":
+    {
+        DOCID:
+        {
+            "filename": str,
+            "heading": str,
+            "content": str
+        }
+    }
+    "lemmas":
+    {
+        LEMMA:
+        {
+            DOCID:
+            {
+                {STARTPOS:endpos}
+            }
+        }
+    }
+}  
 '''
 
 

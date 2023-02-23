@@ -44,7 +44,7 @@ if __name__ == '__main__':
     with open(args.FILE, 'r') as file_in:
         sys.stdout.write(f'{args.FILE} -> ')
         raw_data = file_in.read()
-        sisend = f"{{\"filename\":\"{filename_in}\",\"heading\":{json.dumps(args.heading)},\"docid\":\"args.docid\",\"content\":{json.dumps(raw_data)}}}" 
+        sisend = f"{{\"filename\":\"{filename_in}\",\"heading\":{json.dumps(args.heading)},\"docid\":\"{args.docid}\",\"content\":{json.dumps(raw_data)}}}" 
         valjund = json.loads(sonesta_lausesta(sisend))
         filename, file_extension = os.path.splitext(args.FILE)
         with open(filename+'.tokens', 'w') as file_out:
