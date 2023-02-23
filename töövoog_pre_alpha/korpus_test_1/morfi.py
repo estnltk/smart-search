@@ -30,8 +30,6 @@ def morfi(sisend:str) -> str:
     """
     sisend_json = json.loads(sisend)
     sisend_json["params"]={"vmetajson":["--guess"]} # morfime koos oletamisega
-    #valjund_json = requests.post('http://localhost:7000/process', json=sisend_json)
-    #return valjund_json.text
     return requests.post('http://localhost:7000/process', json=sisend_json).text
 
 

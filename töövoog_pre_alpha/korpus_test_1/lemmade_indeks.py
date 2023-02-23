@@ -37,6 +37,7 @@ def lisa_indeksisse(index:Dict, sisend:Dict)->None:
             if ignore_pos.find(mrf["pos"]) != -1:
                 continue # neid sõnaliike ei indekseeri
 
+
             if mrf["lemma_ma"] not in index["annotations"]["lemmas"]: # sellist lemmat kohtame üldse esimest korda
                 index["annotations"]["lemmas"][mrf["lemma_ma"]] = {sisendjson["docid"]:{token["start"]:token["end"]}}
             elif sisendjson["docid"] not in index["annotations"]["lemmas"][mrf["lemma_ma"]]: # sellist lemmat oleme yteistes dokumentides kohanud

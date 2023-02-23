@@ -41,18 +41,12 @@ if __name__ == '__main__':
 
 
     filename_in = args.FILE
-    with open(filename_in, 'r') as file_in:
-        sys.stdout.write(f'{filename_in}->')
+    with open(args.FILE, 'r') as file_in:
+        sys.stdout.write(f'{args.FILE} -> ')
         raw_data = file_in.read()
-        data = json.dumps(raw_data.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').strip())
-        sisend = f"{{\"content\":{data}}}"
+        sisend = f"{{\"filename\":\"{filename_in}\",\"heading\":{json.dumps(args.heading)},\"docid\":\"args.docid\",\"content\":{json.dumps(raw_data)}}}" 
         valjund = json.loads(sonesta_lausesta(sisend))
-        #valjund["annotations"]["filename"] = filename_in
-        #valjund["annotations"]["heading"] = args.heading
-        valjund["filename"] = filename_in
-        valjund["heading"] = args.heading
-        valjund["docid"] = args.docid
-        filename, file_extension = os.path.splitext(filename_in)
+        filename, file_extension = os.path.splitext(args.FILE)
         with open(filename+'.tokens', 'w') as file_out:
           file_out.write(json.dumps(valjund))
           sys.stdout.write(f'{filename}.tokens\n')
