@@ -130,25 +130,23 @@ class SMART_SEARCH:
                     if result_query_docid is None:      # sellist dokumendi-id'ed veel tulemustes polnud
                         self.result_query[index_docid] = {} # Teeme tühja sõnastiku selle dokumendi-id alla
                     for startpos in index_lemma_ma[index_docid]: # tsükkel üle lemma esinemiste selles dokumendis
-                        if self.db_version is True:
-                            # seda kasutame silumiseks
-                            index_docid_startpos = self.result_query[index_docid].get(startpos)
-                            if index_docid_startpos is None:
-                                self.result_query[index_docid][startpos]={
-                                        "endpos":index_lemma_ma[index_docid][startpos], 
-                                        "token":self.index["sources"][index_docid]["content"][int(startpos):index_lemma_ma[index_docid][startpos]],
-                                        "lemmas":[query_lemma_ma] }
-                            else:
-                                index_docid_startpos["lemmas"].append(query_lemma_ma)
-                            print("DB", (index_docid, index_lemma_ma[index_docid][startpos], query_lemma_ma,self.index["sources"][index_docid]["content"][int(startpos):index_lemma_ma[index_docid][startpos]] ))
+                        #if self.db_version is True: # seda kasutame silumiseks
+                        index_docid_startpos = self.result_query[index_docid].get(startpos)
+                        if index_docid_startpos is None:
+                            self.result_query[index_docid][startpos]={
+                                    "endpos":index_lemma_ma[index_docid][startpos], 
+                                    "token":self.index["sources"][index_docid]["content"][int(startpos):index_lemma_ma[index_docid][startpos]],
+                                    "lemmas":[query_lemma_ma] }
                         else:
-                            # seda kasutame silutud programmis
-                            self.result_query[index_docid][startpos]=(index_lemma_ma[index_docid][startpos])
+                            index_docid_startpos["lemmas"].append(query_lemma_ma)
+                        #else: # seda kasutame silutud programmis
+                        #    self.result_query[index_docid][startpos]=(index_lemma_ma[index_docid][startpos])
 
 
     def rec_chk(self, idx_query_token, required_idx_docid) -> bool:
-        """Teise ja järgmiste päringusõnede käsitlemine
+        """Teise ja järgmiste päringusõnede rekursiivne käsitlemine
 
+        Ainult my_query() või rec_chk() funktsioonist väljakutsumiseks
         Args:
             idx_query_token (_type_): jooksva päringusõne idx = 1, ..., len(self.query_tokens)-1
             required_idx_docid (_type_): _description_
@@ -157,8 +155,8 @@ class SMART_SEARCH:
             bool: _description_
         """
         resultval = False
-        for idx_mrf, mrf in enumerate(self.query_tokens[idx_query_token]["features"]["mrf"]): # tsükkel ole päringusõnele vastavate lemmade
-            query_lemma_ma = mrf.get("lemma_ma") # lemma päringusõna jooksvast morf analüüsist
+        for idx_mrf, mrf in enumerate(self.query_tokens[idx_query_token]["features"]["mrf"]): # tsükkel ole päringusõnele vastavate morf analüüside
+            query_lemma_ma = mrf.get("lemma_ma") # päringusõna lemma jooksvas morf analüüsis
             if query_lemma_ma is None:  # morf analüüsis polnud lemmat... 
                 continue                # ...ignoreerime
             index_lemma_ma = self.index["annotations"]["lemmas"].get(query_lemma_ma) # päringusõne jooksvale lemmale vastav DICT indeksis
@@ -168,36 +166,32 @@ class SMART_SEARCH:
             if index_docid is None:     # lemma ei esinenud nõutavas dokumendis...
                 continue                # ...ignoreerime
             # lemma esines nõutavas dokumendis
-            if (idx_query_token + 1 >= len(self.query_tokens)) or (self.rec_chk(idx_query_token+1, self.query_tokens, required_idx_docid) is True):
+            if (idx_query_token + 1 >= len(self.query_tokens)) or (self.rec_chk(idx_query_token+1, required_idx_docid) is True):
                 # lisame positsioonid resultaati
                 result_query_docid = self.result_query.get(required_idx_docid) # lisame selle dokumendi-id alla tulemustes
                 if result_query_docid is None:                  # sellist dokumendi-id'ed veel tulemustes polnud
                     self.result_query[required_idx_docid] = {}  # Teeme tühja sõnastiku selle dokumendi-id alla
                 for startpos in index_docid: # {STARTPOS:endpos}
-                    if self.db_version is True:
-                        # seda kasutame silumiseks
-                        index_docid_startpos = self.result_query[required_idx_docid].get(startpos)
-                        if index_docid_startpos is None:
-                            self.result_query[required_idx_docid][startpos]={
-                                    "endpos":index_lemma_ma[required_idx_docid][startpos], 
-                                    "token":self.index["sources"][required_idx_docid]["content"][int(startpos):index_lemma_ma[required_idx_docid][startpos]],
-                                    "lemmas":[query_lemma_ma] }
-                        else:
-                            index_docid_startpos["lemmas"].append(query_lemma_ma)
-                        print("DB", (required_idx_docid, index_lemma_ma[required_idx_docid][startpos], 
-                                                                     query_lemma_ma,
-                                                                     self.index["sources"][required_idx_docid]["content"][int(startpos):index_lemma_ma[required_idx_docid][startpos]] ))
+                    #if self.db_version is True: # seda kasutame silumiseks
+                    index_docid_startpos = self.result_query[required_idx_docid].get(startpos)
+                    if index_docid_startpos is None:
+                        self.result_query[required_idx_docid][startpos]={
+                                "endpos":index_lemma_ma[required_idx_docid][startpos], 
+                                "token":self.index["sources"][required_idx_docid]["content"][int(startpos):index_lemma_ma[required_idx_docid][startpos]],
+                                "lemmas":[query_lemma_ma] }
                     else:
-                        # seda kasutame silutud programmis
-                        self.result_query[required_idx_docid][startpos]=(index_lemma_ma[required_idx_docid][startpos])
+                        if query_lemma_ma not in index_docid_startpos["lemmas"]:
+                            index_docid_startpos["lemmas"].append(query_lemma_ma)
+                    #else: # seda kasutame silutud programmis
+                    #    self.result_query[required_idx_docid][startpos]=(index_lemma_ma[required_idx_docid][startpos])
                     resultval = True
         return resultval
 
     def result_query_2_result_query_sorted(self)->None:
-        """Teeme otsingusõnede algus- ja lõpupositsioonidest pöördjärjestatud listi
+        """Teeme otsingusõnede algus- ja lõpupositsioone sisaldavast DICTist pöördjärjestatud LISTi
 
-        result_query = { DOCID: { {STARTPOS: endpos} } }
-        result_query_sorted = {DOCID : [{"start":startpos, "end":int}]}
+        Sisse: result_query = { DOCID: { {STARTPOS: endpos} } }
+        Välja: result_query_sorted = {DOCID : [{"start":startpos, "end":int}]}
         """     
         self.result_query_sorted = {}
         poslist = []
@@ -205,8 +199,8 @@ class SMART_SEARCH:
             poslist = []
             docid_dct = self.result_query[docid_key]
             for startpos in docid_dct:
-                poslist.append({"start":int(startpos), "end":docid_dct[startpos]})
-            #poslist.sort(reverse=True, key=self.sort_by_startpos)
+                #poslist.append({"start":int(startpos), "end":docid_dct[startpos]}) # seda kasutame silutud programmis
+                poslist.append({"start":int(startpos), "end":docid_dct[startpos]["endpos"], "lemmas":docid_dct[startpos]["lemmas"]}) # seda kasutame silumiseks
             poslist.sort(key=self.sort_by_startpos)
             self.result_query_sorted[docid_key]=poslist
 
@@ -214,39 +208,73 @@ class SMART_SEARCH:
         return(i["start"])
     
     def result_query_sorted_2_html(self) -> str:
+        """Päringuvastet sisaldavast LISTist teeme HTMLi 
+
+        Returns:
+            str: Päringuvastet sisaldav HTML
+        """
         html_str = f'<!DOCTYPE html><head><title> Otsime: {self.query_str}</title></head>\n<body>\n'
-        html_str += f'<h1>Otsime: {self.query_str}</h1>'
+        #html_str += f'<h1>Otsime: {self.query_str}</h1>'
+        html_str += f'<h1>Otsime: '
+        for token in self.query_tokens: # morfitud päringusõnede massiiv
+            html_str += f' {token["features"]["token"]}<i>['
+            for mrf in token["features"]["mrf"]:
+                  html_str += f' {mrf["lemma_ma"]} '
+            html_str += ']</i>' 
+        html_str += '</h1>'
         for docid_key in self.result_query_sorted:
             html_str += f'\n<h2>{self.index["sources"][docid_key]["heading"]} [DOCID={docid_key}]</h2>\n\n<p>\n\n'
             # result_query_sorted = {DOCID : [{"start":int, "end":int}]}
             doc_in = self.index["sources"][docid_key]["content"]
             docids = self.result_query_sorted[docid_key]
-            html_str += f'{doc_in[:docids[0]["start"]]}<b>{doc_in[docids[0]["start"]:docids[0]["end"]]}</b>\n'
+            html_str += f'{doc_in[:docids[0]["start"]]}<b>{doc_in[docids[0]["start"]:docids[0]["end"]]}</b>'
+            html_str += f'<i>[{" ".join(docids[0]["lemmas"])}]</i>' # seda kasutame silumiseks
             for i in range(1,len(docids)):
                 html_str += f'{doc_in[docids[i-1]["end"]:docids[i]["start"]]}<b>{doc_in[docids[i]["start"]:docids[i]["end"]]}</b>'
+                html_str += f'<i>[{" ".join(docids[i]["lemmas"])}]</i>' # seda kasutame silumiseks
             html_str += f'{doc_in[docids[len(docids)-1]["end"]:]}\n</p>\n'
         html_str += '\n</body>\n'
         return html_str
 
+    def dump_docs_in_html(self) -> str:
+        """Dokumentidest veebileht
+
+        Returns:
+            str: dokumente sisaldav HTML
+        """
+        html_str = f'<!DOCTYPE html><head><title> Dokumendid</title></head>\n<body>\n'            
+        for docid_key in self.index["sources"]:
+            html_str += f'\n<h2>{self.index["sources"][docid_key]["heading"]} [DOCID={docid_key}]</h2>\n\n<p>\n\n'
+            html_str += self.index["sources"][docid_key]["content"]
+        html_str += '\n</body>\n'
+        return(html_str)
+
 
 if __name__ == '__main__':
+    #result_query = { "DOCID: { {STARTPOS: endpos} } }
+    #result_query_sorted = {DOCID : [{"start":int, "end":int}]}
     argparser = argparse.ArgumentParser(allow_abbrev=False)
+    argparser.add_argument('-f', '--flask', action="store_true", help='run webserver') 
     argparser.add_argument('-d', '--debug', action="store_true", help='use debug mode')
+    argparser.add_argument('-l', '--list', action="store_true",  help='näita dokumente')
     argparser.add_argument('-i', '--index', type=str, help='lemmade indeks')
+    argparser.add_argument('-q', '--query', type=str, help='päringusõned')
+    argparser.add_argument('--result_query', action="store_true", help='show result_query')
+    argparser.add_argument('--result_query_sorted', action="store_true", help='show result_query_sorted')
     args = argparser.parse_args()
 
-    #with open(args.index, 'r') as file_index:
-    #    index = json.loads(file_index.read())
-    #    sys.stdout.write(f'indeksfail: {args.index}\n')
-
     search = SMART_SEARCH(args.index, args.debug)
-    search.my_query("mees pidama")
-    search.result_query_2_result_query_sorted()
-    #json.dump(search.result_query, sys.stdout, indent=4)
-    #print("\n-------")
-    #json.dump(search.result_query_sorted, sys.stdout, indent=4)
-    #print("\n-------")
-    html_str=search.result_query_sorted_2_html()
-    print(html_str)
-    #app.run(debug=args.debug)
+    if args.query is not None:
+        search.my_query(args.query)
+        search.result_query_2_result_query_sorted()
+        if args.result_query is True:
+            json.dump(search.result_query, sys.stdout, indent=4)
+        elif args.result_query_sorted is True:
+            json.dump(search.result_query_sorted, sys.stdout, indent=4)
+        else:
+            print(search.result_query_sorted_2_html())
+    if args.list is True:
+       print(search.dump_docs_in_html())
+    if args.flask is True:
+        app.run(debug=args.debug)
 
