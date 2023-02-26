@@ -10,7 +10,7 @@ Kasutusnäide
 * installi docker
 * Laadi alla ja käivita sõnstajat sisaldav dockeri konteiner
   > docker pull tilluteenused/vmetajson:2022.09.09
-  > docker run -p 7000:7000 tilluteenused/vmetajson:2022.09.09
+  > docker run -p 6666:7000 tilluteenused/vmetajson:2022.09.09
 * installi
   * python
   * pythoni pakett request 
@@ -30,7 +30,7 @@ def morfi(sisend:str) -> str:
     """
     sisend_json = json.loads(sisend)
     sisend_json["params"]={"vmetajson":["--guess"]} # morfime koos oletamisega
-    return requests.post('http://localhost:7000/process', json=sisend_json).text
+    return requests.post('http://localhost:6666/process', json=sisend_json).text
 
 
 if __name__ == '__main__':
