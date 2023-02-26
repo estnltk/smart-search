@@ -27,11 +27,26 @@
             "args": ["--indexout=./töövoog_pre_alpha/korpus_test_1/proov.index", "./töövoog_pre_alpha/korpus_test_1/proov1.lemmas", "./töövoog_pre_alpha/korpus_test_1/proov2.lemmas"]
         }, 
         {
-            "name": "otsing",
+            "name": "pre-alpha:otsing:päring",
             "type": "python",
             "request": "launch",
             "program": "./töövoog_pre_alpha/korpus_test_1/otsing.py",
-            "args": ["--index=./töövoog_pre_alpha/korpus_test_1/rannila.index"]
-        },      
+            "args": ["--index=./töövoog_pre_alpha/korpus_test_1/rannila.index", "--query=Ruukki maja", "--result_query"]
+        },     
+        {
+            "name": "pre-alphaotsing:server",
+            "type": "python",
+            "request": "launch",
+            "program": "./töövoog_pre_alpha/korpus_test_1/otsing.py",
+            "args": ["--index=./töövoog_pre_alpha/korpus_test_1/rannila.index", "--flask"]
+        },
+        {
+            "name": "alpha:demo_smartsearch_veebileht",
+            "type": "python",
+            "request": "launch",
+            "cwd": "/home/tarmo/git/smart_search_github/töövoog_alpha/veebileht",
+            "program": "./demo_smartsearch_veebileht.py",
+            "args": []
+        },    
     ]
 }
