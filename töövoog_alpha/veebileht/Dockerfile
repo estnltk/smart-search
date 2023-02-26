@@ -19,14 +19,15 @@ USER mere_mortal:mere_mortal
 WORKDIR /home4mere_mortal
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh  demo_normaliseerija.py ./
-RUN chmod +x docker-entrypoint.sh demo_normaliseerija.py
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh  demo_smartsearch_veebileht.py rannila.index ./
+RUN chmod +x docker-entrypoint.sh demo_smartsearch_veebileht.py
 
-# parameters for gunicorn
-ENV WORKERS=1
-ENV TIMEOUT=30
-ENV WORKER_CLASS=sync
-ENV LOGURU_LEVEL=INFO
+#läheb ilma gunicornita
+#parameters for gunicorn
+#ENV WORKERS=1
+#ENV TIMEOUT=30
+#ENV WORKER_CLASS=sync
+#ENV LOGURU_LEVEL=INFO
 
 # start web server
 ENTRYPOINT ["./docker-entrypoint.sh"]

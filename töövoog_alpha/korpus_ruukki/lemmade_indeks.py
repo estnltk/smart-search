@@ -6,14 +6,20 @@ import json
 import requests
 from typing import Dict #, List
 
-ignore_pos = "ZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna
+ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 
 '''
 Kasutusnäide
 * installi
   * python
 * Lase pythoni programmil oma tekst morfida (väljundfaili nimi saadakse sisendfaili nimes laiendi asendamisega (.lemmas))
-  > ./sonesta-lausesta.py --indexin=ALGNEINDEKSFAIL --indexout=TÄIENDATUDINDEKSFAIL INDEKSEERITAVFAIL.tokens [INDEKSEERITAVFAIL.tokens...]
+  > ./lemmade_indeks.py --indexin=ALGNEINDEKSFAIL --indexout=TÄIENDATUDINDEKSFAIL INDEKSEERITAVFAIL.lemmas [INDEKSEERITAVFAIL.lemmas...]
+ 
+    index =
+    {   "sources": { DOCID: { "filename": str, "heading": str, "content": str } }
+        "annotations": { "lemmas": { LEMMA: { DOCID: { STARTPOS:endpos } } } }
+    }
+    """
 '''
 
 
@@ -62,9 +68,8 @@ if __name__ == '__main__':
     argparser.add_argument('FILES', nargs='*', help='need lisame indeksisse')                       
     args = argparser.parse_args()
 
-    # index["sources"][docid] = {"filename":str, "heading":str} # igal dokumendil peab olema unikaalne docid
-    # index["lemmas"][lemma_ma] = {"lemma_ma":str, [{"source": idx, ["start":int, "end":int]}]
-    index = {"annotations":{"lemmas":{}}, "sources":{}} # sources = [{"filename": str, "heading":str}]
+    # igal dokumendil peab olema unikaalne DOCID
+    index = {"annotations":{"lemmas":{}}, "sources":{}} # index["sources"] = { DOCID: { "filename": str, "heading": str, "content": str } }
     if args.indexin is not None:
         with open(args.indexin, 'r') as file_index_in:
             index = json.loads(file_index_in.read())

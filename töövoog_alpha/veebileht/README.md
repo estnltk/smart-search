@@ -1,4 +1,4 @@
-# NORMALISEERIJA DEMOLEHT
+# DEMOLEHT
 
 * käivita lemmatiseerija konteiner (konteiner peab olema tehtud/allalaaditud)
 
@@ -6,31 +6,23 @@
     docker run -p 7000:7000 tilluteenused/normaliseerija
     ```
 
-* käivita lemmatiseerija konteineriga suhtlev veebiserver (pythoni skript või dockeri konteiner)
-  * veebiserver pythoni programmist
-
-  ```cmdline
-  cd demo_normaliseerija ; ./demo_normaliseerija.py
-  ```
-
-  ***Märkus*** Pythoni pakett requests peab eelnevalt olema installitud, ubuntu korral:
-
-  ```cmdline
-  sudo apt install -y python3-requests
-  ```
-
-  * veebiserver dockeri konteinerist
-
-  ```cmdline
-  docker build -t tilluteenused/demo_normaliseerija .
-  docker run -p 7777:7777 tilluteenused/demo_normaliseerija
-  # lemmatiseerija http://LEMMATIZER_IP:LEMMATIZER_PORT/process
-  docker run -p 7777:7777 --env LEMMATIZER_IP=IP --env LEMMATIZER_PORT=PORT tilluteenused/demo_normaliseerija
-  ```
-
-* Ava brauseris ```localhost:7777/lemmad``` ja järgi brauseris avanenud veebilehe juhiseid, näiteks:
+* käivita demo otsingumootor (konteiner peab olema tehtud/allalaaditud, LEMMATIZER_IP väärtuseks pange lemmatiseerija konteineri tegelik IP)
 
     ```cmdline
-    google-chrome http://localhost:7777/lemmad
+    docker run --env LEMMATIZER_IP=192.168.0.122 -p 6699:7777 tilluteenused/demo_smartsearch_webpage
     ```
+
+* Käivita veebibrauser
+  
+  * Näita tekste mille hulgast saame otsida
+
+  ```cmdline
+  google-chrome http://localhost:6699/tekstid
+  ```
+
+  * Märksõnade järgi otsimine (järgi veebilehe juhendeid)
+
+  ```cmdline
+  google-chrome http://localhost:6699/otsi
+  ```
 
