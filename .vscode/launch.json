@@ -37,8 +37,9 @@
             "name": "pre-alphaotsing:server",
             "type": "python",
             "request": "launch",
-            "program": "./töövoog_pre_alpha/korpus_test_1/otsing.py",
-            "args": ["--index=./töövoog_pre_alpha/korpus_test_1/rannila.index", "--flask"]
+            "cwd": "/home/tarmo/git/smart_search_github/töövoog_alpha/veebileht",
+            "program": "./demo_smartsearch_veebileht.py",
+            "args": ["--index=./rannila.index", "--flask"]
         },
         {
             "name": "alpha:demo_smartsearch_veebileht",
