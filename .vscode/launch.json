@@ -4,48 +4,11 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        // sonesta-lausesta.py --docid=000 --heading="Classic C" Classic-C.txt
-        {
-            "name": "sonesta-lausesta",
-            "type": "python",
-            "request": "launch",
-            "program": "./töövoog_pre_alpha/korpus_test_1/sonesta-lausesta.py",
-            "args": ["--docid=555", "--heading=\"Pealkiri\"", "./töövoog_pre_alpha/korpus_test_1/proov3.txt"]
-        }, 
-        {
-            "name": "morfi",
-            "type": "python",
-            "request": "launch",
-            "program": "./töövoog_pre_alpha/korpus_test_1/morfi.py",
-            "args": ["./töövoog_pre_alpha/korpus_test_1/Uudised.tokens"]
-        },   
-        {
-            "name": "lemmade_indeks",
-            "type": "python",
-            "request": "launch",
-            "program": "./töövoog_pre_alpha/korpus_test_1/lemmade_indeks-2.py",
-            "args": ["--indexout=./töövoog_pre_alpha/korpus_test_1/proov.index", "./töövoog_pre_alpha/korpus_test_1/proov1.lemmas", "./töövoog_pre_alpha/korpus_test_1/proov2.lemmas"]
-        }, 
-        {
-            "name": "pre-alpha:otsing:päring",
-            "type": "python",
-            "request": "launch",
-            "program": "./töövoog_pre_alpha/korpus_test_1/otsing.py",
-            "args": ["--index=./töövoog_pre_alpha/korpus_test_1/rannila.index", "--query=Ruukki maja", "--result_query"]
-        },     
-        {
-            "name": "pre-alphaotsing:server",
-            "type": "python",
-            "request": "launch",
-            "cwd": "/home/tarmo/git/smart_search_github/töövoog_alpha/veebileht",
-            "program": "./demo_smartsearch_veebileht.py",
-            "args": ["--index=./rannila.index", "--flask"]
-        },
         {
             "name": "alpha:demo_smartsearch_veebileht",
             "type": "python",
             "request": "launch",
-            "cwd": "/home/tarmo/git/smart_search_github/töövoog_alpha/veebileht",
+            "cwd": "${workspaceFolder}/töövoog_alpha/veebileht",
             "program": "./demo_smartsearch_veebileht.py",
             "args": []
         },    
