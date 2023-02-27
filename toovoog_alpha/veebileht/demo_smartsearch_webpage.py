@@ -28,7 +28,7 @@ class SMART_SEARCH:
     """ 
     index =
     {   "sources":
-        {   DOCID:
+        {   "DOCID":
             {   "filename": str,
                 "heading": str,
                 "content": str
@@ -36,9 +36,9 @@ class SMART_SEARCH:
         }
         annotations:
         {   "lemmas":
-            {   LEMMA:
-                {   DOCID:
-                    {   STARTPOS:endpos 
+            {   "LEMMA":
+                {   "DOCID":
+                    {   STARTPOS:endpos
                     }
                 }
             }
@@ -133,7 +133,8 @@ class SMART_SEARCH:
                                     "token":self.index["sources"][index_docid]["content"][int(startpos):index_lemma_ma[index_docid][startpos]],
                                     "lemmas":[query_lemma_ma] }
                         else:
-                            index_docid_startpos["lemmas"].append(query_lemma_ma)
+                            if query_lemma_ma not in index_docid_startpos["lemmas"]:
+                                index_docid_startpos["lemmas"].append(query_lemma_ma)
 
 
     def rec_chk(self, idx_query_token, required_idx_docid) -> bool:

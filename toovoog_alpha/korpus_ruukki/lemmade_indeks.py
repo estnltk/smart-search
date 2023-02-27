@@ -15,11 +15,32 @@ Kasutusnäide
 * Lase pythoni programmil oma tekst morfida (väljundfaili nimi saadakse sisendfaili nimes laiendi asendamisega (.lemmas))
   > ./lemmade_indeks.py --indexin=ALGNEINDEKSFAIL --indexout=TÄIENDATUDINDEKSFAIL INDEKSEERITAVFAIL.lemmas [INDEKSEERITAVFAIL.lemmas...]
  
-    index =
-    {   "sources": { DOCID: { "filename": str, "heading": str, "content": str } }
-        "annotations": { "lemmas": { LEMMA: { DOCID: { STARTPOS:endpos } } } }
+Indeksfaili formaat
+{   "sources": { DOCID: { "filename": str, "heading": str, "content": str } }
+    "annotations": { "lemmas": { "LEMMA": { "DOCID": { "STARTPOS":endpos } } } }
+}
+
+
+Sisendjsoni/morfi-väljundi/.lemmas-faili see osa, mida kasutame
+{   "content": string,  /* algne tekst, võib puududa */
+    "annotations":
+    {   "tokens":                   /* sõnede massiiv */
+        [   {   "start": number,    /* sõne alguspositsioon algses tekstis, võib puududa */
+                "end": number,      /* sõne lõpupositsioon  algses tekstis, võib puududa */
+                "features":
+                {   "token": SÕNE,  /* algne morf analüüsitav sõne */
+                    "mrf" :         /* sisendsõne analüüsivariantide massiiv */
+                    [   {   "lemma_ma": LEMMA_MA,   /* --stem lipu puudumise korral, verbilemmale on lisatud ```ma```, muudel juhtudel sama mis LEMMA */
+                            "pos":      SÕNALIIK,
+                            "source":   ALLIKAS,    /* P:põhisõnastikust, L:lisasõnastikust, O:sõnepõhisest oletajast, S:lausepõhisest oletajast, X:ei tea kust */
+                        }
+                    ]                
+                }
+            }
+        ]
     }
-    """
+}
+
 '''
 
 

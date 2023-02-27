@@ -8,9 +8,17 @@
             "name": "alpha:demo_smartsearch_veebileht",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/töövoog_alpha/veebileht",
+            "cwd": "${workspaceFolder}/toovoog_alpha/veebileht",
             "program": "./demo_smartsearch_veebileht.py",
             "args": []
-        },    
+        },  
+        {
+            "name": "morfi",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/toovoog_alpha/korpus_ruukki",
+            "program": "./morfi.py",
+            "args": ["Katuse-turvatooted.tokens"]
+        },         
     ]
 }
