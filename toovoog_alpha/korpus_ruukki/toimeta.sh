@@ -4,7 +4,7 @@
 # $ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2022.09.09
 # $ docker run -p 6666:7000 tilluteenused/vmetajson:2022.09.09
 
-INDEX=rannila.index
+INDEX=ruukki.index
 FILES=$(ls *.txt)
 
 echo ==kustutame vanad vahefailid==

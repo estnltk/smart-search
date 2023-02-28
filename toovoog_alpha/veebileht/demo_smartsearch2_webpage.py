@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# liitsõnandusega versioon!!!
+
 '''
 1. käivita lemmatiseerija konteiner (konteiner peab olema tehtud/allalaaditud)
     $ docker run -p 7000:7000 tilluteenused/lemmatizer
@@ -25,6 +27,8 @@ LEMMATIZER_IP=os.environ.get('LEMMATIZER_IP') if os.environ.get('LEMMATIZER_IP')
 LEMMATIZER_PORT=os.environ.get('LEMMATIZER_PORT') if os.environ.get('LEMMATIZER_PORT') != None else '7000'
 
 INDEXFILE="./ruukki.index"
+fragments = True
+
 
 class SMART_SEARCH:
     """ 
@@ -82,60 +86,84 @@ class SMART_SEARCH:
         except:
             print("SMART_SEARCH.init failure")
 
-    def my_query(self, keywords:str, fragments:bool)->None:
+    def my_query(self, keywords:str)->None:
         """Päringusõnede käsitlemine
 
         Esimest päringusõne käsitleme selles alamprogrammis, 
         järgmiste käsitlemiseks kasutame rekursiivet funktsiooni rec_chk()
 
         Tulemuseks on:
-        result_query = {"DOCID: {STARTPOS: {"endpos: int, "token": str, "lemmas": [str]}}}
+        result_query = {"DOCID: {"STARTPOS": {"endpos: int, "token": str, "lemmas": [str]}}}
         
         Args:
             keywords (str):Tühikuga eraldatult päringusõned
             fragments (bool): True: lisa liitsõnakomponendid vastusesse, False: vastus ilma liitsõnakomponentideta
         """
-
+        global fragments
         self.result_query = {}
         self.result_query_sorted = {}
         json_tokens=json.dumps(keywords)
         json_query=json.loads(f"{{\"content\":{json_tokens}}}")
-        query_lemmas=json.loads(requests.post(f'http://{LEMMATIZER_IP}:{LEMMATIZER_PORT}/process', json=json_query).text)
+        try:
+            query_lemmas=json.loads(requests.post(f'http://{LEMMATIZER_IP}:{LEMMATIZER_PORT}/process', json=json_query).text)
+        except:
+            self.result_query = {"error": "Lemmatiseerimise veebiteenus ei tööta"}
+            return
+        '''
+        sisse:
+        * query_lemmas - lemmatiseerud päringusõned
+        {   "content": string, /* Tühikuga eraldatud lemmatiseeritavate sõnede loend. */
+            "params": {"vmetltjson":["parameetrid",...]},
+            "annotations": { "features": { "tokens": [ { "token": SÕNE, "mrf": [ {"lemma_ma": LEMMA_MA } ] } ] } }
+        }
+
+        * self.index - idekseeritud lemmad koos vastava infoga
+        {   "sources": { DOCID: { "filename": str, "heading": str, "content": str } }
+            "annotations": { "lemmas": { "LEMMA": { "DOCID": { "STARTPOS":{"endpos":int, "fragment":bool}} } } } }
+        }
+
+        välja
+        * result_query = {"DOCID: {STARTPOS: {"endpos: int, "token": str, "lemmas": [str]}}}
+        '''
+
         self.query_tokens = query_lemmas["annotations"]["tokens"] # morfitud päringusõnede massiiv
-        idx_query_token = 0 # jooksva päringusõne indeks (algab nullist)
-        for idx_mrf, mrf in enumerate(self.query_tokens[idx_query_token]["features"]["mrf"]): # tsükkel üle esimesele päringusõnele vastavate morf analüüside
-            query_lemma_ma = mrf.get("lemma_ma") # lemma päringusõna jooksvast morf analüüsist
-            if query_lemma_ma is None:  # morf analüüsis polnud lemmat...
+        query_token_idx = 0 # päringus query_tokens["annotations"]["features"]["tokens"][ ] jooksev indeks 
+        for query_mrf_idx, query_mrf in enumerate(self.query_tokens[query_token_idx]["features"]["mrf"]): # tsükkel üle esimesele päringusõnele vastavate morf analüüside
+            # query_mrf = self.query_tokens[0]["features"]["mrf"][query_mrf_idx] -- [{"lemma_ma":LEMMA_MA}], 
+            # päringus query_lemma_ma = päringus jooksva sõne 
+            query_lemma_ma = query_mrf.get("lemma_ma") # lemma esimese päringusõna jooksvast morf analüüsist
+            if query_lemma_ma is None:  # päringu morf analüüsis polnud lemmat...
                 continue                # ...ignoreerime
-            index_lemma_ma = self.index["annotations"]["lemmas"].get(query_lemma_ma) # päringusõne jooksvale lemmale vastav DICT indeksis
-            if index_lemma_ma is None:  # lemmat polnud indeksis...
+            # query_lemma_ma - seda hakkame indeksist otsima
+            index_lemma = self.index["annotations"]["lemmas"].get(query_lemma_ma) # indeksis päringusõne jooksvale lemmale {"DOCID":{"STARTPOS":{"endpos":int,"fragment":bool}}}
+            if index_lemma is None:  # indeksis polnud ühtegi päringu lemmat sisaldavat dokumenti
                 continue                # ...ignoreerime
-            for index_docid in index_lemma_ma: # tsükkel üle dokumendi-id'de, kus otsitav lemma esineb
-                if idx_query_token + 1 >= len(self.query_tokens) or (self.rec_chk(idx_query_token+1, index_docid) is True):
-                    result_query_docid = self.result_query.get(index_docid) # lisame selle dokumendi-id alla tulemustes
-                    if result_query_docid is None:                          # sellist dokumendi-id'ed veel tulemustes polnud
-                        self.result_query[index_docid] = {}                 # Teeme tühja sõnastiku selle dokumendi-id alla
-                    for startpos in index_lemma_ma[index_docid]:            # tsükkel üle lemma esinemiste selles dokumendis
-                        #
-                        #index["annotations"] = { "lemmas": { "LEMMA": { "DOCID": { "STARTPOS":{"endpos":int, "fragment":bool}} } } } }
-                        #index_lemma_ma[index_docid] = { "STARTPOS":{"endpos":int, "fragment":bool}}
-                        #index_docid_startpos = {"endpos":int, "fragment":bool}
-                        #
-                        # result_query = {"DOCID: {STARTPOS: {"endpos: int, "token": str, "lemmas": [str]}}}
-                        # 
-                        index_docid_startpos = self.result_query[index_docid].get(startpos)
-                        if index_docid_startpos is None:
-                            #{"endpos":int, "fragment":bool}
-                            self.result_query[index_docid][startpos]={
-                                    "endpos":index_lemma_ma[index_docid][startpos], 
-                                    "token":self.index["sources"][index_docid]["content"][int(startpos):index_lemma_ma[index_docid][startpos]],
+            # index_lemma = { "DOCID": { "STARTPOS":{"endpos":int, "fragment":bool}} } }
+            for index_docid_key in index_lemma: # indeksis tsükkel üle DOCIDide, kus otsitav (päringu)lemma esineb
+                # index_docid =  { "STARTPOS":{"endpos":int, "fragment":bool}} } ja index_docid_key vastav võti
+                index_docid = index_lemma[index_docid_key]
+                if query_token_idx + 1 >= len(self.query_tokens) or (self.rec_chk(query_token_idx+1, index_docid_key) is True):
+                    # indeksis olema õige lemma ja DOCIDi peal, lisame resultaati esinemised tekstis
+                    # vajadusel tekitame resultaadis lemma alla DOCID 
+                    result_query_docid = self.result_query.get(index_docid_key) # tulemustes lisame selle DOCIDi alla
+                    if result_query_docid is None:                              # sellist DOCIDi veel tulemustes polnud
+                        self.result_query[index_docid_key] = {}                 # Teeme tühja sõnastiku selle DOCIDi alla
+                        result_query_docid = self.result_query[index_docid_key]
+                    for index_startpos_key in index_docid:             # indeksis tsükkel üle lemma esinemiste selles DOCIDis
+                        # kui oli liitsõna osasõnadega, siis kõik, muidu ainult need mis pole fragmendid 
+                        if (fragments is False) and (index_docid[index_startpos_key]["fragment"] is True):
+                            continue # ei soovi näha liitsõna osades
+                        result_docid_startpos =  result_query_docid.get(index_startpos_key) # tulemustes STARTPOSile vastav {"endpos: int, "token": str, "lemmas": [str]}
+                        if result_docid_startpos is None: # tulemustes polnud 
+                            result_query_docid[index_startpos_key]={
+                                    "endpos":index_docid[index_startpos_key]["endpos"], 
+                                    "token":self.index["sources"][index_docid_key]["content"][int(index_startpos_key):index_docid[index_startpos_key]["endpos"]],
                                     "lemmas":[query_lemma_ma] }
                         else:
-                            if query_lemma_ma not in index_docid_startpos["lemmas"]:
-                                index_docid_startpos["lemmas"].append(query_lemma_ma)
+                            if query_lemma_ma not in result_docid_startpos["lemmas"]:
+                                result_docid_startpos["lemmas"].append(query_lemma_ma)
 
-
-    def rec_chk(self, idx_query_token, required_idx_docid) -> bool:
+    def rec_chk(self, idx_query_token, required_idx_docid_key) -> bool:
         """Teise ja järgmiste päringusõnede rekursiivne käsitlemine
 
         Ainult my_query() või rec_chk() funktsioonist väljakutsumiseks
@@ -146,6 +174,7 @@ class SMART_SEARCH:
         Returns:
             bool: _description_
         """
+        global fragments
         resultval = False
         for idx_mrf, mrf in enumerate(self.query_tokens[idx_query_token]["features"]["mrf"]): # tsükkel üle päringusõnele vastavate morf analüüside
             query_lemma_ma = mrf.get("lemma_ma")    # päringusõna lemma jooksvas morf analüüsis
@@ -154,25 +183,28 @@ class SMART_SEARCH:
             index_lemma_ma = self.index["annotations"]["lemmas"].get(query_lemma_ma) # päringusõne jooksvale lemmale vastav DICT indeksis
             if index_lemma_ma is None:  # lemmat polnud indeksis...
                 continue                # ...ignoreerime
-            index_docid = index_lemma_ma.get(required_idx_docid) # päringusõne jooksvale lemmale vastav DICT indeksis
+            index_docid = index_lemma_ma.get(required_idx_docid_key) # päringusõne jooksvale lemmale vastav DICT indeksis
             if index_docid is None:     # lemma ei esinenud nõutavas dokumendis...
                 continue                # ...ignoreerime
             # lemma esines nõutavas dokumendis
-            if (idx_query_token + 1 >= len(self.query_tokens)) or (self.rec_chk(idx_query_token+1, required_idx_docid) is True):
+            if (idx_query_token + 1 >= len(self.query_tokens)) or (self.rec_chk(idx_query_token+1, required_idx_docid_key) is True):
                 # lisame positsioonid resultaati
-                result_query_docid = self.result_query.get(required_idx_docid) # lisame selle dokumendi-id alla tulemustes
+                result_query_docid = self.result_query.get(required_idx_docid_key) # lisame selle dokumendi-id alla tulemustes
                 if result_query_docid is None:                  # sellist dokumendi-id'ed veel tulemustes polnud
-                    self.result_query[required_idx_docid] = {}  # Teeme tühja sõnastiku selle dokumendi-id alla
-                for startpos in index_docid: # {STARTPOS:endpos}
-                    index_docid_startpos = self.result_query[required_idx_docid].get(startpos)
-                    if index_docid_startpos is None:
-                        self.result_query[required_idx_docid][startpos]={
-                                "endpos":index_lemma_ma[required_idx_docid][startpos], 
-                                "token":self.index["sources"][required_idx_docid]["content"][int(startpos):index_lemma_ma[required_idx_docid][startpos]],
+                    self.result_query[required_idx_docid_key] = {}  # Teeme tühja sõnastiku selle dokumendi-id alla
+                    result_query_docid = self.result_query[required_idx_docid_key]
+                for index_startpos_key in index_docid: # {STARTPOS:endpos}
+                    if (fragments is False) and (index_docid[index_startpos_key]["fragment"] is True):
+                            continue # ei soovi näha liitsõna osades
+                    result_docid_startpos = self.result_query[required_idx_docid_key].get(index_startpos_key)
+                    if result_docid_startpos is None: # tulemustes polnud 
+                        result_query_docid[index_startpos_key]={
+                                "endpos":index_docid[index_startpos_key]["endpos"], 
+                                "token":self.index["sources"][required_idx_docid_key]["content"][int(index_startpos_key):index_docid[index_startpos_key]["endpos"]],
                                 "lemmas":[query_lemma_ma] }
                     else:
-                        if query_lemma_ma not in index_docid_startpos["lemmas"]:
-                            index_docid_startpos["lemmas"].append(query_lemma_ma)
+                        if query_lemma_ma not in result_docid_startpos["lemmas"]:
+                            result_docid_startpos["lemmas"].append(query_lemma_ma)
                     resultval = True
         return resultval
 
@@ -213,9 +245,11 @@ class SMART_SEARCH:
         if len(self.result_query_sorted) == 0:
             html_str += '\n<h2>Päringule vastavaid dokumente ei leidunud!</h2>\n'
         for docid_key in self.result_query_sorted:
-            html_str += f'\n<h2>{self.index["sources"][docid_key]["heading"]} [DOCID={docid_key}]</h2>\n\n<p>\n\n'
-            doc_in = self.index["sources"][docid_key]["content"]
             docids = self.result_query_sorted[docid_key]
+            if len(docids) == 0:
+                continue
+            doc_in = self.index["sources"][docid_key]["content"]
+            html_str += f'\n<h2>[DOCID={docid_key}]</h2>\n\n<p>\n\n'
             html_str += f'{doc_in[:docids[0]["start"]]}<b>{doc_in[docids[0]["start"]:docids[0]["end"]]}</b>'
             html_str += f'<i>[lemmad: {" ".join(docids[0]["lemmas"])}]</i>' # seda kasutame silumiseks
             for i in range(1,len(docids)):
@@ -245,13 +279,31 @@ class WebServerHandler(BaseHTTPRequestHandler):
         </form>
         '''
 
+    form_html_ls = \
+        '''
+        <form method='POST' enctype='multipart/form-data' action='/otsils'>
+        <h2>Sisesta otsingusõned:</h2>
+        <input name="message" type="text"><input type="submit" value="Otsi (sh liitsõna osasõnadest)" >
+        </form>
+        '''
+    
     def do_GET(self):
+        global fragments
         try:
             if self.path.endswith("/otsi"):
+                fragments = False
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html;charset=utf-8')
                 self.end_headers()
+                fragments = False
                 output = f"<html><body>{self.form_html}</body></html>"
+                self.wfile.write(output.encode())
+            elif self.path.endswith("/otsils"):
+                fragments = True
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html;charset=utf-8')
+                self.end_headers()
+                output = f"<html><body>{self.form_html_ls}</body></html>"
                 self.wfile.write(output.encode())
             elif self.path.endswith("/tekstid"):
                 self.send_response(200)
@@ -263,6 +315,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.send_error(404, "File Not Found {}".format(self.path))
 
     def do_POST(self):
+        global fragments
         try:
             self.send_response(301)
             self.send_header('Content-type', 'text/html;charset=utf-8')
@@ -282,11 +335,15 @@ class WebServerHandler(BaseHTTPRequestHandler):
             output = ""
             output += "<html><body>\n"
             
+            #smart_search.my_query(messagecontent[0], True)
             smart_search.my_query(messagecontent[0])
             smart_search.result_query_2_result_query_sorted()
             output += smart_search.result_query_sorted_2_html()
             
-            output += self.form_html
+            if fragments is True:
+                output += self.form_html_ls
+            else:
+                output += self.form_html
             output += "</body></html>"
             self.wfile.write(output.encode())
 
@@ -311,7 +368,8 @@ def demo():
         if server:
             server.socket.close()    
 
-smart_search = SMART_SEARCH(INDEXFILE, True)
+smart_search = SMART_SEARCH(INDEXFILE, False)
+
 
 if __name__ == '__main__':
     demo()

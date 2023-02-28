@@ -45,7 +45,7 @@ morfi-väljund
                         "source":   ALLIKAS,      /* P:põhisõnastikust, L:lisasõnastikust, O:sõnepõhisest oletajast, S:lausepõhisest oletajast, X:ei tea kust */
                     }
                 ],
-                "fragments" : [str] /* liitsõna korral osasõnade lemmad */
+                "fragments" : [str] /* liitsõna korral osasõnade lemmad, muidu puudub */
             }
         }
     ],
@@ -61,7 +61,7 @@ def morfi(sisend:str) -> str:
     Args:
         text (str): Sõnestatav ja lausestav tekst json-stringina
 
-    Returns:
+    Returns:il,.
         str: Sõnestatud ja lausestatud värk
     """
     sisend_json = json.loads(sisend)
@@ -71,7 +71,6 @@ def morfi(sisend:str) -> str:
 
     for token in valjund_json["annotations"]["tokens"]:
       for mrf in token["features"]["mrf"]:
-        token["features"]["fragments"] = []
         lemma = mrf["lemma_ma"]
         if (lemma == '_') or (lemma[0] == '_') or (lemma == '=') or (lemma[len(lemma)-1] == '='):
           continue  
@@ -82,9 +81,13 @@ def morfi(sisend:str) -> str:
           fragments_json_in = {"content": ' '.join(fragments)}
           fragments_json_out = json.loads(requests.post('http://localhost:6666/process', json={"content": ' '.join(fragments)}).text)
           for fragments_token in fragments_json_out["annotations"]["tokens"]:
+             if "mrf" not in  fragments_token["features"]:  # liitsõna komponent polnud "normaalne" sõna...
+                continue                                    # ...ignoreerime
              for fragments_mrf in fragments_token["features"]["mrf"]:
+                if "fragments"  not in token["features"]:
+                    token["features"]["fragments"] = []
                 if fragments_mrf["lemma_ma"] not in token["features"]["fragments"]:
-                   token["features"]["fragments"].append(fragments_mrf["lemma_ma"])      
+                    token["features"]["fragments"].append(fragments_mrf["lemma_ma"])      
     return json.dumps(valjund_json)
 
 

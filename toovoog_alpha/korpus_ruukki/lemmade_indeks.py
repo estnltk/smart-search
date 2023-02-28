@@ -15,32 +15,41 @@ Kasutusnäide
 * Lase pythoni programmil oma tekst morfida (väljundfaili nimi saadakse sisendfaili nimes laiendi asendamisega (.lemmas))
   > ./lemmade_indeks.py --indexin=ALGNEINDEKSFAIL --indexout=TÄIENDATUDINDEKSFAIL INDEKSEERITAVFAIL.lemmas [INDEKSEERITAVFAIL.lemmas...]
  
-Indeksfaili formaat
+Indeksfaili formaat (vana)
 {   "sources": { DOCID: { "filename": str, "heading": str, "content": str } }
     "annotations": { "lemmas": { "LEMMA": { "DOCID": { "STARTPOS":endpos } } } }
 }
 
-
-Sisendjsoni/morfi-väljundi/.lemmas-faili see osa, mida kasutame
-{   "content": string,  /* algne tekst, võib puududa */
-    "annotations":
-    {   "tokens":                   /* sõnede massiiv */
-        [   {   "start": number,    /* sõne alguspositsioon algses tekstis, võib puududa */
-                "end": number,      /* sõne lõpupositsioon  algses tekstis, võib puududa */
-                "features":
-                {   "token": SÕNE,  /* algne morf analüüsitav sõne */
-                    "mrf" :         /* sisendsõne analüüsivariantide massiiv */
-                    [   {   "lemma_ma": LEMMA_MA,   /* --stem lipu puudumise korral, verbilemmale on lisatud ```ma```, muudel juhtudel sama mis LEMMA */
-                            "pos":      SÕNALIIK,
-                            "source":   ALLIKAS,    /* P:põhisõnastikust, L:lisasõnastikust, O:sõnepõhisest oletajast, S:lausepõhisest oletajast, X:ei tea kust */
-                        }
-                    ]                
-                }
-            }
-        ]
-    }
+Indeksfaili formaat (uus)
+{   "sources": { DOCID: { "filename": str, "heading": str, "content": str } }
+    "annotations": { "lemmas": { "LEMMA": { "DOCID": { "STARTPOS":{"endpos":int, "fragment":bool}} } } } }
 }
 
+Sisendjsoni/morfi-väljundi/.lemmas-faili see osa, mida kasutame
+morfi-väljund
+{   "content": string,  /* algne tekst, võib puududa */
+    "annotations":
+    "tokens":           /* sõnede massiiv */
+    [
+        {
+            "start": number,  /* sõne alguspositsioon algses tekstis, võib puududa */
+            "end": number,    /* sõne lõpupositsioon  algses tekstis, võib puududa */
+            "features":
+            {
+                "token": SÕNE,  /* algne morf analüüsitav sõne */
+                "mrf" :           /* sisendsõne analüüsivariantide massiiv */
+                [
+                    {
+                        "lemma_ma": LEMMA_MA, /* --stem lipu puudumise korral, verbilemmale on lisatud ```ma```, muudel juhtudel sama mis LEMMA */
+                        "pos":      SÕNALIIK,
+                    }
+                ],
+                "fragments" : [str] /* liitsõna korral osasõnade lemmad, muidu puudub */
+            }
+        }
+    ],
+}  
+  
 '''
 
 
@@ -62,24 +71,49 @@ def lisa_indeksisse(index:Dict, sisendjson:Dict)->None:
         for mrf in token["features"]["mrf"]:
             if ignore_pos.find(mrf["pos"]) != -1:
                 continue # neid sõnaliike ei indekseeri
-
             lemmas_lemma_ma = index["annotations"]["lemmas"].get(mrf["lemma_ma"])
             if lemmas_lemma_ma is None: # sellist lemmat pole varem üheski dokumendis kohanud
-                index["annotations"]["lemmas"][mrf["lemma_ma"]] = {sisendjson["docid"]:{token["start"]:token["end"]}}
+                #index["annotations"]["lemmas"][mrf["lemma_ma"]] = {sisendjson["docid"]:{token["start"]:token["end"]}}
+                index["annotations"]["lemmas"][mrf["lemma_ma"]] = {sisendjson["docid"]:{token["start"]:{"endpos":token["end"], "fragment":False,
+                    "token":index["sources"][sisendjson["docid"]]["content"][ token["start"] : token["end"] ]  }}}
                 continue
             # sellist lemmat olema juba varem kohanud...
             lemmas_lemma_ma_docid = lemmas_lemma_ma.get(sisendjson["docid"])
             if lemmas_lemma_ma_docid is None: # ...aga mitte selles dokumendis
-                lemmas_lemma_ma[sisendjson["docid"]] = {token["start"]:token["end"]}
+                #lemmas_lemma_ma[sisendjson["docid"]] = {token["start"]:token["end"]}
+                lemmas_lemma_ma[sisendjson["docid"]] = {token["start"]:{"endpos":token["end"], "fragment":False,
+                    "token":index["sources"][sisendjson["docid"]]["content"][ token["start"] : token["end"] ] }}
                 continue
             # Sellist lemmat oleme selles dokumendis varem kohanud...
             lemmas_lemma_ma_docid_start = lemmas_lemma_ma_docid.get(token["start"])
             if lemmas_lemma_ma_docid_start is None: # ...aga teise koha peal
-                lemmas_lemma_ma_docid[token["start"]] = token["end"]
+                #lemmas_lemma_ma_docid[token["start"]] = token["end"]
+                lemmas_lemma_ma_docid[token["start"]] = {"endpos":token["end"], "fragment":False, 
+                    "token":index["sources"][sisendjson["docid"]]["content"][ token["start"] : token["end"] ] }
             #else:
             #    pass
             # Samas dokumendis, sama lemma, sama koha peal - ainult teises vormis, vormierinevusi ignoreerime 
-
+        # lisame liitsõna komponendud indeksisse
+        # "annotations": { "lemmas": { "LEMMA": { "DOCID": { "STARTPOS":{"endpos":int, "fragment":bool}} } } } }
+        if "fragments" not in  token["features"]:
+            continue # polnud liitsõna
+        for fragment in  token["features"]["fragments"]:
+            lemmas_lemma_ma = index["annotations"]["lemmas"].get(fragment)
+            if lemmas_lemma_ma is None: # sellist fragmenti/lemmat pole varem üheski dokumendis kohanud
+                index["annotations"]["lemmas"][fragment] = {sisendjson["docid"]:{token["start"]:{"endpos":token["end"], "fragment":True,
+                    "token":index["sources"][sisendjson["docid"]]["content"][ token["start"] : token["end"] ]  }}}
+                continue
+            # sellist fragmenti/lemmat oleme juba varem kohanud...
+            lemmas_lemma_ma_docid = lemmas_lemma_ma.get(sisendjson["docid"])
+            if lemmas_lemma_ma_docid is None: # ...aga mitte selles dokumendis
+                lemmas_lemma_ma[sisendjson["docid"]] = {token["start"]:{"endpos":token["end"], "fragment":True,
+                    "token":index["sources"][sisendjson["docid"]]["content"][ token["start"] : token["end"] ] }}
+                continue
+            # Sellist lemmat/fragmenti oleme selles dokumendis varem kohanud...
+            lemmas_lemma_ma_docid_start = lemmas_lemma_ma_docid.get(token["start"])
+            if lemmas_lemma_ma_docid_start is None: # ...aga teise koha peal
+                lemmas_lemma_ma_docid[token["start"]] = {"endpos":token["end"], "fragment":True,
+                    "token":index["sources"][sisendjson["docid"]]["content"][ token["start"] : token["end"] ] }
 
 if __name__ == '__main__':
     import argparse
