@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# ilma liitsõnanduseta versioon
+
 '''
 1. käivita lemmatiseerija konteiner (konteiner peab olema tehtud/allalaaditud)
     $ docker run -p 7000:7000 tilluteenused/lemmatizer
