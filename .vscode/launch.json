@@ -16,7 +16,7 @@
             "name": "alpha:demo_smartsearch_veebileht",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/toovoog_alpha/veebileht",
+            "cwd": "${workspaceFolder}/demo_otsing/veebileht",
             "program": "./demo_smartsearch2_webpage.py",
             "args": []
         },  
