@@ -214,19 +214,62 @@ class SMART_SEARCH:
             html_str += ']</i>' 
         html_str += '</h1>'
         if len(self.result_query_sorted) == 0:
-            html_str += '\n<h2>Päringule vastavaid dokumente ei leidunud!</h2>\n'
+            html_str += '<h2>Päringule vastavaid dokumente ei leidunud!</h2>'
         for docid_key in self.result_query_sorted:
             docids = self.result_query_sorted[docid_key]
             if len(docids) == 0:
                 continue
             doc_in = self.index["sources"][docid_key]["content"]
-            html_str += f'\n<h2>[DOCID={docid_key}]</h2>\n\n<p>\n\n'
+            html_str += f'<h2>[DOCID={docid_key}]</h2><p>'
             html_str += f'{doc_in[:docids[0]["start"]]}<b>{doc_in[docids[0]["start"]:docids[0]["end"]]}</b>'
             html_str += f'<i>[lemmad: {", ".join(docids[0]["lemmas"])}]</i>' # seda kasutame silumiseks
             for i in range(1,len(docids)):
                 html_str += f'{doc_in[docids[i-1]["end"]:docids[i]["start"]]}<b>{doc_in[docids[i]["start"]:docids[i]["end"]]}</b>'
                 html_str += f'<i>[lemmad: {", ".join(docids[i]["lemmas"])}]</i>' # seda kasutame silumiseks
-            html_str += f'{doc_in[docids[len(docids)-1]["end"]:]}\n</p>\n'
+            html_str += f'{doc_in[docids[len(docids)-1]["end"]:]}</p>'
+        html_str = html_str.replace('\n\n', '<br><br>')
+        return html_str
+    
+
+    def result_query_sorted_2_html_with_hover(self) -> str:
+        """Päringuvastet sisaldavast LISTist teeme HTMLi 
+
+        Returns:
+            str: Päringuvastet sisaldav HTML
+        """
+
+        # Sedasi saaks edevamalt:
+        # Mees <a href="" title="[peet, pidama]">peeti</a> kinni.
+        html_str =  ''
+        html_str += f'<h1>Otsisime:'
+        for token_idx, token in enumerate(self.query_tokens): # morfitud päringusõnede massiiv
+            html_str += ' ' if token_idx == 0 else ', '
+            html_str += '<a href="" title="'
+            for mrf_idx, mrf in enumerate(token["features"]["mrf"]):
+                if mrf_idx > 0:
+                    html_str += ', '
+                html_str += f'{mrf["lemma_ma"]}' 
+            html_str += f'">{token["features"]["token"]}</a>'
+        html_str += '</h1>'
+        if len(self.result_query_sorted) == 0:
+            html_str += '<h2>Päringule vastavaid dokumente ei leidunud!</h2>'
+        for docid_key in self.result_query_sorted:
+            docids = self.result_query_sorted[docid_key]
+            if len(docids) == 0:
+                continue
+            doc_in = self.index["sources"][docid_key]["content"]
+            html_str += f'<h2>[DOCID={docid_key}]</h2><p>'
+            html_str += f'{doc_in[:docids[0]["start"]]}'
+            html_str += f'<a href="" title="{", ".join(docids[0]["lemmas"])}">'
+            html_str += f'{doc_in[docids[0]["start"]:docids[0]["end"]]}</a>'
+            #html_str += f'<i>[lemmad: {", ".join(docids[0]["lemmas"])}]</i>' # seda kasutame silumiseks
+            for i in range(1,len(docids)):
+                html_str += f'{doc_in[docids[i-1]["end"]:docids[i]["start"]]}'
+                html_str += f'<a href="" title="{", ".join(docids[0]["lemmas"])}">'
+                html_str += f'{doc_in[docids[i]["start"]:docids[i]["end"]]}</a>'
+                #html_str += f'<i>[lemmad: {", ".join(docids[i]["lemmas"])}]</i>' # seda kasutame silumiseks
+            html_str += f'{doc_in[docids[len(docids)-1]["end"]:]}</p>'
+        html_str = html_str.replace('\n\n', '<br><br>')
         return html_str
 
     def dump_docs_in_html(self) -> str:
@@ -237,8 +280,9 @@ class SMART_SEARCH:
         """
         html_str = ''           
         for docid_key in self.index["sources"]:
-            html_str += f'\n<h2>[DOCID={docid_key}]</h2>\n\n<p>\n\n'
+            html_str += f'<h2>[DOCID={docid_key}]</h2><p>'
             html_str += self.index["sources"][docid_key]["content"]
+        html_str = html_str.replace('\n\n', '<br><br>')
         return(html_str)
 
 class WebServerHandler(BaseHTTPRequestHandler):
@@ -301,11 +345,12 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 messagecontent = fields.get('message')
 
             output = ""
-            output += "<html><body>\n"
+            output += "<html><body>"
             
             smart_search.my_query(messagecontent[0])
             smart_search.result_query_2_result_query_sorted()
-            output += smart_search.result_query_sorted_2_html()
+            #output += smart_search.result_query_sorted_2_html()
+            output += smart_search.result_query_sorted_2_html_with_hover()
             
             if smart_search.fragments is True:
                 output += self.form_html_cw
