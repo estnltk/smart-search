@@ -1,6 +1,8 @@
- # demo veebileht
- 
- FROM ubuntu
+# demo veebileht
+# $ docker build -t tilluteenused/demo_smartsearch_webpage .
+
+
+FROM ubuntu
 
 # install python requests and other stuff
 RUN apt-get update && apt-get install -y \
@@ -19,8 +21,8 @@ USER mere_mortal:mere_mortal
 WORKDIR /home4mere_mortal
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh  demo_smartsearch_webpage.py rannila.index ./
-RUN chmod +x docker-entrypoint.sh demo_smartsearch_webpage.py
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh  demo_smartsearch2_webpage.py ruukki.index ./
+RUN chmod +x docker-entrypoint.sh demo_smartsearch2_webpage.py
 
 #läheb ilma gunicornita
 #parameters for gunicorn
