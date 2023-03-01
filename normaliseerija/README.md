@@ -5,17 +5,6 @@
 * [Filosofti eesti keele lemmatisaatorit](https://github.com/Filosoft/vabamorf/tree/master/apps/cmdline/vmetltjson) ```vmetltjson``` ja sõnastik ```et.dct```.
 * Konteineri ja liidesega seotud lähtekoodi
 
-<!---
-## Konteineri allalaadimine Docker Hub'ist
-
-Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida (Windows'i/Mac'i käsurida on analoogiline):
-
-```commandline
-docker pull tilluteenused/lemmatizer
-```
-
-Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine).
---->
 
 ## Konteineri allalaadimine Docker Hub'ist
 
