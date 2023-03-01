@@ -34,6 +34,7 @@
   ```cmdline
   google-chrome http://localhost:7777/otsi
   ```
+  
   * Märksõnade järgi otsimine. Otsi päringusõnasid ka liitsõna osasõnadest. Ei otsi liitsõnasid pikematest liitsõnadest (näiteks: ei vaata kas "raudtee" sisaldub "allmaaraudtees").
 
   ```cmdline
