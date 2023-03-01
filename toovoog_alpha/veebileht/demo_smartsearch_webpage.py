@@ -29,43 +29,28 @@ LEMMATIZER_PORT=os.environ.get('LEMMATIZER_PORT') if os.environ.get('LEMMATIZER_
 INDEXFILE="./ruukki.index"
 
 class SMART_SEARCH:
-    """ 
-    # Indeksfaili formaat (uus)
+    ''' Sisend: indeksfaili
     index =
     {   "sources": { DOCID: { "filename": str, "heading": str, "content": str } }
         "annotations": { "lemmas": { "LEMMA": { "DOCID": { "STARTPOS":{"endpos":int, "fragment":bool}} } } } }
     }
-    """
+    '''
     index = {}
 
-    ''' /* tulemus */
+    ''' Sisend: Lemmatiseeritud päringusõned (ainult see osa jsonist, mida (hetkel) kasutame)
+    query_lemmas={"annotations":{"tokens":[{"features":{"mrf":[{"lemma_ma":LEMMA_MA}]}}}}
+    '''
+
+    ''' Päringu algne tulemus
     result_query = {"DOCID: {STARTPOS: {"endpos: int, "token": str, "lemmas": [str]}}}
     '''
     result_query = {}
 
-    ''' /* tulemus */
+    ''' Algne tulemus "start" järgi kasvavalt järjestatud
     result_query_sorted = {DOCID : [{"start":int, "end":int, "lemmas":[str]}]}
     '''
     result_query_sorted = {} 
 
-    ''' /* lemmatiseeritud päringusõned */
-    {   "annotations":
-        {   "tokens":
-            [   {   "features":
-                    {   "token": string,  /* analüüsitud sõne */
-                        "complexity": KEERUKUS,
-                        "mrf" :           /* sisendsõne lemmade massiiv */
-                        [   {   "lemma":    LEMMA,    /* lemma */
-                                "lemma_ma": LEMMA_MA, /* verbilemmale on lisatud ```ma```, muudel juhtudel sama mis LEMMA */
-                                "source":   ALLIKAS,  /* P:põhisõnastikust, L:lisasõnastikust, O:sõnepõhisest oletajast, S:lausepõhisest oletajast, X:ei tea kust */
-                            }
-                        ],
-                    }
-                }
-            ]
-        }
-    }
-    '''
     query_tokens = {}
     query_str = ""
     db_version = False
