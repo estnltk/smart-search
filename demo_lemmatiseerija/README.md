@@ -10,7 +10,7 @@
   * veebiserver pythoni programmist
 
   ```cmdline
-  cd demo_normaliseerija ; ./demo_normaliseerija.py
+  cd demo_lemmatiseerija ; ./demo_normaliseerija.py
   ```
 
   ***Märkus*** Pythoni pakett requests peab eelnevalt olema installitud, ubuntu korral:
