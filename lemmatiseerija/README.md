@@ -11,7 +11,7 @@
 Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida (Windows'i/Mac'i käsurida on analoogiline):
 
 ```commandline
-docker pull tilluteenused/normaliseerija
+docker pull tilluteenused/lemmatiseerija
 ```
 
 Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine).
@@ -43,13 +43,13 @@ vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/
 
 ```commandline
 cd ~/git/smart-search_github/normaliseerija
-docker build -t tilluteenused/normaliseerija .
+docker build -t tilluteenused/lemmatiseerija .
 ```
 
 ## Konteineri käivitamine <a name="Konteineri_käivitamine"></a>
 
 ```commandline
-docker run -p 7000:7000 tilluteenused/normaliseerija
+docker run -p 7000:7000 tilluteenused/lemmatiseerija
 ```
 
 Käivitatud konteineri töö lõpetab Ctrl+C selles terminaliaknas, kust konteiner käivitati.
