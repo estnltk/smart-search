@@ -3,7 +3,7 @@
 * käivita lemmatiseerija konteiner (konteiner peab olema tehtud/allalaaditud)
 
     ```cmdline
-    docker run -p 7000:7000 tilluteenused/normaliseerija
+    docker run -p 7777:7777 tilluteenused/demo_smartsearch_webpage
     ```
 
 * käivita demo otsingumootor
