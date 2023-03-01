@@ -200,6 +200,9 @@ class SMART_SEARCH:
         Returns:
             str: Päringuvastet sisaldav HTML
         """
+
+        # Sedasi saaks edevamalt:
+        # Mees <a href="" title="[peet, pidama]">peeti</a> kinni.
         html_str =  ''
         html_str += f'<h1>Otsisime: '
         for token in self.query_tokens: # morfitud päringusõnede massiiv
