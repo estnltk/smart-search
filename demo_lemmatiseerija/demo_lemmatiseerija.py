@@ -26,9 +26,16 @@ class WebServerHandler(BaseHTTPRequestHandler):
     form_lemmad_html = \
         '''
         <form method='POST' enctype='multipart/form-data' action='/lemmad'>
-        <input name="message" type="text"><input type="submit" value="Lemmatiseeri" >
+        <input name="message" type="text"><input type="submit" value="Lemmatiseeri:" >
+        </form>
+        '''
+    form_paring_html = \
+        '''
+        <form method='POST' enctype='multipart/form-data' action='/lemmad'>
+        <input name="message" type="text"><input type="submit" value="Leia päringule vastav lemmade kombinatsioon:" >
         </form>
          '''
+
 
     def do_GET(self):
         try:
@@ -39,6 +46,9 @@ class WebServerHandler(BaseHTTPRequestHandler):
             if self.path.endswith("/lemmad"):
                 demo_lemmatiseerija.path = self.path
                 output += f"<html><body>{self.form_lemmad_html}</body></html>"
+            elif self.path.endswith("/paring"):
+                demo_lemmatiseerija.path = self.path
+                output += f"<html><body>{self.form_paring_html}</body></html>"
             self.wfile.write(output.encode())
         except IOError:
             self.send_error(404, "File Not Found {}".format(self.path))
@@ -63,8 +73,12 @@ class WebServerHandler(BaseHTTPRequestHandler):
             output = ""
             output += "<html><body>"
             if demo_lemmatiseerija.path.endswith("/lemmad"):
-                output += f" <h2> S&otilde;ne <i>{messagecontent[0]}</i> v&otilde;imalikud lemmad: <i>{demo_lemmatiseerija.lemmad(messagecontent[0])}</i></h2>"
+                output += f"<h2> {messagecontent[0]} ⇒ {demo_lemmatiseerija.lemmad(messagecontent[0])}</h2>"
                 output += self.form_lemmad_html
+            if demo_lemmatiseerija.path.endswith("/paring"):
+                paring = messagecontent[0].split(' ')
+                output += f"<h2>({' & '.join(paring)}) ⇒ {demo_lemmatiseerija.paring(messagecontent[0])}</h2>"
+                output += self.form_paring_html
             output += "</body></html>"
             self.wfile.write(output.encode())
 
@@ -94,6 +108,30 @@ class DEMO_LEMMATISEERIJA:
         except:
             lemmad = "Ei suutnud lemmasid m&auml;&auml;rata"
         return lemmad
+
+    def paring(self, token:str) -> str:
+        """Päring lemmatiseerija veebiserverile
+
+        Args: 
+            token (str): selle sõna lemmasid otsime
+
+        Returns:
+            str: leitud lemmade loend
+        """
+        json_token=json.dumps(token)
+        json_query=json.loads(f"{{\"content\":{json_token}}}")
+        json_response=json.loads(requests.post(f'http://{LEMMATIZER_IP}:{LEMMATIZER_PORT}/process', json=json_query).text)
+        paring=""
+        try:
+            for tokens_idx, tokens in enumerate(json_response["annotations"]["tokens"]):
+                paring += '(' if tokens_idx == 0 else ' & ('
+                for mrf_idx, mrf in enumerate(tokens["features"]["mrf"]):
+                    paring += mrf["lemma_ma"] if mrf_idx==0 else f' &vee; {mrf["lemma_ma"]}'
+                paring += ')'
+                
+        except:
+            paring = "Ei suutnud p&auml;ringut genereerida"
+        return paring
 
 def demo():
     try:
