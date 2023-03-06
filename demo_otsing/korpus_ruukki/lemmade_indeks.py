@@ -15,12 +15,7 @@ Kasutusnäide
 * Lase pythoni programmil oma tekst morfida (väljundfaili nimi saadakse sisendfaili nimes laiendi asendamisega (.lemmas))
   > ./lemmade_indeks.py --indexin=ALGNEINDEKSFAIL --indexout=TÄIENDATUDINDEKSFAIL INDEKSEERITAVFAIL.lemmas [INDEKSEERITAVFAIL.lemmas...]
  
-Indeksfaili formaat (vana)
-{   "sources": { DOCID: { "filename": str, "heading": str, "content": str } }
-    "annotations": { "lemmas": { "LEMMA": { "DOCID": { "STARTPOS":endpos } } } }
-}
-
-Indeksfaili formaat (uus)
+Indeksfaili formaat
 {   "sources": { DOCID: { "filename": str, "heading": str, "content": str } }
     "annotations": { "lemmas": { "LEMMA": { "DOCID": { "STARTPOS":{"endpos":int, "fragment":bool}} } } } }
 }

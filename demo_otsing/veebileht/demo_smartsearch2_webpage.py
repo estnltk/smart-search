@@ -219,8 +219,6 @@ class SMART_SEARCH:
             html_str += '<h2>Päringule vastavaid dokumente ei leidunud!</h2>'
 
         if self.json_output is True:
-            #paring=json.dumps(json_response, indent=2, ensure_ascii=False)
-            #paring = paring.replace('\n', '<br>').replace('  ', '&nbsp; &nbsp;') + '<br><br>'
             html_str += json.dumps(self.result_query_sorted, indent=2, ensure_ascii=False).replace('\n', '<br>').replace('  ', '&nbsp; &nbsp;') + '<br><br>'
             pass
         else:
