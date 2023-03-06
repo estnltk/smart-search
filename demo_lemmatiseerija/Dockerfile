@@ -19,8 +19,8 @@ USER mere_mortal:mere_mortal
 WORKDIR /home4mere_mortal
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh  demo_normaliseerija.py ./
-RUN chmod +x docker-entrypoint.sh demo_normaliseerija.py
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh  demo_lemmatiseerija.py ./
+RUN chmod +x docker-entrypoint.sh demo_lemmatiseerija.py
 
 # parameters for gunicorn
 ENV WORKERS=1

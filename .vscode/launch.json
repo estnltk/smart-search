@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "demo_lemmatiseerija",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/demo_lemmatiseerija",
+            "program": "./demo_lemmatiseerija.py",
+            "args": []
+        },
+        {
             "name": "indexi tegemine",
             "type": "python",
             "request": "launch",

@@ -23,22 +23,23 @@ LEMMATIZER_IP=os.environ.get('LEMMATIZER_IP') if os.environ.get('LEMMATIZER_IP')
 LEMMATIZER_PORT=os.environ.get('LEMMATIZER_PORT') if os.environ.get('LEMMATIZER_PORT') != None else '7000'
 
 class WebServerHandler(BaseHTTPRequestHandler):
-    form_html = \
+    form_lemmad_html = \
         '''
         <form method='POST' enctype='multipart/form-data' action='/lemmad'>
-        <h2>Sisesta lemmatiseeritav s&otilde;ne</h2>
         <input name="message" type="text"><input type="submit" value="Lemmatiseeri" >
         </form>
          '''
 
     def do_GET(self):
         try:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html;charset=utf-8')
+            self.end_headers()
+            output = ""
             if self.path.endswith("/lemmad"):
-                self.send_response(200)
-                self.send_header('Content-type', 'text/html;charset=utf-8')
-                self.end_headers()
-                output = f"<html><body>{self.form_html}</body></html>"
-                self.wfile.write(output.encode())
+                demo_lemmatiseerija.path = self.path
+                output += f"<html><body>{self.form_lemmad_html}</body></html>"
+            self.wfile.write(output.encode())
         except IOError:
             self.send_error(404, "File Not Found {}".format(self.path))
 
@@ -61,17 +62,19 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
             output = ""
             output += "<html><body>"
-            output += f" <h2> S&otilde;ne <i>{messagecontent[0]}</i> v&otilde;imalikud lemmad: </h2>"
-            lemmad = self.lemmatiseeri(messagecontent[0])
-            output += f"<h1> {lemmad} </h1>"
-            output += self.form_html
+            if demo_lemmatiseerija.path.endswith("/lemmad"):
+                output += f" <h2> S&otilde;ne <i>{messagecontent[0]}</i> v&otilde;imalikud lemmad: <i>{demo_lemmatiseerija.lemmad(messagecontent[0])}</i></h2>"
+                output += self.form_lemmad_html
             output += "</body></html>"
             self.wfile.write(output.encode())
 
         except:
             raise
 
-    def lemmatiseeri(self, token:str) -> str:
+class DEMO_LEMMATISEERIJA:
+    path = ''
+
+    def lemmad(self, token:str) -> str:
         """Päring lemmatiseerija veebiservelile
 
         Args:
@@ -87,7 +90,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
         try:
             for tokens in json_response["annotations"]["tokens"]:
                 for idx, mrf in enumerate(tokens["features"]["mrf"]):
-                    lemmad += mrf["lemma_ma"] if idx==0 else f' {mrf["lemma_ma"]}'
+                    lemmad += mrf["lemma_ma"] if idx==0 else f', {mrf["lemma_ma"]}'
         except:
             lemmad = "Ei suutnud lemmasid m&auml;&auml;rata"
         return lemmad
@@ -106,6 +109,8 @@ def demo():
     finally:
         if server:
             server.socket.close()    
+
+demo_lemmatiseerija = DEMO_LEMMATISEERIJA()
 
 if __name__ == '__main__':
     demo()
