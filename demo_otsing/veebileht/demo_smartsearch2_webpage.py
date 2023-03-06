@@ -48,7 +48,7 @@ class SMART_SEARCH:
     result_query = {}
 
     ''' Algne tulemus "start" järgi kasvavalt järjestatud (et oleks lihtsam teksti märgendeid vahele panna)
-    result_query_sorted={"<DOCID>":[{"start":int,"end":int,"lemmas":[str]}]}
+    result_query_sorted={"<DOCID>":[{"start":int,"end":int,"token":str,"lemmas":[str]}]}
     '''
     result_query_sorted = {} 
 
@@ -180,14 +180,15 @@ class SMART_SEARCH:
         Seda teeme selleks, et oleks mugavam märgendatud otsingusõnedega HTMLi genereerida.
  
         Sisse: result_query = {"<DOCID>":{"<STARTPOS>":{"endpos":int,"token":str,"lemmas":[str]}}}
-        Välja: result_query_sorted = {"<DOCID>":[{"start":int,"end":int,"lemmas":[str]}]}
+        Välja: result_query_sorted = {"<DOCID>":[{"start":int,"end":int,"token":str,"lemmas":[str]}]}
         """     
         self.result_query_sorted = {}
         for docid_key in self.result_query:
             positionslist = []
             docid_dct = self.result_query[docid_key]
             for startpos in docid_dct:
-                positionslist.append({"start":int(startpos), "end":docid_dct[startpos]["endpos"], "lemmas":docid_dct[startpos]["lemmas"]})
+                positionslist.append({"start":int(startpos), "end":docid_dct[startpos]["endpos"], 
+                                    "token":docid_dct[startpos]["token"], "lemmas":docid_dct[startpos]["lemmas"]})
             positionslist.sort(key=self.sort_by_startpos)
             self.result_query_sorted[docid_key]=positionslist
 
@@ -293,7 +294,6 @@ class WebServerHandler(BaseHTTPRequestHandler):
         <input name="message" type="text"><input type="submit" value="Otsi" >
         </form>
         '''
-
     form_html_cw = \
         '''
         <form method='POST' enctype='multipart/form-data' action='/otsils'>
@@ -349,8 +349,8 @@ class WebServerHandler(BaseHTTPRequestHandler):
             
             smart_search.my_query(messagecontent[0])
             smart_search.result_query_2_result_query_sorted()
-            #output += smart_search.result_query_sorted_2_html()
-            output += smart_search.result_query_sorted_2_html_with_hover()
+            output += smart_search.result_query_sorted_2_html()
+            #output += smart_search.result_query_sorted_2_html_with_hover()
             
             if smart_search.fragments is True:
                 output += self.form_html_cw

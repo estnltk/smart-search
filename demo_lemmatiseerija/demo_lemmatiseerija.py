@@ -7,9 +7,11 @@
    (pythoni pakett requests peab olema installitud, ubuntu korral: sudo apt install -y python3-requests)
     $ cd demo_veebileht ; ./demo_lemmatiseerija.py
 
-    docker run --env LEMMATIZER_IP=localhost --env LEMMATIZER_PORT=7777 demo_lemmatiseerija 
+    docker run --env LEMMATIZER_IP=localhost --env LEMMATIZER_PORT=7777 tilluteenused/demo_lemmatiseerija 
 3. Ava brauseris localhost:7777/lemmad ja järgi brauseris avanenud veebilehe juhiseid
     $ google-chrome http://localhost:7777/lemmad
+    $ google-chrome http://localhost:7777/paring
+    $ google-chrome http://localhost:7777/json
     
 '''
 

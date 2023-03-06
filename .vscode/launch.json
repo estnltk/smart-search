@@ -16,18 +16,10 @@
             "name": "indexi tegemine",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/toovoog_alpha/korpus_ruukki",
+            "cwd": "${workspaceFolder}/demo_otsing/korpus_ruukki",
             "program": "./lemmade_indeks.py",
             "args": ["--indexout=test.tmp", "Katuseprofiilid.lemmas"]
         }, 
-        {
-            "name": "alpha:demo_smartsearch_veebileht",
-            "type": "python",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/demo_otsing/veebileht",
-            "program": "./demo_smartsearch2_webpage.py",
-            "args": []
-        },  
         {
             "name": "morfi",
             "type": "python",
@@ -35,6 +27,14 @@
             "cwd": "${workspaceFolder}/toovoog_alpha/korpus_ruukki",
             "program": "./morfi.py",
             "args": ["Katuseprofiilid.tokens"]
-        },         
+        }, 
+        {
+            "name": "demo_veebileht",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/demo_otsing/veebileht",
+            "program": "./demo_smartsearch2_webpage.py",
+            "args": []
+        },        
     ]
 }
