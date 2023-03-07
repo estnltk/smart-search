@@ -13,4 +13,5 @@ export WORKER_CLASS=${WORKER_CLASS:-sync}
 #    --worker-tmp-dir=/dev/shm "$@" \
 #    'demo_normaliseerija:demo()'
 
-exec /usr/bin/tini ./demo_lemmatiseerija.py
+#exec /usr/bin/tini ./demo_lemmatiseerija.py
+exec /usr/bin/python3 -u ./demo_lemmatiseerija.py

@@ -33,7 +33,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
         '''
     form_paring_html = \
         '''
-        <form method='POST' enctype='multipart/form-data' action='/lemmad'>
+        <form method='POST' enctype='multipart/form-data' action='/paring'>
         <input name="message" type="text"><input type="submit" value="Leia päringule vastav lemmade kombinatsioon:" >
         </form>
         '''

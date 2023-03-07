@@ -29,4 +29,5 @@ ENV WORKER_CLASS=sync
 ENV LOGURU_LEVEL=INFO
 
 # start web server
-ENTRYPOINT ["./docker-entrypoint.sh"]
+#ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/tini", "--", "./docker-entrypoint.sh"]
