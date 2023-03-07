@@ -6,7 +6,7 @@
     docker run -p 7777:7777 tilluteenused/demo_smartsearch_webpage
     ```
 
-* käivita demo otsingumootor
+* käivita demo otsingumootor (käsurealt või konteinerist)
 
   * Pyytoni programm käsurealt
 
@@ -15,11 +15,26 @@
   ./demo_smartsearch_webpage.py
   ```
 
-  * Dockeri konteiner(konteiner peab olema tehtud/allalaaditud, LEMMATIZER_IP väärtuseks pange lemmatiseerija konteineri tegelik IP)
+  * Dockeri konteinerist
+    * konteineri tegemine või allalaadimine
+      * konteineri tegemine
 
-  ```cmdline
-  docker run --env LEMMATIZER_IP=192.168.0.122 -p 7777:7777 tilluteenused/demo_smartsearch_webpage
-  ```
+      ```cmdline
+      docker build -t tilluteenused/demo_smartsearch_webpage .
+      ```
+
+      * konteiner allalaadimine
+
+      ```cmdline
+      docker pull tilluteenused/demo_smartsearch_webpage
+      ```
+
+    * konteineri käivitamine
+
+    ```cmdline
+    # LEMMATIZER_IP väärtuseks peab olema lemmatiseerija konteineri tegelik IP
+    docker run --env LEMMATIZER_IP=192.168.0.122 -p 7777:7777 tilluteenused/demo_smartsearch_webpage
+    ```
 
 * Käivita veebibrauser
   
@@ -39,4 +54,3 @@
 
   ```cmdline
   google-chrome http://localhost:7777/otsils
-

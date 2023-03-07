@@ -293,28 +293,28 @@ class SMART_SEARCH:
         return(html_str)
 
 class WebServerHandler(BaseHTTPRequestHandler):
-    form_html = \
+    form_otsi = \
         '''
         <form method='POST' enctype='multipart/form-data' action='/otsi'>
         <h2>Sisesta otsingusõned:</h2>
         <input name="message" type="text"><input type="submit" value="Otsi" >
         </form>
         '''
-    form_html_cw = \
+    form_otsils = \
         '''
         <form method='POST' enctype='multipart/form-data' action='/otsils'>
         <h2>Sisesta otsingusõned:</h2>
         <input name="message" type="text"><input type="submit" value="Otsi (sh liitsõna osasõnadest)" >
         </form>
         '''
-    form_html_json = \
+    form_otsijson = \
         '''
         <form method='POST' enctype='multipart/form-data' action='/otsijson'>
         <h2>Sisesta otsingusõned:</h2>
         <input name="message" type="text"><input type="submit" value="Otsi" >
         </form>
         '''
-    form_html_cw_json = \
+    form_otsilsjson = \
         '''
         <form method='POST' enctype='multipart/form-data' action='/otsilsjson'>
         <h2>Sisesta otsingusõned:</h2>
@@ -331,19 +331,19 @@ class WebServerHandler(BaseHTTPRequestHandler):
             if self.path.endswith("/otsi"):
                 smart_search.fragments = False
                 smart_search.json_output = False
-                output = f"<html><body>{self.form_html}</body></html>"
+                output = f"<html><body>{self.form_otsi}</body></html>"
             elif self.path.endswith("/otsils"):
                 smart_search.fragments = True
                 smart_search.json_output = False
-                output = f"<html><body>{self.form_html_cw}</body></html>"
+                output = f"<html><body>{self.form_otsils}</body></html>"
             if self.path.endswith("/otsijson"):
                 smart_search.fragments = False
                 smart_search.json_output = True
-                output = f"<html><body>{self.form_html}</body></html>"
+                output = f"<html><body>{self.form_otsijson}</body></html>"
             elif self.path.endswith("/otsilsjson"):
                 smart_search.fragments = True
                 smart_search.json_output = True
-                output = f"<html><body>{self.form_html_cw}</body></html>"
+                output = f"<html><body>{self.form_otsilsjson}</body></html>"
             elif self.path.endswith("/tekstid"):
                 output = f"<html><body>{smart_search.dump_docs_in_html()}</body></html>"
             self.wfile.write(output.encode())
@@ -375,14 +375,14 @@ class WebServerHandler(BaseHTTPRequestHandler):
             output += smart_search.result_query_sorted_2_html()
             #output += smart_search.result_query_sorted_2_html_with_hover()
             
-            if (smart_search.fragments is True) and (smart_search.json_output is False):
-                output += self.form_html_cw
-            elif (smart_search.fragments is False) and (smart_search.json_output is False):
-                output += self.form_html
-            if (smart_search.fragments is True) and (smart_search.json_output is True):
-                output += self.form_html_cw_json
+            if (smart_search.fragments is False) and (smart_search.json_output is False):
+                output += self.form_otsi
+            elif (smart_search.fragments is True) and (smart_search.json_output is False):
+                output += self.form_otsils
             elif (smart_search.fragments is False) and (smart_search.json_output is True):
-                output += self.form_html_json
+                output += self.form_otsijson
+            elif (smart_search.fragments is True) and (smart_search.json_output is True):
+                output += self.form_otsilsjson
             output += "</body></html>"
             self.wfile.write(output.encode())
 
