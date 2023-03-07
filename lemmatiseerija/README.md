@@ -5,7 +5,6 @@
 * [Filosofti eesti keele lemmatisaatorit](https://github.com/Filosoft/vabamorf/tree/master/apps/cmdline/vmetltjson) ```vmetltjson``` ja sõnastik ```et.dct```.
 * Konteineri ja liidesega seotud lähtekoodi
 
-
 ## Konteineri allalaadimine Docker Hub'ist
 
 Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida (Windows'i/Mac'i käsurida on analoogiline):
@@ -28,7 +27,7 @@ Lähtekood koosneb 2 osast
 
 ```commandline
 mkdir ~/git ; cd ~/git 
-git clone --depth 1 https://github.com/estnltk/smart-search.git smart-search_github
+git clone --depth 1 https://github.com/estnltk/smart-search.git smart_search_github
 ```
 
 Repositoorium sisaldab kompileeritud [Filosofti morfoloogilist lemmatisaatorit](https://github.com/Filosoft/vabamorf/tree/master/apps/cmdline/vmetltjson) ja andmefaile:
@@ -42,7 +41,7 @@ vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/
 ### Konteineri kokkupanemine
 
 ```commandline
-cd ~/git/smart-search_github/normaliseerija
+cd ~/git/smart_search_github/lemmatiseerija
 docker build -t tilluteenused/lemmatiseerija .
 ```
 
