@@ -5,9 +5,11 @@
 
 * ```toimeta.sh``` teeb algsetest korpusefailidest indeksfaili ```rannila.index```
 mida kasutab otsingu demoveebileht. ```toimeta.sh``` skript kasutab sõnestaja ja morf analüsaatori konteinereid: 
+
   ```cmdline
   docker run -p 6000:6000 tilluteenused/estnltk_sentok:2022.09.09
   ```
+
   ```cmdline
   docker run -p 6666:7000 tilluteenused/vmetajson:2022.09.09
   ```
