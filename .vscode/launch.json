@@ -24,7 +24,7 @@
             "name": "morfi",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/toovoog_alpha/korpus_ruukki",
+            "cwd": "${workspaceFolder}/demo_otsing/korpus_ruukki",
             "program": "./morfi.py",
             "args": ["Katuseprofiilid.tokens"]
         }, 
@@ -42,7 +42,18 @@
             "request": "launch",
             "cwd": "${workspaceFolder}/demo_otsing/korpus_ruukki",
             "program": "./gene_koik_vormid.py",
-            "args": ["--indexin=ruukki.index"]
-        },        
+            "args": ["--indexin=ruukki.index", "--geneout=vorm_lemma.json"]
+        },
+        {
+            "name": "loe_kokku",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/demo_otsing/korpus_ruukki",
+            "program": "./loe_kokku.py",
+            "args": [
+                "Classic-C.lemmas", "Mida-tuleks-katuseprojekti-plaanimisel-arvesse-votta.lemmas", "Millised-on-katuse-renoveerimiskulud.lemmas",
+                "Katuseprofiilid.lemmas", "Miks-turvatoodete-arvelt-ei-tohiks-kokku-hoida.lemmas", "Teraskatustest-lahemalt.lemmas",
+                "Katuse-turvatooted.lemmas", "Milline-pinnakate-valida.lemmas", "Uudised.lemmas"]
+        },         
     ]
 }
