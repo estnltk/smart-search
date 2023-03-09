@@ -93,7 +93,7 @@ if __name__ == '__main__':
     for lemma_str in index["annotations"]["lemmas"]:
         if lemma_str.find('_') > 0:
             liitsonalemmade_arv_indeksis += 1
-    print('liitsonalemmade_arv_indeksis=', liitsonalemmade_arv_indeksis)
+    print('liitsõnalemmade_arv_indeksis=', liitsonalemmade_arv_indeksis)
 
     genetud_sonavormide_arv_koos_liitsonadega = len(wordform2lemma.wordform2lemma)
     print('genetud_sonavormide_arv_koos_liitsonadega=', genetud_sonavormide_arv_koos_liitsonadega)
