@@ -32,7 +32,7 @@ docker build -t tilluteenused/demo_lemmatiseerija .
 ### 2.2.2 valmis konteineri allalaadimine
 
 ```cmdline
-docker pull tilluteenused/demo_lemmatiseerija .
+docker pull tilluteenused/demo_lemmatiseerija
 ```
 
 ### 2.3 konteineri käivitamine
