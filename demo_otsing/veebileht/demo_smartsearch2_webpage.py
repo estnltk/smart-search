@@ -391,9 +391,10 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 
 def demo():
+    server = None
     try:
         print("smart_search.init_ok=", smart_search.init_ok)
-        port = 7777
+        port = 7070
         print(f'Web server is running on port {port}')
         print(f'LEMMATIZER_IP={LEMMATIZER_IP}, LEMMATIZER_PORT={LEMMATIZER_PORT}')
         print("smart_search.init_ok=", smart_search.init_ok)
@@ -402,7 +403,7 @@ def demo():
     except KeyboardInterrupt:
         print("^C entered, stopping web server...")
     finally:
-        if server:
+        if server is not None:
             server.socket.close()    
 
 
