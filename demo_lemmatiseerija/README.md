@@ -26,20 +26,20 @@ sudo apt install -y python3-requests
 #### 2.2.1 konteineri ise ehitamine
 
 ```cmdline
-docker build -t tilluteenused/demo_lemmatiseerija .
+docker build -t tilluteenused/demo_lemmatiseerija:2023.03.14 .
 ```
 
 ### 2.2.2 valmis konteineri allalaadimine
 
 ```cmdline
-docker pull tilluteenused/demo_lemmatiseerija .
+docker pull tilluteenused/demo_lemmatiseerija:2023.03.14 .
 ```
 
 ### 2.3 konteineri käivitamine
 
 ```cmdline
 # lemmatiseerija http://LEMMATIZER_IP:LEMMATIZER_PORT/process
-docker run -p 7777:7777 --env LEMMATIZER_IP=IP --env LEMMATIZER_PORT=7000 tilluteenused/demo_lemmatiseerija
+docker run -p 7777:7777 --env LEMMATIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') --env LEMMATIZER_PORT=7000 tilluteenused/demo_lemmatiseerija:2023.03.14
 ```
 
 ## 3 Brauseris lemmatiseerija veebilehe avamine
