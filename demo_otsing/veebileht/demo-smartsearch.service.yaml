@@ -1,0 +1,37 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2023-03-16T18:54:35Z"
+  labels:
+    app: demo-smartsearch
+  name: demo-smartsearch
+  namespace: default
+  resourceVersion: "455279"
+  uid: 978b4717-cf17-4b6b-87c4-a3e5d900a64c
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.101.172.90
+  clusterIPs:
+  - 10.101.172.90
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 31630
+    port: 7070
+    protocol: TCP
+    targetPort: 7070
+  selector:
+    app: demo-smartsearch
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 10.101.172.90

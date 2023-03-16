@@ -1,0 +1,74 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2023-03-16T12:43:04Z"
+  labels:
+    app: demo-lemmatiseerija
+  name: demo-lemmatiseerija
+  namespace: default
+  resourceVersion: "437145"
+  uid: 9bec01f5-597d-4bc9-839f-ea50d10637ea
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.107.44.52
+  clusterIPs:
+  - 10.107.44.52
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 32002
+    port: 7777
+    protocol: TCP
+    targetPort: 7777
+  selector:
+    app: demo-lemmatiseerija
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 10.107.44.52
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2023-03-16T12:43:04Z"
+  labels:
+    app: demo-lemmatiseerija
+  name: demo-lemmatiseerija
+  namespace: default
+  resourceVersion: "437145"
+  uid: 9bec01f5-597d-4bc9-839f-ea50d10637ea
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.107.44.52
+  clusterIPs:
+  - 10.107.44.52
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 32002
+    port: 7777
+    protocol: TCP
+    targetPort: 7777
+  selector:
+    app: demo-lemmatiseerija
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 10.107.44.52
