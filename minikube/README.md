@@ -35,7 +35,7 @@ minikube tunnel
 
 ## Lemmatiseerija- ja demokonteinerite installimine, konfimine jms
 
-Vaata skripti ```lykka_pysti.sh```
+Vaata skripti [lykka_pysti.sh](https://github.com/estnltk/smart-search/blob/main/minikube/lykka_pysti.sh)
 
 Skript kasutab võimalikult palju MINIKUBE vaikeseadeid. Neid peab tuleb sättida vastavalt tegelikule koormusele jms.
 
