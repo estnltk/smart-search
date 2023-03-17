@@ -37,4 +37,9 @@ minikube tunnel
 
 Vaata skripti ```lykka_pysti.sh```
 
+Skript kasutab võimalikult palju MINIKUBE vaikeseadeid. Neid peab tuleb sättida vastavalt tegelikule koormusele jms.
 
+Lähemalt:
+* [Lemmatiseerija veebiteenus](https://github.com/estnltk/smart-search/blob/main/lemmatiseerija/README.md)
+* [Lemmatiseerija demo](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/README.md)
+* [Tekstiotsingu demo](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README.md)
