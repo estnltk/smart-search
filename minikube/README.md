@@ -1,4 +1,4 @@
-# MINIKUBEmega toimetamine
+# MINIKUBEga toimetamine
 
 ## Installimine
 
