@@ -156,7 +156,7 @@ curl --silent  --request POST --header "Content-Type: application/json" --data '
 {
   "annotations": {
     "tokens": [
-      {
+      {kubectl fsdafsdafsadfasdfsdafsdafdsaf
         "features": {
           "complexity": 1,
           "mrf": [
