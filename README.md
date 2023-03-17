@@ -1,6 +1,10 @@
 # SMARTSEARCH
 
 Kataloogid:
+
+* **_minikube_** -- lemmatiseerija ja demodega minikube-s askeldamine
+
+
 * **_documentation_** -- nimi ise ütleb.
 * **_lemmatiseerija_** -- lemmatiseerimise veebiteenus.
 * **_demo_lemmatiseerija_** -- veebiserver millega saab teha päringuid lemmatiseerija veebiserverisse.
