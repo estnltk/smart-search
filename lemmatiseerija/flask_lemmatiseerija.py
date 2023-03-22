@@ -42,9 +42,22 @@ def morf():
     Returns:
         ~flask.Response: Lemmatiseerimise tulemused
     """
+    if "content" not in request.json:
+        request.json["warnings"] = ["Missing content"]
+        return jsonify(request.json)    
+
     proc.stdin.write(f'{json.dumps(request.json)}\n')
     proc.stdin.flush()
     return jsonify(json.loads(proc.stdout.readline()))
+    
+@app.route('/version', methods=['POST']) #@app.route('/process', methods=['GET', 'POST'])
+def version():
+    """Kuvame versiooni
+
+    Returns:
+        ~flask.Response: Lemmatiseerija versioon
+    """
+    return jsonify(json.loads('{"version":"2023.03.21"}'))
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser(allow_abbrev=False)

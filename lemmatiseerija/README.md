@@ -1,4 +1,16 @@
-# Eestikeelsete sõnede normaliseerija
+# Eestikeelsete sõnede lemmatiseerija
+
+## Mida uut
+
+* **_versioon 2023.03.21_**
+
+  * lisatud võimalus küsida veebiliidest korraldava kestprogrammi versiooni:
+
+  ```cmdline
+  curl --silent  --request POST --header "Content-Type: application/json" localhost:7000/version|jq
+  ```
+
+  * Hoiatus, kui sisendjsonis puudub "content"
 
 ## Mida sisaldab <a name="Mida_sisaldab"></a>
 
@@ -10,7 +22,7 @@
 Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida (Windows'i/Mac'i käsurida on analoogiline):
 
 ```commandline
-docker pull tilluteenused/lemmatiseerija:2023.03.14
+docker pull tilluteenused/lemmatiseerija:2023.03.21
 ```
 
 Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine).
@@ -42,13 +54,13 @@ vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/
 
 ```commandline
 cd ~/git/smart_search_github/lemmatiseerija
-docker build -t tilluteenused/lemmatiseerija:2023.03.14 .
+docker build -t tilluteenused/lemmatiseerija:2023.03.21 .
 ```
 
 ## Konteineri käivitamine <a name="Konteineri_käivitamine"></a>
 
 ```commandline
-docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.14
+docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.21
 ```
 
 Käivitatud konteineri töö lõpetab Ctrl+C selles terminaliaknas, kust konteiner käivitati.
@@ -108,8 +120,8 @@ Kui sõne ei õnnestunud lemmatiseerida, siis selle sõne juurde lemmaga seotud 
                 "mrf" :           /* sisendsõne lemmade massiiv */
                 [
                     {
-                        "lemma":    LEMMA,    /* lemma */
-                        "lemma_ma": LEMMA_MA, /* verbilemmale on lisatud ```ma```, muudel juhtudel sama mis LEMMA */
+                        "pos":    SÕNALIIK ,    /* sõnaliik */
+                        "lemma_ma": LEMMA_MA, /* lemma, verbilemmal on lõpus ```ma``` */
                         "source":   ALLIKAS,  /* P:põhisõnastikust, L:lisasõnastikust, O:sõnepõhisest oletajast, S:lausepõhisest oletajast, X:ei tea kust */
                     }
                 ]
@@ -127,14 +139,14 @@ Täpsemalt vaata näiteid.
 Lemmatiseeritav sõne. Sõnega kleepunud punktuatsiooni ignoreeritakse. Reeglina peaks sõnaga kokkukleepunud punktuatsioon olema eelneva sõnestamise/lausestamise 
 käigus juba lahkutõstetud.
 
-### ```LEMMA``` <a name="mrf_LEMMA"></a>
+### ```SÕNALIIK``` <a name="mrf_LEMMA"></a>
 
-Algvorm. Kui sõna on liitmoodustis, siis eelnevast komponente eraldab alakriips ```_``` ja järelliidet võrdusmärk ```=```.
-Liitsõna puhul on ainult viimane  komponent algvormina.
+Lemma sõnaliik.
 
 ###  ```LEMMA_MA``` <a name="mrf_LEMMA"></a>
 
-Verbi lemmadele on lisatud ```ma```, muudel juhtudel ```LEMMA```.
+Algvorm. Kui sõna on liitmoodustis, siis eelnevast komponente eraldab alakriips ```_``` ja järelliidet võrdusmärk ```=```.
+Liitsõna puhul on ainult viimane  komponent algvormina. Verbi lemmadel on lõpus ```ma```.
 
 ### ```ALLIKAS```
 
@@ -156,18 +168,18 @@ curl --silent  --request POST --header "Content-Type: application/json" --data '
 {
   "annotations": {
     "tokens": [
-      {kubectl fsdafsdafsadfasdfsdafsdafdsaf
+      {
         "features": {
           "complexity": 1,
           "mrf": [
             {
-              "lemma": "peet",
               "lemma_ma": "peet",
+              "pos": "S",
               "source": "P"
             },
             {
-              "lemma": "pida",
               "lemma_ma": "pidama",
+              "pos": "V",
               "source": "P"
             }
           ],
@@ -179,13 +191,13 @@ curl --silent  --request POST --header "Content-Type: application/json" --data '
           "complexity": 0,
           "mrf": [
             {
-              "lemma": "kea",
               "lemma_ma": "kea",
+              "pos": "S",
               "source": "O"
             },
             {
-              "lemma": "keaks",
               "lemma_ma": "keaks",
+              "pos": "S",
               "source": "O"
             }
           ],
@@ -213,13 +225,13 @@ curl --silent  --request POST --header "Content-Type: application/json" --data '
           "complexity": 1,
           "mrf": [
             {
-              "lemma": "peet",
               "lemma_ma": "peet",
+              "pos": "S",
               "source": "P"
             },
             {
-              "lemma": "pida",
               "lemma_ma": "pidama",
+              "pos": "V",
               "source": "P"
             }
           ],

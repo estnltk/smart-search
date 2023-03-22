@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# liitsõnandusega versioon!!!
+VERSION="2023.03.21"
 
 '''
 1. käivita lemmatiseerija konteiner (konteiner peab olema tehtud/allalaaditud)
@@ -328,7 +328,9 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html;charset=utf-8')
             self.end_headers()
             output = ''
-            if self.path.endswith("/otsi"):
+            if self.path.endswith("/version"):
+                output += f'<html><body>{VERSION}</body></html>'
+            elif self.path.endswith("/otsi"):
                 smart_search.fragments = False
                 smart_search.json_output = False
                 output = f"<html><body>{self.form_otsi}</body></html>"

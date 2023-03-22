@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+VERSION="2023.03.21"
+
 '''
 1. käivita lemmatiseerija konteiner (konteiner peab olema tehtud/allalaaditud)
     $ docker run -p 7000:7000 tilluteenused/lemmatizer konteiner
@@ -50,7 +52,9 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html;charset=utf-8')
             self.end_headers()
             output = ""
-            if self.path.endswith("/lemmad"):
+            if self.path.endswith("/version"):
+                output += f'<html><body>{VERSION}</body></html>'
+            elif self.path.endswith("/lemmad"):
                 demo_lemmatiseerija.path = self.path
                 output += f"<html><body>{self.form_lemmad_html}</body></html>"
             elif self.path.endswith("/paring"):
