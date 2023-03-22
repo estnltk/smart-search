@@ -3,7 +3,7 @@
 * käivita lemmatiseerija konteiner (konteiner peab olema tehtud/allalaaditud)
 
     ```cmdline
-    docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.14
+    docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.21
     ```
 
 * käivita demo otsingumootor (käsurealt või konteinerist)
@@ -20,20 +20,20 @@
       * konteineri tegemine
 
       ```cmdline
-      docker build -t tilluteenused/demo_smartsearch_webpage:2023.03.14 .
+      docker build -t tilluteenused/demo_smartsearch_webpage:2023.03.21 .
       ```
 
       * konteiner allalaadimine
 
       ```cmdline
-      docker pull tilluteenused/demo_smartsearch_webpage:2023.03.14
+      docker pull tilluteenused/demo_smartsearch_webpage:2023.03.21
       ```
 
     * konteineri käivitamine
 
     ```cmdline
     # LEMMATIZER_IP väärtuseks peab olema lemmatiseerija konteineri tegelik IP
-    docker run --env LEMMATIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') -p 7070:7070 tilluteenused/demo_smartsearch_webpage
+    docker run --env LEMMATIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') -p 7070:7070 tilluteenused/demo_smartsearch_webpage:2023.03.21
     ```
 
 * Käivita veebibrauser
