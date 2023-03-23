@@ -1,4 +1,4 @@
-# Eestikeelsete sõnede lemmatiseerija Tartu Ülikooli pilveteenusena
+# Eestikeelsete sõnede lemmatiseerija Tartu Ülikooli veebiteenusena
 
 ## Lähtekood
 
