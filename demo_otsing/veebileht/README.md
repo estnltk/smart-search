@@ -1,57 +1,6 @@
-# DEMOLEHT
+# Otsingumootori demoveebileht (proof of concept)
 
-* käivita lemmatiseerija konteiner (konteiner peab olema tehtud/allalaaditud)
+Demo-otsingumootori kasutamine
 
-    ```cmdline
-    docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.21
-    ```
-
-* käivita demo otsingumootor (käsurealt või konteinerist)
-
-  * Pyytoni programm käsurealt
-
-  ```cmdline
-  cd ~/git/smart_search_github/töövoog_alpha/veebileht
-  ./demo_smartsearch_webpage.py
-  ```
-
-  * Dockeri konteinerist
-    * konteineri tegemine või allalaadimine
-      * konteineri tegemine
-
-      ```cmdline
-      docker build -t tilluteenused/demo_smartsearch_webpage:2023.03.21 .
-      ```
-
-      * konteiner allalaadimine
-
-      ```cmdline
-      docker pull tilluteenused/demo_smartsearch_webpage:2023.03.21
-      ```
-
-    * konteineri käivitamine
-
-    ```cmdline
-    # LEMMATIZER_IP väärtuseks peab olema lemmatiseerija konteineri tegelik IP
-    docker run --env LEMMATIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') -p 7070:7070 tilluteenused/demo_smartsearch_webpage:2023.03.21
-    ```
-
-* Käivita veebibrauser
-  
-  * Näita tekste mille hulgast saame otsida
-
-  ```cmdline
-  google-chrome http://localhost:7070/tekstid
-  ```
-
-  * Märksõnade järgi otsimine. Ei otsi päringusõnasid liitsõna osasõnadest.
-
-  ```cmdline
-  google-chrome http://localhost:7070/otsi
-  ```
-  
-  * Märksõnade järgi otsimine. Otsi päringusõnasid ka liitsõna osasõnadest. Ei otsi liitsõnasid pikematest liitsõnadest (näiteks: ei vaata kas "raudtee" sisaldub "allmaaraudtees").
-
-  ```cmdline
-  google-chrome http://localhost:7070/otsils
-  ```
+* [Tartu Ülikooli veebileht demo-otsingumootoriga](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README-CLOUD.md)
+* [Demo-otsingumootoriga DOCKERi konteineris (sobib oma arvutis/serveris kasutamiseks)](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README-LOCAL.md)
