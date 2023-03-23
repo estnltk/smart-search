@@ -4,7 +4,7 @@
 
 ### 1. käivita lemmatiseerija konteiner ([konteiner peab olema tehtud/allalaaditud](https://github.com/estnltk/smart-search/blob/main/lemmatiseerija/README.md))
 
-Kuna lemmatiseerija demo saab sõna võimalike lemmede kohta infot lemmetiseerija DOCKERi konteinerilt, peab see töötama. 
+Kuna lemmatiseerija demo saab sõna võimalike lemmede kohta infot lemmetiseerija DOCKERi konteinerilt, peab see töötama.
 
 ```cmdline
 docker run -p 7000:7000 tilluteenused/demo_lemmatiseerija:2023.03.21
@@ -25,16 +25,16 @@ Käivita konteiner:
 docker run -p 7777:7777 --env LEMMATIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') --env LEMMATIZER_PORT=7000 tilluteenused/demo_lemmatiseerija:2023.03.21
 ```
 
-Märkus: Võite konteineri ka lähtekoodist ise teha.
+Märkus: Võite konteineri ka [lähtekoodist](https://github.com/estnltk/smart-search/tree/main/demo_lemmatiseerija) ise teha. Selleks peate ellnevalt:
 
-* Laadige alla lähtekood
+* Allalaadima lähtekoodi
 
   ```commandline
   mkdir ~/git ; cd ~/git 
   git clone --depth 1 https://github.com/estnltk/smart-search.git smart_search_github
   ```
 
-* Ehitage konteiner:
+* Ehitama konteineri
 
   ```commandline
   cd ~/git/smart_search_github/lemmatiseerija
