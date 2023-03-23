@@ -1,4 +1,4 @@
-# Eestikeelsete sõnede lemmatiseerija 
+# Veebileht eestikeelsete sõnede lemmatiseerija demoga 
 
 Lemmatiseerija kasutamine:
 
