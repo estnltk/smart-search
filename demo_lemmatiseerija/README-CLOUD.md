@@ -22,4 +22,4 @@ Vaata vastavaid ekraanitõmmiseid:
 
 Märkus: Aadressil ```https://smart-search.tartunlp.ai/lemmad``` töötab hetkel
 veidi väiksema funktsionaalsusega konteiner. 
-Vaata [täisfunktsionaalsusega konteineri kirjeldust]().
+Vaata [täisfunktsionaalsusega konteineri kirjeldust](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/README-LOCAL.md).
