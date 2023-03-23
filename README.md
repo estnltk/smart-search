@@ -12,11 +12,13 @@ on esitatud [lemmatiseerija veebiteenuse kirjelduses](https://github.com/estnltk
 * Seda kuidas lemmatiseerija veebiteenust kasutada demokorpuse indekseerimiseks
   on realiseeritud
   [skriptidega](https://github.com/estnltk/smart-search/tree/main/demo_otsing/korpus_ruukki).
-  See realisatsioon on pigem "proov of concept" mille peamiseks eesmärgiks on 
-  võimalikult lihtsal moel näidata kuidas ja mis informatsioon on tekstidest indeksisse vaja kokku korjata. "Päris" otsimgumootoris tuleks informatsiooni hoidmiseks kasutada andmebaasi, meie realisatsioonis on indeks esitatud näitlikuse/lihtsuse huvides JSON formaadis.
+  See on pigem "proov of concept" mille peamiseks eesmärgiks on 
+  võimalikult lihtsal moel näidata kuidas ja mis informatsioon on tekstidest indeksisse vaja kokku korjata. 
+  "Päris" otsimgumootoris tuleks informatsiooni hoidmiseks kasutada andmebaasi, 
+  meie realisatsioonis on indeks esitatud näitlikuse/lihtsuse huvides JSON formaadis.
 
-* Seda kuidas eelmises punktis korpuse põhjal indeksfailis olevat informatsiooni
-  ja lemmatiseerimsteenust kombineerides päringusõnedele vastavad tekstid ja leitud päringusõned tekstis märgendada on esitatud
+* Seda kuidas eelmises punktis korpuse põhjal tehtud indeksfailis olevat informatsiooni
+  ja lemmatiseerimsteenust kombineerides päringusõnedele vastavad tekstid ja päringusõned tekstis märgendada on esitatud
   [otsingumootori demos](https://github.com/estnltk/smart-search/tree/main/demo_otsing/veebileht).
   Sealsamas on ka vastav lähtekood. Lähtekoodi eesmärk on võimalikult
   näitlikul/lihtsal moel esitada põhiprintsiipe ja seega 
