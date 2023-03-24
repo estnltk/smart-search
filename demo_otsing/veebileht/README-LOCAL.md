@@ -4,7 +4,7 @@
 
 ### 1. käivita lemmatiseerija konteiner ([konteiner peab olema tehtud/allalaaditud](https://github.com/estnltk/smart-search/blob/main/lemmatiseerija/README.md))
 
-Kuna lemmatiseerija demo saab sõna võimalike lemmade kohta infot lemmetiseerija DOCKERi konteinerilt, peab see töötama.
+Kuna lemmatiseerija demo saab sõna võimalike lemmade kohta infot lemmatiseerija DOCKERi konteinerilt, peab see töötama.
 
 ```cmdline
 docker run -p 7000:7000 tilluteenused/demo_lemmatiseerija:2023.03.21
