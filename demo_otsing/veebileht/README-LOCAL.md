@@ -1,4 +1,4 @@
-# Otsingumootori demoveebileht (proof of concept) DOCKERi konteinerina
+# Otsingumootori demoveebileht (proof of concept) DOCKERi konteineri abil
 
 ## Otsingumootori demoveebilehe ülesseadmine oma arvutis (DOCKERi konteinerina)
 
