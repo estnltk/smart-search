@@ -24,7 +24,7 @@ Iga otsigu saab jagada neljaks faasiks:
 * dokumentide andmebaasist otsimine;
 * leitud dokumentide filtreerimine ja dekoreerimine.  
 
-Ülal toodud eesmärkide saavutamiseks piisab enamasti joonisel toodud komponentide lisamiks olemasolevasse otsingumoodulisse. 
+Ülal toodud eesmärkide saavutamiseks piisab enamasti joonisel toodud komponentide lisamisest olemasolevasse otsingumoodulisse. 
 
 Antud projekti raames loome me kõik vajalikud komponendid veebiteenustena ning näitame lihtsate demorakendustega, kuidas vastavaid komponente kasutada.
 
