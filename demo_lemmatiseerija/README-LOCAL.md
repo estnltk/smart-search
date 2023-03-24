@@ -1,4 +1,4 @@
-# Lemmatiseerija demo veebilehena DOCKERi konteineris
+# Lemmatiseerija demo veebilehena DOCKERi konteineri abil
 
 ## Lemmatiseerija demo veebilehe ülesseadmine oma arvutis (DOCKERi konteinerina)
 
