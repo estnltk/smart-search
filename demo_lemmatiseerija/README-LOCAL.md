@@ -68,7 +68,7 @@ Ekraanitõmmised:
 
 Sisestage veebibrauserisse aadress
 ```http://localhost:7777/json``` avanenud veebilehel tekstikasti otsingusõne
-ja klikkuge ```Kuva lemmatiseerija JSON-väljund```.
+ja klikkige ```Kuva lemmatiseerija JSON-väljund```.
 Teile kuvatekse lemmatiseerija algne [JSONväljund](https://github.com/estnltk/smart-search/blob/main/lemmatiseerija/README-CLOUD.md)
 
 Ekraanitõmmised:
@@ -76,7 +76,7 @@ Ekraanitõmmised:
 * [Pilt 1](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_json1.png)
 * [Pilt 2](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_json2.png)
 
-### 3.3 Näita sisendsõne kõiki võimalikke lemmasid (mitme võimaliku lemma korral komadega eraldatult)
+### 3.3 Näita sisendsõne kõiki võimalikke algvorme (lemmasid) (mitme võimaliku lemma korral on erinevad lemmad komadega eraldatud)
 
 Sisestage veebibrauserisse aadress
 ```http://localhost:7777/lemmad```, avanenud veebilehel tekstikasti sõne ja klikkige ```Lemmatiseeri```.
