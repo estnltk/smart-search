@@ -14,8 +14,7 @@
   on realiseeritud
   [indekseerimise demos](https://github.com/estnltk/smart-search/tree/main/demo_otsing/korpus_ruukki).
   See on pigem "proov of concept" mille peamiseks eesmärgiks on 
-  võimalikult lihtsal moel näidata kuidas ja mis informatsioon on tekstidest indeksisse vaja kokku korjata. 
-  "Päris" otsimgumootoris võiks olla otstarbekas informatsiooni hoidmiseks kasutada andmebaasi (MySQL vms). 
+  võimalikult lihtsal moel näidata mis informatsiooni on otstarbekas indeksis esitada. 
   Siin on indeks esitatud näitlikuse/lihtsuse huvides JSON formaadis.
 
 * Seda kuidas eelmises punktis korpuse põhjal tehtud indeksfailis olevat informatsiooni
