@@ -1,6 +1,6 @@
 # Otsingumootori demoveebileht (proof of concept) DOCKERi konteineri abil
 
-## Otsingumootori demoveebilehe ülesseadmine oma arvutis (DOCKERi konteinerina)
+## Otsingumootori demoveebilehe ülesseadmine oma arvutis (DOCKERi konteineri abil)
 
 ### 1. käivita lemmatiseerija konteiner ([konteiner peab olema tehtud/allalaaditud](https://github.com/estnltk/smart-search/blob/main/lemmatiseerija/README.md))
 
