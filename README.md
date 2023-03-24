@@ -36,8 +36,8 @@ Toimiva otsingu aluseks on korrektselt indekseeritud dokumendid. Standardsed and
 
 Antud demo eesmärk on näidata kuidas saab kasutada keeletehnoloogilise vahendeid oluliselt sisukama indeksi moodustamiseks ning millist informatsiooni on otstarbekas indeksis esitada. 
 
-* [näiterakendus](???)
-* [näitekood](https://github.com/estnltk/smart-search/tree/main/demo_otsing/korpus_ruukki)
+* [näiterakendus](https://github.com/estnltk/smart-search/blob/main/demo_otsing/korpus_ruukki/toimeta.sh)
+* [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_otsing/korpus_ruukki/README.md)
 
 
 ### II. Otsisisendi normaliseerimine
@@ -47,6 +47,7 @@ Antud demo näitab kuidas saab kasutada lemmatiseerimise veebiteenust otsingisis
 * [näiterakendus](https://smart-search.tartunlp.ai/lemmad)
 * [rakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/demo_lemmatiseerija).
 * [veebiteenusega liidestumise näitekood](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/demo_lemmatiseerija.py).
+* [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/README-CLOUD.md)
 
 
 ### III. Nutika otsingu demorakendus 
@@ -54,8 +55,8 @@ Antud demo näitab kuidas saab kasutada lemmatiseerimise veebiteenust otsingisis
 Antud demo näitab, kuidas eelmisestes punktides korpuse põhjal tehtud indeksfailis olevat informatsiooni ja lemmatiseerimsteenust kombineerides päringusõnedele vastavad tekstid ja päringusõned tekstis märgendada.
 
 * [näiterakendus](https://smart-search.tartunlp.ai/otsils)
-* [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README-CLOUD.md)
 * [näiterakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/demo_otsing/veebileht)
+* [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README-CLOUD.md)
 
  
 ## Veebiteenused
