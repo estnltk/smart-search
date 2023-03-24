@@ -54,7 +54,7 @@ Sisestage veebibrauserisse aadress
 ```http://localhost:7777/paring```, avanenud veebilehel tekstikasti otsingusõned ja klikkige ```Leia päringule vastav lemmade kombinatsioon```.
 Teile kuvatakse otsingusõnele vastav päring (lemmade kombinatsioon).
 
-Näiteks:
+Näiteks: Kui otsisõünedena on sisestatud ```katus profiil```, siis saate vastuseks: 
 ```(katus & profiil) ⇒ (katt ∨ katus) & (profiil)```
 
 Antud näite korral tekstis peab esinema sõne mille algvorm on üks kahest ```katt``` või ```katus``` ja samal ajal peab tekstis esinema sõne, mille algvorm on ```profiil```.
