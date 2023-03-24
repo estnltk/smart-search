@@ -54,6 +54,7 @@ Antud demo näitab kuidas saab kasutada lemmatiseerimise veebiteenust otsingisis
 Antud demo näitab, kuidas eelmisestes punktides korpuse põhjal tehtud indeksfailis olevat informatsiooni ja lemmatiseerimsteenust kombineerides päringusõnedele vastavad tekstid ja päringusõned tekstis märgendada.
 
 * [näiterakendus](https://smart-search.tartunlp.ai/otsils)
+* [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README-CLOUD.md)
 * [näiterakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/demo_otsing/veebileht)
 
  
