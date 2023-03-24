@@ -1,6 +1,6 @@
 # Lemmatiseerija demo veebilehena DOCKERi konteineri abil
 
-## Lemmatiseerija demo veebilehe ülesseadmine oma arvutis (DOCKERi konteinerina)
+## Lemmatiseerija demo veebilehe ülesseadmine oma arvutis (DOCKERi konteineri abil)
 
 ### 1. käivita lemmatiseerija konteiner ([konteiner peab olema tehtud/allalaaditud](https://github.com/estnltk/smart-search/blob/main/lemmatiseerija/README.md))
 
