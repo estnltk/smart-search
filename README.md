@@ -44,7 +44,7 @@ Antud demo eesmärk on näidata kuidas saab kasutada keeletehnoloogilise vahende
 
 Antud demo näitab kuidas saab kasutada lemmatiseerimise veebiteenust otsingisisendis olevate sõnade algvormide leidmiseks, mida on lihsam indeksist otsida.
 
-* [näiterakendus](https://smart-search.tartunlp.ai/otsi)
+* [näiterakendus](https://smart-search.tartunlp.ai/lemmad)
 * [rakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/demo_lemmatiseerija).
 * [veebiteenusega liidestumise näitekood](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/demo_lemmatiseerija.py).
 
