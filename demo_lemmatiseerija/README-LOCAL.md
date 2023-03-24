@@ -57,7 +57,7 @@ Teile kuvatakse otsingusõnele vastav päring (lemmade kombinatsioon).
 Näiteks: Kui otsisõnedena on sisestatud ```katus profiil```, siis saate vastuseks: 
 ```(katus & profiil) ⇒ (katt ∨ katus) & (profiil)```
 
-Antud näite korral tekstis peab esinema sõne mille algvorm on üks kahest ```katt``` või ```katus``` ja samal ajal peab tekstis esinema sõne, mille algvorm on ```profiil```.
+Päringule ```katus profiil``` vastavad tekstid milles peab esinema sõne mille algvorm on üks kahest ```katt``` või ```katus``` ja samal ajal peab tekstis esinema sõne, mille algvorm on ```profiil```.
 
 Ekraanitõmmised:
 
