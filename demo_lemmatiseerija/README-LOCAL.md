@@ -7,7 +7,7 @@
 Kuna lemmatiseerija demo saab sõna võimalike algvormide (lemmade) kohta infot lemmetiseerija DOCKERi konteinerilt, peab see töötama.
 
 ```cmdline
-docker run -p 7000:7000 tilluteenused/demo_lemmatiseerija:2023.03.21
+docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.21
 ```
 
 ### 2. käivita lemmatiseerija demo sisaldav konteiner (suhtleb lemmatiseerija konteineriga)
