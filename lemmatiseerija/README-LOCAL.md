@@ -1,4 +1,4 @@
-# Eestikeelsete sõnede lemmatiseerija veebiteenus docker'i konteinerina
+# Eestikeelsete sõnede lemmatiseerija veebiteenus docker'i konteinerina [versioon 2023.03.21]
 
 ## Mida sisaldab <a name="Mida_sisaldab"></a>
 
@@ -55,7 +55,7 @@ Käivitatud konteineri töö lõpetab Ctrl+C selles terminaliaknas, kust kontein
 
 ## Kasutusnäited
 
-### Lemmatiseerija sõnastikust puuduvate sõnade oletamisega
+### Lemmatiseerimine sõnastikust puuduvate sõnade oletamisega
 
 ```cmdline
 curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"peeti keaks"}' localhost:7000/process|jq
@@ -107,10 +107,10 @@ curl --silent  --request POST --header "Content-Type: application/json" --data '
 }
 ```
 
-### Lemmatiseerija sõnastikust puuduvate sõnade oletamiseta
+### Lemmatiseerimine sõnastikust puuduvate sõnade oletamiseta, lisaks küsime lemmatiseerimisprogrammi versiooni
 
 ```cmdline
-curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"peeti keaks","params":{"vmetltjson":[]}}' localhost:7000/process|jq
+curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"peeti keaks","params":{"vmetltjson":["--version"]}}' localhost:7000/process|jq
 ```
 
 ```json
@@ -144,8 +144,23 @@ curl --silent  --request POST --header "Content-Type: application/json" --data '
   },
   "content": "peeti keaks",
   "params": {
-    "vmetltjson": []
-  }
+    "vmetltjson": [
+      "--version"
+    ]
+  },
+  "version": "2023.03.21"
+}
+```
+
+### Kuvame lemmatiseerimisprogrammi veebiliidese versiooni
+
+```cmdline
+curl --silent  --request POST --header "Content-Type: application/json" --data '{"content":"peeti keaks"}' localhost:7000/version|jq
+```
+
+```json
+{
+  "version": "2023.03.21"
 }
 ```
 

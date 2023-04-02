@@ -1,6 +1,6 @@
-# Otsingumootori demoveebileht (proof of concept) DOCKERi konteineri abil
+# Otsingumootori demoveebilehed (proof of concept) DOCKERi konteineri abil
 
-## Otsingumootori demoveebilehe ülesseadmine oma arvutis (DOCKERi konteineri abil)
+## Otsingumootori demoveebilehtede ülesseadmine oma arvutis (DOCKERi konteineri abil)
 
 ### 1. käivita lemmatiseerija konteiner ([konteiner peab olema tehtud/allalaaditud](https://github.com/estnltk/smart-search/blob/main/lemmatiseerija/README.md))
 
@@ -34,34 +34,12 @@ Märkus: Võite konteineri ka [lähtekoodist](https://github.com/estnltk/smart-s
   git clone --depth 1 https://github.com/estnltk/smart-search.git smart_search_github
   ```
 
-* Ehitama konteineri
+* Ehitame konteineri
 
   ```cmdline
   docker build -t tilluteenused/demo_smartsearch_webpage:2023.03.21 .
   ```
 
-## Otsingumootori demoveebilehe  kasutamine
+## Otsingumootori demoveebilehtede  kasutamine
 
-### 1. Näita demokorpuses olevaid tekste
-
-Sisestage veebilehitseja aadressiribale ```http://localhost:7070/tekstid```.
-Veebilehitseja aknas näete demokorpuse tekste. Otsimootor otsib nende tekstide seest, vaata [ekraanipilti](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/Ekraanipilt_demo_veebileht-tekstid.png).
-
-### 2. Märksõnade otsimine tekstist. Lihtsõnu otsitakse ka liitsõna osasõnadest
-
-Sisestaga veebilehitseja aadressiribale
-```http://localhost:7070/tekstid```. Sisestage tekstikasti otsingusõned ja klikkige
-```Otsi (sh liitsõna osasõnadest)```. Avaneb veebileht otsingu tulemustega. Veebilehe alguses on kirjas milliseid lemmasid tekstist otsitakse.
-Päringule vastavad sõnad tekstis on rasvases kirjas ja sulgudes algvormid.
-Nagu [ekraanipildilt](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/Ekraanipilt_demo_veebileht_otsils2.png) näha leitakse
-päringusõne ```katus``` ka liitsõna ```valtskatuste``` osasõnast.
-
-### 3. Märksõnade otsimine tekstist. Lihtsõnu ei otsita liitsõna osasõnadest
-
-Sisestaga veebilehitseja aadressiribale
-```http://localhost:7070/otsi```. Sisestage tekstikasti otsingusõned ja klikkige
-```Otsi```. Avaneb veebileht otsingu tulemustega. Veebilehe alguses on kirjas milliseid lemmasid tekstist otsitakse.
-Päringule vastavad sõnad tekstis on rasvases kirjas ja sulgudes algvormid.
-Nagu [ekraanipildilt](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/Ekraanipilt_demo_veebileht_otsi2.png) näha ei leita
-päringusõne ```katus``` liitsõna ```valtskatuste``` osasõnast.
-
+Kasutusnäiteid vaata [sealt](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README-CLOUD.md), kui konteinerid töötavad kohalikus masinas siis ```https://smart-search.tartunlp.ai/``` asemel kirjutage ```http://localhost:7070/```.

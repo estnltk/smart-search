@@ -1,4 +1,4 @@
-# Lemmatiseerija demo veebilehena DOCKERi konteineri abil
+# Lemmatiseerija demoveebilehed DOCKERi konteineri abil
 
 ## Lemmatiseerija demo veebilehe ülesseadmine oma arvutis (DOCKERi konteineri abil)
 
@@ -43,50 +43,6 @@ Märkus: Võite konteineri ka [lähtekoodist](https://github.com/estnltk/smart-s
 
 * Käivitage tehtud konteiner ülalkirjeldatud viisil.
 
-## Lemmatiseerija demo veebilehe kasutamine
+## Lemmatiseerija demoveebilehe kasutamine
 
-### Leiame otsingusõnedest tuletatud päringu
-
-Sisestatud otsingusõnede põhjal leitakse lemmade kombinatsioon, mida otsimootor peaks
-hakkama tekstist otsima.
-
-Sisestage veebibrauserisse aadress
-```http://localhost:7777/paring```, avanenud veebilehel tekstikasti otsingusõned ja klikkige ```Leia päringule vastav lemmade kombinatsioon```.
-Teile kuvatakse otsingusõnele vastav päring (lemmade kombinatsioon).
-
-Näiteks: Kui otsisõnedena on sisestatud ```katus profiil```, siis saate vastuseks: 
-```(katus & profiil) ⇒ (katt ∨ katus) & (profiil)```
-
-Päringule ```katus profiil``` vastavad tekstid milles peab esinema sõne mille algvorm on üks kahest ```katt``` või ```katus``` ja samal ajal peab tekstis esinema sõne, mille algvorm on ```profiil```.
-
-Ekraanitõmmised:
-
-* [Pilt 1](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_paring1.png)
-* [Pilt 2](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_paring2.png)
-
-### Näita lemmatiseerija JSON-väljundit
-
-Sisestage veebibrauserisse aadress
-```http://localhost:7777/json``` avanenud veebilehel tekstikasti otsingusõne
-ja klikkige ```Kuva lemmatiseerija JSON-väljund```.
-Teile kuvatekse lemmatiseerija algne [JSONväljund](https://github.com/estnltk/smart-search/blob/main/lemmatiseerija/README-CLOUD.md)
-
-Ekraanitõmmised:
-
-* [Pilt 1](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_json1.png)
-* [Pilt 2](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_json2.png)
-
-### 3.3 Näita sisendsõne kõiki võimalikke algvorme (lemmasid) (mitme võimaliku lemma korral on erinevad lemmad komadega eraldatud)
-
-Sisestage veebibrauserisse aadress
-```http://localhost:7777/lemmad```, avanenud veebilehel tekstikasti sõne ja klikkige ```Lemmatiseeri```.
-Teile kuvatakse sõnele vastavad algvormid (lemmade).
-
-Näiteks: ```peeti ⇒ peet, pidama```
-
-Sõnal ```peeti``` on kaks võimalikku algvormi: ```peet``` ja ```pidama```.
-
-Ekraanitõmmised:
-
-* [Pilt 1](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_lemmad1.png)
-* [Pilt 2](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_lemmad2.png)
+Kasutusnäiteid vaata [sealt](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/README-CLOUD.md), ```https://smart-search.tartunlp.ai/``` asemel kirjutage ```http://localhost:7777/```.

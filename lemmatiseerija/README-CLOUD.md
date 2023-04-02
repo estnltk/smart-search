@@ -10,7 +10,7 @@
 Näidetes on kasutatud käsurea programmi ```curl``` (olemas Linuxis, Windowsis ja Macis).
 Pythoni puhul sobib päringute tegemiseks ```requests``` pakett.
 
-### Lemmatiseerija sõnastikust puuduvate sõnade oletamisega
+### Lemmatiseerime sõnastikust puuduvate sõnade oletamisega
 
 ```cmdline
 curl --silent  --request POST --header "Content-Type: application/json" --data "{\"content\":\"raudteed peeti keaks\"}" https://smart-search.tartunlp.ai/api/lemmatizer/process | jq
@@ -76,10 +76,10 @@ curl --silent  --request POST --header "Content-Type: application/json" --data "
 
 ```
 
-### Lemmatiseerija sõnastikust puuduvate sõnade oletamiseta
+### Lemmatiseerime sõnastikust puuduvate sõnade oletamiseta, lisaks küsime lemmatiseerimisprogrammi versiooni
 
 ```cmdline
-curl --silent  --request POST --header "Content-Type: application/json" --data "{\"params\":{\"vmetltjson\":[]},\"content\":\"raudteed peeti keaks\"}" https://smart-search.tartunlp.ai/api/lemmatizer/process | jq
+curl --silent  --request POST --header "Content-Type: application/json" --data "{\"params\":{\"vmetltjson\":[\"--version\"]},\"content\":\"raudteed peeti keaks\"}" https://smart-search.tartunlp.ai/api/lemmatizer/process | jq
 
 ```
 
@@ -127,8 +127,23 @@ curl --silent  --request POST --header "Content-Type: application/json" --data "
   },
   "content": "raudteed peeti keaks",
   "params": {
-    "vmetltjson": []
-  }
+    "vmetltjson": [
+      "--version"
+    ]
+  },
+  "version": "2023.03.21"
+}
+```
+
+### Lemmatiseerimisprogrammi veebiliidese versioon
+
+```cmdline
+curl --silent  --request POST --header "Content-Type: application/json"  https://smart-search.tartunlp.ai/api/lemmatizer/version | jq  
+```
+
+```json
+{
+  "version": "2023.03.21"
 }
 ```
 
