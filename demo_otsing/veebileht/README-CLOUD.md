@@ -8,7 +8,7 @@
 
 ### 1. Näita demokorpuses olevaid tekste
 
-Demokorpuse tekste näete sellelt [lingilt](https://smart-search.tartunlp.ai/tekstid). Otsimootori demo otsib nende tekstide seest, vaata [ekraanipilti](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/Ekraanipilt_smart-search.tartunlp.ai_tekstid.png).
+Otsimootori demo otsib [nende tekstide](https://smart-search.tartunlp.ai/tekstid) seest, vaata [ekraanipilti](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/Ekraanipilt_smart-search.tartunlp.ai_tekstid.png).
 
 ### 2. Märksõnade otsimine tekstist. Lihtsõnu otsitakse ka liitsõna osasõnadest
 
