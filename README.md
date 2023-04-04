@@ -46,7 +46,7 @@ Antud demo näitab kuidas saab kasutada lemmatiseerimise veebiteenust otsingisis
 
 * [näiterakendus](https://smart-search.tartunlp.ai/lemmad)
 * [rakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/demo_lemmatiseerija).
-* [veebiteenusega liidestumise näitekood](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/demo_lemmatiseerija.py).
+* [veebiteenusega liidestumise näitekood](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/flask_demo_lemmatiseerija.py).
 * [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/README-CLOUD.md)
 
 
