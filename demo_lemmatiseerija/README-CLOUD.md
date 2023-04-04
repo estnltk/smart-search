@@ -1,4 +1,4 @@
-# Lemmatiseerija demoveebilehed Tartu Ülikooli serveris
+# Lemmatiseerija demoveebilehed Tartu Ülikooli serveris [versioon 2023.04.04]
 
 ## Lähtekood
 
@@ -6,9 +6,14 @@
 
 ## Kasutusnäited
 
-### Sisendsõnad komadega eraldatud lemmade loendiks
+### Demo versiooni küsimine
 
-Avage [veebileht](https://smart-search.tartunlp.ai/lemmad), tekstilahtrisse kirjutage eestikeelne sõna ja klikkige ```Lemmatiseeri``` nuppu. Teile kuvatakse sisendsõne võimalikud lemmad.
+Avage [veebileht](https://smart-search.tartunlp.ai/lemmatiseerija/versioon). Kuvatakse lemmatiseerija demoveebilehti genereeriva koodi versiooni.
+
+
+### Sisendsõna komadega eraldatud lemmade loendiks
+
+Avage [veebileht](https://smart-search.tartunlp.ai/lemmatiseerija/lemmad), tekstilahtrisse kirjutage eestikeelne sõna ja klikkige ```Lemmatiseeri``` nuppu. Teile kuvatakse sisendsõne võimalikud lemmad.
 
 Näiteks:
 
@@ -19,12 +24,12 @@ peeti ⇒ peet, pidama
 
 Vaata vastavaid ekraanipilte:
 
-* [Sõna ```katus``` lemmatiseerimise tulemus](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_smart-search.tartunlp.ai_lemmad_katus.png)
-* [Sõna ```peeti``` lemmatiseerimise tulemus](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_smart-search.tartunlp.ai_lemmad_peeti.png)
+* [Sõna ```katus``` lemmatiseerimise tulemus](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_smart-search.tartunlp.ai_lemmad_1.png)
+* [Sõna ```peeti``` lemmatiseerimise tulemus](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_smart-search.tartunlp.ai_lemmad_2.png)
 
 ### Sisendsõnadest päringu tuletamine
 
-Avage [veebileht](https://smart-search.tartunlp.ai/paring), tekstilahtrisse kirjutage päringusõnad ja klikkige ```Leia päringule vastav lemmade kombinatsioon``` nuppu. Teile kuvatakse sisendõnadest tuletatud päring.
+Avage [veebileht](https://smart-search.tartunlp.ai/lemmatiseerija/paring), tekstilahtrisse kirjutage päringusõnad ja klikkige ```Leia päringule vastav lemmade kombinatsioon``` nuppu. Teile kuvatakse sisendõnadest tuletatud päring.
 
 Näiteks
 
@@ -34,11 +39,11 @@ Näiteks
 
 Vaata vastavaid ekraanipilte:
 
-* [Sõnadele ```katus profiil``` vastav päring](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_paring2.png)
+* [Sõnadele ```katus profiil``` vastav päring](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/Ekraanipilt_demo_lemmatiseerija_paring.png)
 
 ### Lemmatiseerija JSON-väljund
 
-Avage [veebileht](https://smart-search.tartunlp.ai/json), tekstilahtrisse kirjutage päringusõnad ja klikkige ```Kuva lemmatiseerija JSON-väljund``` nuppu. Teile kuvatakse [lemmatiseerija](https://github.com/estnltk/smart-search/tree/main/lemmatiseerija) JSON-väljundit.
+Avage [veebileht](https://smart-search.tartunlp.ai/lemmatiseerija/json), tekstilahtrisse kirjutage päringusõnad ja klikkige ```Kuva lemmatiseerija JSON-väljund``` nuppu. Teile kuvatakse [lemmatiseerija](https://github.com/estnltk/smart-search/tree/main/lemmatiseerija) JSON-väljundit.
 
 Näiteks
 

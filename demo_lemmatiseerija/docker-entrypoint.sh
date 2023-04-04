@@ -6,12 +6,9 @@ export WORKER_CLASS=${WORKER_CLASS:-sync}
 
 # siin ei ei ole tegelt gunicorni soovitatav kasutada
 
-#exec /usr/bin/tini -- /usr/bin/gunicorn --bind=0.0.0.0:7000 \
-#    "--workers=${WORKERS}" \
-#    "--timeout=${TIMEOUT}" \
-#    "--worker-class=${WORKER_CLASS}" \
-#    --worker-tmp-dir=/dev/shm "$@" \
-#    'demo_normaliseerija:demo()'
-
-#exec /usr/bin/tini ./demo_lemmatiseerija.py
-exec /usr/bin/python3 -u ./demo_lemmatiseerija.py
+exec /usr/bin/tini -- venv/bin/gunicorn --bind=0.0.0.0:7777 \
+    "--workers=${WORKERS}" \
+    "--timeout=${TIMEOUT}" \
+    "--worker-class=${WORKER_CLASS}" \
+    --worker-tmp-dir=/dev/shm "$@" \
+    flask_demo_lemmatiseerija:app

@@ -42,13 +42,13 @@ vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/
 
 ```commandline
 cd ~/git/smart_search_github/lemmatiseerija
-docker build -t tilluteenused/lemmatiseerija:2023.03.21 .
+docker build -t tilluteenused/lemmatiseerija:2023.03.30 .
 ```
 
 ## Konteineri käivitamine <a name="Konteineri_käivitamine"></a>
 
 ```commandline
-docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.21
+docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.30
 ```
 
 Käivitatud konteineri töö lõpetab Ctrl+C selles terminaliaknas, kust konteiner käivitati.

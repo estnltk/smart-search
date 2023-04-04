@@ -1,4 +1,4 @@
-# Lemmatiseerija demoveebilehed DOCKERi konteineri abil
+# Lemmatiseerija demoveebilehed DOCKERi konteineri abil  [versioon 2023.04.04]
 
 ## Lemmatiseerija demo veebilehe ülesseadmine oma arvutis (DOCKERi konteineri abil)
 
@@ -7,7 +7,7 @@
 Kuna lemmatiseerija demo saab sõna võimalike algvormide (lemmade) kohta infot lemmetiseerija DOCKERi konteinerilt, peab see töötama.
 
 ```cmdline
-docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.21
+docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.30
 ```
 
 ### 2. käivita lemmatiseerija demo sisaldav konteiner (suhtleb lemmatiseerija konteineriga)
@@ -15,14 +15,13 @@ docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.21
 Selleks laadi vastav konteiner alla:
   
 ```cmdline
-docker pull tilluteenused/demo_lemmatiseerija:2023.03.21
+docker pull tilluteenused/demo_lemmatiseerija:2023.04.04
 ```
 
 Käivita konteiner:
 
 ```cmdline
-# lemmatiseerija http://LEMMATIZER_IP:LEMMATIZER_PORT/process
-docker run -p 7777:7777 --env LEMMATIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') --env LEMMATIZER_PORT=7000 tilluteenused/demo_lemmatiseerija:2023.03.21
+docker run -p 7777:7777 --env LEMMATIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') --env LEMMATIZER_PORT=7000 tilluteenused/demo_lemmatiseerija:2023.04.04
 ```
 
 Märkus: Võite konteineri ka [lähtekoodist](https://github.com/estnltk/smart-search/tree/main/demo_lemmatiseerija) ise teha. Selleks peate eelnevalt:
@@ -38,7 +37,7 @@ Märkus: Võite konteineri ka [lähtekoodist](https://github.com/estnltk/smart-s
 
   ```commandline
   cd ~/git/smart_search_github/lemmatiseerija
-  docker build -t tilluteenused/lemmatiseerija:2023.03.21 .
+  docker build -t tilluteenused/demo_lemmatiseerija:2023.04.04 .
   ```
 
 * Käivitage tehtud konteiner ülalkirjeldatud viisil.

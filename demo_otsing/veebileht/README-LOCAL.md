@@ -1,4 +1,4 @@
-# Otsingumootori demoveebilehed (proof of concept) DOCKERi konteineri abil
+# Otsingumootori demoveebilehed (proof of concept) DOCKERi konteineri abil [versioon 2023.04.04]
 
 ## Otsingumootori demoveebilehtede ülesseadmine oma arvutis (DOCKERi konteineri abil)
 
@@ -7,7 +7,7 @@
 Kuna lemmatiseerija demo saab sõna võimalike lemmade kohta infot lemmatiseerija DOCKERi konteinerilt, peab see töötama.
 
 ```cmdline
-docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.21
+docker run -p 7000:7000 tilluteenused/lemmatiseerija:2023.03.30
 ```
 
 ### 2. käivita lemmatiseerija demo sisaldav konteiner (suhtleb lemmatiseerija konteineriga)

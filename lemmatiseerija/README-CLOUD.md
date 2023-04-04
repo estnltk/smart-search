@@ -250,7 +250,7 @@ Numbriline hinnang sellele, kui "keeruline" oli sõne analüüsi leida. Suurem n
   * lisatud võimalus küsida veebiliidest korraldava kestprogrammi versiooni:
 
   ```cmdline
-  curl --silent  --request POST --header "Content-Type: application/json" localhost:7000/version|jq
+  curl --silent  --request POST --header "Content-Type: application/json" --data "{\"params\":{\"vmetltjson\":[\"--version\"]},\"content\":\"raudteed peeti keaks\"}" https://smart-search.tartunlp.ai/api/lemmatizer/version | jq
   ```
 
   * Hoiatus, kui sisendjsonis puudub "content"

@@ -1,5 +1,7 @@
  #!/usr/bin/env python3
 
+VERSION="2023.03.30"
+
 """ 
 # Virtuaalkeskkonna loomine:
 $ ./create_venv
@@ -57,7 +59,7 @@ def version():
     Returns:
         ~flask.Response: Lemmatiseerija versioon
     """
-    return jsonify(json.loads('{"version":"2023.03.21"}'))
+    return jsonify(json.loads(f'{{"version":"{VERSION}"}}'))
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser(allow_abbrev=False)

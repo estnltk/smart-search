@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}/demo_lemmatiseerija",
-            "program": "./demo_lemmatiseerija.py",
+            "program": "./flask_demo_lemmatiseerija.py",
             "args": []
         },
         {
@@ -35,6 +35,15 @@
             "cwd": "${workspaceFolder}/demo_otsing/veebileht",
             "env": {"LEMMATIZER_IP": "193.40.37.250", "LEMMATIZER_PORT": "7000"},
             "program": "./demo_smartsearch2_webpage.py",
+            "args": []
+        }, 
+        {
+            "name": "demo3",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/demo_otsing/veebileht",
+            "env": {"LEMMATIZER_IP": "193.40.37.250", "LEMMATIZER_PORT": "7000"},
+            "program": "./demo_smartsearch3_webpage.py",
             "args": []
         }, 
         {
