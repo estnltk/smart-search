@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "api_indekseerija",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija",
+            "program": "./api_indekseerija.py",
+            "args": ["--sorted_by_key", "--indent=4", "--lemmastat", "--json={\"content\":\"Sarved&Sõrad. Telef +345543 55234. Sarv\"}"]
+        },
+        {
             "name": "demo_lemmatiseerija",
             "type": "python",
             "request": "launch",
