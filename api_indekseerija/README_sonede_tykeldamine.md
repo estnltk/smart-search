@@ -13,40 +13,39 @@ Lemmade leidmise programm ignoreerib:
 ## Näide
 ---
 
-Vaatame teksti "Daam sülekoeraga ja härra hundikoeraga."
+Vaatame teksti "Daam ja härra. Daam sülekoeraga ja härra hundikoeraga."
 
 Programmi väljund on selline:
 
 ```json
 {
-    "Daam": {                   // tekstisõne
-        "count": 1,             // esines 1 kord
-        "liitsõna_osa": false   // ei ole liitsõna osa
+    "Daam": {                   // sõne
+        "count": 2,             // esines tekstis 2 korda
+        "liitsõna_osa": false   // pole liitsõna osa
     },
-    "hundi": {                  // 
-        "count": 1,             // 
-        "liitsõna_osa": true    //
+    "_koeraga": {               // sõne
+        "count": 2,             // esines liitsõnas 2 korda
+        "liitsõna_osa": true    // liitsõna osa
     },
-    "hundikoeraga": {
-        "count": 1,
-        "liitsõna_osa": false
+    "hundi_": {                 // sõne
+        "count": 1,             // esines liitsõnades 1 kord
+        "liitsõna_osa": true    // liitsõna osa
     },
-    "härra": {
-        "count": 1,
-        "liitsõna_osa": false
+    "hundikoeraga": {           // sõne
+        "count": 1,             // esines tekstis 1 kord
+        "liitsõna_osa": false   // pole liitsõna osa
     },
-    "koeraga": {
-        "count": 2,
-        "liitsõna_osa": true
+    "härra": {                  // sõne
+        "count": 2,             // esines tekstis 2 korda
+        "liitsõna_osa": false   // pole liitsõna osa
     },
-    "süle": {
-        "count": 1,
-        "liitsõna_osa": true
+    "süle_": {                  // sõne
+        "count": 1,             // esines tekstis 1 kord
+        "liitsõna_osa": true    // liitsõna osa
     },
-    "sülekoeraga": {
-        "count": 1,
-        "liitsõna_osa": false
+    "sülekoeraga": {            // sõne
+        "count": 1,             // esines tekstis 1 kord
+        "liitsõna_osa": false   // pole liitsõna osa
     }
 }
-
 ```
