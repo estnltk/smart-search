@@ -5,12 +5,44 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "api_sonede_sagedusloend",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija",
+            "program": "./api_sonede_sagedusloend.py",
+            "args": ["--sorted_by_lemma", "--indent=4", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+            //"args": ["--reverse", "--indent=4", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+            //"args": ["--cvs", "--reverse", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+
+        },
+        {
+            "name": "api_lemmade_sagedusloend",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija",
+            "program": "./api_lemmade_sagedusloend.py",
+            "args": ["--sorted_by_lemma", "--indent=4", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+            //"args": ["--reverse", "--indent=4", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+            //"args": ["--cvs", "--reverse", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+
+        },
+        {
+            "name": "flask_api_indekseerija",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija",
+            "program": "./flask_api_indekseerija.py",
+            //"args": ["--sorted_by_key", "--indent=4", "--lemmastat", "--json={\"content\":\"tee teelik\"}"]
+            // "args": ["--sorted_by_key", "--indent=4", "--lemmastat", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+        },
+        {
             "name": "api_indekseerija",
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}/api_indekseerija",
             "program": "./api_indekseerija.py",
-            "args": ["--sorted_by_key", "--indent=4", "--lemmastat", "--json={\"content\":\"Sarved&Sõrad. Telef +345543 55234. Sarv\"}"]
+            "args": ["--indent=4", "--lemmastat", "--json={\"content\":\"tee teelik\"}"]
+            // "args": ["--sorted_by_key", "--indent=4", "--lemmastat", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
         },
         {
             "name": "demo_lemmatiseerija",
