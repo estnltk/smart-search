@@ -132,9 +132,6 @@ class IDX_STAT:
     def leia_koik_lemmad(self, json_io:List) -> List:
         """
 
-
-
-
         Args:
             json_io (Dict): 
 
@@ -145,7 +142,38 @@ class IDX_STAT:
         Returns:
             List:
 
-        
+        VäljundJSON:
+
+        [   {   "docid": str,   # dokumendi ID
+                "content": str, # dokumendi algtekst
+                "lemmas:
+                {   "LEMMA":
+                    {   "cnt": int, # int = len(stat_dct[LEMMA]["tokens"])
+                        "tokens" :
+                        [   {   "token": str,   # algne tekstisõne
+                                "start": int,   # alguspos tekstis
+                                "end": int      # lõpupositsioon tekstis
+                            }
+                        ]
+                        "fragments":    # liitsõna osasõnade lemmad ja järelliite eemaldamisels saadud lemmad 
+                        [   {   "lemma": str,               # lemma
+                                "liitsõna_osa": bool,       # liitsõna osa (raudteejaamalik -> raud, tee, jaamalik, raudtee, teejaam)
+                                "liide_eemaldatud": bool  
+                            }
+                            # raudteejaamalik ->  [  {"lemma": "raud_tee_jaama=lik", "liitsõna_osa": False, "liide_eemaldatud":False},
+                            #                        {"lemma": "raud_tee_jaam",      "liitsõna_osa": False, "liide_eemaldatud":True },
+                            #                        {"lemma": "raud",     "         "liitsõna_osa": True,  "liide_eemaldatud":False},
+                            #                        {"lemma": "tee",                "liitsõna_osa": True,  "liide_eemaldatud":False},
+                            #                        {"lemma": "jaama=lik",          "liitsõna_osa": True,  "liide_eemaldatud":False},
+                            #                        {"lemma": "jaam",               "liitsõna_osa": True,  "liide_eemaldatud":True },
+                            #                        {"lemma": "raud_tee_",          "liitsõna_osa": True,  "liide_eemaldatud":False},
+                            #                        {"lemma": "tee_jaama=lik",      "liitsõna_osa": True,  "liide_eemaldatud":False},
+                            #                        {"lemma": "tee_jaam",           "liitsõna_osa": True,  "liide_eemaldatud":False}   ]   
+                        ]
+                    }
+                }
+            }
+        ]
 
         """
         try:
@@ -159,9 +187,6 @@ class IDX_STAT:
         except:
             return {"error": "lemmatizer failed"}
 
-        '''
-
-        '''
         stat_dct = {}
         for token in json_io["annotations"]["tokens"]:  # tsükkel üle sõnede
             lisatud_lemmavariandid = []                     # selle massivi abil hoimae meeles, millesed lemma kujud olema juba lisanud
