@@ -10,9 +10,10 @@
             "request": "launch",
             "cwd": "${workspaceFolder}/api_indekseerija",
             "program": "./api_sonede_sagedusloend.py",
-            "args": ["--sorted_by_lemma", "--indent=4", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+            //"args": ["--indent=4", "--sorted_by_token", "--json={\"content\":\"allmaaraudteejaamas\"}"]
+            "args": ["--indent=4", "--sorted_by_token", "--json={\"content\":\"Daam ja härra. Daam sülekoeraga ja härra hundikoeraga.\"}"]
             //"args": ["--reverse", "--indent=4", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
-            //"args": ["--cvs", "--reverse", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+            //"args": ["--cvs", "--reverse", "--json={\"content\":\"raudteejaamalikuga müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
 
         },
         {
