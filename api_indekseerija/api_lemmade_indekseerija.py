@@ -13,7 +13,7 @@ sõnestamise ja morf analüüsi konteinereid.
 Programmi saab kiiremaks kui vastavad konteinerid töötavad "lähemal"
 '''
 
-class IDX_STAT:
+class LEMMADE_IDX:
     VERSION="2023.04.06"
     TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process'
     LEMMATIZER='https://smart-search.tartunlp.ai/api/lemmatizer/process'
@@ -129,7 +129,7 @@ class IDX_STAT:
                            sona += '_'
                         self.fragmendi_lemmatiseerimine_ja_lisamine(sona, inf["fragments"])
 
-    def leia_koik_lemmad(self, json_io:List) -> List:
+    def leia_koik_lemmad_1(self, json_io:Dict, args_sorted:bool, args_reverse: bool) -> Dict:
         """
 
         Args:
@@ -137,43 +137,43 @@ class IDX_STAT:
 
         SisendJSON:
 
-        [{"docid": str, "content": str}]
+        {"docid": str, "content": str}
 
         Returns:
             List:
 
         VäljundJSON:
 
-        [   {   "docid": str,   # dokumendi ID
-                "content": str, # dokumendi algtekst
-                "lemmas:
-                {   "LEMMA":
-                    {   "cnt": int, # int = len(stat_dct[LEMMA]["tokens"])
-                        "tokens" :
-                        [   {   "token": str,   # algne tekstisõne
-                                "start": int,   # alguspos tekstis
-                                "end": int      # lõpupositsioon tekstis
-                            }
-                        ]
-                        "fragments":    # liitsõna osasõnade lemmad ja järelliite eemaldamisels saadud lemmad 
-                        [   {   "lemma": str,               # lemma
-                                "liitsõna_osa": bool,       # liitsõna osa (raudteejaamalik -> raud, tee, jaamalik, raudtee, teejaam)
-                                "liide_eemaldatud": bool  
-                            }
-                            # raudteejaamalik ->  [  {"lemma": "raud_tee_jaama=lik", "liitsõna_osa": False, "liide_eemaldatud":False},
-                            #                        {"lemma": "raud_tee_jaam",      "liitsõna_osa": False, "liide_eemaldatud":True },
-                            #                        {"lemma": "raud",     "         "liitsõna_osa": True,  "liide_eemaldatud":False},
-                            #                        {"lemma": "tee",                "liitsõna_osa": True,  "liide_eemaldatud":False},
-                            #                        {"lemma": "jaama=lik",          "liitsõna_osa": True,  "liide_eemaldatud":False},
-                            #                        {"lemma": "jaam",               "liitsõna_osa": True,  "liide_eemaldatud":True },
-                            #                        {"lemma": "raud_tee_",          "liitsõna_osa": True,  "liide_eemaldatud":False},
-                            #                        {"lemma": "tee_jaama=lik",      "liitsõna_osa": True,  "liide_eemaldatud":False},
-                            #                        {"lemma": "tee_jaam",           "liitsõna_osa": True,  "liide_eemaldatud":False}   ]   
-                        ]
-                    }
+        {   "docid": str,   # dokumendi ID
+            "content": str, # dokumendi algtekst
+            "lemmas:
+            {   "LEMMA":
+                {   "cnt": int, # int = len(idx_dct[LEMMA]["tokens"])
+                    "tokens" :
+                    [   {   "token": str,   # algne tekstisõne
+                            "start": int,   # alguspos tekstis
+                            "end": int      # lõpupositsioon tekstis
+                        }
+                    ]
+                    "fragments":    # liitsõna osasõnade lemmad ja järelliite eemaldamisels saadud lemmad 
+                    [   {   "lemma": str,               # lemma
+                            "liitsõna_osa": bool,       # liitsõna osa (raudteejaamalik -> raud, tee, jaamalik, raudtee, teejaam)
+                            "liide_eemaldatud": bool  
+                        }
+                        # raudteejaamalik ->  [  {"lemma": "raud_tee_jaama=lik", "liitsõna_osa": False, "liide_eemaldatud":False},
+                        #                        {"lemma": "raud_tee_jaam",      "liitsõna_osa": False, "liide_eemaldatud":True },
+                        #                        {"lemma": "raud",     "         "liitsõna_osa": True,  "liide_eemaldatud":False},
+                        #                        {"lemma": "tee",                "liitsõna_osa": True,  "liide_eemaldatud":False},
+                        #                        {"lemma": "jaama=lik",          "liitsõna_osa": True,  "liide_eemaldatud":False},
+                        #                        {"lemma": "jaam",               "liitsõna_osa": True,  "liide_eemaldatud":True },
+                        #                        {"lemma": "raud_tee_",          "liitsõna_osa": True,  "liide_eemaldatud":False},
+                        #                        {"lemma": "tee_jaama=lik",      "liitsõna_osa": True,  "liide_eemaldatud":False},
+                        #                        {"lemma": "tee_jaam",           "liitsõna_osa": True,  "liide_eemaldatud":False}   ]   
+                    ]
                 }
             }
-        ]
+        }
+        
 
         """
         try:
@@ -187,7 +187,7 @@ class IDX_STAT:
         except:
             return {"error": "lemmatizer failed"}
 
-        stat_dct = {}
+        idx_dct = {}
         for token in json_io["annotations"]["tokens"]:  # tsükkel üle sõnede
             lisatud_lemmavariandid = []                     # selle massivi abil hoimae meeles, millesed lemma kujud olema juba lisanud
             for mrf in token["features"]["mrf"]:            # tsükkel üle sama sõne alüüsivariantide
@@ -196,15 +196,15 @@ class IDX_STAT:
                 if mrf["lemma_ma"] in lisatud_lemmavariandid:   # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
                     continue                                    # ei lisa sama kujuga lemmat mitu korda
                 lisatud_lemmavariandid.append(mrf["lemma_ma"])  # jätame meelde, et sellise lemma lisame
-                if mrf["lemma_ma"] not in stat_dct:             # pole tekstist sellist lemmat varem saanud
-                    stat_dct[mrf["lemma_ma"]] = {               # lisame lemmaga seotud info
+                if mrf["lemma_ma"] not in idx_dct:             # pole tekstist sellist lemmat varem saanud
+                    idx_dct[mrf["lemma_ma"]] = {               # lisame lemmaga seotud info
                         "cnt":1, 
                         "tokens": [{"token": token["features"]["token"], "start": token["start"], "end":token["end"]}],
                         "fragments": []}
-                    self.leia_muud_tykiksesd(mrf["lemma_ma"], stat_dct[mrf["lemma_ma"]])
+                    self.leia_muud_tykiksesd(mrf["lemma_ma"], idx_dct[mrf["lemma_ma"]])
                 else:                                           # sellist lemmat oleme juba näinud...
-                    stat_dct[mrf["lemma_ma"]]["cnt"] += 1       # suurendame loendajat ja jätame meelde, kus kohas ta tekstis esines
-                    stat_dct[mrf["lemma_ma"]]["tokens"].append({"token": token["features"]["token"], "start": token["start"], "end":token["end"]})
+                    idx_dct[mrf["lemma_ma"]]["cnt"] += 1       # suurendame loendajat ja jätame meelde, kus kohas ta tekstis esines
+                    idx_dct[mrf["lemma_ma"]]["tokens"].append({"token": token["features"]["token"], "start": token["start"], "end":token["end"]})
 
 
 
@@ -214,12 +214,16 @@ class IDX_STAT:
                     puhas_fragment = mrf["lemma_ma"][:liite_alguspos].replace('_', '') # eemaldame järelliite ja liitsõnapiirid
                     lemmad = self.morfi(puhas_fragment)                         # saadud sõne morfime
                     for lemma in lemmad:                                        # lisame leitud lemmad 
-                        stat_dct[mrf["lemma_ma"]]["fragments"].append({"lemma":lemma, "liitsõna_osa":False, "liide_eemaldatud":True})
+                        idx_dct[mrf["lemma_ma"]]["fragments"].append({"lemma":lemma, "liitsõna_osa":False, "liide_eemaldatud":True})
         #if sorted_by_key is True:
         #    ordered_stat = OrderedDict(sorted(stat.items(), reverse=sortorder_reverse, key=lambda t: t[0]))
         #else:
         #    ordered_stat = OrderedDict(sorted(stat.items(), reverse=sortorder_reverse, key=lambda t: t[1]))
-        return stat_dct
+        return idx_dct
+
+    def leia_koik_lemmad_1(self, json_io:List, args_sorted:bool, args_reverse: bool) -> List:
+        for doc in json_io:
+            self.leia_koik_lemmad_1(doc, args_sorted, args_reverse)
 
 if __name__ == '__main__':
     '''
@@ -231,21 +235,21 @@ if __name__ == '__main__':
     import argparse
 
     argparser = argparse.ArgumentParser(allow_abbrev=False)
-    argparser.add_argument('-d', '--lemmastat', action="store_true", help='use debug mode')
-    #argparser.add_argument('-s', '--sorted_by_key', action="store_true", help='sorted by key')
-    #argparser.add_argument('-r', '--reverse', action="store_true", help='reverse sort order')
+    argparser.add_argument('-s', '--sorted', action="store_true", help='sorted by key')
+    argparser.add_argument('-r', '--reverse', action="store_true", help='reverse sort order')
     argparser.add_argument('-j', '--json', type=str, help='json input')
     argparser.add_argument('-i', '--indent', type=int, default=None, help='indent for json output, None=all in one line')
+    argparser.add_argument('-c', '--cvs', action="store_true", help='CVS-like output')
     args = argparser.parse_args()
     json_io = {}
-    idx_stat = IDX_STAT()
+    idx_stat = LEMMADE_IDX()
     if args.json is not None:
         json_io = idx_stat.string2json(args.json)
         if "error" in json_io:
             json.dump(json_io, sys.stdout, indent=args.indent)
             sys.exit(1)
         if args.lemmastat is True:
-            json.dump(IDX_STAT().leia_koik_lemmad(json_io), sys.stdout, indent=args.indent, ensure_ascii=False)
+            json.dump(LEMMADE_IDX().leia_koik_lemmad(json_io, args.sorted, args.reverse), sys.stdout, indent=args.indent, ensure_ascii=False)
     else:
         for line in sys.stdin:
             line = line.strip()
@@ -256,6 +260,6 @@ if __name__ == '__main__':
                 json.dump(json_io, sys.stdout, indent=args.indent)
                 sys.exit(1)
             if args.lemmastat is True:
-                json.dump(IDX_STAT().leia_koik_lemmad(json_io), sys.stdout, indent=args.indent, ensure_ascii=False)           
+                json.dump(LEMMADE_IDX().leia_koik_lemmad(json_io, args.sorted, args.reverse), sys.stdout, indent=args.indent, ensure_ascii=False)           
                 sys.stdout.write('\n')
 

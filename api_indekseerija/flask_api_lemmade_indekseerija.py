@@ -30,7 +30,7 @@ import json
 import argparse
 from flask import Flask, request, jsonify
 
-import api_indekseerija
+import api_lemmade_indekseerija
 
 app = Flask("leia_koik_lemmad")
 
@@ -41,7 +41,7 @@ def leia_lemmad():
         request.json["warnings"] = ["Missing content"]
         return jsonify(request.json)
     try:   
-        json_response = api_indekseerija.IDX_STAT().leia_koik_lemmad(request.json)
+        json_response = api_lemmade_indekseerija.LEMMADE_IDX().leia_koik_lemmad(request.json)
     except Exception as e:
         json_response = e
     return jsonify(json_response)

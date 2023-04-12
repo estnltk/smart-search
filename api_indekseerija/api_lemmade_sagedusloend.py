@@ -130,7 +130,7 @@ if __name__ == '__main__':
     import argparse
 
     argparser = argparse.ArgumentParser(allow_abbrev=False)
-    argparser.add_argument('-s', '--sorted_by_lemma', action="store_true", help='sorted by lemma')
+    argparser.add_argument('-s', '--sorted', action="store_true", help='sorted by key')
     argparser.add_argument('-r', '--reverse', action="store_true", help='reverse sort order')
     argparser.add_argument('-j', '--json', type=str, help='json input')
     argparser.add_argument('-i', '--indent', type=int, default=None, help='indent for json output, None=all in one line')

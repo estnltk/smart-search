@@ -8,12 +8,12 @@ from typing import Dict, List
 from collections import OrderedDict
 
 '''
-See programm kasutab lemmade leidmiseks ja sõnestamiseks Tartu Ülikooli pilves olevaid
+See programm kasutab Tartu Ülikooli pilves olevaid
 sõnestamise ja morf analüüsi konteinereid.
 Programmi saab kiiremaks kui vastavad konteinerid töötavad "lähemal".
 '''
 
-class IDX_STAT_LEMMAS:
+class SONEDE_IDX:
     VERSION="2023.04.06"
     TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process'
     LEMMATIZER='https://smart-search.tartunlp.ai/api/lemmatizer/process'
@@ -36,8 +36,6 @@ class IDX_STAT_LEMMAS:
         self.json_io = {}
         try:
             self.json_io = json.loads(str)
-            if "content" not in self.json_io:
-                return {'error': 'Missing "content" in JSON'} 
             return self.json_io
         except:
             return {"error": "JSON parse error"}
@@ -69,7 +67,7 @@ class IDX_STAT_LEMMAS:
                     token["features"]["tokens"].append(tkn)    # lisame uue tüvi+lõpp stringi, sellist veel polnud
         return self.json_io
     
-    def leia_soned_osasoned(self, json_io:Dict, sorted_by_token:bool, sortorder_reverse:bool) -> Dict:
+    def leia_soned_osasoned_1(self, json_in:Dict, sorted_by_token:bool, sortorder_reverse:bool) -> None:
         """_summary_
 
         Args:
@@ -83,23 +81,22 @@ class IDX_STAT_LEMMAS:
         Returns:
             Dict: _description_
         """
-        self.json_io = json_io
         try:                                                # sõnestame
-            self.json_io=json.loads(requests.post(self.TOKENIZER, json=self.json_io).text)
+            self.json_io=json.loads(requests.post(self.TOKENIZER, json=json_in).text)
         except:                                             # sõnestamine äpardus
             raise Exception({"warning":'Probleemid sõnestamise veebiteenusega'})
 
-        stat_dct = {}
+        idx_dct = {}
         self.morfi()                                        # leiame liitsõnapiirid ja sobiva sõnaliigiga tüvi+lõpud
         for token in self.json_io["annotations"]["tokens"]: # tsükkel üle sõnede
             if len(token["features"]["tokens"])==0:             # kui pole ühtegi meid huvitava sõnaliigiga...
                 continue                                            # ...laseme üle
             for tkn in token["features"]["tokens"]:             # tsükkel üle leitud liitsõnapiiridega sõnede
                 puhas_tkn = tkn.replace('_', '').replace('=', '')
-                if puhas_tkn in stat_dct:                       # kui selline sõne juba oli...
-                    stat_dct[puhas_tkn].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
+                if puhas_tkn in idx_dct:                       # kui selline sõne juba oli...
+                    idx_dct[puhas_tkn].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
                 else:                                           # esimene selline...     
-                    stat_dct[puhas_tkn] = [{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]
+                    idx_dct[puhas_tkn] = [{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]
                 osasonad = tkn.replace('=', '').split('_')  # tükeldame liitsõna piirilt
                 if len(osasonad) <= 1:                      # kui pole liitsõna...
                     continue                                    # ...laseme üle
@@ -123,53 +120,63 @@ class IDX_STAT_LEMMAS:
                             else:
                                 fragmendid.append(sona)
                 for fragment in fragmendid:
-                    if fragment in stat_dct:                # kui selline sõne juba oli...
-                        stat_dct[fragment].append({"liitsõna_osa":True, "start": token["start"], "end":token["end"]})
+                    if fragment in idx_dct:                # kui selline sõne juba oli...
+                        idx_dct[fragment].append({"liitsõna_osa":True, "start": token["start"], "end":token["end"]})
                     else:                                   # esimene selline...     
-                        stat_dct[fragment] = [{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}] # ...lisame uue kirje 
+                        idx_dct[fragment] = [{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}] # ...lisame uue kirje 
 
         # järjestame vastavalt etteantud parameetritele
         if sorted_by_token is True:
-            ordered_stat_dct = OrderedDict(sorted(stat_dct.items(), reverse=sortorder_reverse, key=lambda t: t[0])) 
-        else:       
-            ordered_stat_dct = OrderedDict(sorted(stat_dct.items(), reverse=sortorder_reverse, key=lambda t: t[1]['count']))
+            return OrderedDict(sorted(idx_dct.items(), reverse=sortorder_reverse, key=lambda t: t[0])) 
+ 
+        return idx_dct
 
-        return ordered_stat_dct
+    def leia_soned_osasoned(self, json_io:List, sorted_by_token:bool, sortorder_reverse:bool) -> List:
+        for doc in json_in:
+            if "annotations" not in doc:
+                doc["annotations"] = {}
+            doc["annotations"]["index"] = self.leia_soned_osasoned_1(doc, sorted_by_token, sortorder_reverse)
+        return json_io
 
-    def sort_by_lemma(self, i):
-        return i[0]
     
-    def sort_by_count(self, i):
-        return i[1]
 
 if __name__ == '__main__':
     '''
     Ilma argumentideta loeb JSONit std-sisendist ja kirjutab tulemuse std-väljundisse
     Muidu JSON käsirealt lipu "--json=" tagant.
+    [   {   "docid": str,   // dokumendi ID
+            "content": str, // dokumendi tekst ("plain text", märgendus eraldi tõstetud)
+            "annotations":
+            {   "tags":     // tekstist väljatõstetud HTML/XML vms märgendid
+                [   {   "start": int,   // alguspositsioon
+                        "end", int,     // lõpupositsioon
+                        "tag": str      // HTML/XML vms märgend
+                    }
+                ]
+            }
+        }
+    ]
+
+    Välja:
     {   "docid": str,   // dokumendi ID
-        "content": str, // dokumendi tekst ("plain text", märgendus eraldi tõstetud)
+        "content": str, // dokumendi tekst ("plain text", märgendus tõstetud "tags" alla)
         "annotations":
-        {   "tags":     // tekstist väljatõstetud HTML/XML vms märgendid
+        {   "index":
+            {   SÕNE: // string tekstist, esinemiste arv == "positions" massiivi pikkus
+                {   "positions": 
+                    [   {   "start": int,           // alguspostsioon jooksvas tekst
+                            "end": int,             // lõpupostsioon jooksvas tekst  
+                            "liitsõna_osa": bool    // SÕNE on liitsõna osa, vahel korrektne, vahel mitte
+                        }
+                    ]
+                }
+            }
+            "tags":     // tekstist väljatõstetud HTML/XML vms märgendid
             [   {   "start": int,   // alguspositsioon
                     "end", int,     // lõpupositsioon
                     "tag": str      // HTML/XML vms märgend
                 }
-            ]
-        }
-    }
-
-    Välja:
-    {   "docid": str,   // dokumendi ID
-        "content": str, // dokumendi tekst ("plain text", märgendus eraldi tõstetud)
-        "index":
-        {   SÕNE: // string tekstist, esinemiste arv == "positions" massiivi pikkus
-            {   "liitsõna_osa": bool,   // SÕNE on liitsõna osa, vahel korrektne, vahel mitte
-                "positions":            // algus- ja lõpupostsioonid jooksvas tekstis
-                [   {   "start": int,
-                        "end": int
-                    }
-                ]
-            }
+            ]   
         }
     }
     
@@ -186,31 +193,35 @@ if __name__ == '__main__':
 
     json_io = {}
     if args.json is not None:
-        json_io = IDX_STAT_LEMMAS().string2json(args.json)
-        if "error" in json_io:
-            json.dump(json_io, sys.stdout, indent=args.indent)
+        json_in = SONEDE_IDX().string2json(args.json)
+        if "error" in json_in:
+            json.dump(json_in, sys.stdout, indent=args.indent)
             sys.exit(1)
-        ordered_stat_dct = IDX_STAT_LEMMAS().leia_soned_osasoned(json_io, args.sorted_by_token, args.reverse)
+        idx = SONEDE_IDX().leia_soned_osasoned(json_in, args.sorted_by_token, args.reverse)
         if args.csv is True:
-            for token in ordered_stat_dct:
-                sys.stdout.write(f'{token}\t{ordered_stat_dct[token]["count"]}\t{ordered_stat_dct[token]["liitsõna_osa"]}\n')
+            for doc in idx:
+                for i in doc["annotations"]["index"]:
+                    for t in doc["annotations"]["index"][i]:
+                        sys.stdout.write(f'{i}\t{t["liitsõna_osa"]}\t{t["start"]}\t{t["end"]}\t{doc["docid"]}\n')
         else:
-            json.dump(ordered_stat_dct, sys.stdout, indent=args.indent, ensure_ascii=False)
+            json.dump(idx, sys.stdout, indent=args.indent, ensure_ascii=False)
             sys.stdout.write('\n')
     else:
         for line in sys.stdin:
             line = line.strip()
             if len(line) <= 0:
                 continue
-            json_io = IDX_STAT_LEMMAS().string2json(line)
-            if "error" in json_io:
-                json.dump(json_io, sys.stdout, indent=args.indent)
+            json_in = SONEDE_IDX().string2json(line)
+            if "error" in json_in:
+                json.dump(json_in, sys.stdout, indent=args.indent)
                 sys.exit(1)
-            ordered_stat_dct = IDX_STAT_LEMMAS().leia_soned_osasoned(json_io, args.sorted_by_token, args.reverse)
+            idx = SONEDE_IDX().leia_soned_osasoned(json_in, args.sorted_by_token, args.reverse)
             if args.csv is True:
-                for token in ordered_stat_dct:
-                    sys.stdout.write(f'{token}\t{ordered_stat_dct[token]["count"]}\t{ordered_stat_dct[token]["liitsõna_osa"]}\n')
+                for doc in idx:
+                    for i in doc["annotations"]["index"]:
+                        for t in doc["annotations"]["index"][i]:
+                            sys.stdout.write(f'{i}\t{t["liitsõna_osa"]}\t{t["start"]}\t{t["end"]}\t{doc["docid"]}\n')
             else:
-                json.dump(ordered_stat_dct, sys.stdout, indent=args.indent, ensure_ascii=False)           
+                json.dump(idx, sys.stdout, indent=args.indent, ensure_ascii=False)
                 sys.stdout.write('\n')
 
