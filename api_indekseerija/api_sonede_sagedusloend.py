@@ -21,6 +21,8 @@ class IDX_STAT_LEMMAS:
 
     ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 
+    json_io = {}
+
     def string2json(self, str:str) -> Dict:
         """JSONit sisaldav string püütoni DICTiks
 
@@ -31,91 +33,100 @@ class IDX_STAT_LEMMAS:
         Returns:
             Dict: sisendstringist saadud püütoni DICT
         """
-        json_io = {}
+        self.json_io = {}
         try:
-            json_io = json.loads(str)
-            if "content" not in json_io:
+            self.json_io = json.loads(str)
+            if "content" not in self.json_io:
                 return {'error': 'Missing "content" in JSON'} 
-            return json_io
+            return self.json_io
         except:
             return {"error": "JSON parse error"}
         
 
-    def morfi(self, token:str)->List:
-        """Morfime sisendstringi ja korjame välja unikaalsete tüvi+lõpp stringide massiivi
-
-        Args:
-            token (str): morfitav sõne
+    def morfi(self)->None:
+        """_summary_
 
         Raises:
-            Exception: Exception('Probleemid morf analüüsi veebiteenusega')
+            Exception: _description_
 
         Returns:
-            List: unikaalsete lemmade massiivi
+            _type_: _description_
         """
         # genereerime morfi päringu (üks sõne, tundmatute sõnade oletamisega
-        json_io = {"params":{"vmetajson":["--stem", "--guess"]}, "annotations":{"tokens":[{"features":{"token": token}}]}} 
+        self.json_io["params"] = {"vmetajson":["--stem", "--guess"]} 
         try:
-            json_io=json.loads(requests.post(self.ANALYSER, json=json_io).text)
+            self.json_io=json.loads(requests.post(self.ANALYSER, json=self.json_io).text)
         except:
             raise Exception({"warning":'Probleemid morf analüüsi veebiteenusega'})
-        soned = []                                     # selle massiivi abil hoiame meeles, millesed lemma kujud olema juba leidnud
-        for token in json_io["annotations"]["tokens"]:  # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)
+        soned = []                                      # selle massiivi abil hoiame meeles, millesed lemma kujud olema juba leidnud
+        for token in self.json_io["annotations"]["tokens"]:  # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)
+            token["features"]["tokens"] = []     # siia massiivi korjame unikaalsed tüvi+lõpp stringid
             for mrf in token["features"]["mrf"]:            # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
-                if self.ignore_pos.find(mrf["pos"]) != -1:      # selle sõnaliiiga lemmasid...
+                if self.ignore_pos.find(mrf["pos"]) != -1:      # selle sõnaliiiga tüvesid...
                     continue                                    # ...ignoreerime, neid ei indekseeri
-                if mrf["ending"] != '0':
-                    mrf["stem"] += mrf["ending"]
-                if mrf["stem"] not in soned: # sõne morf analüüside hulgas võib sama kujuga tüvi erineda ainult käände/põõrde poolest
-                    soned.append(mrf["stem"])    # lisame uue tüvi+lõpp stringi, sellist veel polnud
-        return soned                                   # erinevate tüvi+lõpp stringide loend
+                tkn = mrf["stem"]+mrf["ending"] if mrf["ending"] != '0' else mrf["stem"]
+                if tkn not in token["features"]["tokens"]: # sõne morf analüüside hulgas võib sama kujuga tüvi erineda ainult käände/põõrde poolest
+                    token["features"]["tokens"].append(tkn)    # lisame uue tüvi+lõpp stringi, sellist veel polnud
+        return self.json_io
+    
+    def leia_soned_osasoned(self, json_io:Dict, sorted_by_token:bool, sortorder_reverse:bool) -> Dict:
+        """_summary_
 
-    def leia_soned_osasoned(self, json_io:List, sorted_by_token:bool, sortorder_reverse:bool) -> List:
-        try:
-            json_io=json.loads(requests.post(self.TOKENIZER, json=json_io).text)
-        except:
-            return {"error": "tokenization failed"}
+        Args:
+            json_io (Dict): _description_
+            sorted_by_token (bool): _description_
+            sortorder_reverse (bool): _description_
+
+        Raises:
+            Exception: _description_
+
+        Returns:
+            Dict: _description_
+        """
+        self.json_io = json_io
+        try:                                                # sõnestame
+            self.json_io=json.loads(requests.post(self.TOKENIZER, json=self.json_io).text)
+        except:                                             # sõnestamine äpardus
+            raise Exception({"warning":'Probleemid sõnestamise veebiteenusega'})
 
         stat_dct = {}
-        stat_list = []
-        for token in json_io["annotations"]["tokens"]:      # tsükkel üle sõnede
-            soned = self.morfi(token["features"]["token"])  # leiame algses sõnes liitsõnapiirid
-            if len(soned) == 0:                             # kui pole meid huvitava sõnaligiga...
-                continue                                        # ...laseme üle
-            if token["features"]["token"] in stat_dct:      # kui selline sõne juba oli...
-                if stat_dct[token["features"]["token"]]["liitsõna_osa"] is False: # ...ja oli terviksõne, suurendame loendajat
-                    stat_dct[token["features"]["token"]]["count"] += 1
-            else:                                           # esimene selline...     
-                stat_dct[token["features"]["token"]] = {"count": 1, "liitsõna_osa":False} # ...lisame uue kirje
-            for sone in soned:                              # lisame liitsõna osasõnad, kui neid oli
-                osasonad = sone.replace('=', '').split('_')
+        self.morfi()                                        # leiame liitsõnapiirid ja sobiva sõnaliigiga tüvi+lõpud
+        for token in self.json_io["annotations"]["tokens"]: # tsükkel üle sõnede
+            if len(token["features"]["tokens"])==0:             # kui pole ühtegi meid huvitava sõnaliigiga...
+                continue                                            # ...laseme üle
+            for tkn in token["features"]["tokens"]:             # tsükkel üle leitud liitsõnapiiridega sõnede
+                puhas_tkn = tkn.replace('_', '').replace('=', '')
+                if puhas_tkn in stat_dct:                       # kui selline sõne juba oli...
+                    stat_dct[puhas_tkn].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
+                else:                                           # esimene selline...     
+                    stat_dct[puhas_tkn] = [{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]
+                osasonad = tkn.replace('=', '').split('_')  # tükeldame liitsõna piirilt
                 if len(osasonad) <= 1:                      # kui pole liitsõna...
                     continue                                    # ...laseme üle
                 fragmendid = []                             # siia hakkame korjame liitsõna tükikesi
                 for idx, osasona in enumerate(osasonad):    # tsükkel ole liitsõna osasõnade
                     if idx == 0:                            # algab esimese osasõnaga
                         sona = osasonad[idx]
-                        fragmendid.append(sona+'_')                                                           
+                        fragmendid.append(sona)                                                           
                         for idx2 in range(idx+1, len(osasonad)-1):
                             sona += osasonad[idx2]
-                            fragmendid.append(sona+'_')
+                            fragmendid.append(sona)
                     elif idx == len(osasonad)-1:            # lõppeb viimase osasõnaga
-                        fragmendid.append('_'+osasona)
+                        fragmendid.append(osasona)
                     else:                                   # vahepealsed jupid (kui liitsõnas 3 või enam komponenti)
-                        fragmendid.append('_'+osasona+'_')
+                        fragmendid.append(osasona)
                         sona = osasonad[idx]
                         for idx2 in range(idx+1, len(osasonad)):
                             sona += osasonad[idx2]
                             if idx2 < len(osasonad)-1:
-                                fragmendid.append('_'+sona+'_')
+                                fragmendid.append(sona)
                             else:
-                                fragmendid.append('_'+sona)
+                                fragmendid.append(sona)
                 for fragment in fragmendid:
                     if fragment in stat_dct:                # kui selline sõne juba oli...
-                        if stat_dct[fragment]["liitsõna_osa"] is True: # ...ja oli liitsõna osa, suurendame loendajat
-                            stat_dct[fragment]["count"] += 1
+                        stat_dct[fragment].append({"liitsõna_osa":True, "start": token["start"], "end":token["end"]})
                     else:                                   # esimene selline...     
-                        stat_dct[fragment] = {"count": 1, "liitsõna_osa":True} # ...lisame uue kirje 
+                        stat_dct[fragment] = [{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}] # ...lisame uue kirje 
 
         # järjestame vastavalt etteantud parameetritele
         if sorted_by_token is True:
@@ -135,7 +146,32 @@ if __name__ == '__main__':
     '''
     Ilma argumentideta loeb JSONit std-sisendist ja kirjutab tulemuse std-väljundisse
     Muidu JSON käsirealt lipu "--json=" tagant.
-    [{"docid": str, "content": str}]
+    {   "docid": str,   // dokumendi ID
+        "content": str, // dokumendi tekst ("plain text", märgendus eraldi tõstetud)
+        "annotations":
+        {   "tags":     // tekstist väljatõstetud HTML/XML vms märgendid
+            [   {   "start": int,   // alguspositsioon
+                    "end", int,     // lõpupositsioon
+                    "tag": str      // HTML/XML vms märgend
+                }
+            ]
+        }
+    }
+
+    Välja:
+    {   "docid": str,   // dokumendi ID
+        "content": str, // dokumendi tekst ("plain text", märgendus eraldi tõstetud)
+        "index":
+        {   SÕNE: // string tekstist, esinemiste arv == "positions" massiivi pikkus
+            {   "liitsõna_osa": bool,   // SÕNE on liitsõna osa, vahel korrektne, vahel mitte
+                "positions":            // algus- ja lõpupostsioonid jooksvas tekstis
+                [   {   "start": int,
+                        "end": int
+                    }
+                ]
+            }
+        }
+    }
     
     '''
     import argparse
