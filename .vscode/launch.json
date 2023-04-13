@@ -11,9 +11,9 @@
             "cwd": "${workspaceFolder}/api_indekseerija",
             "program": "./api_sonede_indekseerija.py",
             //"args": ["--indent=4", "--sorted_by_token", "--json={\"content\":\"allmaaraudteejaamas\"}"]
-            "args": ["--indent=4", "--sorted_by_token", "--json=[{\"docid\":\"DOC_1\", \"content\":\"Daam ja härra. Daam sülekoeraga ja härra hundikoeraga.\"}]"]
+            "args": ["--csv", "--indent=4", "--sorted", "--json={\"sources\": {\"DOC_1\": {\"content\":\"Daam koerakesega.\"},\"DOC_2\": {\"content\":\"Härra ja daam. Daam sülekoeraga ja härra hundikoeraga.\"}}}"]
             //"args": ["--reverse", "--indent=4", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
-            //"args": ["--cvs", "--reverse", "--json={\"content\":\"raudteejaamalikuga müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+            //"args": ["--csv", "--reverse", "--json={\"content\":\"raudteejaamalikuga müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
 
         },
         {
