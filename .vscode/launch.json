@@ -5,6 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask_api_sonede_indekseerija",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija",
+            "program": "./flask_api_sonede_indekseerija.py",
+            "args": []
+            //"args": ["--indent=4", "--sorted_by_token", "--json={\"content\":\"allmaaraudteejaamas\"}"]
+            //"args": ["--csv", "--indent=4", "--sorted", "--json={\"sources\": {\"DOC_1\": {\"content\":\"Daam koerakesega.\"},\"DOC_2\": {\"content\":\"Härra ja daam. Daam sülekoeraga ja härra hundikoeraga.\"}}}"]
+            //"args": ["--reverse", "--indent=4", "--json={\"content\":\"raudteejaamalik müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+            //"args": ["--csv", "--reverse", "--json={\"content\":\"raudteejaamalikuga müüdud läbimüüdud raudtee allmaaraudteejaam raudtee raudteejaam lastevorstiga jaamalik\"}"]
+
+        },
+        {
             "name": "api_sonede_indekseerija",
             "type": "python",
             "request": "launch",

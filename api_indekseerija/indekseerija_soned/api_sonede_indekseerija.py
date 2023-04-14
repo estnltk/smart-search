@@ -221,10 +221,10 @@ if __name__ == '__main__':
                 sys.exit(1)
             idx = SONEDE_IDX().leia_soned_osasoned(json_in, args.sorted, args.reverse)
             if args.csv is True:
-                for doc in idx:
-                    for i in doc["annotations"]["index"]:
-                        for t in doc["annotations"]["index"][i]:
-                            sys.stdout.write(f'{i}\t{t["liitsõna_osa"]}\t{doc["content"][t["start"]:t["end"]]}\t{doc["docid"]}\t{t["start"]}\t{t["end"]}\n')
+                for sone in idx["index"]:
+                    for docid in idx["index"][sone]:
+                        for k in idx["index"][sone][docid]:
+                            sys.stdout.write(f'{sone}\t{k["liitsõna_osa"]}\t{idx["sources"][docid]["content"][k["start"]:k["end"]]}\t{docid}\t{k["start"]}\t{k["end"]}\n')
             else:
                 json.dump(idx, sys.stdout, indent=args.indent, ensure_ascii=False)
                 sys.stdout.write('\n')
