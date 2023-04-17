@@ -13,8 +13,40 @@ sõnestamise ja morf analüüsi konteinereid.
 Programmi saab kiiremaks kui vastavad konteinerid töötavad "lähemal".
 '''
 
+'''
+Ilma argumentideta loeb JSONit std-sisendist ja kirjutab tulemuse std-väljundisse
+Muidu JSON käsirealt lipu "--json=" tagant.
+{   "sources":
+    {   DOCID:   // dokumendi ID
+        {   "content": str  // dokumendi tekst ("plain text", märgendus vms teraldi tõstetud)
+            // dokumendi kohta käiv lisainfo pane siia...
+        }
+    }
+}
+
+Välja:
+{   "sources":
+    {   DOCID:   // dokumendi ID
+        {   "content": str  // dokumendi tekst ("plain text", märgendus vms teraldi tõstetud)
+            // dokumendi kohta käiv lisainfo, kui see oli algses JSONis
+        }
+    }
+    "index":
+    {   SÕNE: // string tekstist, esinemiste arv == "positions" massiivi pikkus
+        {   DOCID:  // dokumendi ID
+            [   {   "start": int,               // alguspostsioon jooksvas tekst
+                    "end": int,                 // lõpupostsioon jooksvas tekst  
+                    "liitsõna_osa": bool,       // SÕNE on liitsõna osa, vahel korrektne, vahel mitte, mõistlik oleks võtta ainult liitsõna viimane komponent
+                    // "järeliide_eemaldatud:bool  // kui järelliiteid üldse käsitleda, siis väikest hulka eriti regulaarseid ja sagedasi
+                }
+            ]
+        }
+    }
+}
+'''
+
 class SONEDE_IDX:
-    VERSION="2023.04.06"
+    VERSION="2023.04.17"
     TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process'
     LEMMATIZER='https://smart-search.tartunlp.ai/api/lemmatizer/process'
     ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process'
@@ -140,9 +172,9 @@ class SONEDE_IDX:
                             if docid in self.json_io["index"][puhas_tkn]:   # ...selles dokumendis
                                     self.json_io["index"][puhas_tkn][docid].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
                             else:                                           # ...polnud selles dokumendis
-                                self.json_io["index"][puhas_tkn][docid] = [{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]
+                                self.json_io["index"][puhas_tkn][docid] = [{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]
                         else:                                           # ...polnud seni üheski dokumendis                               
-                            self.json_io["index"][puhas_tkn] = {docid:[{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]}
+                            self.json_io["index"][puhas_tkn] = {docid:[{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]}
             del self.json_io["sources"][docid]["annotations"]["sentences"] # kustutame morf analüüsist järgi jäänud mudru
             del self.json_io["sources"][docid]["annotations"]["tokens"]
             if len(self.json_io["sources"][docid]["annotations"]) == 0:
@@ -154,38 +186,6 @@ class SONEDE_IDX:
         return self.json_io
 
 if __name__ == '__main__':
-    '''
-    Ilma argumentideta loeb JSONit std-sisendist ja kirjutab tulemuse std-väljundisse
-    Muidu JSON käsirealt lipu "--json=" tagant.
-    {   "sources":
-        {   DOCID:   // dokumendi ID
-            {   "content": str  // dokumendi tekst ("plain text", märgendus vms teraldi tõstetud)
-                // dokumendi kohta käiv lisainfo pane siia...
-            }
-        }
-    }
-
-    Välja:
-    {   "sources":
-        {   DOCID:   // dokumendi ID
-            {   "content": str  // dokumendi tekst ("plain text", märgendus vms teraldi tõstetud)
-                // dokumendi kohta käiv lisainfo, kui see oli algsess JSONis
-            }
-        }
-        "index":
-        {   SÕNE: // string tekstist, esinemiste arv == "positions" massiivi pikkus
-            {   DOCID:  // dokumendi ID
-                [   {   "start": int,               // alguspostsioon jooksvas tekst
-                        "end": int,                 // lõpupostsioon jooksvas tekst  
-                        "liitsõna_osa": bool,       // SÕNE on liitsõna osa, vahel korrektne, vahel mitte
-                        "järeliide_eemaldatud:bool  // SÕNE on järelliitega sõna osa, vahel korrektne, vahel mitte
-                    }
-                ]
-            }
-        }
-    }
-
-    '''
     import argparse
 
     argparser = argparse.ArgumentParser(allow_abbrev=False)
