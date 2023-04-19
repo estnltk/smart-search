@@ -5,7 +5,7 @@ VERSION="2023.04.18"
 """ 
 # Eeldused
 $ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18 # käivitame sõnestaja konteineri
-$ docker run -p 7007:7007 tilluteenused/vmetajson:2023.04.18      # käivitame morfoloogilise analüsaatori konteineri
+$ docker run -p 7007:7007 tilluteenused/vmetajson:2023.04.19      # käivitame morfoloogilise analüsaatori konteineri
 
 # Serveri käivitamine käsurealt
 $ ./create_venv.sh                                      # virtuaalkeskkonna tegemine, ühekordne tegevus
