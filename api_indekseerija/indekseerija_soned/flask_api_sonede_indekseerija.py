@@ -1,19 +1,23 @@
  #!/usr/bin/env python3
 
-VERSION="2023.04.17"
+VERSION="2023.04.18"
 
 """ 
-# See programm kasutab Tartu Ülikooli pilves olevaid
-# sõnestamise ja morf analüüsi konteinereid.
-# Programmi saab kiiremaks kui vastavad konteinerid töötavad "lähemal".
+# Eeldused
+$ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18 # käivitame sõnestaja konteineri
+$ docker run -p 7007:7007 tilluteenused/vmetajson:2023.04.18      # käivitame morfoloogilise analüsaatori konteineri
 
 # Serveri käivitamine käsurealt
 $ ./create_venv.sh                                      # virtuaalkeskkonna tegemine, ühekordne tegevus
 $ ./venv/bin/python3 ./flask_api_sonede_indekseerija.py # käivitame veebiserveri loodud virtuaalkeskkonnas
 
 # Serveri käivitamine konteinerist
-$ docker build -t tilluteenused/smart_search_api_sonede_indekseerija:2023.04.17 .       # konteineri tegemine, ühekordne tegevus
-$ docker run -p 6606:6606  tilluteenused/smart_search_api_sonede_indekseerija:2023.04.17 # konteineri käivitamine
+$ cd ~/git/smart_search_github/api_indekseerija/indekseerija_soned
+$ docker build -t tilluteenused/smart_search_api_sonede_indekseerija:2023.04.18 .        # konteineri tegemine, ühekordne tegevus
+$ docker run -p 6606:6606  \
+    --env TOKENIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
+    --env ANALYSER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
+    tilluteenused/smart_search_api_sonede_indekseerija:2023.04.18
 
 # Päringute näited:
 $ curl --silent --request POST --header "Content-Type: application/json" \
@@ -37,20 +41,21 @@ import re
 
 import api_sonede_indekseerija
 
+indekseerija = api_sonede_indekseerija.SONEDE_IDX()
 app = Flask("sonede_indeks")
 
+@app.route('/api/sonede-indekseerija/json', methods=['POST'])
 @app.route('/json', methods=['POST'])
 def sonede_indeks_json():
-    indekseerija = api_sonede_indekseerija.SONEDE_IDX()
     try:   
         json_response = indekseerija.leia_soned_osasoned(request.json, True, False)
     except Exception as e:
         json_response = e
     return jsonify(json_response)
 
+@app.route('/api/sonede-indekseerija/csv', methods=['POST'])
 @app.route('/csv', methods=['POST'])
 def sonede_indeks_csv():
-    indekseerija = api_sonede_indekseerija.SONEDE_IDX()
     try:   
         json_response = indekseerija.leia_soned_osasoned(request.json, True, False)
         # Teeme JSONist CSVlaadse moodustise
@@ -66,15 +71,16 @@ def sonede_indeks_csv():
         csv_response = e
     return csv_response
 
-
+@app.route('/api/sonede-indekseerija/version', methods=['POST'])
 @app.route('/version', methods=['POST'])
 def version():
-    """Kuvame versiooni
+    """Kuvame versiooni ja muud infot
 
     Returns:
         ~flask.Response: Lemmatiseerija versioon
     """
-    return jsonify(json.loads(f'{{"version":"{VERSION}"}}'))
+    json_response = {"version":VERSION, "tokenizer":indekseerija.tokenizer, "analyser":indekseerija.analyser}
+    return jsonify(json_response)
 
 if __name__ == '__main__':
     default_port=6606

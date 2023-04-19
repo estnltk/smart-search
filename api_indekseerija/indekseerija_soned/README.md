@@ -1,4 +1,4 @@
-# Tekstidest sõnede ning liitsõna osasõnade leidmine ja indekseerimine.
+# Tekstidest sõnede ning liitsõna osasõnade leidmine ja indekseerimine [versioon 2023.04.18]
 
 Lihtsuse ja arusaadavuse huvides on näitetekstid ülilühikesed (mõnesõnalised).
 

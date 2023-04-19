@@ -46,14 +46,23 @@ Välja:
 '''
 
 class SONEDE_IDX:
-    VERSION="2023.04.17"
-    TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process'
-    LEMMATIZER='https://smart-search.tartunlp.ai/api/lemmatizer/process'
-    ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process'
+    VERSION="2023.04.18"
+
+    TOKENIZER_IP=os.environ.get('TOKENIZER_IP') if os.environ.get('TOKENIZER_IP') != None else 'localhost'
+    TOKENIZER_PORT=os.environ.get('TOKENIZER_PORT') if os.environ.get('TOKENIZER_PORT') != None else '6000'
+    tokenizer = f'http://{TOKENIZER_IP}:{TOKENIZER_PORT}/api/tokenizer/process'
+
+    ANALYSER_IP=os.environ.get('ANALYSER_IP') if os.environ.get('ANALYSER_IP') != None else 'localhost'
+    ANALYSER_PORT=os.environ.get('ANALYSER_PORT') if os.environ.get('ANALYSER_PORT') != None else '7007'
+    analyser = f'http://{ANALYSER_IP}:{ANALYSER_PORT}/api/analyser/process'
 
     ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 
     json_io = {}
+
+    def __init__(self):
+        print(f'tokenizer={self.tokenizer}')
+        print(f'analyser={self.analyser}')
 
     def string2json(self, str:str) -> Dict:
         """_summary_
@@ -87,7 +96,7 @@ class SONEDE_IDX:
         for docid in self.json_io["sources"]:
             self.json_io["sources"][docid]["params"] = {"vmetajson":["--stem", "--guess"]}
             try:
-                doc = json.loads(requests.post(self.ANALYSER, json=self.json_io["sources"][docid]).text)
+                doc = json.loads(requests.post(self.analyser, json=self.json_io["sources"][docid]).text)
             except:
                 raise Exception({"warning":'Probleemid morf analüüsi veebiteenusega'})
             for idx_token, token in enumerate(doc["annotations"]["tokens"]):        # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)
@@ -119,14 +128,10 @@ class SONEDE_IDX:
         self.json_io = json_in
         for docid in self.json_io["sources"]:
             try:                                                # sõnestame
-                self.json_io["sources"][docid] = json.loads(requests.post(self.TOKENIZER, json=self.json_io["sources"][docid]).text)
+                self.json_io["sources"][docid] = json.loads(requests.post(self.tokenizer, json=self.json_io["sources"][docid]).text)
             except:                                             # sõnestamine äpardus
                 return {"warning":'Probleemid sõnestamise veebiteenusega'}
-
-        try:
-            self.morfi()                                            # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=')   
-        except Exception:
-            return  {"warning":'Probleemid morf analüüsi veebiteenusega'}
+        self.morfi()                                            # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=')   
         if "index" not in self.json_io:
             self.json_io["index"] = {}
         for docid in self.json_io["sources"]:                   # tsükkel üle tekstide
