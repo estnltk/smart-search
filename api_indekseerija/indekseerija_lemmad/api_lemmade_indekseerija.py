@@ -8,258 +8,255 @@ from typing import Dict, List
 from collections import OrderedDict
 
 '''
-See programm kasutab lemmade leidmiseks ja sõnestamiseks Tartu Ülikooli pilves olevaid
-sõnestamise ja morf analüüsi konteinereid.
-Programmi saab kiiremaks kui vastavad konteinerid töötavad "lähemal"
+Ilma argumentideta loeb JSONit std-sisendist ja kirjutab tulemuse std-väljundisse
+Muidu JSON käsirealt lipu "--json=" tagant.
+{   "sources":
+    {   DOCID:              // dokumendi ID
+        {   "content": str  // dokumendi tekst ("plain text", märgendus vms teraldi tõstetud)
+                            // dokumendi kohta käiv lisainfo pane siia...
+        }
+    }
+}
+
+Välja:
+{   "sources":
+    {   DOCID:              // dokumendi ID
+        {   "content": str  // dokumendi tekst ("plain text", märgendus vms teraldi tõstetud)
+                            // dokumendi kohta käiv lisainfo, kui see oli algses JSONis
+        }
+    }
+    "index":
+    {   SÕNE:                               // string tekstist, esinemiste arv == "positions" massiivi pikkus
+        {   DOCID:                              // dokumendi ID
+            [   {   "start": int,               // alguspostsioon jooksvas tekst
+                    "end": int,                 // lõpupostsioon jooksvas tekst  
+                    "liitsõna_osa": bool,       // SÕNE on liitsõna osa, vahel korrektne, vahel mitte, mõistlik oleks võtta ainult liitsõna viimane komponent
+                    // "järeliide_eemaldatud:bool  // kui järelliiteid üldse käsitleda, siis väikest hulka eriti regulaarseid ja sagedasi
+                }
+            ]
+        }
+    }
+}
 '''
 
 class LEMMADE_IDX:
-    VERSION="2023.04.06"
-    TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process'
-    LEMMATIZER='https://smart-search.tartunlp.ai/api/lemmatizer/process'
-    ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process'
+    def __init__(self):
+        self.VERSION="2023.04.20"
 
-    ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
+        self.tokenizer = os.environ.get('TOKENIZER')
+        if self.tokenizer is None:
+            self.TOKENIZER_IP=os.environ.get('TOKENIZER_IP') if os.environ.get('TOKENIZER_IP') != None else 'localhost'
+            self.TOKENIZER_PORT=os.environ.get('TOKENIZER_PORT') if os.environ.get('TOKENIZER_PORT') != None else '6000'
+            self.tokenizer = f'http://{self.TOKENIZER_IP}:{self.TOKENIZER_PORT}/api/tokenizer/process'
+
+        self.analyser = os.environ.get('ANALYSER')
+        if self.analyser is None:
+            self.ANALYSER_IP=os.environ.get('ANALYSER_IP') if os.environ.get('ANALYSER_IP') != None else 'localhost'
+            self.ANALYSER_PORT=os.environ.get('ANALYSER_PORT') if os.environ.get('ANALYSER_PORT') != None else '7007'
+            self.analyser = f'http://{self.ANALYSER_IP}:{self.ANALYSER_PORT}/api/analyser/process'
+
+        self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 
     def string2json(self, str:str) -> Dict:
-        """JSONit sisaldav string püütoni DICTiks
-
-        Teeme mõningast veakontrolli 
-        Args:
-            str (str): sisend JSON stringina
-
-        Returns:
-            Dict: sisendstringist saadud püütoni DICT
-        """
-        json_io = {}
-        try:
-            json_io = json.loads(str)
-            if "content" not in json_io:
-                return {'error': 'Missing "content" in JSON'} 
-            return json_io
-        except:
-            return {"error": "JSON parse error"}
-        
-
-    def morfi(self, token:str)->List:
-        """Morfime sisendstringi ja korjame välja unikaalsete lemmade massiivi
+        """JSON sisendstring "päris" JSONiks
 
         Args:
-            token (str): morfitav sõne
+            str (str): _description_
 
         Raises:
-            Exception: Exception('Probleemid morf analüüsi veebiteenusega')
+            Exception: Jama sisendJSONi parsimisega
+        Returns:
+            Dict: _description_
+        """
+        self.json_io = {}
+        try:
+            self.json_io = json.loads(str)
+            return self.json_io
+        except:
+            raise Exception({"error": "JSON parse error"})
+
+    def morfi_1(self, tokens:List) -> List:
+        """Leia sõne unikaalsed lemmad
+
+        Ignoreerime asesõnu, sidesõnu, kirjavahemärke
+        Args:
+            tokens (List): sõnede massiiv
+
+        Raises:
+            Exception: Hoiatus, kui morfi veebiteenus täiega sakib
 
         Returns:
-            List: unikaalsete lemmade massiivi
+            List: unikaalsete lemmade loend ilma liitsõna ja järelliite piirimärkideta
         """
-        # genereerime morfi päringu (üks sõne, tundmatute sõnade oletamisega
-        json_io = {"params":{"vmetajson":["--guess"]}, "annotations":{"tokens":[{"features":{"token": token}}]}} 
+        json_in = {"params":{"vmetajson":["--guess"]}, "annotations":{"tokens":[]}}
+        for token in tokens: 
+            json_in["annotations"]["tokens"].append({"features":{"token": token}})
+        lemmas = [] # siia korjame erinevad lemma-stringid
         try:
-            json_io=json.loads(requests.post(self.ANALYSER, json=json_io).text)
+            json_out = json.loads(requests.post(self.analyser, json=json_in).text)
         except:
             raise Exception({"warning":'Probleemid morf analüüsi veebiteenusega'})
-        lemmad = []                                     # selle massiivi abil hoiame meeles, millesed lemma kujud olema juba leidnud
-        for token in json_io["annotations"]["tokens"]:  # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)
-            for mrf in token["features"]["mrf"]:            # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
-                if self.ignore_pos.find(mrf["pos"]) != -1:      # selle sõnaliiiga lemmasid...
-                    continue                                    # ...ignoreerime, neid ei indekseeri
-                if mrf["lemma_ma"] not in lemmad:                   # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
-                    lemmad.append(mrf["lemma_ma"])                      # lisame uue lemma, sellist veel polnud
-        return lemmad                                   # erinevate lemmade loend
+        for token in json_out["annotations"]["tokens"]:                          # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)                           
+            for mrf in token["features"]["mrf"]:                                    # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
+                if self.ignore_pos.find(mrf["pos"]) != -1:                              # selle sõnaliiiga lemmasid...
+                    continue                                                                # ...ignoreerime, neid ei indekseeri
+                lemma = mrf["lemma_ma"].replace("_", "").replace("=", "")
+                if lemma not in lemmas:                                                   # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
+                    lemmas.append( lemma)                                                      # lisame uue lemma-stringi, kui sellist veel polnud
+        return lemmas
 
-    def fragmendi_lemmatiseerimine_ja_lisamine(self, fragment:str,  fragments: List)->None:
-        """Lemmade leidmine ja lisamine
+    def morfi(self)->None:
+        """_summary_
 
-        Args:
-            fragment (str): sõne, võimalikud liitsõnapiiride eraldaja ('_') ja järelliite eraldaja ('=') on sõnes sees 
-            fragments (List): Sellesse massiivi lisame saadud info.
-
-        Returns:
-            _type_: _description_
-        """
-        puhas_fragment = fragment.replace('_', '').replace('=', '') # eemadame liitsõna ja järelliite piirid          
-        lemmad = self.morfi(puhas_fragment)                         # leiame liitsõna osasõna lemmad, võinalikku järelliidet ei eemalda
-        for lemma in lemmad:                                        # lisame leitud lemmad 
-            fragments.append({"lemma":lemma, "liitsõna_osa":True, "liide_eemaldatud":False})
-        liite_alguspos = fragment.find('=')                         # otsime järelliite eraldajat
-        if liite_alguspos <= 1:
-            return                                                      # polnud järelliidet, kõik tehtud
-        puhas_fragment = fragment[:liite_alguspos].replace('_', '') # eemaldame järelliite ja liitsõnapiirid
-        lemmad = self.morfi(puhas_fragment)                         # saadud sõne morfime
-        for lemma in lemmad:                                        # lisame leitud lemmad 
-                fragments.append({"lemma":lemma, "liitsõna_osa":True, "liide_eemaldatud":True})
-
-
-    def leia_muud_tykiksesd(self, lemma:str, inf:Dict) -> None:
-        """Lisame liitsõnade ja järelliitega sõnadega seotud info
-
-        Args:
-            lemma (str): _description_
-            inf (Dict): _description_
-        """
-        '''
-        "sublemmas": 
-        [
-            {   "lemma": str,               # lemma
-                "liitsõna_osa": bool,       # liitsõna osa (raudteejaamalik -> raud, tee, jaamalik, raudtee, teejaam)
-                "liide_eemaldatud": bool    # järelliide eemaldatud (raudteejaamalik ->raudteejaam, jaamalik -> jaam)
-            }
-        ]
-        '''      
-        if lemma[0] == '_' or lemma[len(lemma)-1] == '_':
-            return; # mingi sodi, sellega ei tegele
-        osasonad = lemma.split('_')                                                         # tükeldame liitsõna piiri järgi
-        if len(osasonad) > 1:                                                               # oli liitsõna, tegeleme sellega
-            for idx, osasona in enumerate(osasonad):                                        # tsükkel ole liitsõna osasõnade
-                if idx == 0:                                                                    # algab esimese osasõnaga
-                    self.fragmendi_lemmatiseerimine_ja_lisamine(osasona, inf["fragments"])      # esimest sisaldavad variandid
-                    sona = osasonad[idx]                                                            
-                    for idx2 in range(idx+1, len(osasonad)-1):
-                        sona += '_' + osasonad[idx2]
-                        self.fragmendi_lemmatiseerimine_ja_lisamine(sona, inf["fragments"])
-                elif idx == len(osasonad)-1: # lõppeb viimase osasõnaga                         # vahepealseid sisealdavad variandid
-                    self.fragmendi_lemmatiseerimine_ja_lisamine(osasona, inf["fragments"])
-                else:   # vahepealsed jupid (kui liitsõnas 3 või enam komponenti)               # viimast sisaldavad variandid
-                    self.fragmendi_lemmatiseerimine_ja_lisamine(osasona, inf["fragments"])
-                    sona = osasonad[idx]
-                    for idx2 in range(idx+1, len(osasonad)):
-                        sona += osasonad[idx2]
-                        if idx2 < len(osasonad)-1:
-                           sona += '_'
-                        self.fragmendi_lemmatiseerimine_ja_lisamine(sona, inf["fragments"])
-
-    def leia_koik_lemmad_1(self, json_io:Dict, args_sorted:bool, args_reverse: bool) -> Dict:
-        """
-
-        Args:
-            json_io (Dict): 
-
-        SisendJSON:
-
-        {"docid": str, "content": str}
+        Raises:
+            Exception: Jama morf analüüsi veebiteenusega
 
         Returns:
-            List:
-
-        VäljundJSON:
-
-        {   "docid": str,   # dokumendi ID
-            "content": str, # dokumendi algtekst
-            "lemmas:
-            {   "LEMMA":
-                {   "cnt": int, # int = len(idx_dct[LEMMA]["tokens"])
-                    "tokens" :
-                    [   {   "token": str,   # algne tekstisõne
-                            "start": int,   # alguspos tekstis
-                            "end": int      # lõpupositsioon tekstis
-                        }
-                    ]
-                    "fragments":    # liitsõna osasõnade lemmad ja järelliite eemaldamisels saadud lemmad 
-                    [   {   "lemma": str,               # lemma
-                            "liitsõna_osa": bool,       # liitsõna osa (raudteejaamalik -> raud, tee, jaamalik, raudtee, teejaam)
-                            "liide_eemaldatud": bool  
-                        }
-                        # raudteejaamalik ->  [  {"lemma": "raud_tee_jaama=lik", "liitsõna_osa": False, "liide_eemaldatud":False},
-                        #                        {"lemma": "raud_tee_jaam",      "liitsõna_osa": False, "liide_eemaldatud":True },
-                        #                        {"lemma": "raud",     "         "liitsõna_osa": True,  "liide_eemaldatud":False},
-                        #                        {"lemma": "tee",                "liitsõna_osa": True,  "liide_eemaldatud":False},
-                        #                        {"lemma": "jaama=lik",          "liitsõna_osa": True,  "liide_eemaldatud":False},
-                        #                        {"lemma": "jaam",               "liitsõna_osa": True,  "liide_eemaldatud":True },
-                        #                        {"lemma": "raud_tee_",          "liitsõna_osa": True,  "liide_eemaldatud":False},
-                        #                        {"lemma": "tee_jaama=lik",      "liitsõna_osa": True,  "liide_eemaldatud":False},
-                        #                        {"lemma": "tee_jaam",           "liitsõna_osa": True,  "liide_eemaldatud":False}   ]   
-                    ]
-                }
-            }
-        }
-        
-
+            None: Lisab self.json_io'sse morf analüüsi 
         """
-        try:
-            json_io=json.loads(requests.post(self.TOKENIZER, json=json_io).text)
-        except:
-            return {"error": "tokenization failed"}
-        json_io["params"]={"vmetajson":["--guess"]} # morfime tundmatute oletamisega
-        #json_io["params"]={"vmetajson":["--guess", "--stem"]} # morfime tundmatute
-        try:
-            json_io=json.loads(requests.post(self.ANALYSER, json=json_io).text)
-        except:
-            return {"error": "lemmatizer failed"}
 
-        idx_dct = {}
-        for token in json_io["annotations"]["tokens"]:  # tsükkel üle sõnede
-            lisatud_lemmavariandid = []                     # selle massivi abil hoimae meeles, millesed lemma kujud olema juba lisanud
-            for mrf in token["features"]["mrf"]:            # tsükkel üle sama sõne alüüsivariantide
-                if self.ignore_pos.find(mrf["pos"]) != -1:      # selle sõnaliiiga lemmasid...
-                    continue                                    # ...ignoreerime, neid ei indekseeri
-                if mrf["lemma_ma"] in lisatud_lemmavariandid:   # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
-                    continue                                    # ei lisa sama kujuga lemmat mitu korda
-                lisatud_lemmavariandid.append(mrf["lemma_ma"])  # jätame meelde, et sellise lemma lisame
-                if mrf["lemma_ma"] not in idx_dct:             # pole tekstist sellist lemmat varem saanud
-                    idx_dct[mrf["lemma_ma"]] = {               # lisame lemmaga seotud info
-                        "cnt":1, 
-                        "tokens": [{"token": token["features"]["token"], "start": token["start"], "end":token["end"]}],
-                        "fragments": []}
-                    self.leia_muud_tykiksesd(mrf["lemma_ma"], idx_dct[mrf["lemma_ma"]])
-                else:                                           # sellist lemmat oleme juba näinud...
-                    idx_dct[mrf["lemma_ma"]]["cnt"] += 1       # suurendame loendajat ja jätame meelde, kus kohas ta tekstis esines
-                    idx_dct[mrf["lemma_ma"]]["tokens"].append({"token": token["features"]["token"], "start": token["start"], "end":token["end"]})
+        for docid in self.json_io["sources"]:
+            self.json_io["sources"][docid]["params"] = {"vmetajson":["--guess"]}
+            try:
+                doc = json.loads(requests.post(self.analyser, json=self.json_io["sources"][docid]).text)
+            except:
+                raise Exception({"warning":'Probleemid morf analüüsi veebiteenusega'})
+            for idx_token, token in enumerate(doc["annotations"]["tokens"]):        # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)
+                tokens = []                                                             # siia korjame erinevad lemma-stringid
+                for mrf in token["features"]["mrf"]:                                    # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
+                    if self.ignore_pos.find(mrf["pos"]) != -1:                              # selle sõnaliiiga lemmasid...
+                        continue                                                                # ...ignoreerime, neid ei indekseeri
+                    if mrf["lemma_ma"] not in tokens:                                                   # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
+                        tokens.append( mrf["lemma_ma"])                                                      # lisame uue lemma-stringi, kui sellist veel polnud
+                self.json_io["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens"] = tokens # lisame leitud lemmad tulemusse
 
+    
+    def tee_lemmade_indeks(self, json_in:Dict, dct_sorted:bool, sortorder_reverse:bool) -> Dict:
+        """Tekitab indeksi
 
+        Args:
+            json_io (Dict): SisendJSON_
+            sorted_by_token (bool): Väljund järjestatud sõnede järgi
+            sortorder_reverse (bool): Sõnede pöördjärjestus
 
-                liite_alguspos = mrf["lemma_ma"].find('=')      # otsime järelliite eraldajat
-                if liite_alguspos > 1:                          # oli järelliitega
-                    liitsona_osa = True if mrf["lemma_ma"].find('_') > 1 else False
-                    puhas_fragment = mrf["lemma_ma"][:liite_alguspos].replace('_', '') # eemaldame järelliite ja liitsõnapiirid
-                    lemmad = self.morfi(puhas_fragment)                         # saadud sõne morfime
-                    for lemma in lemmad:                                        # lisame leitud lemmad 
-                        idx_dct[mrf["lemma_ma"]]["fragments"].append({"lemma":lemma, "liitsõna_osa":False, "liide_eemaldatud":True})
-        #if sorted_by_key is True:
-        #    ordered_stat = OrderedDict(sorted(stat.items(), reverse=sortorder_reverse, key=lambda t: t[0]))
-        #else:
-        #    ordered_stat = OrderedDict(sorted(stat.items(), reverse=sortorder_reverse, key=lambda t: t[1]))
-        return idx_dct
+        Raises:
+            Exception: Jama sõnestamise veebiteenusega
 
-    def leia_koik_lemmad_1(self, json_io:List, args_sorted:bool, args_reverse: bool) -> List:
-        for doc in json_io:
-            self.leia_koik_lemmad_1(doc, args_sorted, args_reverse)
+        Returns:
+            Dict: Indeks JSONkujul
+        """
+
+        self.json_io = json_in
+        for docid in self.json_io["sources"]:
+            try:                                                # sõnestame
+                self.json_io["sources"][docid] = json.loads(requests.post(self.tokenizer, json=self.json_io["sources"][docid]).text)
+            except:                                             # sõnestamine äpardus
+                return {"warning":'Probleemid sõnestamise veebiteenusega'}
+        self.morfi()                                            # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=')   
+        if "index" not in self.json_io:
+            self.json_io["index"] = {}
+        for docid in self.json_io["sources"]:                   # tsükkel üle tekstide
+            for token in self.json_io["sources"][docid]["annotations"]["tokens"]: # tsükkel üle lemmade
+                if len(token["features"]["tokens"])==0:             # kui pole ühtegi meid huvitava sõnaliigiga...
+                    continue                                            # ...laseme üle
+                for tkn in token["features"]["tokens"]:             # tsükkel üle leitud liitsõnapiiridega lemmade
+                    puhas_tkn = tkn.replace('_', '').replace('=', '')   # terviklemma lisamine...
+                    if puhas_tkn in self.json_io["index"]:              # kui selline lemma juba oli...
+                        if docid in self.json_io["index"][puhas_tkn]:       # ...selles dokumendis
+                            self.json_io["index"][puhas_tkn][docid].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
+                        else:                                               # ...polnud selles dokumendis
+                            self.json_io["index"][puhas_tkn][docid] = [{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]
+                    else:                                               # ...polnud seni üheski dokumendis                               
+                        self.json_io["index"][puhas_tkn] = {docid:[{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]}
+                                                                        # liitsõna osalemmade lisamine, tegelt võiks piirduda viimasega
+                    osasonad = tkn.replace('=', '').split('_')          # tükeldame liitsõna piirilt
+                    if len(osasonad) <= 1:                              # kui pole liitsõna...
+                        continue                                            # ...laseme üle
+                    fragmendid = []                                     # siia hakkame korjame liitsõna tükikesi
+                    # Suure tõenäosusega oleks mõistlik võtta ainult
+                    # liitsõna viimane komponent.
+                    for idx, osasona in enumerate(osasonad):            # tsükkel ole liitsõna osasõnade
+                        if idx == 0:                                    # algab esimese osasõnaga
+                            sona = osasona
+                            #fragmendid.append(sona) 
+                            fragmendid += self.morfi_1([sona])          # esimene osasõna, lemmatiseerime                                                  
+                            for idx2 in range(idx+1, len(osasonad)-1):
+                                sona += osasonad[idx2]
+                                #fragmendid.append(sona)
+                                fragmendid += self.morfi_1([sona])      # ei lõppe viimase osasõnaga, lemmatiseerime
+                        elif idx == len(osasonad)-1:                    # lõppeb viimase osasõnaga
+                            fragmendid.append(osasona)
+                        else:                                           # vahepealsed jupid (kui liitsõnas 3 või enam komponenti)
+                            #fragmendid.append(osasona)
+                            fragmendid += self.morfi_1([osasona])
+                            sona = osasonad[idx]
+                            for idx2 in range(idx+1, len(osasonad)):
+                                sona += osasonad[idx2]
+                                if idx2 < len(osasonad)-1:
+                                    #fragmendid.append(sona)
+                                    fragmendid += self.morfi_1([sona])  # ei lõppe viimase osasõnaga, lemmatiseerime
+                                else:
+                                    fragmendid.append(sona)
+                    for puhas_tkn in fragmendid:                        # lisame leitud osasõnade lemmad indeksisse 
+                        if puhas_tkn in self.json_io["index"]:          # kui selline sõne juba oli...
+                            if docid in self.json_io["index"][puhas_tkn]:   # ...selles dokumendis
+                                    self.json_io["index"][puhas_tkn][docid].append({"liitsõna_osa":True, "start": token["start"], "end":token["end"]})
+                            else:                                           # ...polnud selles dokumendis
+                                self.json_io["index"][puhas_tkn][docid] = [{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]
+                        else:                                           # ...polnud seni üheski dokumendis                               
+                            self.json_io["index"][puhas_tkn] = {docid:[{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]}
+            del self.json_io["sources"][docid]["annotations"]["sentences"] # kustutame morf analüüsist järgi jäänud mudru
+            del self.json_io["sources"][docid]["annotations"]["tokens"]
+            if len(self.json_io["sources"][docid]["annotations"]) == 0:
+                del self.json_io["sources"][docid]["annotations"]
+            del self.json_io["sources"][docid]["params"]
+        # järjestame vastavalt etteantud parameetritele
+        if dct_sorted is True:
+            self.json_io["index"] = OrderedDict(sorted(self.json_io["index"].items(), reverse=sortorder_reverse, key=lambda t: t[0]))
+        return self.json_io
 
 if __name__ == '__main__':
-    '''
-    Ilma argumentideta loeb JSONit std-sisendist ja kirjutab tulemuse std-väljundisse
-    Muidu JSON käsirealt lipu "--json=" tagant.
-    [{"docid": str, "content": str}]
-    
-    '''
     import argparse
 
     argparser = argparse.ArgumentParser(allow_abbrev=False)
-    argparser.add_argument('-s', '--sorted', action="store_true", help='sorted by key')
+    argparser.add_argument('-s', '--sorted', action="store_true", help='sorted JSON')
     argparser.add_argument('-r', '--reverse', action="store_true", help='reverse sort order')
     argparser.add_argument('-j', '--json', type=str, help='json input')
     argparser.add_argument('-i', '--indent', type=int, default=None, help='indent for json output, None=all in one line')
-    argparser.add_argument('-c', '--cvs', action="store_true", help='CVS-like output')
+    argparser.add_argument('-c', '--csv', action="store_true", help='CSV-like output')
     args = argparser.parse_args()
-    json_io = {}
-    idx_stat = LEMMADE_IDX()
+
+    idx = LEMMADE_IDX()
     if args.json is not None:
-        json_io = idx_stat.string2json(args.json)
-        if "error" in json_io:
-            json.dump(json_io, sys.stdout, indent=args.indent)
+        json_in = idx.string2json(args.json)
+        if "error" in json_in:
+            json.dump(json_in, sys.stdout, indent=args.indent)
             sys.exit(1)
-        if args.lemmastat is True:
-            json.dump(LEMMADE_IDX().leia_koik_lemmad(json_io, args.sorted, args.reverse), sys.stdout, indent=args.indent, ensure_ascii=False)
+        idx = idx.tee_lemmade_indeks(json_in, args.sorted, args.reverse)
+        if args.csv is True:
+            for sone in idx["index"]:
+                for docid in idx["index"][sone]:
+                    for k in idx["index"][sone][docid]:
+                        sys.stdout.write(f'{sone}\t{k["liitsõna_osa"]}\t{idx["sources"][docid]["content"][k["start"]:k["end"]]}\t{docid}\t{k["start"]}\t{k["end"]}\n')
+        else:
+            json.dump(idx, sys.stdout, indent=args.indent, ensure_ascii=False)
+            sys.stdout.write('\n')
     else:
         for line in sys.stdin:
             line = line.strip()
             if len(line) <= 0:
                 continue
-            json_io = idx_stat.string2json(line)
-            if "error" in json_io:
-                json.dump(json_io, sys.stdout, indent=args.indent)
+            json_in = idx.string2json(line)
+            if "error" in json_in:
+                json.dump(json_in, sys.stdout, indent=args.indent)
                 sys.exit(1)
-            if args.lemmastat is True:
-                json.dump(LEMMADE_IDX().leia_koik_lemmad(json_io, args.sorted, args.reverse), sys.stdout, indent=args.indent, ensure_ascii=False)           
+            idx = idx.leia_soned_osasoned(json_in, args.sorted, args.reverse)
+            if args.csv is True:
+                for sone in idx["index"]:
+                    for docid in idx["index"][sone]:
+                        for k in idx["index"][sone][docid]:
+                            sys.stdout.write(f'{sone}\t{k["liitsõna_osa"]}\t{idx["sources"][docid]["content"][k["start"]:k["end"]]}\t{docid}\t{k["start"]}\t{k["end"]}\n')
+            else:
+                json.dump(idx, sys.stdout, indent=args.indent, ensure_ascii=False)
                 sys.stdout.write('\n')
 

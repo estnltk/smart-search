@@ -5,11 +5,28 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask_api_lemmade_indekseerija",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija/indekseerija_lemmad",
+            "program": "./flask_api_lemmade_indekseerija.py",
+            "env": {"TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process"},
+            "args": []
+        },        {
+            "name": "api_lemmade_indekseerija",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija/indekseerija_lemmad",
+            "program": "./api_lemmade_indekseerija.py",
+            "args": ["--csv", "--indent=4", "--sorted", "--json={\"sources\": {\"DOC_1\": {\"content\":\"Daam sülekoerakesega.\"},\"DOC_2\": {\"content\":\"Mees ja laps. Lapsed sülekoertega ja mehed hundikoertega.\"}}}"]
+        },
+        {
             "name": "flask_api_sonede_indekseerija",
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}/api_indekseerija/indekseerija_soned",
             "program": "./flask_api_sonede_indekseerija.py",
+            "env": {"TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process"},
             "args": []
         },
         {

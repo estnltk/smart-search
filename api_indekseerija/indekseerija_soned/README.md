@@ -1,4 +1,4 @@
-# Tekstidest sõnede ning liitsõna osasõnade leidmine ja indekseerimine [versioon 2023.04.18]
+# Tekstidest sõnede ning liitsõna osasõnade leidmine ja indekseerimine [versioon 2023.04.20]
 
 Lihtsuse ja arusaadavuse huvides on näitetekstid ülilühikesed (mõnesõnalised).
 
@@ -12,7 +12,7 @@ Indekseerijas on kasutatud:
     * asesõnad (alljärgnevas näites 'tema')
     * sidesõnad (alljärgnevas näites 'ja')
 
-## Näited JSON-kujul indeksi tegemine.
+## Näited JSON-kujul indeksi tegemine
 
 Märkused:
 
@@ -24,170 +24,182 @@ Kommenteeritud sisendjson:
 ```json
 {
   "sources": {
-    "DOC_1": {  // dokumendi ID          
-      "content": "Daam koerakesega." // Dokumendi tekst
+    "DOC_1": { // dokumendi ID 
+      "content": "Jahimehed jahikoertega."                // Dokumendi tekst
     },
-    "DOC_2": {  // dokumendi ID 
-      "content": "Härra ja daam. Daam sülekoeraga ja härra hundikoeraga." // Dokumendi tekst
+    "DOC_2": { // dokumendi ID 
+      "content": "Daam sülekoeraga ja mees jahikoeraga."  // Dokumendi tekst
     }
   }
 }
 ```
 
-### Näide 1 - Sisendtekst JSON-kujul indeksiks
+### Näide 1 - Sisendtekst JSON-kujul tekstisõnede indeksiks
 
 Märkused:
 
 * Liitsõna osasõna korral on viide algse liitsõna alguse- ja lõpupostsioonile (vt näide allpool).
 
 ```cmdline
-curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"sources": {"DOC_1":{"content":"Daam koerakesega."},"DOC_2":{"content":"Härra ja daam. Daam sülekoeraga ja härra hundikoeraga."}}}' \
-  http://127.0.0.1:6606/json | jq
+curl --silent --request POST --header "Content-Type: application/json" \                                                           
+  --data '{"sources": {"DOC_1":{"content":"Jahimehed jahikoertega."},"DOC_2":{"content":"Daam sülekoeraga ja mees jahikoeraga."}}}' \
+  https://smart-search.tartunlp.ai/api/sonede-indekseerija/json | jq
 ```
 
 ```json
-
 {
-  "sources": {  // sisendtekstid (vt kommentaare ülalpool)
+  "sources": {   // sisendtekstid (vt kommentaare ülalpool)
     "DOC_1": {
-      "content": "Daam koerakesega."
+      "content": "Jahimehed jahikoertega."
     },
     "DOC_2": {
-      "content": "Härra ja daam. Daam sülekoeraga ja härra hundikoeraga."
+      "content": "Daam sülekoeraga ja mees jahikoeraga."k
     }
   }
   "index": {                        // sõnede indeks
     "daam": {                       // tekstisõne
-      "DOC_1": [                    // dokumendi ID, kus sõne esines, selles tekstis esines 1 kord
+      "DOC_2": [                    // dokumendi ID, kus sõne esines, selles tekstis esines 1 kord
         {
           "end": 4,                 // sõne lõpupositsioon tekstis
           "liitsõna_osa": false,    // sõne polnud liitsõna osa
           "start": 0                // sõne alguspositsioon tekstis
         }
-      ],
-      "DOC_2": [                    // dokumendi ID, kus sõne esines, selles tekstis esines 2 korda
-        {                           
-          "end": 13,                // sõne lõpupositsioon tekstis
-          "liitsõna_osa": false,    // sõne polnud liitsõna osa
-          "start": 9                // sõne alguspositsioon tekstis
+      ]
+    },
+    "jahi": {                    // dokumendi ID, kus sõne esines, selles tekstis esines 2 korda
+      "DOC_1": [
+        {
+          "end": 9,                 // sõne lõpupositsioon tekstis
+          "liitsõna_osa": true,     // sõne oli liitsõna osa
+          "start": 0                // sõne alguspositsioon tekstis
         },
         {
-          "end": 19,                // sõne lõpupositsioon tekstis
+          "end": 22,                // sõne lõpupositsioon tekstis
           "liitsõna_osa": false,    // sõne polnud liitsõna osa
-          "start": 15               // sõne alguspositsioon tekstis
+          "start": 10               // sõne alguspositsioon tekstis
         }
-      ]
-    },
-    "hundi": {                      // tekstisõne
-      "DOC_2": [                    // dokumendi ID, kus sõne esines
-        {                           // NB! liitsõna osasõna korral on viide algse liitsõna alguse- ja lõpupostsioonile
-          "end": 53,                // sõne lõpupositsioon tekstis
-          "liitsõna_osa": true,     // sõne oli liitsõna osa
-          "start": 41               // sõne alguspositsioon tekstis
-        }
-      ]
-    },
-"hundikoeraga": {                   // tekstisõne  
-      "DOC_2": [                    // dokumendi ID, kus sõne esines
+      ],
+      "DOC_2": [                    // dokumendi ID, kus sõne esines, selles tekstis esines 1 kord
         {
-          "end": 53,                // sõne lõpupositsioon tekstis
-          "liitsõna_osa": false,    // sõne oli liitsõna osa
-          "start": 41               // sõne alguspositsioon tekstis
+          "end": 36,                // sõne lõpupositsioon tekstis
+          "liitsõna_osa": true,     // sõne oli liitsõna osa
+          "start": 25               // sõne alguspositsioon tekstis
         }
       ]
     },
-    "härra": {
+    "jahikoeraga": {
       "DOC_2": [
         {
-          "end": 5,
+          "end": 36,
+          "liitsõna_osa": false,
+          "start": 25
+        }
+      ]
+    },
+    "jahikoertega": {
+      "DOC_1": [
+        {
+          "end": 22,
+          "liitsõna_osa": false,
+          "start": 10
+        }
+      ]
+    },
+    "jahimehed": {
+      "DOC_1": [
+        {
+          "end": 9,
           "liitsõna_osa": false,
           "start": 0
-        },
-        {
-          "end": 40,
-          "liitsõna_osa": false,
-          "start": 35
         }
       ]
     },
     "koeraga": {
       "DOC_2": [
         {
-          "end": 31,
+          "end": 16,
           "liitsõna_osa": true,
-          "start": 20
+          "start": 5
         },
         {
-          "end": 53,
+          "end": 36,
           "liitsõna_osa": false,
-          "start": 41
+          "start": 25
         }
       ]
     },
-    "koerakesega": {
+    "koertega": {
       "DOC_1": [
         {
-          "end": 16,
+          "end": 22,
+          "liitsõna_osa": true,
+          "start": 10
+        }
+      ]
+    },
+    "mees": {
+      "DOC_2": [
+        {
+          "end": 24,
           "liitsõna_osa": false,
-          "start": 5
+          "start": 20
+        }
+      ]
+    },
+    "mehed": {
+      "DOC_1": [
+        {
+          "end": 9,
+          "liitsõna_osa": true,
+          "start": 0
         }
       ]
     },
     "süle": {
       "DOC_2": [
         {
-          "end": 31,
+          "end": 16,
           "liitsõna_osa": true,
-          "start": 20
+          "start": 5
         }
       ]
     },
     "sülekoeraga": {
       "DOC_2": [
         {
-          "end": 31,
+          "end": 16,
           "liitsõna_osa": false,
-          "start": 20
+          "start": 5
         }
       ]
     }
   },
 }
+
+
 ```
 
 ### Näide 2 - Sisendtekst CSV-kujul indeksiks
 
 ```cmdline
 curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"sources": {"DOC_1":{"content":"Daam koerakesega."},"DOC_2":{"content":"Härra ja daam. Daam sülekoeraga ja härra hundikoeraga."}}}' \
-  http://127.0.0.1:6606/csv
+  --data '{"sources": {"DOC_1":{"content":"Jahimehed jahikoertega."},"DOC_2":{"content":"Daam sülekoeraga ja mees jahikoeraga."}}}' \
+  https://smart-search.tartunlp.ai/api/sonede-indekseerija/csv 
 ```
 
 ```csv
-daam    False   Daam    DOC_1   0       4
-daam    False   daam    DOC_2   9       13
-daam    False   Daam    DOC_2   15      19
-hundi   True    hundikoeraga    DOC_2   41      53
-hundikoeraga    False   hundikoeraga    DOC_2   41      53
-härra   False   Härra   DOC_2   0       5
-härra   False   härra   DOC_2   35      40
-koeraga True    sülekoeraga     DOC_2   20      31
-koeraga False   hundikoeraga    DOC_2   41      53
-koerakesega     False   koerakesega     DOC_1   5       16
-süle    True    sülekoeraga     DOC_2   20      31
-sülekoeraga     False   sülekoeraga     DOC_2   20      31
-daam    False   Daam    DOC_1   0       4
-daam    False   daam    DOC_2   9       13
-daam    False   Daam    DOC_2   15      19
-hundi   True    hundikoeraga    DOC_2   41      53
-hundikoeraga    False   hundikoeraga    DOC_2   41      53
-härra   False   Härra   DOC_2   0       5
-härra   False   härra   DOC_2   35      40
-koeraga True    sülekoeraga     DOC_2   20      31
-koeraga False   hundikoeraga    DOC_2   41      53
-koerakesega     False   koerakesega     DOC_1   5       16
-süle    True    sülekoeraga     DOC_2   20      31
-sülekoeraga     False   sülekoeraga     DOC_2   20      31
-
+daam    False   Daam    DOC_2   0       4
+jahi    True    Jahimehed       DOC_1   0       9
+jahi    False   jahikoertega    DOC_1   10      22
+jahi    True    jahikoeraga     DOC_2   25      36
+jahikoeraga     False   jahikoeraga     DOC_2   25      36
+jahikoertega    False   jahikoertega    DOC_1   10      22
+jahimehed       False   Jahimehed       DOC_1   0       9
+koeraga True    sülekoeraga     DOC_2   5       16
+koeraga False   jahikoeraga     DOC_2   25      36
+koertega        True    jahikoertega    DOC_1   10      22
+mees    False   mees    DOC_2   20      24
+mehed   True    Jahimehed       DOC_1   0       9
+süle    True    sülekoeraga     DOC_2   5       16
+sülekoeraga     False   sülekoeraga     DOC_2   5       16
 ```

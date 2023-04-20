@@ -13,11 +13,11 @@ $ ./venv/bin/python3 ./flask_api_sonede_indekseerija.py # käivitame veebiserver
 
 # Serveri käivitamine konteinerist
 $ cd ~/git/smart_search_github/api_indekseerija/indekseerija_soned
-$ docker build -t tilluteenused/smart_search_api_sonede_indekseerija:2023.04.18 .        # konteineri tegemine, ühekordne tegevus
+$ docker build -t tilluteenused/smart_search_api_sonede_indekseerija:2023.04.20 .        # konteineri tegemine, ühekordne tegevus
 $ docker run -p 6606:6606  \
     --env TOKENIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
     --env ANALYSER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
-    tilluteenused/smart_search_api_sonede_indekseerija:2023.04.18
+    tilluteenused/smart_search_api_sonede_indekseerija:2023.04.20
 
 # Päringute näited:
 $ curl --silent --request POST --header "Content-Type: application/json" \
@@ -60,11 +60,10 @@ def sonede_indeks_csv():
         json_response = indekseerija.leia_soned_osasoned(request.json, True, False)
         # Teeme JSONist CSVlaadse moodustise
         csv_str = ''
-        for doc in json_response:
-            for sone in json_response["index"]:
-                for docid in json_response["index"][sone]:
-                    for k in json_response["index"][sone][docid]:
-                       csv_str += f'{sone}\t{k["liitsõna_osa"]}\t{json_response["sources"][docid]["content"][k["start"]:k["end"]]}\t{docid}\t{k["start"]}\t{k["end"]}\n'
+        for sone in json_response["index"]:
+            for docid in json_response["index"][sone]:
+                for k in json_response["index"][sone][docid]:
+                    csv_str += f'{sone}\t{k["liitsõna_osa"]}\t{json_response["sources"][docid]["content"][k["start"]:k["end"]]}\t{docid}\t{k["start"]}\t{k["end"]}\n'
         csv_response = make_response(csv_str)
         csv_response.headers["Content-type"] = "text/csv; charset=utf-8"
     except Exception as e:
@@ -79,7 +78,7 @@ def version():
     Returns:
         ~flask.Response: Lemmatiseerija versioon
     """
-    json_response = {"version":VERSION, "tokenizer":indekseerija.tokenizer, "analyser":indekseerija.analyser}
+    json_response = {"version":indekseerija.VERSION, "tokenizer":indekseerija.tokenizer, "analyser":indekseerija.analyser}
     return jsonify(json_response)
 
 if __name__ == '__main__':

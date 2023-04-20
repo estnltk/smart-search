@@ -8,12 +8,6 @@ from typing import Dict, List
 from collections import OrderedDict
 
 '''
-See programm kasutab Tartu Ülikooli pilves olevaid
-sõnestamise ja morf analüüsi konteinereid.
-Programmi saab kiiremaks kui vastavad konteinerid töötavad "lähemal".
-'''
-
-'''
 Ilma argumentideta loeb JSONit std-sisendist ja kirjutab tulemuse std-väljundisse
 Muidu JSON käsirealt lipu "--json=" tagant.
 {   "sources":
@@ -46,23 +40,23 @@ Välja:
 '''
 
 class SONEDE_IDX:
-    VERSION="2023.04.18"
-
-    TOKENIZER_IP=os.environ.get('TOKENIZER_IP') if os.environ.get('TOKENIZER_IP') != None else 'localhost'
-    TOKENIZER_PORT=os.environ.get('TOKENIZER_PORT') if os.environ.get('TOKENIZER_PORT') != None else '6000'
-    tokenizer = f'http://{TOKENIZER_IP}:{TOKENIZER_PORT}/api/tokenizer/process'
-
-    ANALYSER_IP=os.environ.get('ANALYSER_IP') if os.environ.get('ANALYSER_IP') != None else 'localhost'
-    ANALYSER_PORT=os.environ.get('ANALYSER_PORT') if os.environ.get('ANALYSER_PORT') != None else '7007'
-    analyser = f'http://{ANALYSER_IP}:{ANALYSER_PORT}/api/analyser/process'
-
-    ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
-
-    json_io = {}
-
     def __init__(self):
-        print(f'tokenizer={self.tokenizer}')
-        print(f'analyser={self.analyser}')
+        self.VERSION="2023.04.20"
+
+        self.tokenizer = os.environ.get('TOKENIZER')
+        if self.tokenizer is None:
+            self.TOKENIZER_IP=os.environ.get('TOKENIZER_IP') if os.environ.get('TOKENIZER_IP') != None else 'localhost'
+            self.TOKENIZER_PORT=os.environ.get('TOKENIZER_PORT') if os.environ.get('TOKENIZER_PORT') != None else '6000'
+            self.tokenizer = f'http://{self.TOKENIZER_IP}:{self.TOKENIZER_PORT}/api/tokenizer/process'
+
+        self.analyser = os.environ.get('ANALYSER')
+        if self.analyser is None:
+            self.ANALYSER_IP=os.environ.get('ANALYSER_IP') if os.environ.get('ANALYSER_IP') != None else 'localhost'
+            self.ANALYSER_PORT=os.environ.get('ANALYSER_PORT') if os.environ.get('ANALYSER_PORT') != None else '7007'
+            self.analyser = f'http://{self.ANALYSER_IP}:{self.ANALYSER_PORT}/api/analyser/process'
+
+        self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
+
 
     def string2json(self, str:str) -> Dict:
         """_summary_
