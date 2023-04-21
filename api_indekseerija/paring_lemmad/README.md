@@ -22,8 +22,6 @@ Kasutatud on:
 
 Märkused:
 
-* Liitsõna osasõna korral on viide algse liitsõna alguse- ja lõpupostsioonile (vt näide allpool).
-
 ```cmdline
 curl --silent --request POST --header "Content-Type: application/json" \
   --data '{"content": "katus profiil"}' \
