@@ -41,7 +41,7 @@ curl --silent --request POST --header "Content-Type: application/json" \
       [
         "profiil"   // teise päringusõna lemmad, need ühendame loogilise või-ga
       ]
-    ]               // esimese ja teise õhendame loogilise ja-ga
+    ]               // esimese ja teise ühendame loogilise ja-ga
   },
   "content": "katus profiil"
 }
