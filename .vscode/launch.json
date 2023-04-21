@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "api_paring_lemmad",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija/paring_lemmad",
+            "program": "./api_paring_lemmad.py",
+            "env": {"TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process"},
+            "args": ["--text", "--json={\"content\":\"mees Sarved&Sõrad jahimehed\"}"]
+        },  
+        {
             "name": "flask_api_lemmade_indekseerija",
             "type": "python",
             "request": "launch",
