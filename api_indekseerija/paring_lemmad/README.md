@@ -13,6 +13,8 @@ Kasutatud on:
 
 ## Päringu koostamise näited
 
+Päringu kuju:
+
 ```json
 {   "content": str // päringusõned
 }
