@@ -104,8 +104,6 @@ class PARING_SONED:
                     tokens.append(generated_form["token"].replace("_", "").replace("=", "").replace("+", ""))
             if len(tokens) > 0:
                 json_paring.append(tokens)    
-            pass
-
         json_out["annotations"]["query"] = json_paring
         del json_out["annotations"]["sentences"]
         del json_out["annotations"]["tokens"]

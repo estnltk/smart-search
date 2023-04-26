@@ -1,4 +1,4 @@
-# Päringusõnede lemmatiseerimine ja neist lemma-päringu koostamine  [versioon 2023.04.21]
+# Päringusõnede lemmatiseerimine ja neist morf. sünteesi abil sõnavormide päringu koostamine  [versioon 2023.04.24]
 
 Kasutatud on:
 
@@ -10,6 +10,7 @@ Kasutatud on:
     * punktuatsioon
     * asesõnad
     * sidesõnad
+* morfoloogilist sünteesi lemmast kõigi (käändes/pöördes) sõnavormide genereerimiseks
 
 ## Päringu koostamise näited
 
@@ -22,26 +23,125 @@ Päringu kuju:
 
 ### Näide 1 - JSON-kujul päringu koostamine
 
-Märkused:
-
 ```cmdline
 curl --silent --request POST --header "Content-Type: application/json" \
   --data '{"content": "katus profiil"}' \
-  https://smart-search.tartunlp.ai/api/paring-lemmad/json
+  https://smart-search.tartunlp.ai/api/paring-soned/json
 ```
 
 ```json
 {
   "annotations": {
     "query": [
-      [             // esimese päringusõna lemmad, need ühendame loogilise võiga
+      [
         "katt",
-        "katus"
+        "katte",
+        "kattu",
+        "kattu",
+        "kattude",
+        "kattudega",
+        "kattudeks",
+        "kattudel",
+        "kattudele",
+        "kattudelt",
+        "kattudena",
+        "kattudeni",
+        "kattudes",
+        "kattudesse",
+        "kattudest",
+        "kattudeta",
+        "kattusid",
+        "katu",
+        "katud",
+        "katuga",
+        "katuks",
+        "katul",
+        "katule",
+        "katult",
+        "katuna",
+        "katuni",
+        "katus",
+        "katusse",
+        "katust",
+        "katuta",
+        "katus",
+        "katust",
+        "katuste",
+        "katustega",
+        "katusteks",
+        "katustel",
+        "katustele",
+        "katustelt",
+        "katustena",
+        "katusteni",
+        "katustes",
+        "katustesse",
+        "katustest",
+        "katusteta",
+        "katuse",
+        "katused",
+        "katusega",
+        "katuseid",
+        "katuseiks",
+        "katuseil",
+        "katuseile",
+        "katuseilt",
+        "katuseina",
+        "katuseini",
+        "katuseis",
+        "katuseisse",
+        "katuseist",
+        "katuseks",
+        "katusel",
+        "katusele",
+        "katuselt",
+        "katusena",
+        "katuseni",
+        "katuses",
+        "katusesse",
+        "katusest",
+        "katuseta"
       ],
       [
-        "profiil"   // teise päringusõna lemmad, need ühendame loogilise või-ga
+        "profiil",
+        "profiile",
+        "profiileks",
+        "profiilel",
+        "profiilele",
+        "profiilelt",
+        "profiiles",
+        "profiilesse",
+        "profiilest",
+        "profiili",
+        "profiili",
+        "profiili",
+        "profiilid",
+        "profiilide",
+        "profiilidega",
+        "profiilideks",
+        "profiilidel",
+        "profiilidele",
+        "profiilidelt",
+        "profiilidena",
+        "profiilideni",
+        "profiilides",
+        "profiilidesse",
+        "profiilidest",
+        "profiilideta",
+        "profiiliga",
+        "profiiliks",
+        "profiilil",
+        "profiilile",
+        "profiililt",
+        "profiilina",
+        "profiilini",
+        "profiilis",
+        "profiilisid",
+        "profiilisse",
+        "profiilist",
+        "profiilita"
       ]
-    ]               // esimese ja teise ühendame loogilise ja-ga
+    ]
   },
   "content": "katus profiil"
 }
@@ -52,9 +152,9 @@ curl --silent --request POST --header "Content-Type: application/json" \
 ```cmdline
 curl --silent --request POST --header "Content-Type: application/json" \
   --data '{"content": "katus profiil"}' \
-  https://smart-search.tartunlp.ai/api/paring-lemmad/text 
+  https://smart-search.tartunlp.ai/api/paring-soned/text 
 ```
 
 ```text
-(katt ∨ katus) & (profiil)
+(katt ∨ katte ∨ kattu ∨ kattu ∨ kattude ∨ kattudega ∨ kattudeks ∨ kattudel ∨ kattudele ∨ kattudelt ∨ kattudena ∨ kattudeni ∨ kattudes ∨ kattudesse ∨ kattudest ∨ kattudeta ∨ kattusid ∨ katu ∨ katud ∨ katuga ∨ katuks ∨ katul ∨ katule ∨ katult ∨ katuna ∨ katuni ∨ katus ∨ katusse ∨ katust ∨ katuta ∨ katus ∨ katust ∨ katuste ∨ katustega ∨ katusteks ∨ katustel ∨ katustele ∨ katustelt ∨ katustena ∨ katusteni ∨ katustes ∨ katustesse ∨ katustest ∨ katusteta ∨ katuse ∨ katused ∨ katusega ∨ katuseid ∨ katuseiks ∨ katuseil ∨ katuseile ∨ katuseilt ∨ katuseina ∨ katuseini ∨ katuseis ∨ katuseisse ∨ katuseist ∨ katuseks ∨ katusel ∨ katusele ∨ katuselt ∨ katusena ∨ katuseni ∨ katuses ∨ katusesse ∨ katusest ∨ katuseta) & (profiil ∨ profiile ∨ profiileks ∨ profiilel ∨ profiilele ∨ profiilelt ∨ profiiles ∨ profiilesse ∨ profiilest ∨ profiili ∨ profiili ∨ profiili ∨ profiilid ∨ profiilide ∨ profiilidega ∨ profiilideks ∨ profiilidel ∨ profiilidele ∨ profiilidelt ∨ profiilidena ∨ profiilideni ∨ profiilides ∨ profiilidesse ∨ profiilidest ∨ profiilideta ∨ profiiliga ∨ profiiliks ∨ profiilil ∨ profiilile ∨ profiililt ∨ profiilina ∨ profiilini ∨ profiilis ∨ profiilisid ∨ profiilisse ∨ profiilist ∨ profiilita)
 ```
