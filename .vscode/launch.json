@@ -5,6 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask_api_paring_soned",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija/paring_soned",
+            "program": "./flask_api_paring_soned.py",
+            "env": {"TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process", "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process"},
+            "args": [ ]
+        },  
+        {
+            "name": "api_paring_soned",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api_indekseerija/paring_soned",
+            "program": "./api_paring_soned.py",
+            "env": {"TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process", "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process"},
+            "args": [ "--indent=4", "--json={\"content\":\"mees Sarved&Sõrad jahimehed\"}"]
+        },  
+        {
             "name": "api_paring_lemmad",
             "type": "python",
             "request": "launch",
