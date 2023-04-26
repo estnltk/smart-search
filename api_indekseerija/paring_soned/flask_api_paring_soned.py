@@ -14,9 +14,9 @@ $ ./venv/bin/python3 ./flask_api_paring_soned.py       # käivitame veebiserveri
 $ cd ~/git/smart_search_github/api_indekseerija/paring_soned
 $ docker build -t tilluteenused/smart_search_api_paring_soned:2023.04.24 .        # konteineri tegemine, ühekordne tegevus
 $ docker run -p 6609:6609  \
-    --env TOKENIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
-    --env ANALYSER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
-    --env GENERATOR_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
+    --env TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process \
+    --env ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process \
+    --env GENERATOR=https://smart-search.tartunlp.ai/api/generator/process \
     tilluteenused/smart_search_api_paring_soned:2023.04.24
 
 # Päringute näited:
@@ -29,11 +29,21 @@ $ curl --silent --request POST --header "Content-Type: application/json" \
 
 $ curl --silent --request POST --header "Content-Type: application/json" \
   --data '{"content": "katus profiil"}' \
-  localhost:6609/api/paring_lemmad/json | jq
+  localhost:6609/api/paring-soned/json | jq
 
 $ curl --silent --request POST --header "Content-Type: application/json" \
   --data '{"content": "katus profiil"}' \
-  localhost:6609/api/paring_lemmad/text
+  localhost:6609/text  
+
+$ curl --silent --request POST --header "Content-Type: application/json" \
+  --data '{"content": "katus profiil"}' \
+  localhost:6609/api/paring-soned/text
+
+$ curl --silent --request POST --header "Content-Type: application/json" \
+  localhost:6609/version
+
+$ curl --silent --request POST --header "Content-Type: application/json" \
+  localhost:6609/api/paring-soned/version
 """
 import subprocess
 import json
