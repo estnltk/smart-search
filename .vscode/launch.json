@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask_wp_paring",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/smart_search_github/wp/wp_paring",
+            "program": "./flask_wp_paring.py",
+            "env": {"PARING_SONED": "https://smart-search.tartunlp.ai/api/paring-soned/", "PARING_LEMMAD": "https://smart-search.tartunlp.ai/api/paring-lemmad/"},
+            "args": [ ]
+        }, 
+        {
             "name": "flask_api_paring_soned",
             "type": "python",
             "request": "launch",
