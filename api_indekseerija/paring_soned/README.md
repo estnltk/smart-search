@@ -1,4 +1,4 @@
-# Päringusõnede lemmatiseerimine ja neist morf. sünteesi abil sõnavormide päringu koostamine  [versioon 2023.04.24]
+# Päringusõnede lemmatiseerimine ja neist morf. sünteesi abil sõnavormide päringu koostamine  [versioon 2023.04.27]
 
 Kasutatud on:
 
@@ -12,7 +12,9 @@ Kasutatud on:
     * sidesõnad
 * morfoloogilist sünteesi lemmast kõigi (käändes/pöördes) sõnavormide genereerimiseks
 
-## Päringu koostamise näited
+## Näited
+
+Tavaliselt kasutatakse morf sünteesi kasutavat päringut sellistel juhtudel kui korpust pole võimalik ette indekseerida.
 
 Päringu kuju:
 
