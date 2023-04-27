@@ -12,7 +12,7 @@ $ ./venv/bin/python3 ./flask_api_paring_soned.py       # käivitame veebiserveri
 
 # Serveri käivitamine konteinerist
 $ cd ~/git/smart_search_github/api_indekseerija/paring_soned
-$ docker build -t tilluteenused/smart_search_api_paring_soned:2023.04.24 .        # konteineri tegemine, ühekordne tegevus
+$ docker build -t tilluteenused/smart_search_api_paring_soned:2023.04.25 .        # konteineri tegemine, ühekordne tegevus
 $ docker run -p 6609:6609  \
     --env TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process \
     --env ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process \
@@ -60,7 +60,6 @@ app = Flask("sonedega")
 def paring_json():
     try:   
         json_response = paring.paring_json(request.json)
-        print("paring_json", json_response)
         return jsonify(json_response)
     except Exception as e:
         json_response = e
@@ -83,7 +82,7 @@ def version():
     Returns:
         ~flask.Response: Lemmatiseerija versioon
     """
-    json_response = {"version":paring.version_json()}
+    json_response = paring.version_json()
     return jsonify(json_response)
 
 if __name__ == '__main__':

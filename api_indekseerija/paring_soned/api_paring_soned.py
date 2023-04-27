@@ -8,7 +8,7 @@ from typing import Dict, List
 
 class PARING_SONED:
     def __init__(self):
-        self.VERSION="2023.04.21"
+        self.VERSION="2023.04.27"
 
         self.tokenizer = os.environ.get('TOKENIZER')
         if self.tokenizer is None:
@@ -26,7 +26,7 @@ class PARING_SONED:
         if self.generator is None:
             self.GENERATOR_IP=os.environ.get('GENERATOR_IP') if os.environ.get('GENERATOR_IP') != None else 'localhost'
             self.GENERATOR_PORT=os.environ.get('GENERATOR_PORT') if os.environ.get('GENERATOR_PORT') != None else '7000'
-            self.generator = f'http://{self.GENERATOR_IP}:{self.GENERATOR_PORT}/api/generator/process'
+            self.generator = f'http://{self.GENERATOR_IP}:{self.GENERATOR_PORT}/process'
 
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 
@@ -130,7 +130,7 @@ class PARING_SONED:
         return paring
     
     def version_json(self) -> Dict:
-        return {"version": self.VERSION}
+        return {"version": self.VERSION, "tokenizer": self.tokenizer, "analyser": self.analyser, "generator": self.generator}
         
 if __name__ == '__main__':
     import argparse
