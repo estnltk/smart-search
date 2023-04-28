@@ -1,18 +1,19 @@
 #!/usr/bin/python3
 
 '''
-1. käivita lemmatiseerija konteiner (konteiner peab olema tehtud/allalaaditud)
-    $ docker run -p 7000:7000 tilluteenused/lemmatizer konteiner
-2. käivita lemmatiseerija konteineriga suhtlev veebiserver käsurealt või konteinerist
-  2.1. käsurealt pythoni skriptiga (pythoni pakett requests peab olema installitud, ubuntu korral: sudo apt install -y python3-requests)
-    $ cd demo_lemmatiseerija ; ./flask_demo_lemmatiseerija.py
-  2.2. dockeri konteinerist
-    $ docker run --env LEMMATIZER_IP=localhost --env LEMMATIZER_PORT=7777 tilluteenused/demo_lemmatiseerija:2023.04.03
-3. Ava brauseris localhost:7777/lemmad ja järgi brauseris avanenud veebilehe juhiseid
-    $ google-chrome http://localhost:7777/lemmatiseerija/lemmad
-    $ google-chrome http://localhost:7777/lemmatiseerija/paring
-    $ google-chrome http://localhost:7777/lemmatiseerija/json
-    $ google-chrome http://localhost:7777/lemmatiseerija/versioon
+1. käivita lemmatiseerija konteineriga suhtlev veebiserver käsurealt või konteinerist
+  1.1. käsurealt pythoni skriptiga (pythoni pakett requests peab olema installitud, ubuntu korral: sudo apt install -y python3-requests)
+    $ cd smart_search_github/wp/wp_paring
+    $ ./create_venv.sh
+    $ PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ venv/bin/python3 ./flask_wp_paring.py
+  1.2. dockeri konteinerist
+    $ docker build -t tilluteenused/smart_search_wp_paring:2023.04.29 . 
+    $ docker run -p 6003:6003 \
+        --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
+        --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
+        tilluteenused/smart_search_wp_paring:2023.04.29
+2. Ava brauseris http://localhost:6003/wp/paring ja järgi brauseris avanenud veebilehe juhiseid
+    $ google-chrome http://localhost:6003/wp/paring
 '''
 
 import os
