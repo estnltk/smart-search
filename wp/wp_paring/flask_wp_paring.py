@@ -2,11 +2,12 @@
 
 '''
 1. käivita lemmatiseerija konteineriga suhtlev veebiserver käsurealt või konteinerist
-  1.1. käsurealt pythoni skriptiga (pythoni pakett requests peab olema installitud, ubuntu korral: sudo apt install -y python3-requests)
-    $ cd smart_search_github/wp/wp_paring
+  1.1. käsurealt pythoni skriptiga
+    $ cd ~/git/smart_search_github/wp/wp_paring
     $ ./create_venv.sh
     $ PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ venv/bin/python3 ./flask_wp_paring.py
   1.2. dockeri konteinerist
+    $ cd ~/git/smart_search_github/wp/wp_paring
     $ docker build -t tilluteenused/smart_search_wp_paring:2023.04.29 . 
     $ docker run -p 6003:6003 \
         --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
@@ -14,6 +15,7 @@
         tilluteenused/smart_search_wp_paring:2023.04.29
 2. Ava brauseris http://localhost:6003/wp/paring ja järgi brauseris avanenud veebilehe juhiseid
     $ google-chrome http://localhost:6003/wp/paring
+    $ google-chrome http://localhost:6003/wp/version
 '''
 
 import os
@@ -23,7 +25,7 @@ import json
 
 class HTML_FORMS:
     def __init__(self):
-        self.VERSION="2023.04.26"
+        self.VERSION="2023.04.29"
 
         self.paring_soned = os.environ.get('PARING_SONED')
         if self.paring_soned is None:
@@ -69,7 +71,7 @@ class HTML_FORMS:
 app = Flask(__name__)
 html_forms = HTML_FORMS()
 
-@app.route('/wp/versioon', methods=['GET', 'POST'])
+@app.route('/wp/version', methods=['GET', 'POST'])
 def lemmatiseerija_versioon():
     content = f'<html><body>Versioon: {html_forms.VERSION}</body></html>' 
     return render_template_string(html_forms.html_pref+content+html_forms.html_suf)
