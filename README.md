@@ -32,30 +32,28 @@ Antud projekti raames loome me kõik vajalikud komponendid veebiteenustena ning 
 
 ### I. Dokumentide indekseerimine
 
-Toimiva otsingu aluseks on korrektselt indekseeritud dokumendid. Standardsed andmebaasilahendused ei arvesta eestikeelsete tekstide omapära ning seetõttu on otingutulemused tihti kehvapoolsed.
+Toimiva otsingu aluseks on korrektselt indekseeritud dokumendid. Standardsed andmebaasilahendused ei arvesta eestikeelsete tekstide omapära ning seetõttu on otsingutulemused tihti kehvapoolsed.
 
 Antud demo eesmärk on näidata kuidas saab kasutada keeletehnoloogilise vahendeid oluliselt sisukama indeksi moodustamiseks ning millist informatsiooni on otstarbekas indeksis esitada. 
 
 * näiterakendused
-  * [lemmadest koosneva indeksi tegemine](https://github.com/estnltk/smart-search/tree/main/api/
-  indekseerija_lemmad)
+  * [lemmadest koosneva indeksi tegemine](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_lemmad)
   * [sõnavormidest koosneva indeksi tegemine](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_soned)
 * [selgitused näiterakenduste kohta](https://github.com/estnltk/smart-search/tree/main/api)
 
 ### II. Otsisisendi normaliseerimine
 
 Antud demo näitab kuidas saab kasutada lemmatiseerimise ja sõnavormide sünteesimise veebiteenust otsingisisendis olevate sõnadest päringu genereerimseks. Kui indeksis on lemmad, peab päring sisaldama
-otsõnede lemmasid. Kui indeksis on (algsed) tekstisõned, peab algsed päringusõned lemmatiseerima, siis
+otsisõnede lemmasid. Kui indeksis on (algsed) tekstisõned, peab päringusõned lemmatiseerima ja siis
 genereerima neist kõikvõimaliku vormid.
 
-Antud demo näitab kuidas saab kasutada lemmatiseerimise veebiteenust otsingisisendis olevate sõnade algvormide leidmiseks, mida on lihsam indeksist otsida.
+Antud demo näitab kuidas saab kasutada lemmatiseerimise veebiteenust otsingisisendis olevate sõnade algvormide leidmiseks, mida on lihtsam indeksist otsida.
 
-* [näiterakendus](https://smart-search.tartunlp.ai/lemmad)
-* [rakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/demo_lemmatiseerija).
-* [veebiteenusega liidestumise näitekood](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/flask_demo_lemmatiseerija.py).
+* [näiterakendus](https://smart-search.tartunlp.ai/wp/paring/process)
+* [rakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/wp/wp_paring).
 * [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/README-CLOUD.md)
 
-### III. Nutika otsingu demorakendus 
+### III. Nutika otsingu demorakendus
 
 Antud demo näitab, kuidas eelmisestes punktides korpuse põhjal tehtud indeksfailis olevat informatsiooni ja lemmatiseerimsteenust kombineerides päringusõnedele vastavad tekstid ja päringusõned tekstis märgendada.
 
@@ -63,10 +61,7 @@ Antud demo näitab, kuidas eelmisestes punktides korpuse põhjal tehtud indeksfa
 * [näiterakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/demo_otsing/veebileht)
 * [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README-CLOUD.md)
 
- 
 ## Veebiteenused
-
-### Lemmatiseerimine
 
 Programmeerija jaoks mõeldud liidesega veebiteenused:
 
@@ -74,8 +69,11 @@ Programmeerija jaoks mõeldud liidesega veebiteenused:
 * [Tekstide põhjal sõnavorme sisaldava indeksi koostamine](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_soned)
 * [Päringusõnest lemmade indeksiga sobiva päringu genereerimine](https://github.com/estnltk/smart-search/tree/main/api/paring_lemmad)
 * [Päringusõnedest tekstisõnede indeksiga sobiva päringu genereerimine](https://github.com/estnltk/smart-search/tree/main/api/paring_soned)
-
-
+<!---
+* [Sõnestamise ja lausestamise veebiteenus](https://github.com/estnltk/smart-search/blob/main/api/README-tokenizer.md)
+* [Morfoloogilise analüüsi veebiteenus](https://github.com/estnltk/smart-search/blob/main/api/README-analyser.md)
+* [Morfoloogilise genereerimise veebiteenus](https://github.com/estnltk/smart-search/blob/main/api/README-generator.md)
+-->
 
 ## Repo kataloogistruktuur
 
