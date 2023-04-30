@@ -36,11 +36,17 @@ Toimiva otsingu aluseks on korrektselt indekseeritud dokumendid. Standardsed and
 
 Antud demo eesmärk on näidata kuidas saab kasutada keeletehnoloogilise vahendeid oluliselt sisukama indeksi moodustamiseks ning millist informatsiooni on otstarbekas indeksis esitada. 
 
-* [näiterakendus](https://github.com/estnltk/smart-search/blob/main/demo_otsing/korpus_ruukki/toimeta.sh)
-* [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_otsing/korpus_ruukki/README.md)
-
+* näiterakendused
+  * [lemmadest koosneva indeksi tegemine](https://github.com/estnltk/smart-search/tree/main/api/
+  indekseerija_lemmad)
+  * [sõnavormidest koosneva indeksi tegemine](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_soned)
+* [selgitused näiterakenduste kohta](https://github.com/estnltk/smart-search/tree/main/api)
 
 ### II. Otsisisendi normaliseerimine
+
+Antud demo näitab kuidas saab kasutada lemmatiseerimise ja sõnavormide sünteesimise veebiteenust otsingisisendis olevate sõnadest päringu genereerimseks. Kui indeksis on lemmad, peab päring sisaldama
+otsõnede lemmasid. Kui indeksis on (algsed) tekstisõned, peab algsed päringusõned lemmatiseerima, siis
+genereerima neist kõikvõimaliku vormid.
 
 Antud demo näitab kuidas saab kasutada lemmatiseerimise veebiteenust otsingisisendis olevate sõnade algvormide leidmiseks, mida on lihsam indeksist otsida.
 
@@ -48,7 +54,6 @@ Antud demo näitab kuidas saab kasutada lemmatiseerimise veebiteenust otsingisis
 * [rakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/demo_lemmatiseerija).
 * [veebiteenusega liidestumise näitekood](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/flask_demo_lemmatiseerija.py).
 * [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/README-CLOUD.md)
-
 
 ### III. Nutika otsingu demorakendus 
 
@@ -63,7 +68,13 @@ Antud demo näitab, kuidas eelmisestes punktides korpuse põhjal tehtud indeksfa
 
 ### Lemmatiseerimine
 
-Programmeerija vaade ja liides **eesti keele sõnadele algvormi (lemma) leidmise veebiteenusele** on esitatud [lemmatiseerija veebiteenuse kirjelduses](https://github.com/estnltk/smart-search/tree/main/lemmatiseerija).
+Programmeerija jaoks mõeldud liidesega veebiteenused:
+
+* [Tekstide põhjal lemmasid sisaldava indeksi koostamine](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_lemmad)
+* [Tekstide põhjal sõnavorme sisaldava indeksi koostamine](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_soned)
+* [Päringusõnest lemmade indeksiga sobiva päringu genereerimine](https://github.com/estnltk/smart-search/tree/main/api/paring_lemmad)
+* [Päringusõnedest tekstisõnede indeksiga sobiva päringu genereerimine](https://github.com/estnltk/smart-search/tree/main/api/paring_soned)
+
 
 
 ## Repo kataloogistruktuur
