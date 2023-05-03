@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask_wp_indekseerija",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/wp/wp_indekseerija",
+            "program": "./flask_wp_indekseerija.py",
+            "env": {"INDEKSEERIJA_SONED": "https://smart-search.tartunlp.ai/api/sonede-indekseerija/", "INDEKSEERIJA_LEMMAD": "https://smart-search.tartunlp.ai/api/lemmade-indekseerija/"},
+            "args": [ ]
+        }, 
+        {
             "name": "flask_wp_paring",
             "type": "python",
             "request": "launch",

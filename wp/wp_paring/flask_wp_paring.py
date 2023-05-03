@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 '''
 1. käivita lemmatiseerija konteineriga suhtlev veebiserver käsurealt või konteinerist
