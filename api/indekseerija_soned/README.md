@@ -53,7 +53,7 @@ curl --silent --request POST --header "Content-Type: application/json" \
       "content": "Jahimehed jahikoertega."
     },
     "DOC_2": {
-      "content": "Daam sülekoeraga ja mees jahikoeraga."k
+      "content": "Daam sülekoeraga ja mees jahikoeraga."
     }
   }
   "index": {                        // sõnede indeks
