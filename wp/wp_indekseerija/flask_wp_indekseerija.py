@@ -1,10 +1,24 @@
 #!/usr/bin/env python3
 
 '''
-Eeldused:
-$ cd ~/git/smart_search_github/wp/wp_indekseerija
-$ ./create_venv.sh
-$ mkdir uploads
+1. Käivita indekseerijate konteineritega suhtlev veebiserver käsurealt või konteinerist
+  1.1 käsurealt pythoni skriptiga
+    $ cd ~/git/smart_search_github/wp/wp_indekseerija
+    $ ./create_venv.sh
+    #$ mkdir uploads
+    $ INDEKSEERIJA_SONED=https://smart-search.tartunlp.ai/api/sonede-indekseerija/   \
+      INDEKSEERIJA_LEMMAD=https://smart-search.tartunlp.ai/api/lemmade-indekseerija/ \
+      venv/bin/python3 ./flask_wp_indekseerija.py
+  1.2. dockeri konteinerist
+    $ cd ~/git/smart_search_github/wp/wp_indekseerija
+    $ docker build -t tilluteenused/smart_search_wp_indekseerija:2023.05.01 . 
+    $ docker run -p 5000:5000 \
+      --env INDEKSEERIJA_SONED=https://smart-search.tartunlp.ai/api/sonede-indekseerija/   \
+      --env INDEKSEERIJA_LEMMAD=https://smart-search.tartunlp.ai/api/lemmade-indekseerija/ \
+      tilluteenused/smart_search_wp_indekseerija:2023.05.01 .
+  2. Ava brauseris http://localhost:5000/wp/indekseerija/process ja järgi brauseris avanenud veebilehe juhiseid
+    $ google-chrome http://localhost:5000/wp/indekseerija/process
+    $ google-chrome http://localhost:5000/wp/indekseerija/process 
 '''
 
 import os
@@ -66,7 +80,7 @@ html_forms = HTML_FORMS()
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.txt','.json']
-app.config['UPLOAD_PATH'] = 'uploads'      
+#app.config['UPLOAD_PATH'] = 'uploads'      
 
 @app.route('/wp/indekseerija/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
