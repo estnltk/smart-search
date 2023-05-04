@@ -32,6 +32,8 @@ Peale ```Päring``` klikkimist näete ekraanil JSON-kujul tulemust.
 ### 1.2 Väljund sisaldab algvorme (lemmasid) ja on esitatud "loogilise avaldise" kujul
 ---
 
+[Väljundformaadi kirjeldus](https://github.com/estnltk/smart-search/tree/main/api/paring_lemmad)
+
 <img width=55% src="Ekraanipilt_paring_lemmad_la_1.png">
 
 Peale ```Päring``` klikkimist näete ekraanil "loogilise avaldise" kujul tulemust.
