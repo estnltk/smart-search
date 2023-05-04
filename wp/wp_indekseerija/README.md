@@ -50,12 +50,14 @@ Peale ```Indekseeri``` klikkimist näete ekraanil CSV vormis lemmasid sisaldavat
 <img width=55% src="Ekraanipilt_indekseerija_lemmad_csv_json_2.png">
 
 Veerud CSV failis
-* 1. veerg -- lemma (algvorm)
-* 2. veerg -- True kui liitsõna osa, False kui terviksõna
-* 3. veerg -- algne tekstisõne
-* 4. veerg -- dokumendi id
-* 5. veerg -- algse tekstisõne algusposotsioon tekstis
-* 6. veerg -- algse tekstisõne lõpupositsioon tekstis
+<ol>
+<li> veerg -- lemma (algvorm)
+<li> veerg -- True kui liitsõna osa, False kui terviksõna
+<li> veerg -- algne tekstisõne
+<li> veerg -- dokumendi id
+<li> veerg -- algse tekstisõne algusposotsioon tekstis
+<li> veerg -- algse tekstisõne lõpupositsioon tekstis
+</ol>
 
 ### 2.1 Teeme tekstisõnesid sisaldava indeksi ja kuvame seda JSON-kujul
 ---
