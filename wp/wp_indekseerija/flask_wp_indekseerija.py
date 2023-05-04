@@ -11,11 +11,11 @@
       venv/bin/python3 ./flask_wp_indekseerija.py
   1.2. dockeri konteinerist
     $ cd ~/git/smart_search_github/wp/wp_indekseerija
-    $ docker build -t tilluteenused/smart_search_wp_indekseerija:2023.05.01 . 
+    $ docker build -t tilluteenused/smart_search_wp_indekseerija:2023.05.01.3 . 
     $ docker run -p 5000:5000 \
       --env INDEKSEERIJA_SONED=https://smart-search.tartunlp.ai/api/sonede-indekseerija/   \
       --env INDEKSEERIJA_LEMMAD=https://smart-search.tartunlp.ai/api/lemmade-indekseerija/ \
-      tilluteenused/smart_search_wp_indekseerija:2023.05.01 .
+      tilluteenused/smart_search_wp_indekseerija:2023.05.01.3 .
   2. Ava brauseris http://localhost:5000/wp/indekseerija/process ja järgi brauseris avanenud veebilehe juhiseid
     $ google-chrome http://localhost:5000/wp/indekseerija/process
     $ google-chrome http://localhost:5000/wp/indekseerija/process 
@@ -31,19 +31,19 @@ import json
 
 class HTML_FORMS:
     def __init__(self):
-      self.VERSION="2023.05.01"
+      self.VERSION="2023.05.01.3"
 
       self.indekseerija_soned = os.environ.get('INDEKSEERIJA_SONED')
       if self.indekseerija_soned is None:
           self.INDEKSEERIJA_SONED_IP=os.environ.get('INDEKSEERIJA_SONED_IP') if os.environ.get('INDEKSEERIJA_SONED_IP') != None else 'localhost'
           self.INDEKSEERIJA_SONED_PORT=os.environ.get('INDEKSEERIJA_SONED_PORT') if os.environ.get('INDEKSEERIJA_SONED_PORT') != None else '6606'
-          self.indekseerija_soned = f'http://{self.INDEKSEERIJA_SONED_IP}:{self.INDEKSEERIJA_SONED_PORT}/api/indekseerija-soned/'
+          self.indekseerija_soned = f'http://{self.INDEKSEERIJA_SONED_IP}:{self.INDEKSEERIJA_SONED_PORT}/api/sonede-indekseerija/'
 
       self.indekseerija_lemmad = os.environ.get('INDEKSEERIJA_LEMMAD')
       if self.indekseerija_lemmad is None:
           self.INDEKSEERIJA_LEMMAD_IP=os.environ.get('INDEKSEERIJA_LEMMAD_IP') if os.environ.get('INDEKSEERIJA_LEMMAD_IP') != None else 'localhost'
           self.INDEKSEERIJA_LEMMAD_PORT=os.environ.get('INDEKSEERIJA_LEMMAD_PORT') if os.environ.get('INDEKSEERIJA_LEMMAD_PORT') != None else '6607' 
-          self.indekseerija_lemmad = f'http://{self.INDEKSEERIJA_LEMMAD_IP}:{self.INDEKSEERIJA_LEMMAD_PORT}/api/indekseerija-lemmad/'
+          self.indekseerija_lemmad = f'http://{self.INDEKSEERIJA_LEMMAD_IP}:{self.INDEKSEERIJA_LEMMAD_PORT}/api/lemmade-indekseerija/'
 
 
       self.html_pref = \
@@ -116,8 +116,8 @@ def upload_files():
               content = 'Vigane json:\n'+uploaded_file
               return render_template_string(html_forms.html_pref+content+html_forms.form+html_forms.html_suf)
           else: # file_ext == '.txt' # failis oli tekst, teeme JSONiks
-
             query_json = {"sources": {filename:{"content":uploaded_content}}}
+          content = f'<h2>{filename} ⇒</h2>'
           if indekseerija == "indekseerija-lemmad":
             url_indekseerija = html_forms.indekseerija_lemmad
           else:
@@ -128,9 +128,8 @@ def upload_files():
               content = f'Probleemid veebiteenusega: {url_indekseerija}{formaat} status_code={response.status_code}'
             else:
               if formaat == 'json':
-                content = json.dumps(json.loads(response.text), indent=2, ensure_ascii=False).replace(' ', '&nbsp;').replace('\n', '<br>')+'<br><br>'
+                content += json.dumps(json.loads(response.text), indent=2, ensure_ascii=False).replace(' ', '&nbsp;').replace('\n', '<br>')+'<br><br>'
               else: # formaat=='csv'
-                  tmp = response.text
                   content = response.text.replace('\n', '<br>')+'<br><br>'
           except:
             content = f'Probleemid veebiteenusega: {url_indekseerija}{formaat}'
