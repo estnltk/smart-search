@@ -23,7 +23,6 @@ Teksti indekseerimiseks tuleb teha 3 valikut:
 * Kas indekseerimise tulemust soovite veebilehel näha JSON- või CSV-kujul.
 
 ## Näited JSON-kujul sisendiga
----
 
 Sisendiks on JSON kujul korpust sisaldav fail ```microcorpus.json```.
 Tegemist on korpuste mõttes nanoskoopilise suurusega tekstiga,
