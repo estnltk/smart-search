@@ -1,4 +1,4 @@
-# Veebileht tekstide indekseerimisteenuste demonstreerimiseks [versioon 2023.05.01.3]
+# Veebileht tekstide indekseerimisteenuste demonstreerimiseks [versioon 2023.05.01.4]
 
 [Link veebilehele TÜ serveris](https://smart-search.tartunlp.ai/wp/indekseerija/process)
 

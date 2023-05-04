@@ -1,4 +1,4 @@
-# Veebileht otsisisendi normaliseerimisteenuste demonstreerimiseks [versioon 2023.04.29.2]
+# Veebileht otsisisendi normaliseerimisteenuste demonstreerimiseks [versioon 2023.04.29.4]
 
 [Link veebilehele TÜ serveris](https://smart-search.tartunlp.ai/wp/paring/process)
 

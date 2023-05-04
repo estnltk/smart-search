@@ -8,11 +8,11 @@
     $ PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ venv/bin/python3 ./flask_wp_paring.py
   1.2. dockeri konteinerist
     $ cd ~/git/smart_search_github/wp/wp_paring
-    $ docker build -t tilluteenused/smart_search_wp_paring:2023.04.29.3 . 
+    $ docker build -t tilluteenused/smart_search_wp_paring:2023.04.29.4 . 
     $ docker run -p 6003:6003 \
         --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
         --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
-        tilluteenused/smart_search_wp_paring:2023.04.29.3
+        tilluteenused/smart_search_wp_paring:2023.04.29.4
 2. Ava brauseris http://localhost:6003/wp/paring ja järgi brauseris avanenud veebilehe juhiseid
     $ google-chrome http://localhost:6003/wp/paring/process
     $ google-chrome http://localhost:6003/wp/paring/version
@@ -25,7 +25,7 @@ import json
 
 class HTML_FORMS:
     def __init__(self):
-        self.VERSION="2023.04.29.2"
+        self.VERSION="2023.04.29.4"
 
         self.paring_soned = os.environ.get('PARING_SONED')
         if self.paring_soned is None:
@@ -55,18 +55,11 @@ class HTML_FORMS:
             '''
 
         self.html_suf = \
-                '''
-                </body></html>
-                '''
         '''
-                <br><br
-                <h3>Kasutusjuhendid</h3><br>
-                <ul>
-                <li><a href="https://github.com/estnltk/smart-search/blob/main/demo_lemmatiseerija/README-CLOUD.md">Lemmatiseerija demo</a><br>
-                <li><a href="https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README-CLOUD.md">Otsimootori demo</a>
-                </ul>
+            <br>
+            <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_paring/README.md">Kasutusjuhend</a>
+            </body></html>
         '''
-
 
 app = Flask(__name__)
 html_forms = HTML_FORMS()
