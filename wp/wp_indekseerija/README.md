@@ -26,8 +26,8 @@ Teksti indekseerimiseks tuleb teha 3 valikut:
 ---
 
 Sisendiks on JSON kujul korpust sisaldav fail ```microcorpus.json```.
-Tegemist on korpuste mõttes mikroskoopilise suurusega tekstiga,
-eesmärk on illustreerida põhimõtteid näidetes.
+Tegemist on korpuste mõttes nanoskoopilise suurusega tekstiga,
+eesmärk on näidetes illustreerida põhimõtteid.
 
 ```json
 {"sources": {"DOC_1": {"content":"Daam\nkoerakesega."},"DOC_2": {"content":"Härra ja daam. Daam sülekoeraga ja härra hundikoeraga."}}}
