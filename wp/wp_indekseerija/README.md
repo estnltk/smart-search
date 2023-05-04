@@ -1,11 +1,13 @@
 # Veebileht tekstide indekseerimisteenuste demonstreerimiseks [versioon 2023.05.01.3]
 
+[Link veebileht TÜ serveris](https://smart-search.tartunlp.ai/wp/indekseerija/process)
+
 Tegemist on pealisehitusega kahele veebiteenusele:
+
 * [Tekstist lemmade indeksi tegemise veebiteenus](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_lemmad)
 * [Tekstist sõnede indeksi tegemise veebiteenus](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_soned)
 
 [Pealisehituse lähtekoodi](https://github.com/estnltk/smart-search/tree/main/wp/wp_indekseerija) leiab GITHUBist
-
 
 Teksti indekseerimiseks tuleb teha 3 valikut:
 
