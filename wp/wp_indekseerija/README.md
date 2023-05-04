@@ -1,6 +1,6 @@
 # Veebileht tekstide indekseerimisteenuste demonstreerimiseks [versioon 2023.05.01.3]
 
-[Link veebileht TÜ serveris](https://smart-search.tartunlp.ai/wp/indekseerija/process)
+[Link veebilehele TÜ serveris](https://smart-search.tartunlp.ai/wp/indekseerija/process)
 
 Tegemist on pealisehitusega kahele veebiteenusele:
 
