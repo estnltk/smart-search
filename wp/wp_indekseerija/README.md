@@ -1,4 +1,4 @@
-# Veebileht tekstide indekseerimisteenuste demonstreerimiseks
+# Veebileht tekstide indekseerimisteenuste demonstreerimiseks [versioon 2023.05.01.3]
 
 Tegemist on pealisehitusega kahele veebiteenusele:
 * [Tekstist lemmade indeksi tegemise veebiteenus](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_lemmad)
