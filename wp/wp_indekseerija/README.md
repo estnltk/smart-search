@@ -38,7 +38,7 @@ eesmärk on näidetes illustreerida põhimõtteid.
 
  <img width=55% src="Ekraanipilt_indekseerija_lemmad_json_json_1.png">
 
-Peale ```Indekseeri``` klikkimist näete ekraanil JSON vormis lemmasid sisaldavat indeksit.
+Peale ```Indekseeri``` klikkimist näete ekraanil JSON-kujul lemmasid sisaldavat indeksit.
 
 <img width=55% src="Ekraanipilt_indekseerija_lemmad_json_json_2.png">
 
@@ -47,7 +47,7 @@ Peale ```Indekseeri``` klikkimist näete ekraanil JSON vormis lemmasid sisaldava
 
 <img width=55% src="Ekraanipilt_indekseerija_lemmad_csv_json_1.png">
 
-Peale ```Indekseeri``` klikkimist näete ekraanil CSV vormis lemmasid sisaldavat indeksit.
+Peale ```Indekseeri``` klikkimist näete ekraanil CSV-kujul lemmasid sisaldavat indeksit.
 
 <img width=55% src="Ekraanipilt_indekseerija_lemmad_csv_json_2.png">
 
@@ -66,7 +66,7 @@ Veerud CSV failis:
 
 <img width=55% src="Ekraanipilt_indekseerija_soned_json_json_1.png">
 
-Peale ```Indekseeri``` klikkimist näete ekraanil CSV vormis sõnesid sisaldavat indeksit.
+Peale ```Indekseeri``` klikkimist näete ekraanil CSV-kujul sõnesid sisaldavat indeksit.
 
 <img width=55% src="Ekraanipilt_indekseerija_soned_json_json_2.png">
 
@@ -75,7 +75,7 @@ Peale ```Indekseeri``` klikkimist näete ekraanil CSV vormis sõnesid sisaldavat
 
 <img width=55% src="Ekraanipilt_indekseerija_soned_csv_json_1.png">
 
-Peale ```Indekseeri``` klikkimist näete ekraanil CSV vormis lemmasid sisaldavat indeksit.
+Peale ```Indekseeri``` klikkimist näete ekraanil CSV-kujul lemmasid sisaldavat indeksit.
 
 <img width=55% src="Ekraanipilt_indekseerija_soned_csv_json_2.png">
 
