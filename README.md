@@ -81,10 +81,13 @@ Programmeerija jaoks mõeldud liidesega veebiteenused:
   * [**_indekseerija_soned_**](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_soned) -- sõnavorme sisaldava indeksi tegemine.
   * [**_paring_lemmad_**](https://github.com/estnltk/smart-search/tree/main/api/paring_lemmad) -- otsisõnede normaliseerimine lemmasid sisaldava indeksi korral.
   * [**_paring_soned_**](https://github.com/estnltk/smart-search/tree/main/api/paring_soned) -- otsisõnede normaliseerimine sõnavorme sisaldava indeksi korral.
+* [**_testkorpused_**](https://github.com/estnltk/smart-search/tree/main/testkorpused) -- testimiseks möeldud korpused ja abistava iseloomuga skriptid
+  * [**_bin_**](https://github.com/estnltk/smart-search/tree/main/testkorpused/bin) -- abistava iseloomuga skriptid
+  * [**_riigiteataja_**](https://github.com/estnltk/smart-search/tree/main/testkorpused/riigiteataja) -- riigiteataja dokumentidest koostatud mikrokorpus testimiseks.
 * [**_demo_otsing_**](https://github.com/estnltk/smart-search/tree/main/demo_otsing) -- tillukese demokorpuse indekseerimise ja indeksist otsimise demo.
   Selle uus versioon on tegemisel. Uus versioon läheb ```wp``` kataloogi ja
   hakkab kasutama teenuseid, mille lähtekoodid on ```api``` kataloogides. Plaanis on asendada praegune pisike
-  tekstide demokorpus veidi asjakohasema (pisikese) demokrpusega
+  tekstide demokorpus veidi asjakohasema (pisikese) demokrpusega (vt [**_riigiteataja_**](https://github.com/estnltk/smart-search/tree/main/testkorpused/riigiteataja))
   * [**_korpus_ruukki_**](https://github.com/estnltk/smart-search/tree/main/demo_otsing/korpus_ruukki) -- tillukene demokorpus ja selle indekseerimisskriptid ("proof of concept" versioon) koos vahetulemustega. 
   * [**_veebileht_**](https://github.com/estnltk/smart-search/tree/main/demo_otsing/veebileht) -- otsingumootori demo ("proof of concept" versioon)
 
