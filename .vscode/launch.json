@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "texts2json",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/testkorpused/riigiteataja",
+            "program": "${workspaceFolder}/testkorpused/bin/texts2json.py",
+            "args": ["proov.txt" ],
+        }, 
+        {
             "name": "flask_wp_indekseerija",
             "type": "python",
             "request": "launch",
@@ -53,11 +61,12 @@
             "name": "flask_api_lemmade_indekseerija",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/api_indekseerija/indekseerija_lemmad",
+            "cwd": "${workspaceFolder}/api/indekseerija_lemmad",
             "program": "./flask_api_lemmade_indekseerija.py",
             "env": {"TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process"},
             "args": []
-        },        {
+        },        
+        {
             "name": "api_lemmade_indekseerija",
             "type": "python",
             "request": "launch",
