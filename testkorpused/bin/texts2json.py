@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+'''
+Teisendame .txt laiendiga sisendfailid indekseerijale sobivaks JSON-failiks.
+Dokumendi ID-ks paneme failinime ilma .txt laiendita.
+'''
+
 import sys
 import os
 import json
