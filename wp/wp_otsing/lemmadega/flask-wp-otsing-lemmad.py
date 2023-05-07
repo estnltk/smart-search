@@ -75,7 +75,7 @@ class HTML_FORMS:
         self.html_suf = \
         '''
             <br>
-            <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_paring/README.md">Kasutusjuhend</a>
+            <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/lemmadega/README.md">Kasutusjuhend</a>
             </body></html>
         '''
 
@@ -85,7 +85,13 @@ html_forms = HTML_FORMS()
 @app.route('/wp/otsing/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
 def versioon():
-    content = f'<html><body>Versioon: {html_forms.VERSION}<br>paring_lemmad: {html_forms.paring_lemmad}</body></html>' 
+    content = f'''
+    <html><body>
+      Versioon: {html_forms.VERSION}<br>
+      Keskkonnamuutujatest:<br>
+      &nbsp;&nbsp;paring_lemmad: {html_forms.paring_lemmad}<br>
+      &nbsp;&nbsp;idxfile: {html_forms.idxfile}
+    </body></html>''' 
     return render_template_string(html_forms.html_pref+content+html_forms.html_suf)
 
 @app.route('/wp/otsing/tekstid', methods=['GET', 'POST'])
