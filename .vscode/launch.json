@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask_wp_otsing_lemmad",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/wp/wp_otsing/lemmadega",
+            "program": "./flask-wp-otsing-lemmad.py",
+            "env": {"PARING_SONED": "https://smart-search.tartunlp.ai/api/paring-soned/", "PARING_LEMMAD": "https://smart-search.tartunlp.ai/api/paring-lemmad/"},
+            "args": [ ]
+        }, 
+        {
             "name": "texts2json",
             "type": "python",
             "request": "launch",
