@@ -2,6 +2,28 @@
 
 '''
 Flask veebiserver otsingumootori pakendamiseks
+
+Käivita demo veebiserver käsurealt või konteinerist
+
+1.1 käsurealt pythoni skriptiga
+
+$ cd ~/git/smart_search_github/wp/wp_otsing/lemmadega
+$ ./create_venv.sh
+$ PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
+  venv/bin/python3 ./flask-wp-otsing-lemmad.py
+
+1.2. dockeri konteinerist
+
+$ cd ~/git/smart_search_github/wp/wp_otsing/lemmadega
+$ docker build -t tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.06 .
+$ docker run -p 6013:6013 \
+  --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
+  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.06
+
+2. Ava brauseris http://localhost:6013/wp/otsing/lemmad/... ja järgi brauseris avanenud veebilehe juhiseid
+$ google-chrome http://localhost:6013/wp/otsing/lemmad/version
+$ google-chrome http://localhost:6013/wp/otsing/lemmad/texts
+$ google-chrome http://localhost:6013/wp/otsing/lemmad/process   
 '''
 
 import os
