@@ -78,11 +78,11 @@ class HTML_FORMS:
                 <input type="checkbox" name="fragments" value="fragments" checked>Otsi liitsõna osasõnadest</input><br><br>
                 Väljundformaat:
                     <input checked type="radio" name="formaat", value="text"> tekst    </input>
-                    <input         type="radio" name="formaat", value="json"> JSON </input>
-                    <input         type="radio" name="formaat", value="csv"> CSV </input><br><br>               
+                    <input         type="radio" name="formaat", value="json"> JSON </input> <br><br>        
                 <input name="message" type="text"><input type="submit" value="Otsing" ><br><br><hr>
             </form>
             '''
+            # <input         type="radio" name="formaat", value="csv"> CSV </input><br><br> 
         self.html_suf = \
         '''
             <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/lemmadega/README.md">Kasutusjuhend</a>
@@ -91,7 +91,7 @@ class HTML_FORMS:
 
 
     
-smart_search = wp_otsing_lemmad.SMART_SEARCH()   # otsingumootor
+smart_search = wp_otsing_lemmad.SMART_SEARCH_LEMMAS()   # otsingumootor
 html_forms = HTML_FORMS()       # veebilehe kokkupanemiseks vajalikud HTML-tükikesed 
 app = Flask(__name__)           # Fläski äpp
 

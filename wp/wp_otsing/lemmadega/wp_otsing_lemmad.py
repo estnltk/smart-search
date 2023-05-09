@@ -8,7 +8,7 @@ import requests
 import json
 from collections import OrderedDict
 
-class SMART_SEARCH:
+class SMART_SEARCH_LEMMAS:
     def __init__(self):
         self.VERSION="2023.05.06"
 
