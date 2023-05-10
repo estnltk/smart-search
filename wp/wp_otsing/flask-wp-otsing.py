@@ -21,19 +21,19 @@ $ OTSINGU_VIIS=lemmad \
 
 1.2. dockeri konteinerist
 
-$ cd ~/git/smart_search_github/wp/wp_otsing/lemmadega
-$ docker build -t tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.07 .
+$ cd ~/git/smart_search_github/wp/wp_otsing
+$ docker build -t tilluteenused/smart_search_wp_otsing:2023.05.08 .
 $ docker run -p 6013:6013 \
   --env OTSINGU_VIIS=soned \
   --env IDXFILE=riigiteataja-soned-json.idx \
   --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
-  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.07
+  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.08
 
 $ docker run -p 6013:6013 \
   --env OTSINGU_VIIS=lemmad \
   --env IDXFILE=riigiteataja-lemmad-json.idx  \
   --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
-  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.07
+  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.08
 
 2. Ava brauseris veebileht ja järgi juhiseid
 $ google-chrome http://localhost:6013/wp/otsing-lemmad/version
@@ -64,7 +64,7 @@ import wp_otsing
 
 class HTML_FORMS:
     def __init__(self):
-        self.VERSION="2023.05.07"
+        self.VERSION="2023.05.08"
         '''
         self.otsingu_viis = os.environ.get('OTSINGU_VIIS')
         if self.otsingu_viis is None:
@@ -149,7 +149,7 @@ class HTML_FORMS:
             '''
         self.html_suf = \
         '''
-            <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/lemmadega/README.md">Kasutusjuhend</a>
+            <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/README.md">Kasutusjuhend</a>
             </body></html>
         '''
 
