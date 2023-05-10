@@ -27,7 +27,7 @@ $ docker run -p 6013:6013 \
   --env OTSINGU_VIIS=soned \
   --env IDXFILE=riigiteataja-soned-json.idx \
   --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
-  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.08
+  tilluteenused/smart_search_wp_otsing:2023.05.08
 
 $ docker run -p 6013:6013 \
   --env OTSINGU_VIIS=lemmad \
