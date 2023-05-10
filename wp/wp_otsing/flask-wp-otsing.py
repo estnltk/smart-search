@@ -3,27 +3,55 @@
 '''
 Flask veebiserver otsingumootori pakendamiseks
 
-Käivita demo veebiserver käsurealt või konteinerist
+Käivita demo veebiserver käsurealt, konteinerist või pilvest
 
 1.1 käsurealt pythoni skriptiga
 
-$ cd ~/git/smart_search_github/wp/wp_otsing/lemmadega
+$ cd ~/git/smart_search_github/wp/wp_otsing
 $ ./create_venv.sh
-$ PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
-  venv/bin/python3 ./flask-wp-otsing-lemmad.py
+$ OTSINGU_VIIS=soned \
+  IDXFILE=riigiteataja-soned-json.idx \
+  PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
+  venv/bin/python3 ./flask-wp-otsing.py
+
+$ OTSINGU_VIIS=lemmad \
+  IDXFILE=riigiteataja-lemmad-json.idx \
+  PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
+  venv/bin/python3 ./flask-wp-otsing.py
 
 1.2. dockeri konteinerist
 
 $ cd ~/git/smart_search_github/wp/wp_otsing/lemmadega
-$ docker build -t tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.06 .
+$ docker build -t tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.07 .
 $ docker run -p 6013:6013 \
-  --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
-  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.06
+  --env OTSINGU_VIIS=soned \
+  --env IDXFILE=riigiteataja-soned-json.idx \
+  --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
+  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.07
 
-2. Ava brauseris http://localhost:6013/wp/otsing/lemmad/... ja järgi brauseris avanenud veebilehe juhiseid
-$ google-chrome http://localhost:6013/wp/otsing/lemmad/version
-$ google-chrome http://localhost:6013/wp/otsing/lemmad/texts
-$ google-chrome http://localhost:6013/wp/otsing/lemmad/process   
+$ docker run -p 6013:6013 \
+  --env OTSINGU_VIIS=lemmad \
+  --env IDXFILE=riigiteataja-lemmad-json.idx  \
+  --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
+  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.07
+
+2. Ava brauseris veebileht ja järgi juhiseid
+$ google-chrome http://localhost:6013/wp/otsing-lemmad/version
+$ google-chrome http://localhost:6013/wp/otsing-lemmad/texts
+$ google-chrome http://localhost:6013/wp/otsing-lemmad/process
+
+$ google-chrome http://localhost:6013/wp/otsing-soned/version
+$ google-chrome http://localhost:6013/wp/otsing-soned/texts
+$ google-chrome http://localhost:6013/wp/otsing-soned/process
+
+3. Pilvest. Ava brauseris
+$ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/version
+$ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/texts
+$ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/process
+
+$ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/version
+$ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/texts
+$ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/process
 '''
 
 import os
@@ -32,21 +60,36 @@ import requests
 import json
 from collections import OrderedDict
 
-import wp_otsing_lemmad
+import wp_otsing
 
 class HTML_FORMS:
     def __init__(self):
-        self.VERSION="2023.05.06"
+        self.VERSION="2023.05.07"
+        '''
+        self.otsingu_viis = os.environ.get('OTSINGU_VIIS')
+        if self.otsingu_viis is None:
+            self.otsingu_viis = 'lemmad'
 
-        self.paring_lemmad = os.environ.get('PARING_LEMMAD')
+        #self.paring_lemmad = os.environ.get('PARING_LEMMAD')
+        self.paring_lemmad = os.environ.get(f'PARING_{self.otsingu_viis.upper()}')
         if self.paring_lemmad is None:
             self.PARING_LEMMAD_IP=os.environ.get('PARING_LEMMAD_IP') if os.environ.get('PARING_LEMMAD_IP') != None else 'localhost'
             self.PARING_LEMMAD_PORT=os.environ.get('PARING_LEMMAD_PORT') if os.environ.get('PARING_LEMMAD_PORT') != None else '7007' #???
             self.paring_lemmad = f'http://{self.PARING_LEMMAD_IP}:{self.PARING_LEMMAD_PORT}/api/paring-lemmad/'
+        '''
+
+        self.otsingu_viis = os.environ.get('OTSINGU_VIIS')                  # otsingu viis ("lemmad" või "soned") keskkonnamuutujast
+        if self.otsingu_viis is None:                                       # keskkonnamuutujat polnud...
+            self.otsingu_viis = 'lemmad'                                        # ...kasutame vaikeväärtust
+
+        self.paring = os.environ.get(f'PARING_{self.otsingu_viis.upper()}') # otsisõnede normaliseerimise veebiteenuse URL  keskkonnamuutujast
+        if self.paring is None: 
+            self.PARING_IP=os.environ.get(f'PARING_{self.otsingu_viis.upper()}_IP') if os.environ.get(f'PARING_{self.otsingu_viis.upper()}_IP') != None else 'localhost'
+            self.PARING_PORT=os.environ.get(f'PARING_{self.otsingu_viis.upper()}_PORT') if os.environ.get(f'PARING_{self.otsingu_viis.upper()}_PORT') != None else '7007'
+            self.paring = f'http://{self.PARING_IP}:{self.PARING_PORT}/api/paring-{self.otsingu_viis}/'
 
         self.html_pref = '<!DOCTYPE html><html lang="et"><head><meta charset="UTF-8"></head><body>'
 
-        #<form method='POST' enctype='multipart/form-data' action='/wp/otsing/tekstid'>
         self.form_show_docs = \
             '''
             <form method='POST' enctype='multipart/form-data'>
@@ -104,20 +147,17 @@ class HTML_FORMS:
                 <input name="message" type="text"><input type="submit" value="Otsing" ><br><br><hr>
             </form>
             '''
-            # <input         type="radio" name="formaat", value="csv"> CSV </input><br><br> 
         self.html_suf = \
         '''
             <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/lemmadega/README.md">Kasutusjuhend</a>
             </body></html>
         '''
 
+smart_search = wp_otsing.SMART_SEARCH()                     # otsingumootor
+html_forms = HTML_FORMS()                                   # veebilehe kokkupanemiseks vajalikud HTML-tükikesed 
+app = Flask(__name__)                                       # Fläski äpp
 
-    
-smart_search = wp_otsing_lemmad.SMART_SEARCH_LEMMAS()   # otsingumootor
-html_forms = HTML_FORMS()       # veebilehe kokkupanemiseks vajalikud HTML-tükikesed 
-app = Flask(__name__)           # Fläski äpp
-
-@app.route('/wp/otsing/lemmad/version', methods=['GET', 'POST'])
+@app.route(f'/wp/otsing-{html_forms.otsingu_viis}/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
 def versioon():
     """Kuvame veebilehel versiooniinfot ja veel üht-teist
@@ -127,15 +167,16 @@ def versioon():
             Veebilehe versioon: {html_forms.VERSION}<br>
             Otsingu versioon: {html_forms.VERSION}<br>
             Keskkonnamuutujatest:<br>
-            &nbsp;&nbsp;paring_lemmad: {html_forms.paring_lemmad}<br>
+            &nbsp;&nbsp;otsingu_viis: {html_forms.otsingu_viis}<br>
+            &nbsp;&nbsp;paring_{html_forms.otsingu_viis}: {html_forms.paring}<br>
             &nbsp;&nbsp;idxfile: {smart_search.idxfile}<br>
             <hr>
     ''' 
     return render_template_string(html_forms.html_pref+content+html_forms.html_suf)
 
-@app.route('/wp/otsing/lemmad/texts', methods=['GET', 'POST'])
+@app.route(f'/wp/otsing-{html_forms.otsingu_viis}/texts', methods=['GET', 'POST'])
 @app.route('/texts', methods=['GET', 'POST'])
-def tekstid():
+def texts():
     """Kuvame veebilehel kasutaja valitud dokumenti 
     
     """
@@ -167,15 +208,15 @@ Otsinguvastuse fromaat:
     {   STARTPOS:
         {   "endpos": int,
             "token": str,
-            "lemmas": [str]
+            "tokens": [str]
         }
     }
 }
 '''
 
-@app.route('/wp/otsing/lemmad/process', methods=['GET', 'POST'])
+@app.route(f'/wp/otsing-{html_forms.otsingu_viis}/process', methods=['GET', 'POST'])
 @app.route('/process', methods=['GET', 'POST'])
-def lemmas_process():
+def process():
     """Veebileht päringu sisestamiseks ja päringutulemuste kuvamiseks
 
     """
@@ -184,7 +225,7 @@ def lemmas_process():
         fragments = True if len(request.form.getlist('fragments')) > 0 else False
         formaat = request.form.getlist('formaat')[0]
         query_words = request.form.get('message').strip()
-        paringu_url=html_forms.paring_lemmad+'json'
+        paringu_url=html_forms.paring+'json'
         query_json = json.loads(requests.post(paringu_url, json={"content":query_words}).text)
         smart_search.otsing(fragments, query_json)
         content = smart_search.koosta_vastus(formaat)

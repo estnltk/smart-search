@@ -5,12 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask_wp_otsing_soned",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/wp/wp_otsing",
+            "program": "./flask-wp-otsing.py",
+            "env": {"OTSINGU_VIIS": "soned", "IDXFILE": "riigiteataja-soned-json.idx", "PARING_SONED": "https://smart-search.tartunlp.ai/api/paring-soned/"},
+            "args": [ ]
+        }, 
+        {
             "name": "flask_wp_otsing_lemmad",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/wp/wp_otsing/lemmadega",
-            "program": "./flask-wp-otsing-lemmad.py",
-            "env": {"PARING_SONED": "https://smart-search.tartunlp.ai/api/paring-soned/", "PARING_LEMMAD": "https://smart-search.tartunlp.ai/api/paring-lemmad/"},
+            "cwd": "${workspaceFolder}/wp/wp_otsing",
+            "program": "./flask-wp-otsing.py",
+            "env": {"OTSINGU_VIIS": "lemmad", "IDXFILE": "riigiteataja-lemmad-json.idx", "PARING_LEMMAD": "https://smart-search.tartunlp.ai/api/paring-lemmad/"},
             "args": [ ]
         }, 
         {
