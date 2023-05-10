@@ -22,12 +22,12 @@ $ OTSINGU_VIIS=lemmad \
 1.2. dockeri konteinerist
 
 $ cd ~/git/smart_search_github/wp/wp_otsing/
-$ docker build -t tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.07 .
+$ docker build -t tilluteenused/smart_search_wp_otsing:2023.05.07 .
 $ docker run -p 6013:6013 \
   --env OTSINGU_VIIS=soned \
   --env IDXFILE=riigiteataja-soned-json.idx \
   --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
-  tilluteenused/smart_search_wp_otsing_lemmadega:2023.05.07
+  tilluteenused/smart_search_wp_otsing:2023.05.07
 
 $ docker run -p 6013:6013 \
   --env OTSINGU_VIIS=lemmad \
