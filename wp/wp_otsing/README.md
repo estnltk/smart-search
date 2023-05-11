@@ -20,7 +20,9 @@ Kliki ```Otsing``` nuppu.
 
 <img width=55% src="Ekraanipilt-otsing-lemmad-otsing-2.png">
 
-Ruumi kokkuhoiu huvides on pildilt otsingutulemuste alumine osa äralõigatud.
+Ruumi kokkuhoiu huvides on keskmine osa pildist äralõigatud.
+
+<img width=55% src="Ekraanipilt-otsing-lemmad-otsing-2b.png">
 
 * [Tekstikorpuse kuvamine](https://smart-search.tartunlp.ai/wp/otsing-lemmad/texts)
 
@@ -56,7 +58,6 @@ Kliki ```Kuva``` nuppu.
 Kliki ```Otsing``` nuppu.
 
 <img width=55% src="Ekraanipilt-otsing-soned-otsing-2a.png">
-
 
 <img width=55% src="Ekraanipilt-otsing-soned-otsing-2b.png">
 
