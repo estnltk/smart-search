@@ -1,4 +1,6 @@
-# Veebileht eestikeelsete sõnede lemmatiseerija demoga 
+# Veebileht eestikeelsete sõnede lemmatiseerija demoga
+
+Uusim versioon kataloogis https://github.com/estnltk/smart-search/tree/main/wp/wp_paring
 
 Lemmatiseerija demo kasutamine:
 
