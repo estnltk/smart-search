@@ -67,8 +67,6 @@ Ruumi kokkuhoiu huvides on pildilt otsingutulemuste alumine osa äralõigatud.
 
 * [Tekstikorpuse kuvamine](https://smart-search.tartunlp.ai/wp/otsing-soned/texts)
 
-* [Tekstikorpuse kuvamine](https://smart-search.tartunlp.ai/wp/otsing-lemmad/texts)
-
 <img width=55% src="Ekraanipilt-otsing-lemmad-tekstid-1.png">
 
 Kliki ```Kuva``` nuppu.
