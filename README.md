@@ -50,11 +50,13 @@ Antud näiterakendus demonstreerib lemmatiseerimise ja sõnavormide genereerimis
 
 ### III. Nutika otsingu demorakendus
 
-Antud näiterakendus demonstreerib indekseerimise ja otsingusõnede normaliseerimise veebiteenuste kasutamist meid huvitavate tekstide leidmiseks ja nendes otsisõnede märgendamiseks.
+Antud näiterakendus demonstreerib indekseerimise ja otsingusõnede normaliseerimise veebiteenuste kasutamist meid huvitavate dokumentide filtreerimiseks ja dekoreerimiseks (leitud otsisõnede märgendamiseks dokumendis).
 
-* [selgitused näiterakenduse kohta](https://github.com/estnltk/smart-search/blob/main/demo_otsing/veebileht/README-CLOUD.md)
-* [näiterakendus](https://smart-search.tartunlp.ai/otsils)
-* [näiterakenduse lähtekood](https://github.com/estnltk/smart-search/tree/main/demo_otsing/veebileht)
+* [selgitused näiterakenduste kohta](https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/README.md)
+* näiterakendused
+  * [Algvormipõhine otsing](https://smart-search.tartunlp.ai/wp/otsing-lemmad/process)
+  * [Sõnepõhine otsing](https://smart-search.tartunlp.ai/wp/otsing-soned/process)
+* [näiterakenduste lähtekood](https://github.com/estnltk/smart-search/tree/main/wp/wp_otsing)
 
 ## Veebiteenused
 
@@ -74,6 +76,7 @@ Programmeerija jaoks mõeldud liidesega veebiteenused:
 
 * [**_documentation_**](https://github.com/estnltk/smart-search/tree/main/documentation) -- Üldisemat laadi dokumentatsioon. Enamasti on töövahendi kohta käiv dokumentatsioon töövahendi lähtekoodiga samas kataloogis.
 * [**_wp_**](https://github.com/estnltk/smart-search/tree/main/wp) -- veebilehed töövahendite demonstreerimiseks.
+  * [**_wp_otsing_**](https://github.com/estnltk/smart-search/tree/main/wp/wp_otsing) -- nutika otsingu demorakendus
   * [**_wp_indekseerija_**](https://github.com/estnltk/smart-search/tree/main/wp/wp_indekseerija) -- veebileht dokumentide indekseerimise demonstreerimiseks.
   * [**_wp_paring_**](https://github.com/estnltk/smart-search/tree/main/wp/wp_paring) -- veebileht otsisõnede normaliseerimise demonstreerimiseks.
 * [**_api_**](https://github.com/estnltk/smart-search/tree/main/api) -- programmeerija jaoks mõeldud liidesega veebiteenused.
@@ -81,13 +84,9 @@ Programmeerija jaoks mõeldud liidesega veebiteenused:
   * [**_indekseerija_soned_**](https://github.com/estnltk/smart-search/tree/main/api/indekseerija_soned) -- sõnavorme sisaldava indeksi tegemine.
   * [**_paring_lemmad_**](https://github.com/estnltk/smart-search/tree/main/api/paring_lemmad) -- otsisõnede normaliseerimine lemmasid sisaldava indeksi korral.
   * [**_paring_soned_**](https://github.com/estnltk/smart-search/tree/main/api/paring_soned) -- otsisõnede normaliseerimine sõnavorme sisaldava indeksi korral.
-* [**_testkorpused_**](https://github.com/estnltk/smart-search/tree/main/testkorpused) -- testimiseks möeldud korpused ja abistava iseloomuga skriptid
-  * [**_bin_**](https://github.com/estnltk/smart-search/tree/main/testkorpused/bin) -- abistava iseloomuga skriptid
+* [**_testkorpused_**](https://github.com/estnltk/smart-search/tree/main/testkorpused) -- testimiseks möeldud korpused ja abistava iseloomuga skriptid.
+  * [**_bin_**](https://github.com/estnltk/smart-search/tree/main/testkorpused/bin) -- abistava iseloomuga skriptid.
   * [**_riigiteataja_**](https://github.com/estnltk/smart-search/tree/main/testkorpused/riigiteataja) -- riigiteataja dokumentidest koostatud mikrokorpus testimiseks.
-* [**_demo_otsing_**](https://github.com/estnltk/smart-search/tree/main/demo_otsing) -- tillukese demokorpuse indekseerimise ja indeksist otsimise demo.
-  Selle uus versioon on tegemisel. Uus versioon läheb ```wp``` kataloogi ja
-  hakkab kasutama teenuseid, mille lähtekoodid on ```api``` kataloogides. Plaanis on asendada praegune pisike
-  tekstide demokorpus veidi asjakohasema (pisikese) demokrpusega (vt [**_riigiteataja_**](https://github.com/estnltk/smart-search/tree/main/testkorpused/riigiteataja))
-  * [**_korpus_ruukki_**](https://github.com/estnltk/smart-search/tree/main/demo_otsing/korpus_ruukki) -- tillukene demokorpus ja selle indekseerimisskriptid ("proof of concept" versioon) koos vahetulemustega. 
-  * [**_veebileht_**](https://github.com/estnltk/smart-search/tree/main/demo_otsing/veebileht) -- otsingumootori demo ("proof of concept" versioon)
+* **_demo_otsing_** -- see funktsionaalsus on uuenenud kujul [**_wp_**](https://github.com/estnltk/smart-search/tree/main/wp) ja [**_api_**](https://github.com/estnltk/smart-search/tree/main/api) kataloogides.
+* ülejäänud kataloogid -- ei ole enam olulised
 
