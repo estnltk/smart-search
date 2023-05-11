@@ -7,7 +7,7 @@
 ### Kuidas töötab
 
 * Leitakse kõigi tekstikorpuse sõnede algvormid (lemmad) ja koostatakse nende põhjal indeks.
-* Päringusõnede normaliseerimise käigus leitakse päringusõnedele vastavad lemmad.
+* Päringusõnede normaliseerimise käigus leitakse päringusõnedele vastavad algvormid.
 * Otsimootor otsib päringusõnedele vastavaid algvorme (lemmasid) lemmade indeksist.
 
 ### Näited
