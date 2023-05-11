@@ -50,6 +50,30 @@ Kliki ```Kuva``` nuppu.
 ### Näited
 
 * [Tekstikorpusest otsimine](https://smart-search.tartunlp.ai/wp/otsing-soned/process)
+
+<img width=55% src="Ekraanipilt-otsing-soned-otsing-1.png">
+
+Kliki ```Otsing``` nuppu.
+
+<img width=55% src="Ekraanipilt-otsing-soned-otsing-2a.png">
+
+
+<img width=55% src="Ekraanipilt-otsing-soned-otsing-2b.png">
+
+<img width=55% src="Ekraanipilt-otsing-soned-otsing-2c.png">
+
 * [Tekstikorpuse kuvamine](https://smart-search.tartunlp.ai/wp/otsing-soned/texts)
+
+Ruumi kokkuhoiu huvides on pildilt otsingutulemuste alumine osa äralõigatud.
+
+* [Tekstikorpuse kuvamine](https://smart-search.tartunlp.ai/wp/otsing-lemmad/texts)
+
+<img width=55% src="Ekraanipilt-otsing-lemmad-tekstid-1.png">
+
+Kliki ```Kuva``` nuppu.
+
+<img width=55% src="Ekraanipilt-otsing-lemmad-tekstid-2.png">
+
 * [Versiooni-info kuvamine](https://smart-search.tartunlp.ai/wp/otsing-soned/version)
 
+<img width=55% src="Ekraanipilt-otsing-soned-version.png">
