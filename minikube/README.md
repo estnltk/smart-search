@@ -1,5 +1,8 @@
 # MINIKUBEga toimetamine
 
+Praegu me enam eriti ei kasuta MINIKUBE't.
+Kõik olulised teenused on üleval TÜ kubernetese klastris.
+
 ## Installimine
 
 [Installimise juhend veebis](https://minikube.sigs.k8s.io/docs/start/)
@@ -16,7 +19,7 @@ minikube kubectl -- get po -A
 
 Lisa ~/.bashrc või ~/.zshrc faili:
 
-```
+```bash
 alias kubectl="minikube kubectl --"
 # kui tahta .yaml/.json konfifaile käsitsi redigeerida ja ei ole suurem vi fänn, siis üks neist
 #export KUBE_EDITOR=nano
