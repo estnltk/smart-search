@@ -61,11 +61,11 @@ Kliki ```Otsing``` nuppu.
 
 <img width=55% src="Ekraanipilt-otsing-soned-otsing-2b.png">
 
+Ruumi kokkuhoiu huvides on pildilt otsingutulemuste alumine osa äralõigatud.
+
 <img width=55% src="Ekraanipilt-otsing-soned-otsing-2c.png">
 
 * [Tekstikorpuse kuvamine](https://smart-search.tartunlp.ai/wp/otsing-soned/texts)
-
-Ruumi kokkuhoiu huvides on pildilt otsingutulemuste alumine osa äralõigatud.
 
 * [Tekstikorpuse kuvamine](https://smart-search.tartunlp.ai/wp/otsing-lemmad/texts)
 
