@@ -1,5 +1,9 @@
 # Kiirushinnang (ainult veebiliides ilma lemmatiseerijata)
 
+Midagi projekti päris algusaegadest.
+Praegu enam ei kehti.
+
+
 Märkused:
 * Lõplikud kiirushinnagud: [docker+gunicorn+flask](#tulemused-2)
 * Gunicorn paneb aega otsa, aga annab skaleeruvuse
