@@ -1,4 +1,4 @@
-# Aegunud
+# Pole enam oluline
 
 Olulisemad asjad on siit liikunud kataloogidesse:
 * https://github.com/estnltk/smart-search/tree/main/api
