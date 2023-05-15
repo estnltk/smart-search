@@ -64,7 +64,7 @@ import wp_otsing
 
 class HTML_FORMS:
     def __init__(self):
-        self.VERSION="2023.05.08"
+        self.VERSION="2023.05.09"
         '''
         self.otsingu_viis = os.environ.get('OTSINGU_VIIS')
         if self.otsingu_viis is None:
@@ -140,9 +140,9 @@ class HTML_FORMS:
         self.form_otsing = \
             '''
             <form method='POST' enctype='multipart/form-data'>
-                <input type="checkbox" name="fragments" value="fragments" checked>Otsi liitsõna osasõnadest</input><br><br>
+                <input         type="checkbox" name="norm_paring" value="norm_paring">Kuva normaliseeritud päring</input><br>
+                <input checked type="checkbox" name="fragments"   value="fragments"  >Otsi liitsõna osasõnadest  </input><br><br>
                 Väljundformaat:<br><br>
-                    <input         type="checkbox" name="norm_paring" value="norm_paring">Kuva normaliseeritud päring</input><br><br>
                     <input checked type="radio"    name="formaat",    value="text"> tekst                            </input>
                     <input         type="radio"    name="formaat",    value="text_details"> tekst detailsema märgendusega    </input>
                     <input         type="radio"    name="formaat",    value="json"> JSON                             </input> <br><br>
