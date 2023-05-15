@@ -141,10 +141,14 @@ class HTML_FORMS:
             '''
             <form method='POST' enctype='multipart/form-data'>
                 <input type="checkbox" name="fragments" value="fragments" checked>Otsi liitsõna osasõnadest</input><br><br>
-                Väljundformaat:
-                    <input checked type="radio" name="formaat", value="text"> tekst    </input>
-                    <input         type="radio" name="formaat", value="json"> JSON </input> <br><br>        
-                <input name="message" type="text"><input type="submit" value="Otsing" ><br><br><hr>
+                Väljundformaat:<br><br>
+                    <input         type="checkbox" name="norm_paring" value="norm_paring">Kuva normaliseeritud päring</input><br><br>
+                    <input checked type="radio"    name="formaat",    value="text"> tekst                            </input>
+                    <input         type="radio"    name="formaat",    value="text_details"> tekst detailsema märgendusega    </input>
+                    <input         type="radio"    name="formaat",    value="json"> JSON                             </input> <br><br>
+
+                    <input         type="text"     name="message"></input>
+                    <input         type="submit"   value="Otsing"></input><br><br><hr>
             </form>
             '''
         self.html_suf = \
@@ -222,14 +226,18 @@ def process():
     """
     content = ''
     if request.method == 'POST':
+        norm_paring = True if len(request.form.getlist('norm_paring')) > 0 else False
         fragments = True if len(request.form.getlist('fragments')) > 0 else False
         formaat = request.form.getlist('formaat')[0]
         query_words = request.form.get('message').strip()
         paringu_url=html_forms.paring+'json'
         query_json = json.loads(requests.post(paringu_url, json={"content":query_words}).text)
         smart_search.otsing(fragments, query_json)
-        content = smart_search.koosta_vastus(formaat)
-        pass
+        if norm_paring is True:
+            paringu_str = json.dumps(query_json, ensure_ascii=False, indent=2).replace(' ', '&nbsp;').replace('\n', '<br>')
+        else:
+            paringu_str = query_words
+        content = smart_search.koosta_vastus(formaat, paringu_str)
     return render_template_string(html_forms.html_pref+html_forms.form_otsing+content+html_forms.html_suf)
 
 

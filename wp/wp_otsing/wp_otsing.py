@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 class SMART_SEARCH:
     def __init__(self):
-        self.VERSION="2023.05.07"                           # otsimootori versioon
+        self.VERSION="2023.05.09"                           # otsimootori versioon
 
         self.idxfile = os.environ.get('IDXFILE')            # otsime indeksfaili nime keskkonnamootujast
         if self.idxfile is None:                            # kui seal polnud...
@@ -73,7 +73,7 @@ class SMART_SEARCH:
                     retval = True                                                       # leidsime midagi sobivat
         return retval                                                           # anname teada, kas leidsime midagi sobivat
 
-    def koosta_vastus(self, formaat):
+    def koosta_vastus(self, formaat, paringu_str):
         """Otsingutulemus moel või teisel HTML-kujule
 
         Args:
@@ -83,24 +83,24 @@ class SMART_SEARCH:
             str: HTML-kujul otsingutulemus
         """
         if formaat == 'json':
-            return self.koosta_vastus_json()
-        if formaat == 'text':
-            return self.koosta_vastus_text()
+            return self.koosta_vastus_json(paringu_str)
+        else:
+            return self.koosta_vastus_text(formaat, paringu_str)
         return ''
 
-    def koosta_vastus_json(self):
+    def koosta_vastus_json(self, paringu_str):
         """Esita otsingu JSON-tulemus HTML-kujul
 
         Returns:
             _type_: otsingu JSON-tulemus HTML-kujul
         """
         content = '<h2>Päring:</h2>'
-        content += json.dumps(self.query_json, ensure_ascii=False, indent=2).replace(' ', '&nbsp;').replace('\n', '<br>')+'<hr>'
+        content += f'{paringu_str}<hr><hr>'
         content += "<h2>Tulemus:</h2>"
         content += json.dumps(self.result_json, ensure_ascii=False, indent=2).replace(' ', '&nbsp;').replace('\n', '<br>')+'<hr>'
         return content
 
-    def koosta_vastus_text(self):
+    def koosta_vastus_text(self, formaat, paringu_str):
         """Esita otsingu JSON-tulemus märgendatud tekstina HTML-kujul
 
         Returns:
@@ -109,7 +109,7 @@ class SMART_SEARCH:
         if len(self.result_json) <= 0:
             return '<h2>Päringule vastavaid dokumente ei leidunud!</h2><hr>'
         content = '<hr><h2>Päring:</h2>'
-        content += json.dumps(self.query_json, ensure_ascii=False, indent=2).replace(' ', '&nbsp;').replace('\n', '<br>')+'<hr><hr>'
+        content += f'{paringu_str}<hr><hr>'
         for dokid in self.result_json:
             links = self.result_json[dokid]
             link_prev = {"end":0}
@@ -119,8 +119,10 @@ class SMART_SEARCH:
                     content += f'<h2>DocID: {dokid}</h2>'
                 content += self.idx_json["sources"][dokid]["content"][link_prev["end"]:start]
                 link_prev = link
-                content += f' <b>{self.idx_json["sources"][dokid]["content"][start:link["end"]]}</b>'
-                content += f'<i>[{", ".join(link["tokens"])}]</i>'
+                #content += f' <b>{self.idx_json["sources"][dokid]["content"][start:link["end"]]}</b>'
+                content += f' <mark><b>{self.idx_json["sources"][dokid]["content"][start:link["end"]]}</b></mark>'
+                if formaat == 'text_details':
+                    content += f'<i>[{", ".join(link["tokens"])}]</i>'
                 pass
             content += self.idx_json["sources"][dokid]["content"][link_prev["end"]:] + '<hr>'
 
