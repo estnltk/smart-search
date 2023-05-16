@@ -22,18 +22,18 @@ $ OTSINGU_VIIS=lemmad \
 1.2. dockeri konteinerist
 
 $ cd ~/git/smart_search_github/wp/wp_otsing
-$ docker build -t tilluteenused/smart_search_wp_otsing:2023.05.11 .
+$ docker build -t tilluteenused/smart_search_wp_otsing:2023.05.12 .
 $ docker run -p 6013:6013 \
   --env OTSINGU_VIIS=soned \
   --env IDXFILE=riigiteataja-soned-json.idx \
   --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
-  tilluteenused/smart_search_wp_otsing:2023.05.11
+  tilluteenused/smart_search_wp_otsing:2023.05.12
 
 $ docker run -p 6013:6013 \
   --env OTSINGU_VIIS=lemmad \
   --env IDXFILE=riigiteataja-lemmad-json.idx  \
   --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
-  tilluteenused/smart_search_wp_otsing:2023.05.11
+  tilluteenused/smart_search_wp_otsing:2023.05.12
 
 2. Ava brauseris veebileht ja järgi juhiseid
 $ google-chrome http://localhost:6013/wp/otsing-lemmad/version
@@ -64,7 +64,7 @@ import wp_otsing
 
 class HTML_FORMS:
     def __init__(self):
-        self.VERSION="2023.05.11"
+        self.VERSION="2023.05.12"
         '''
         self.otsingu_viis = os.environ.get('OTSINGU_VIIS')
         if self.otsingu_viis is None:
@@ -140,12 +140,12 @@ class HTML_FORMS:
         self.form_otsing = \
             '''
             <form method='POST' enctype='multipart/form-data'>
-                <input         type="checkbox" name="norm_paring" value="norm_paring">Kuva normaliseeritud päring</input><br>
-                <input checked type="checkbox" name="fragments"   value="fragments"  >Otsi liitsõna osasõnadest  </input><br><br>
+                <input         type="checkbox" name="norm_paring" value="norm_paring">Kuvame normaliseeritud päringut</input><br>
+                <input checked type="checkbox" name="fragments"   value="fragments"  >Otsime liitsõna osasõnadest    </input><br><br>
                 Väljundformaat:<br><br>
-                    <input checked type="radio"    name="formaat",    value="text"> tekst                            </input>
-                    <input         type="radio"    name="formaat",    value="text_details"> tekst detailsema märgendusega    </input>
-                    <input         type="radio"    name="formaat",    value="json"> JSON                             </input> <br><br>
+                    <input checked type="radio"    name="formaat",    value="text"        >Toome esile tekstist leitud otsõned                </input><br>
+                    <input         type="radio"    name="formaat",    value="text_details">Lisame tekstist leitud otsisõnedele detailsema info</input><br>
+                    <input         type="radio"    name="formaat",    value="json"        >Esitame otsitulemused JSON-kujul                   </input><br><br>
 
                     <input         type="text"     name="message"></input>
                     <input         type="submit"   value="Otsing"></input><br><br><hr>
