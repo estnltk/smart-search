@@ -123,7 +123,7 @@ Ruumi kokkuhoiu huvides on pildilt keskmine osa äralõigatud.
 <img width=55% src="Ekraanipilt-wp-otsing-soned-otsing-1c.png">
 
 
-#### 2.2.3 [Tekstikorpusest otsimine. Iga tekstist leitud otsisõna juurde on kaldkirjas lisatud vastavad algvormid päringust.](https://smart-search.tartunlp.ai/wp/otsing-soned/process)
+#### 2.2.3 [Tekstikorpusest otsimine. Iga tekstist leitud otsisõna juurde on kaldkirjas lisatud vastavad päringusõned päringust.](https://smart-search.tartunlp.ai/wp/otsing-soned/process)
 
 ---
 
