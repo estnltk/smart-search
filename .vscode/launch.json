@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask_wp_speller",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/wp/wp_speller",
+            "program": "./flask_wp_speller.py",
+            "env": {"PARING_SPELLER_IP": "localhost", "PARING_SPELLER_PORT": "6003"},
+            "args": [ ]
+        }, 
+        {
             "name": "flask_wp_otsing_soned",
             "type": "python",
             "request": "launch",
