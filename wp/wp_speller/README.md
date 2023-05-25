@@ -14,7 +14,7 @@ Veebelehel saata valida, kas soovite tulemust:
 ## Näited
 ---
 
-### Väljund inimesel lugemiseks mõeldud kujul
+### Väljund inimesele lugemiseks mõeldud kujul
 ---
 
 <img width=55% src="Ekraanipilt-wp-speller-tekst-1.png">
