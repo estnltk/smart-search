@@ -8,7 +8,7 @@ from typing import Dict, List
 
 class PARING_SONED:
     def __init__(self):
-        self.VERSION="2023.04.27"
+        self.VERSION="2023.06.02"
 
         self.tokenizer = os.environ.get('TOKENIZER')
         if self.tokenizer is None:
@@ -26,7 +26,7 @@ class PARING_SONED:
         if self.generator is None:
             self.GENERATOR_IP=os.environ.get('GENERATOR_IP') if os.environ.get('GENERATOR_IP') != None else 'localhost'
             self.GENERATOR_PORT=os.environ.get('GENERATOR_PORT') if os.environ.get('GENERATOR_PORT') != None else '7000'
-            self.generator = f'http://{self.GENERATOR_IP}:{self.GENERATOR_PORT}/process'
+            self.generator = f'http://{self.GENERATOR_IP}:{self.GENERATOR_PORT}/process' # NB! generaator ei ole selle koha peal analoogiline teiste teenustega
 
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 

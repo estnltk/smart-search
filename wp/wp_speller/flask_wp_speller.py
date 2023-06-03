@@ -1,41 +1,69 @@
 #!/usr/bin/env python3
 
 '''
-1. kasuta veebiteenust või käivita spelleriga suhtlev veebiserver pythoni skriptist või konteinerist 
-  1.1 pilveteenuse smart-search.tartunlp.ai kasutamisel pole kohalikus masinas vaja midagi teha
-  1.2 käsurealt pythoni skriptiga
+----------------------------------------------
+
+Flask veebiserver spelleri pakendamiseks ja veebilehel domonstreerimiseks
+
+----------------------------------------------
+
+Lähtekoodist pythoni skripti kasutamine
+1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2) veebiserveri käivitamine pythoni koodist (1.3) ja brauseriga veebilehe poole pöördumine (1.4)
+1.1 Lähtekoodi allalaadimine
+    $ mkdir ~/git ; cd ~/git/
+    $ git clone git@github.com:estnltk/smart-search.git
+1.2 Virtuaalkeskkonna loomine
     $ cd ~/git/smart_search_github/wp/wp_speller
     $ ./create_venv.sh
-    $ PARING_SPELLER=https://smart-search.tartunlp.ai/api/speller/process \
-      venv/bin/python3 ./flask_wp_speller.py
-  1.3 kohalikust dockeri konteinerist (teeme ise või tõmbame dockerhubist)
-    1.3.1 paneme konteineri ise kokku
+1.3 Veebiserveri käivitamine pythoni koodist
     $ cd ~/git/smart_search_github/wp/wp_speller
-    $ docker build -t tilluteenused/smart_search_wp_speller:2023.05.22 . 
-    1.3.2 tõmbame dockerhubist juba valmistehtud konteineri
-    $ docker pull tilluteenused/smart_search_wp_speller:2023.05.22
-    1.3.3 käivitame kohalikus masinas 1.3.1 või 1.3.2 viisil saadud konteineri 
-    $ docker run -p 6003:6003 \
-        --env PARING_SPELLER=https://smart-search.tartunlp.ai/api/speller/process
-        tilluteenused/smart_search_wp_speller:2023.05.22
-  
-2. Ava brauseris veebileht ja järgi juhiseid
-  2.1 Veebiserver kohalikus masinas (1.1 või 1.2)
+    $ PARING_SPELLER=https://smart-search.tartunlp.ai/api/speller/process \
+        venv/bin/python3 ./flask_wp_speller.py
+1.4 Brauseriga veebilehe poole pöördumine
     $ google-chrome http://localhost:6003/wp/speller/process
     $ google-chrome http://localhost:6003/wp/speller/version
-  2.2 Veebiserver pilves (1.3)
+   
+----------------------------------------------
+
+Lähtekoodist tehtud konteineri kasutamine
+2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja brauseriga veebilehe poole pöördumine (2.4)
+2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
+2.2 Konteineri kokkupanemine
+    $ cd ~/git/smart_search_github/wp/wp_speller
+    $ docker build -t tilluteenused/smart_search_wp_speller:2023.05.23 .
+2.3 Konteineri käivitamine
+    $ docker run -p 6003:6003 \
+        --env PARING_SPELLER=https://smart-search.tartunlp.ai/api/speller/process
+        tilluteenused/smart_search_wp_speller:2023.05.23
+2.4 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
+
+----------------------------------------------
+
+DockerHUBist tõmmatud konteineri kasutamine
+3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja brauseriga veebilehe poole pöördumine (3.3)
+3.1 DockerHUBist konteineri tõmbamine
+    $ docker pull tilluteenused/smart_search_wp_speller:2023.05.23
+3.2 Konteineri käivitamine: järgi punkti 2.3
+3.3 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
+
+----------------------------------------------
+
+TÜ pilves töötava konteineri kasutamine
+4 Brauseriga veebilehe poole pöördumine
     $ google-chrome https://smart-search.tartunlp.ai/wp/speller/process
     $ google-chrome https://smart-search.tartunlp.ai/wp/speller/version
+
+----------------------------------------------
 '''
 
 import os
-from flask import Flask, render_template_string, request, make_response
+from flask import Flask, render_template, request, make_response
 import requests
 import json
 
-class HTML_FORMS:
+class ENVIRONMENT:
     def __init__(self):
-        self.VERSION="2023.05.22"
+        self.VERSION="2023.05.23"
 
         self.PARING_SPELLER_IP=None
         self.PARING_SPELLER_PORT=None
@@ -45,38 +73,13 @@ class HTML_FORMS:
             self.PARING_SPELLER_PORT=os.environ.get('PARING_SPELLER_PORT') if os.environ.get('PARING_SPELLER_PORT') != None else '6004'
             self.paring_speller = f'http://{self.PARING_SPELLER_IP}:{self.PARING_SPELLER_PORT}/api/speller/process'
 
-        self.html_pref = '<!DOCTYPE html><html lang="et"><head><meta charset="UTF-8"></head><body>'
-
-        self.form_paring = \
-            '''
-            <form method='POST' enctype='multipart/form-data'>
-                Väljundformaat:
-                    <input         type="radio" name="formaat", value="json"> JSON    </input>
-                    <input checked type="radio" name="formaat", value="text"> tekst </input><br>
-                <input name="message" type="text"><input type="submit" value="Kontrolli ja soovita" >
-            </form>
-            '''
-
-        self.html_suf = \
-        '''
-            <br>
-            <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_speller/README.md">Kasutusjuhend</a>
-            </body></html>
-        '''
-
 app = Flask(__name__)
-html_forms = HTML_FORMS()
+environment = ENVIRONMENT()
 
 @app.route('/wp/speller/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
 def versioon():
-    content = f'<html><body>Veebilehe versioon: {html_forms.VERSION}<br>paring_speller={html_forms.paring_speller}<br>'
-    if html_forms.PARING_SPELLER_IP is not None:
-        content += f'PARING_SPELLER_IP={html_forms.PARING_SPELLER_IP}<br>'
-    if html_forms.PARING_SPELLER_PORT is not None:
-        content += f'PARING_SPELLER_PORT={html_forms.PARING_SPELLER_PORT}<br>'
-    content += '</body></html>'
-    return render_template_string(html_forms.html_pref+content+html_forms.html_suf)
+    return render_template('version.html', veebilehe_versioon=environment.VERSION, api_speller_url=environment.paring_speller)
 
 @app.route('/wp/speller/process', methods=['GET', 'POST'])
 @app.route('/process', methods=['GET', 'POST'])
@@ -87,7 +90,7 @@ def process():
         query_words = request.form.get('message').strip()
         if len(query_words) > 0: # ei koosne ainult 'white space'idest
             try:                                                
-                json_out = json.loads(requests.post(html_forms.paring_speller, json={"content":query_words}).text)
+                json_out = json.loads(requests.post(environment.paring_speller, json={"content":query_words}).text)
                 if formaat == 'json':
                     content += json.dumps(json_out, indent=2, ensure_ascii=False).replace(' ', '&nbsp;').replace('\n', '<br>')+'<br><br><hr><br>' 
                 else:       
@@ -97,11 +100,9 @@ def process():
                             content += f' ⇒ {" ".join(token["features"]["suggestions"])}'
                         content += '<br>'
                     content += '<br><br><hr><br>'
-
             except:                                            
                 content = 'Probleemid veebiteenusega<br><br><hr><br>'
-
-    return render_template_string(html_forms.html_pref+content+html_forms.form_paring+html_forms.html_suf)
+    return render_template('process.html', content=content)
 
 
 if __name__ == '__main__':

@@ -1,26 +1,64 @@
 #!/usr/bin/env python3
 
 '''
-1. Käivita indekseerijate konteineritega suhtlev veebiserver käsurealt või konteinerist
-  1.1 käsurealt pythoni skriptiga
+----------------------------------------------
+
+Flask veebiserver indekseerija pakendamiseks ja veebilehel domonstreerimiseks
+
+----------------------------------------------
+
+Lähtekoodist pythoni skripti kasutamine
+1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiserveri käivitamine pythoni koodist (1.3) ja brauseriga veebilehe poole pöördumine (1.4)
+1.1 Lähtekoodi allalaadimine
+    $ mkdir ~/git ; cd ~/git/
+    $ git clone git@github.com:estnltk/smart-search.git smart_search_github
+1.2 Virtuaalkeskkonna loomine
     $ cd ~/git/smart_search_github/wp/wp_indekseerija
     $ ./create_venv.sh
-    #$ mkdir uploads
+1.3 Veebiserveri käivitamine pythoni koodist
+    $ cd ~/git/smart_search_github/wp/wp_indekseerija
     $ INDEKSEERIJA_SONED=https://smart-search.tartunlp.ai/api/sonede-indekseerija/   \
       INDEKSEERIJA_LEMMAD=https://smart-search.tartunlp.ai/api/lemmade-indekseerija/ \
       venv/bin/python3 ./flask_wp_indekseerija.py
-  1.2. dockeri konteinerist
+1.4 Brauseriga veebilehe poole pöördumine
+    $ google-chrome http://localhost:5000/wp/indekseerija/process
+    $ google-chrome http://localhost:5000/wp/indekseerija/version
+   
+----------------------------------------------
+
+Lähtekoodist tehtud konteineri kasutamine
+2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja brauseriga veebilehe poole pöördumine (2.4)
+2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
+2.2 Konteineri kokkupanemine
     $ cd ~/git/smart_search_github/wp/wp_indekseerija
-    $ docker build -t tilluteenused/smart_search_wp_indekseerija:2023.05.01.4 . 
+    $ docker build -t tilluteenused/smart_search_wp_indekseerija:2023.05.20 .
+2.3 Konteineri käivitamine
     $ docker run -p 5000:5000 \
       --env INDEKSEERIJA_SONED=https://smart-search.tartunlp.ai/api/sonede-indekseerija/   \
       --env INDEKSEERIJA_LEMMAD=https://smart-search.tartunlp.ai/api/lemmade-indekseerija/ \
-      tilluteenused/smart_search_wp_indekseerija:2023.05.01.4 .
-  2. Ava brauseris http://localhost:5000/wp/indekseerija/process ja järgi brauseris avanenud veebilehe juhiseid
-    $ google-chrome http://localhost:5000/wp/indekseerija/process
-    $ google-chrome http://localhost:5000/wp/indekseerija/process 
+      tilluteenused/smart_search_wp_indekseerija:2023.05.20 .
+2.4 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
+
+----------------------------------------------
+
+DockerHUBist tõmmatud konteineri kasutamine
+3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja brauseriga veebilehe poole pöördumine (3.3)
+3.1 DockerHUBist konteineri tõmbamine
+    $ docker pull tilluteenused/smart_search_wp_indekseerija:2023.05.20
+3.2 Konteineri käivitamine: järgi punkti 2.3
+3.3 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
+
+----------------------------------------------
+
+TÜ pilves töötava konteineri kasutamine
+4 Brauseriga veebilehe poole pöördumine
+    $ google-chrome https://smart-search.tartunlp.ai/wp/indekseerija/process
+    $ google-chrome https://smart-search.tartunlp.ai/wp/indekseerija/version
+
+----------------------------------------------
 '''
 
+import datetime
 import os
 from flask import Flask, render_template, request, redirect, url_for, abort, render_template_string, make_response
 from werkzeug.utils import secure_filename
@@ -29,9 +67,9 @@ import requests
 import json
 #from io import StringIO
 
-class HTML_FORMS:
+class ENVIRONMENT:
     def __init__(self):
-      self.VERSION="2023.05.01.4"
+      self.VERSION="2023.05.20"
 
       self.indekseerija_soned = os.environ.get('INDEKSEERIJA_SONED')
       if self.indekseerija_soned is None:
@@ -45,40 +83,7 @@ class HTML_FORMS:
           self.INDEKSEERIJA_LEMMAD_PORT=os.environ.get('INDEKSEERIJA_LEMMAD_PORT') if os.environ.get('INDEKSEERIJA_LEMMAD_PORT') != None else '6607' 
           self.indekseerija_lemmad = f'http://{self.INDEKSEERIJA_LEMMAD_IP}:{self.INDEKSEERIJA_LEMMAD_PORT}/api/lemmade-indekseerija/'
 
-
-      self.html_pref = \
-      '''
-        <!DOCTYPE html><html lang="et"><head><meta charset="UTF-8"></head><body>
-      '''
-
-      self.form = \
-      '''
-      <br><hr><br>
-        <h1>Indeksi koostamine</h1>
-        <form method="POST" action="" enctype="multipart/form-data">
-          <input type="file" name="file"><br><br>
-        
-        Indeksis:
-          <input checked type="radio" name="indekseerija", value="indekseerija-lemmad"> lemmad     </input>
-          <input         type="radio" name="indekseerija", value="indekseerija-soned">  sõnavormid </input><br>   
-
-        Väljundformaat:
-          <input checked type="radio" name="formaat", value="json"> JSON    </input>
-          <input         type="radio" name="formaat", value="csv"> CSV </input><br><br>
-                     
-          <input type="submit" value="Indekseeri">
-        </form>
-      '''
-
-      self.html_suf = \
-      '''
-        <br>
-        <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_indekseerija/README.md">Kasutusjuhend</a>
-        </body></html>
-      '''
-
-
-html_forms = HTML_FORMS()
+environment = ENVIRONMENT()
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.txt','.json']
@@ -86,9 +91,10 @@ app.config['UPLOAD_EXTENSIONS'] = ['.txt','.json']
 
 @app.route('/wp/indekseerija/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
-def lemmatiseerija_versioon():
-    content = f'<html><body>Versioon: {html_forms.VERSION}</body></html>' 
-    return render_template_string(html_forms.html_pref+content+html_forms.html_suf)
+def lemmatiseerija_versioon(): 
+    return render_template('version.html', veebilehe_versioon=environment.VERSION,
+                           lemmade_indekseerija_url=environment.indekseerija_lemmad,
+                           sonavormide_indekseerija_url=environment.indekseerija_soned)
 
 @app.route('/wp/indekseerija/process', methods=['GET', 'POST'])
 @app.route('/process', methods=['GET', 'POST'])
@@ -103,7 +109,8 @@ def upload_files():
           file_ext = os.path.splitext(filename)[1]
           if file_ext not in app.config['UPLOAD_EXTENSIONS']:
               content = 'Sisendfail peab olema tekstifail (.txt) või JSONformaadis (.json laiendiga).'
-              return render_template_string(html_forms.html_pref+content+html_forms.form+html_forms.html_suf)
+              #return render_template_string(environment.html_pref+content+environment.form+environment.html_suf)
+              return render_template('form.html', query_result=content)
           
           uploaded_content = uploaded_file.read().decode()
           # content = uploaded_content
@@ -115,15 +122,15 @@ def upload_files():
             try:
               query_json =json.loads(uploaded_content)
             except:
-              content = 'Vigane json:\n'+uploaded_file
-              return render_template_string(html_forms.html_pref+content+html_forms.form+html_forms.html_suf)
+              content = f'Vigane json:<br>{uploaded_file}'
+              return render_template_string(environment.html_pref+content+environment.form+environment.html_suf)
           else: # file_ext == '.txt' # failis oli tekst, teeme JSONiks
             query_json = {"sources": {filename:{"content":uploaded_content}}}
           content = f'<h2>{filename} ⇒</h2>'
           if indekseerija == "indekseerija-lemmad":
-            url_indekseerija = html_forms.indekseerija_lemmad
+            url_indekseerija = environment.indekseerija_lemmad
           else:
-            url_indekseerija = html_forms.indekseerija_soned
+            url_indekseerija = environment.indekseerija_soned
           try:
             response = requests.post(url_indekseerija+formaat, json=query_json)
             if response.status_code != 200:
@@ -135,7 +142,7 @@ def upload_files():
                   content = response.text.replace('\n', '<br>')+'<br><br>'
           except:
             content = f'Probleemid veebiteenusega: {url_indekseerija}{formaat}'
-    return  render_template_string(html_forms.html_pref+content+html_forms.form+html_forms.html_suf)
+    return render_template('process.html', query_result=content)
 
 if __name__ == '__main__':
     import argparse

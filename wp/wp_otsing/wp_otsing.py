@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 '''Otsingumootor
+
+Kui tahaks FLASKI asemel DJANGOt kasutada või ei tahaks üldse veebiserverit kasutada, kasuta otse seda.
 '''
 
 import os
@@ -17,6 +19,7 @@ class SMART_SEARCH:
             self.idxfile = 'riigiteataja-lemmad-json.idx'       # ...võtame vaikimisi lemmade indeksi
         with open(self.idxfile, 'r') as file:               # avame indeksfaili...
             self.idx_json = json.load(file)                 # ...loeme mällu
+        self.content = ''
 
     def otsing(self, fragments, query_json):
         """Otsing: päringus ja indeksis lemmad
@@ -73,7 +76,7 @@ class SMART_SEARCH:
                     retval = True                                                       # leidsime midagi sobivat
         return retval                                                           # anname teada, kas leidsime midagi sobivat
 
-    def koosta_vastus(self, formaat, paringu_str):
+    def koosta_vastus(self, formaat:str, paringu_str:str)->None:
         """Otsingutulemus moel või teisel HTML-kujule
 
         Args:
@@ -85,12 +88,11 @@ class SMART_SEARCH:
         self.content = '<hr><h2>Päring:</h2>'
         self.content += f'{paringu_str}<hr><hr>'
         if formaat == 'json':
-            return self.koosta_vastus_json()
+            self.koosta_vastus_json()
         else:
-            return self.koosta_vastus_text(formaat)
-        return ''
+            self.koosta_vastus_text(formaat)
 
-    def koosta_vastus_json(self):
+    def koosta_vastus_json(self)->None:
         """Esita otsingu JSON-tulemus HTML-kujul
 
         Returns:
@@ -98,16 +100,15 @@ class SMART_SEARCH:
         """
         self.content += "<h2>Tulemus:</h2>"
         self.content += json.dumps(self.result_json, ensure_ascii=False, indent=2).replace(' ', '&nbsp;').replace('\n', '<br>')+'<hr>'
-        return self.content
 
-    def koosta_vastus_text(self, formaat):
+    def koosta_vastus_text(self, formaat)->None:
         """Esita otsingu JSON-tulemus märgendatud tekstina HTML-kujul
 
         Returns:
             _type_: otsingu JSON-tulemus märgendatud tekstina HTML-kujul
-        """        
+        """      
         if len(self.result_json) <= 0:
-            self.content += '<h2>Päringule vastavaid dokumente ei leidunud!</h2><hr>'
+            self.content += 'Päringule vastavaid dokumente ei leidunud!'
         else:
             for dokid in self.result_json:
                 links = self.result_json[dokid]
@@ -122,9 +123,8 @@ class SMART_SEARCH:
                     self.content += f' <mark><b>{self.idx_json["sources"][dokid]["content"][start:link["end"]]}</b></mark>'
                     if formaat == 'text_details':
                         self.content += f'<i>[{", ".join(link["tokens"])}]</i>'
-                    pass
                 self.content += self.idx_json["sources"][dokid]["content"][link_prev["end"]:] + '<hr>'
 
-        self.content = self.content.replace('\n', '<br>')+'<hr>'
-        return self.content
+        self.content = self.content.replace('\n', '<br>')
+
     

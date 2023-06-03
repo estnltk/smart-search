@@ -1,37 +1,74 @@
 #!/usr/bin/env python3
 
 """ 
-# Eeldused
-$ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18 # käivitame sõnestaja konteineri
-$ docker run -p 7007:7007 tilluteenused/vmetajson:2023.04.19      # käivitame morfoloogilise analüsaatori konteineri
+----------------------------------------------
 
-# Serveri käivitamine käsurealt
-$ ./create_venv.sh                                       # virtuaalkeskkonna tegemine, ühekordne tegevus
-$ ./venv/bin/python3 ./flask_api_paring_lemmad.py       # käivitame veebiserveri loodud virtuaalkeskkonnas
+Flask veebiserver, pakendab lemmapõhise päringute normaliseerija veebiteenuseks
 
-# Serveri käivitamine konteinerist
-$ cd ~/git/smart_search_github/api_indekseerija/paring_lemmad
-$ docker build -t tilluteenused/smart_search_api_paring_lemmad:2023.04.21 .        # konteineri tegemine, ühekordne tegevus
-$ docker run -p 6608:6608  \
-    --env TOKENIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
-    --env ANALYSER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
-    tilluteenused/smart_search_api_paring_lemmad:2023.04.21
+----------------------------------------------
 
-# Päringute näited:
+Lähtekoodist pythoni skripti kasutamine
+1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiteenuse käivitamine pythoni koodist (1.3) ja CURLiga veebiteenuse kasutamise näited (1.4)
+1.1 Lähtekoodi allalaadimine
+    $ mkdir -p ~/git/ ; cd ~/git/
+    $ git clone git@github.com:estnltk/smart-search.git smart_search_github
+1.2 Virtuaalkeskkonna loomine
+    $ cd ~/git/smart_search_github/api/paring_lemmad
+    $ ./create_venv.sh
+1.3 Veebiserveri käivitamine pythoni koodist
+    $ cd ~/git/smart_search_github/api/paring_lemmad
+    $ TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
+      ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
+        venv/bin/python3 ./flask_api_paring_lemmad.py
+1.4 CURLiga veebiteenuse kasutamise näited
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"content": "katus profiil"}' \
+        localhost:6608/api/paring-lemmad/json | jq
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"content": "katus profiil"}' \
+        localhost:6608/api/paring-lemmad/text
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        localhost:6608/api/paring-lemmad/version | jq  
 
-$ curl --silent --request POST --header "Content-Type: application/json" localhost:6608/version
+----------------------------------------------
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"content": "katus profiil"}' \
-  localhost:6608/json | jq
+Lähtekoodist tehtud konteineri kasutamine
+2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
+2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
+2.2 Konteineri kokkupanemine
+    $ cd ~/git/smart_search_github/api/paring_lemmad
+    $ docker build -t tilluteenused/smart_search_api_paring_soned:2023.06.02 .
+    # docker login -u tilluteenused
+    # docker push tilluteenused/smart_search_api_paring_soned:2023.06.02
+2.3 Konteineri käivitamine
+    $ docker run -p 6608:6608  \
+        --env TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
+        --env ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
+        tilluteenused/smart_search_api_paring_soned:2023.06.02 
+2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"content": "katus profiil"}' \
-  localhost:6608/api/paring_lemmad/json | jq
+----------------------------------------------
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"content": "katus profiil"}' \
-  localhost:6608/api/paring_lemmad/text
+DockerHUBist tõmmatud konteineri kasutamine
+3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
+3.1 DockerHUBist konteineri tõmbamine
+    $ docker pull tilluteenused/smart_search_api_lemmade_indekseerija:2023.06.02 
+3.2 Konteineri käivitamine: järgi punkti 2.3
+3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
+
+----------------------------------------------
+
+TÜ pilves töötava konteineri kasutamine
+4 CURLiga veebiteenuse kasutamise näited
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"content": "katus profiil"}' \
+        https://smart-search.tartunlp.ai/api/paring-lemmad/json | jq
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"content": "katus profiil"}' \
+        https://smart-search.tartunlp.ai/api/paring-lemmad/text
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        https://smart-search.tartunlp.ai/api/paring-lemmad/version | jq  
+----------------------------------------------
 """
 import subprocess
 import json

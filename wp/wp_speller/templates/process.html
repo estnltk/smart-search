@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="et">
+    <head>
+        <meta charset="UTF-8">
+        <title>Indeksi koostamine</title>
+    </head>
+    <body>
+        <form method='POST' enctype='multipart/form-data'>
+            Väljundformaat:
+                <input         type="radio" name="formaat", value="json"> JSON    </input>
+                <input checked type="radio" name="formaat", value="text"> tekst </input><br>
+            <input name="message" type="text"><input type="submit" value="Kontrolli ja soovita" >
+        </form>
+    {% autoescape false %}
+        {{ content}}<br>
+    {% endautoescape %}
+    <hr>  
+    <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_speller/README.md">Kasutusjuhend</a>
+    </body>
+</html>        

@@ -8,7 +8,7 @@ from typing import Dict, List
 
 class PARRING_LEMMAD:
     def __init__(self):
-        self.VERSION="2023.04.21"
+        self.VERSION="2023.06.02"
 
         self.tokenizer = os.environ.get('TOKENIZER')
         if self.tokenizer is None:
@@ -112,8 +112,8 @@ class PARRING_LEMMAD:
         return paring
     
     def version_json(self) -> Dict:
-        return {"version": self.VERSION}
-        
+        return  { "version:": self.VERSION, "tokenizer:": self.tokenizer, "analyser:": self.analyser }
+
 if __name__ == '__main__':
     import argparse
 

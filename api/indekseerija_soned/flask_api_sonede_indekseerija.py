@@ -1,36 +1,73 @@
  #!/usr/bin/env python3
 
-VERSION="2023.04.18"
+VERSION="2023.04.20"
 
 """ 
-# Eeldused
-$ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18 # käivitame sõnestaja konteineri
-$ docker run -p 7007:7007 tilluteenused/vmetajson:2023.04.19      # käivitame morfoloogilise analüsaatori konteineri
+----------------------------------------------
 
-# Serveri käivitamine käsurealt
-$ ./create_venv.sh                                      # virtuaalkeskkonna tegemine, ühekordne tegevus
-$ ./venv/bin/python3 ./flask_api_sonede_indekseerija.py # käivitame veebiserveri loodud virtuaalkeskkonnas
+Flask veebiserver, pakendab sõnepõhise indekseerija veebiteenuseks
 
-# Serveri käivitamine konteinerist
-$ cd ~/git/smart_search_github/api_indekseerija/indekseerija_soned
-$ docker build -t tilluteenused/smart_search_api_sonede_indekseerija:2023.04.20 .        # konteineri tegemine, ühekordne tegevus
-$ docker run -p 6606:6606  \
-    --env TOKENIZER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
-    --env ANALYSER_IP=$(hostname -I | sed 's/^\([^ ]*\) .*$/\1/') \
-    tilluteenused/smart_search_api_sonede_indekseerija:2023.04.20
+----------------------------------------------
 
-# Päringute näited:
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"sources": {"DOC_1":{"content":"Daam koerakesega."},"DOC_2":{"content":"Härra ja daam. Daam sülekoeraga ja härra hundikoeraga."}}}' \
-  http://127.0.0.1:6606/json | jq
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"sources": {"DOC_1":{"content":"Daam koerakesega."},"DOC_2":{"content":"Härra ja daam. Daam sülekoeraga ja härra hundikoeraga."}}}' \
-  http://127.0.0.1:6606/csv
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  http://127.0.0.1:6606/version | jq
+Lähtekoodist pythoni skripti kasutamine
+1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiteenuse käivitamine pythoni koodist (1.3) ja CURLiga veebiteenuse kasutamise näited (1.4)
+1.1 Lähtekoodi allalaadimine
+    $ mkdir -p ~/git/ ; cd ~/git/
+    $ git clone git@github.com:estnltk/smart-search.git smart_search_github
+1.2 Virtuaalkeskkonna loomine
+    $ cd ~/git/smart_search_github/api/indekseerija_soned
+    $ ./create_venv.sh
+1.3 Veebiserveri käivitamine pythoni koodist
+    $ TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
+      ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
+        venv/bin/python3 flask_api_sonede_indekseerija.py
+1.4 CURLiga veebiteenuse kasutamise näited
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"sources": {"DOC_1":{"content":"Jahimehed jahikoertega."},"DOC_2":{"content":"Daam sülekoeraga ja mees jahikoeraga."}}}' \
+        localhost:6606/api/sonede-indekseerija/json | jq
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"sources": {"DOC_1":{"content":"Jahimehed jahikoertega."},"DOC_2":{"content":"Daam sülekoeraga ja mees jahikoeraga."}}}' \
+        localhost:6606/api/sonede-indekseerija/csv
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        localhost:6606/api/sonede-indekseerija/version | jq  
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  https://smart-search.tartunlp.ai/api/sonede-indekseerija/version | jq  
+----------------------------------------------
+
+Lähtekoodist tehtud konteineri kasutamine
+2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
+2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
+2.2 Konteineri kokkupanemine
+    $ cd ~/git/smart_search_github/api/indekseerija_soned
+    $ docker build -t tilluteenused/smart_search_api_sonede_indekseerija:2023.04.20 . 
+2.3 Konteineri käivitamine
+    $ docker run -p 6606:6606  \
+        --env TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
+        --env ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
+        tilluteenused/smart_search_api_sonede_indekseerija:2023.04.20 
+2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
+
+----------------------------------------------
+
+DockerHUBist tõmmatud konteineri kasutamine
+3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
+3.1 DockerHUBist konteineri tõmbamine
+    $ docker pull tilluteenused/smart_search_api_sonede_indekseerija:2023.04.20 
+3.2 Konteineri käivitamine: järgi punkti 2.3
+3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
+
+----------------------------------------------
+
+TÜ pilves töötava konteineri kasutamine
+4 CURLiga veebiteenuse kasutamise näited
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"sources": {"DOC_1":{"content":"Jahimehed jahikoertega."},"DOC_2":{"content":"Daam sülekoeraga ja mees jahikoeraga."}}}' \
+        https://smart-search.tartunlp.ai/api/sonede-indekseerija/json | jq
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"sources": {"DOC_1":{"content":"Jahimehed jahikoertega."},"DOC_2":{"content":"Daam sülekoeraga ja mees jahikoeraga."}}}' \
+        https://smart-search.tartunlp.ai/api/sonede-indekseerija/csv
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        https://smart-search.tartunlp.ai/api/sonede-indekseerija/version | jq  
+----------------------------------------------
 """
 
 import subprocess

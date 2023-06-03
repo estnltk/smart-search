@@ -1,49 +1,75 @@
 #!/usr/bin/env python3
 
 """ 
-# Eeldused: Ülikooli pilvest: sõnestaja, morf analüüs, morf süntees
-$ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18 # käivitame sõnestaja konteineri
-$ docker run -p 7007:7007 tilluteenused/vmetajson:2023.04.19      # käivitame morfoloogilise analüsaatori konteineri
-$ docker run -p 7000:7000 tilluteenused/vabamorf_synth:2022.08.15 # käivitame morfoloogilise sünteesi konteineri
+----------------------------------------------
 
-# Serveri käivitamine käsurealt
-$ ./create_venv.sh                                      # virtuaalkeskkonna tegemine, ühekordne tegevus
-$ ./venv/bin/python3 ./flask_api_paring_soned.py       # käivitame veebiserveri loodud virtuaalkeskkonnas
+Flask veebiserver, pakendab lemmapõhise päringute normaliseerija veebiteenuseks
 
-# Serveri käivitamine konteinerist
-$ cd ~/git/smart_search_github/api_indekseerija/paring_soned
-$ docker build -t tilluteenused/smart_search_api_paring_soned:2023.04.25 .        # konteineri tegemine, ühekordne tegevus
-$ docker run -p 6609:6609  \
-    --env TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process \
-    --env ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process \
-    --env GENERATOR=https://smart-search.tartunlp.ai/api/generator/process \
-    tilluteenused/smart_search_api_paring_soned:2023.04.24
+----------------------------------------------
 
-# Päringute näited:
+Lähtekoodist pythoni skripti kasutamine
+1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiteenuse käivitamine pythoni koodist (1.3) ja CURLiga veebiteenuse kasutamise näited (1.4)
+1.1 Lähtekoodi allalaadimine
+    $ mkdir -p ~/git/ ; cd ~/git/
+    $ git clone git@github.com:estnltk/smart-search.git smart_search_github
+1.2 Virtuaalkeskkonna loomine
+    $ cd ~/git/smart_search_github/api/paring_soned
+    $ ./create_venv.sh
+1.3 Veebiserveri käivitamine pythoni koodist
+    $ cd ~/git/smart_search_github/api/paring_soned
+    $ TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
+      ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
+      GENERATOR='https://smart-search.tartunlp.ai/api/generator/process' \
+        venv/bin/python3 ./flask_api_paring_soned.py
+1.4 CURLiga veebiteenuse kasutamise näited
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"content": "katus profiil"}' \
+        localhost:6609/api/paring-soned/json | jq
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"content": "katus profiil"}' \
+        localhost:6609/api/paring-soned/text
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        localhost:6609/api/paring-soned/version | jq  
 
-$ curl --silent --request POST --header "Content-Type: application/json" localhost:6609/version
+----------------------------------------------
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"content": "katus profiil"}' \
-  localhost:6609/json | jq
+Lähtekoodist tehtud konteineri kasutamine
+2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
+2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
+2.2 Konteineri kokkupanemine
+    $ cd ~/git/smart_search_github/api/paring_soned
+    $ docker build -t tilluteenused/smart_search_api_paring_soned:2023.06.02 .
+2.3 Konteineri käivitamine
+    $ docker run -p 6609:6609  \
+        --env TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
+        --env ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
+        --env GENERATOR='https://smart-search.tartunlp.ai/api/generator/process' \
+        tilluteenused/smart_search_api_paring_soned:2023.06.02
+2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"content": "katus profiil"}' \
-  localhost:6609/api/paring-soned/json | jq
+----------------------------------------------
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"content": "katus profiil"}' \
-  localhost:6609/text  
+DockerHUBist tõmmatud konteineri kasutamine
+3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
+3.1 DockerHUBist konteineri tõmbamine
+    $ docker pull tilluteenused/smart_search_api_paring_soned:2023.06.02 
+3.2 Konteineri käivitamine: järgi punkti 2.3
+3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  --data '{"content": "katus profiil"}' \
-  localhost:6609/api/paring-soned/text
+----------------------------------------------
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  localhost:6609/version
+TÜ pilves töötava konteineri kasutamine
+4 CURLiga veebiteenuse kasutamise näited
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"content": "katus profiil"}' \
+        https://smart-search.tartunlp.ai/api/paring-soned/json | jq
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"content": "katus profiil"}' \
+        https://smart-search.tartunlp.ai/api/paring-soned/text
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        https://smart-search.tartunlp.ai//api/paring-soned/version | jq  
 
-$ curl --silent --request POST --header "Content-Type: application/json" \
-  localhost:6609/api/paring-soned/version
+----------------------------------------------
 """
 import subprocess
 import json

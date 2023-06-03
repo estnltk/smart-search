@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="et">
+    <head>
+    <meta charset="UTF-8">
+    <title>Indeksi koostamine</title>
+    </head>
+    <body>
+
+    <form method='POST' enctype='multipart/form-data' action='/wp/paring/process'>
+        Väljundformaat:
+            <input checked type="radio" name="formaat", value="json"> JSON    </input>
+            <input         type="radio" name="formaat", value="text"> avaldis </input><br>
+        Päringus:
+            <input checked type="radio" name="paring", value="paring-lemmad"> lemmad     </input>
+            <input         type="radio" name="paring", value="paring-soned">  sõnavormid </input><br><br>                          
+        <input name="message" type="text"><input type="submit" value="Päring" >
+    </form>
+    <hr>
+    {% autoescape false %}
+        {{ content }}
+    {% endautoescape %} 
+    <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_paring/README.md">Kasutusjuhend</a>
+    </body>
+</html>
