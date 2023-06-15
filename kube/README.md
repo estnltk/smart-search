@@ -409,7 +409,7 @@ kubectl edit ingress smart-search-api-ingress
 ### **WP: OTSING LEMMAPÕHINE**
 ---
 
-[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/wp_otsing.py)
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/flask_wp_otsing.py)
 
 **Kubernetes**
 
