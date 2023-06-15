@@ -153,6 +153,8 @@ kubectl edit ingress smart-search-api-ingress
 ### **API INDEKSEERIJA: LEMMAPÕHINE**
 ---
 
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/indekseerija_lemmad/flask_api_lemmade_indekseerija.py)
+
 **Kubernetes**
 
 * **Sõltuvused:** deployment'i:
@@ -190,6 +192,8 @@ kubectl edit ingress smart-search-api-ingress
 | 6607 | smart-search-api-lemmade-indekseerija | tilluteenused/smart_search_api_lemmade_indekseerija:2023.04.20 | /api/lemmade-indekseerija/version<br>/api/lemmade-indekseerija/json<br> /api/lemmade-indekseerija/csv |
 
 ### **API INDEKSEERIJA: SÕNEPÕHINE**
+
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/indekseerija_soned/flask_api_sonede_indekseerija.py)
 
 **Kubernetes**
 
@@ -231,6 +235,8 @@ kubectl edit ingress smart-search-api-ingress
 
 ### **API PÄRINGU NORMALISEERIJA: LEMMAD**
 
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/paring_lemmad/flask_api_paring_lemmad.py)
+
 **Kubernetes**
 
 * **Sõltuvused:** ```deployment```'i
@@ -270,6 +276,8 @@ kubectl edit ingress smart-search-api-ingress
 **Testitud** 2023.06.03
 
 ### **API PÄRINGU NORMALISEERIJA: SÕNED**
+
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/paring_soned/flask_api_paring_soned.py)
 
 **Kubernetes**
 
@@ -320,6 +328,8 @@ kubectl edit ingress smart-search-api-ingress
 ### **WP: SPELLER**
 ---
 
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_speller/flask_wp_speller.py)
+
 **Kubernetes**
 
 * **Sõltuvused** ```deployment```'i:
@@ -355,6 +365,8 @@ kubectl edit ingress smart-search-api-ingress
 
 ### **WP: INDEKSEERIJA**
 ---
+
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_indekseerija/flask_wp_indekseerija.py)
 
 **Kubernetes**
 
@@ -397,6 +409,8 @@ kubectl edit ingress smart-search-api-ingress
 ### **WP: OTSING LEMMAPÕHINE**
 ---
 
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/wp_otsing.py)
+
 **Kubernetes**
 
 * **Sõltuvused** deployment'i:
@@ -437,6 +451,8 @@ kubectl edit ingress smart-search-api-ingress
 ### **WP: OTSING SÕNEPÕHINE**
 ---
 
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/flask-wp-otsing.py)
+
 **Kubernetes**
 
 * **Sõltuvused** deployment'i:
@@ -476,6 +492,8 @@ kubectl edit ingress smart-search-api-ingress
 
 ### **WP: PARING**
 ---
+
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_paring/flask_wp_paring.py)
 
 **Kubernetes**
 
