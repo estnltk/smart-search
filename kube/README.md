@@ -1,5 +1,11 @@
 # SMARTSEARCH
 
+Kubernetes:
+* ```deployment``` ja ```service``` on tehtud sama nimega.
+* ``deployment``` ja ```service``` on tehtud vaikeseadetega ja siis lisatud vajalikug muutused (peamiselt keskkonnamuutujad).
+* ```api``` ja ```wp``` teenuste jaoks on eraldi ```ingress```'i failid. Näidetes on kirjas seeosa mida juba ühe või teise teenuse
+jaoks tuleb lisada.
+ 
 ---
 
 ## API
