@@ -10,7 +10,7 @@ jaoks tuleb vastavasse ```ingress```'i ```.yaml``` faili lisada.
 
 ## API
 
-### **API SPELLER**
+### **API: SPELLER**
 ---
 
 [**Juhised ja näited**](https://github.com/Filosoft/vabamorf/blob/master/docker/flask_stlspeller/flask_stlspeller.py)
@@ -39,7 +39,7 @@ jaoks tuleb vastavasse ```ingress```'i ```.yaml``` faili lisada.
 
 Testitud: 2023-06.03
 
-### **API SÕNESTAJA**
+### **API: SÕNESTAJA**
 ---
 
 [**Juhised ja näited**](https://github.com/Filosoft/vabamorf/blob/master/docker/flask_estnltk_sentok/flask_estnltk_sentok.py)
@@ -78,7 +78,7 @@ kubectl edit ingress smart-search-api-ingress
 
 **Testitud:** 2023.06.03
 
-### **API MORF ANALÜSAATOR**
+### **API: MORF ANALÜSAATOR**
 ---
 
 [**Juhised ja näited**](https://github.com/Filosoft/vabamorf/blob/master/docker/flask_vmetajson/flask_vmetajson.py)
@@ -117,7 +117,7 @@ kubectl edit ingress smart-search-api-ingress
 
 **Testitud:** 2023-06-03
 
-### **API MORF GENERAATOR**
+### **API: MORF GENERAATOR**
 ---
 
 [**Juhised ja näited**](https://gitlab.com/tilluteenused/docker-elg-synth)
@@ -156,7 +156,7 @@ kubectl edit ingress smart-search-api-ingress
 
 **Testitud:** 2023.06.03
 
-### **API INDEKSEERIJA: LEMMAPÕHINE**
+### **API: INDEKSEERIJA: LEMMAPÕHINE**
 ---
 
 [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/indekseerija_lemmad/flask_api_lemmade_indekseerija.py)
@@ -197,7 +197,7 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 6607 | smart-search-api-lemmade-indekseerija | tilluteenused/smart_search_api_lemmade_indekseerija:2023.04.20 | /api/lemmade-indekseerija/version<br>/api/lemmade-indekseerija/json<br> /api/lemmade-indekseerija/csv |
 
-### **API INDEKSEERIJA: SÕNEPÕHINE**
+### **API: INDEKSEERIJA: SÕNEPÕHINE**
 
 [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/indekseerija_soned/flask_api_sonede_indekseerija.py)
 
@@ -239,7 +239,7 @@ kubectl edit ingress smart-search-api-ingress
 
 **Testitud** 2023.06.03
 
-### **API PÄRINGU NORMALISEERIJA: LEMMAD**
+### **API: PÄRINGU NORMALISEERIJA: LEMMAD**
 
 [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/paring_lemmad/flask_api_paring_lemmad.py)
 
@@ -281,7 +281,7 @@ kubectl edit ingress smart-search-api-ingress
 
 **Testitud** 2023.06.03
 
-### **API PÄRINGU NORMALISEERIJA: SÕNED**
+### **API: PÄRINGU NORMALISEERIJA: SÕNED**
 
 [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/paring_soned/flask_api_paring_soned.py)
 
