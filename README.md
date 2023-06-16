@@ -87,6 +87,7 @@ Programmeerija jaoks mõeldud liidesega veebiteenused:
 * [**_testkorpused_**](https://github.com/estnltk/smart-search/tree/main/testkorpused) -- testimiseks möeldud korpused ja abistava iseloomuga skriptid.
   * [**_bin_**](https://github.com/estnltk/smart-search/tree/main/testkorpused/bin) -- abistava iseloomuga skriptid.
   * [**_riigiteataja_**](https://github.com/estnltk/smart-search/tree/main/testkorpused/riigiteataja) -- riigiteataja dokumentidest koostatud mikrokorpus testimiseks.
+* [**_kube_**](https://github.com/estnltk/smart-search/tree/main/kube) -- Abistav info Kubernetese klastri konfimiseks.
 * **_demo_otsing_** -- see funktsionaalsus on uuenenud kujul [**_wp_**](https://github.com/estnltk/smart-search/tree/main/wp) ja [**_api_**](https://github.com/estnltk/smart-search/tree/main/api) kataloogides.
 * ülejäänud kataloogid -- ei ole enam olulised
 
