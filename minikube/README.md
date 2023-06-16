@@ -2,6 +2,7 @@
 
 Praegu me enam eriti ei kasuta MINIKUBE't, seega veidi aegunud.
 Kõik olulised teenused on üleval TÜ kubernetese klastris.
+Vaata https://github.com/estnltk/smart-search/blob/main/kube/README.md
 
 ## Installimine
 
