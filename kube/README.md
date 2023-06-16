@@ -3,8 +3,8 @@
 Kubernetes:
 * ```deployment``` ja ```service``` on tehtud sama nimega.
 * ```deployment``` ja ```service``` on tehtud vaikeseadetega ja lisatud minimaalselt vajalikud muutused (peamiselt keskkonnamuutujad), ei sisalda 'peenhäälestust'.
-* ```api``` ja ```wp``` teenuste jaoks on eraldi ```ingress```'i failid. Näidetes on kirjas seeosa mida juba ühe või teise teenuse
-jaoks tuleb lisada.
+* ```api``` ja ```wp``` teenuste jaoks on eraldi ```ingress```'i failid. Näidetes on kirjas see osa mida juba ühe või teise teenuse
+jaoks tuleb vastavasse ```ingress```'i ```.yaml``` faili lisada.
  
 ---
 
