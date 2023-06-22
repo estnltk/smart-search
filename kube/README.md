@@ -433,7 +433,7 @@ kubectl edit ingress smart-search-api-ingress
           value: $(SMART_SEARCH_API_PARING_LEMMAD_SERVICE_HOST)
         - name: PARING_LEMMAD_PORT
           value: $(SMART_SEARCH_API_PARING_LEMMAD_SERVICE_PORT)
-        image: tilluteenused/smart_search_wp_otsing:2023.05.12
+        image: tilluteenused/smart_search_wp_otsing:2023.06.25
 ```
 
 * **Konf** ```ingress```'is
@@ -448,11 +448,23 @@ kubectl edit ingress smart-search-api-ingress
         pathType: Prefix
 ```
 
+```yaml
+      - backend:
+          service:
+            name: smart-search-wp-otsing-lemmad
+            port:
+              number: 80
+        path: /api/lemmade-indeks/?(.*)
+        pathType: Prefix
+
+```
+
+
 | port | kubernetes | docker | path |
 |------|------------|--------|------|
-| 6013 | smart-search-wp-otsing-lemmad | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-lemmad/version<br>/wp/otsing-lemmad/texts<br>/wp/otsing-lemmad/process<br>/api/lemmade-indeks/check |
+| 6013 | smart-search-wp-otsing-lemmad | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-lemmad/version<br>/wp/otsing-lemmad/texts<br>/wp/otsing-lemmad/process<br>/api/lemmade-indeks/check<br>/api/lemmade-indeks/api-version |
 
-**Testitud** 2023.06.03
+**Testitud** 2023.06.25
 
 ### **WP: OTSING SÕNEPÕHINE**
 ---
@@ -475,7 +487,7 @@ kubectl edit ingress smart-search-api-ingress
           value: $(SMART_SEARCH_API_PARING_SONED_SERVICE_HOST)
         - name: PARING_SONED_PORT
           value: $(SMART_SEARCH_API_PARING_SONED_SERVICE_PORT)
-        image: tilluteenused/smart_search_wp_otsing:2023.05.12
+        image: tilluteenused/smart_search_wp_otsing:2023.06.25
 ```
 
 * **Konf** ```ingress```'is
@@ -490,11 +502,22 @@ kubectl edit ingress smart-search-api-ingress
         pathType: Prefix
 ```
 
+```yaml
+      - backend:
+          service:
+            name: smart-search-wp-otsing-soned
+            port:
+              number: 80
+        path: /api/sonede-indeks/?(.*)
+        pathType: Prefix
+
+```
+
 | port | kubernetes | docker | path |
 |------|------------|--------|------|
-| 6013 | smart-search-wp-otsing-soned | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-soned/version<br>/wp/otsing-soned/texts<br>/wp/otsing-soned/process<br>/api/sonede-indeks/check |
+| 6013 | smart-search-wp-otsing-soned | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-soned/version<br>/wp/otsing-soned/texts<br>/wp/otsing-soned/process<br>/api/sonede-indeks/check<br>/api/sonede-indeks/api-version |
 
-**Testitud** 2023.06.03
+**Testitud** 2023.06.23
 
 ### **WP: PARING**
 ---

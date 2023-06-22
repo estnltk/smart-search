@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 class SMART_SEARCH:
     def __init__(self):
-        self.VERSION="2023.06.22"                           # otsimootori versioon
+        self.VERSION="2023.06.24"                           # otsimootori versioon
 
         self.idxfile = os.environ.get('IDXFILE')            # otsime indeksfaili nime keskkonnamootujast
         if self.idxfile is None:                            # kui seal polnud...
