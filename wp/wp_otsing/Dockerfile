@@ -24,6 +24,7 @@ RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt
 
 # copy current task related skripts
 COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask-wp-otsing.py wp_otsing.py riigiteataja-lemmad-json.idx riigiteataja-soned-json.idx ./
+ADD --chown=mere_mortal:mere_mortal templates/ ./templates/
 RUN chmod +x docker-entrypoint.sh flask-wp-otsing.py wp_otsing.py
 # parameters for gunicorn
 ENV WORKERS=1

@@ -55,7 +55,7 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart_search_github/wp/wp_otsing
-    $ docker build -t tilluteenused/smart_search_wp_otsing:2023.06.21 .
+    $ docker build -t tilluteenused/smart_search_wp_otsing:2023.06.23 .
 2.3 Konteineri käivitamine: sõnepõhine otsingumootor (2.3.1) või lemmapõhine otsingumootor (2.3.2)
 2.3.1 Sõnepõhise otsingumootori käivitamine
     $ cd ~/git/smart_search_github/wp/wp_otsing
@@ -63,13 +63,13 @@ Lähtekoodist tehtud konteineri kasutamine
         --env OTSINGU_VIIS=soned \
         --env IDXFILE=riigiteataja-soned-json.idx \
         --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
-        tilluteenused/smart_search_wp_otsing:2023.06.21
+        tilluteenused/smart_search_wp_otsing:2023.06.23
 2.3.2 Lemmapõhise otsingumootori käivitamine
     $ docker run -p 6013:6013 \
         --env OTSINGU_VIIS=lemmad \
         --env IDXFILE=riigiteataja-lemmad-json.idx  \
         --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
-        tilluteenused/smart_search_wp_otsing:2023.06.21
+        tilluteenused/smart_search_wp_otsing:2023.06.23
 2.4 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
 ----------------------------------------------
@@ -77,7 +77,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja brauseriga veebilehe poole pöördumine (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_wp_otsing:2023.06.21
+    $ docker pull tilluteenused/smart_search_wp_otsing:2023.06.23
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
@@ -117,7 +117,7 @@ import wp_otsing
 
 class ENVIRONMENT:
     def __init__(self):
-        self.VERSION="2023.06.21"
+        self.VERSION="2023.06.23"
 
         self.otsingu_viis = os.environ.get('OTSINGU_VIIS')                  # otsingu viis ("lemmad" või "soned") keskkonnamuutujast
         if self.otsingu_viis is None:                                       # keskkonnamuutujat polnud...
