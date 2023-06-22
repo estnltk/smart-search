@@ -86,10 +86,10 @@ app = Flask("sonedega")
 def paring_json():
     try:   
         json_response = paring.paring_json(request.json)
-        return jsonify(json_response)
     except Exception as e:
         json_response = e
-    
+    return jsonify(json_response)
+
 @app.route('/api/paring-soned/text', methods=['POST'])
 @app.route('/text', methods=['POST'])
 def paring_text():

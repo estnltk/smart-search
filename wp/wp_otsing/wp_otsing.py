@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 class SMART_SEARCH:
     def __init__(self):
-        self.VERSION="2023.05.11"                           # otsimootori versioon
+        self.VERSION="2023.06.21"                           # otsimootori versioon
 
         self.idxfile = os.environ.get('IDXFILE')            # otsime indeksfaili nime keskkonnamootujast
         if self.idxfile is None:                            # kui seal polnud...
@@ -20,6 +20,17 @@ class SMART_SEARCH:
         with open(self.idxfile, 'r') as file:               # avame indeksfaili...
             self.idx_json = json.load(file)                 # ...loeme mällu
         self.content = ''
+
+
+    def kas_on_indeksis(self, query_list):
+        '''
+        query_list = [token,...]
+        resp_json = {token: bool} # True:oli indeksis, False:polnud indeksis; liitsõnandusele ei pööra tähelepanu
+        '''
+        resp_json = {}
+        for token in query_list:
+            resp_json[token] = token in self.idx_json["index"]
+        return resp_json
 
     def otsing(self, fragments, query_json):
         """Otsing: päringus ja indeksis lemmad

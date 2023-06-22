@@ -450,7 +450,7 @@ kubectl edit ingress smart-search-api-ingress
 
 | port | kubernetes | docker | path |
 |------|------------|--------|------|
-| 6013 | smart-search-wp-otsing-lemmad | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-lemmad/version<br>/wp/otsing-lemmad/texts<br>/wp/otsing-lemmad/process |
+| 6013 | smart-search-wp-otsing-lemmad | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-lemmad/version<br>/wp/otsing-lemmad/texts<br>/wp/otsing-lemmad/process<br>/api/lemmade-indeks/check |
 
 **Testitud** 2023.06.03
 
@@ -492,7 +492,7 @@ kubectl edit ingress smart-search-api-ingress
 
 | port | kubernetes | docker | path |
 |------|------------|--------|------|
-| 6013 | smart-search-wp-otsing-soned | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-soned/version<br>/wp/otsing-soned/texts<br>/wp/otsing-soned/process |
+| 6013 | smart-search-wp-otsing-soned | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-soned/version<br>/wp/otsing-soned/texts<br>/wp/otsing-soned/process<br>/api/sonede-indeks/check |
 
 **Testitud** 2023.06.03
 

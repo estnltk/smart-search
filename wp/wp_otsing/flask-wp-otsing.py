@@ -32,11 +32,21 @@ Lähtekoodist pythoni skripti kasutamine
 1.4.1 Sõnepõhise otsingumootori poole pöördumine
     $ google-chrome http://localhost:6013/wp/otsing-soned/version
     $ google-chrome http://localhost:6013/wp/otsing-soned/texts
-    $ google-chrome http://localhost:6013/wp/otsing-soned/process 
+    $ google-chrome http://localhost:6013/wp/otsing-soned/process
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data  '{"content":["presidendiga", "presidendiks", "president", "presidendi"]}' \
+        http://localhost:6013/api/sonede-indeks/check
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        http://localhost:6013/api/sonede-indeks/version        
 1.4.2 Lemmapõhise otsingumootori poole pöördumine
     $ google-chrome http://localhost:6013/wp/otsing-lemmad/version
     $ google-chrome http://localhost:6013/wp/otsing-lemmad/texts
     $ google-chrome http://localhost:6013/wp/otsing-lemmad/process
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data  '{"content":["presidendiga", "presidendiks", "president", "presidendi"]}' \
+        http://localhost/api/lemmade-indeks/check
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        http://localhost:6013/api/lemmade-indeks/version
 
 ----------------------------------------------
 
@@ -79,16 +89,26 @@ TÜ pilves töötava konteineri kasutamine
     $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/version
     $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/texts
     $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/process
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data  '{"content":["presidendiga", "presidendiks", "president", "presidendi"]}' \
+        https://smart-search.tartunlp.ai/api/sonede-indeks/check
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        https://smart-search.tartunlp.ai/api/sonede-indeks/version
 4.2 Lemmapõhise otsingumootori poole pöördumine
     $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/version
     $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/texts
     $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/process
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data  '{"content":["presidendiga", "presidendiks", "president", "presidendi"]}' \
+        https://smart-search.tartunlp.ai/api/lemmade-indeks/check
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        https://smart-search.tartunlp.ai/api/lemmade-indeks/version
 
 ----------------------------------------------
 '''
 
 import os
-from flask import Flask, render_template, render_template_string, request, make_response
+from flask import Flask, jsonify, render_template, render_template_string, request, make_response
 import requests
 import json
 from collections import OrderedDict
@@ -97,7 +117,7 @@ import wp_otsing
 
 class ENVIRONMENT:
     def __init__(self):
-        self.VERSION="2023.05.15"
+        self.VERSION="2023.06.21"
 
         self.otsingu_viis = os.environ.get('OTSINGU_VIIS')                  # otsingu viis ("lemmad" või "soned") keskkonnamuutujast
         if self.otsingu_viis is None:                                       # keskkonnamuutujat polnud...
@@ -113,9 +133,14 @@ smart_search = wp_otsing.SMART_SEARCH()                     # otsingumootor
 environment = ENVIRONMENT()                                 # keskkonnamuutujatest võetud inf 
 app = Flask(__name__)                                       # Fläski äpp
 
+@app.route('/api/sonede-indeks/version', methods=['GET', 'POST'])
+@app.route('/api/lemmade-indeks/version', methods=['GET', 'POST'])
+def api_verioon():
+    return jsonify({"veebilehe_versioon": environment.VERSION, "otsingu_versioon": smart_search.VERSION, "idxfile": smart_search.idxfile})  
+
 @app.route(f'/wp/otsing-{environment.otsingu_viis}/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
-def versioon():
+def wp_versioon():
     """Kuvame veebilehel versiooniinfot ja veel üht-teist
 
     """
@@ -188,6 +213,20 @@ def process():
         smart_search.koosta_vastus(formaat, paringu_str)
     return render_template('process.html', query_result=smart_search.content)
 
+@app.route('/api/sonede-indeks/check', methods=['POST'])
+@app.route('/api/lemmade-indeks/check', methods=['POST'])
+@app.route('/check', methods=['POST'])
+def check():
+    """Võimaldab kontrollida, kas sõne/lemma oli indeksis (veebileheta päring)
+
+    JSONpäring: {token,...}
+    JSONvastus: {token: bool} # True:oli indeksis, False:polnud indeksis; liitsõnandusele ei pööra tähelepanu
+    """
+    try:
+        json_response = smart_search.kas_on_indeksis(request.json["content"])
+    except Exception as e:
+        json_response = e
+    return jsonify(json_response)        
 
 if __name__ == '__main__':
     import argparse

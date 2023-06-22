@@ -1,4 +1,4 @@
-# Tekstidest lemmade ning liitsõna osasõnade lemmade leidmine ja indekseerimine [versioon 2023.04.20]
+# Tekstidest lemmade ning liitsõna osasõnade lemmade leidmine ja neist indeksi koostamine [versioon 2023.04.20]
 
 Lihtsuse ja arusaadavuse huvides on näitetekstid ülilühikesed (mõnesõnalised).
 
