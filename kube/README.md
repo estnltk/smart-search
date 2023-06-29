@@ -37,7 +37,7 @@ jaoks tuleb vastavasse ```ingress```'i ```.yaml``` faili lisada.
 |------|--------------------------|----------------------------------|-----------------------------------------------|
 | 7005 | smart-search-api-speller | tilluteenused/speller:2023.06.03 | /api/speller/version<br>/api/speller/process |
 
-Testitud: 2023-06.03
+Testitud: Vt [**Juhised ja näited**](https://github.com/Filosoft/vabamorf/blob/master/docker/flask_stlspeller/flask_stlspeller.py)
 
 ### **API: SÕNESTAJA**
 ---
@@ -76,7 +76,7 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 6000 | smart-search-api-tokenizer | tilluteenused/estnltk_sentok:2023.04.18 | /api/tokenizer/version<br>/api/tokenizer/process |
 
-**Testitud:** 2023.06.03
+**Testitud:** Vt [**Juhised ja näited**](https://github.com/Filosoft/vabamorf/blob/master/docker/flask_estnltk_sentok/flask_estnltk_sentok.py)
 
 ### **API: MORF ANALÜSAATOR**
 ---
@@ -115,7 +115,8 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 7007 | smart-search-api-analyser | tilluteenused/vmetajson:2023.06.01 | /api/analyser/version<br>/api/analyser/process |
 
-**Testitud:** 2023-06-03
+**Testitud:** Vt [**Juhised ja näited**](https://github.com/Filosoft/vabamorf/blob/master/docker/flask_vmetajson/flask_vmetajson.py)
+
 
 ### **API: MORF GENERAATOR**
 ---
@@ -154,7 +155,7 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 7000 | smart-search-api-elg-generator | tilluteenused/vabamorf_synth:2022.08.15  | /api/generator/process |
 
-**Testitud:** 2023.06.03
+**Testitud:** Vt [**Juhised ja näited**](https://gitlab.com/tilluteenused/docker-elg-synth)
 
 ### **API: INDEKSEERIJA: LEMMAPÕHINE**
 ---
@@ -197,6 +198,8 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 6607 | smart-search-api-lemmade-indekseerija | tilluteenused/smart_search_api_lemmade_indekseerija:2023.04.20 | /api/lemmade-indekseerija/version<br>/api/lemmade-indekseerija/json<br> /api/lemmade-indekseerija/csv |
 
+**Testitud** Vt [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/indekseerija_lemmad/flask_api_lemmade_indekseerija.py)
+
 ### **API: INDEKSEERIJA: SÕNEPÕHINE**
 
 [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/indekseerija_soned/flask_api_sonede_indekseerija.py)
@@ -237,7 +240,7 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 6606 | smart-search-api-sonede-indekseerija | tilluteenused/smart_search_api_sonede_indekseerija:2023.04.20 | /api/sonede-indekseerija/version<br>/api/sonede-indekseerija/json<br>/api/sonede-indekseerija/csv |
 
-**Testitud** 2023.06.03
+**Testitud** Vt [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/indekseerija_soned/flask_api_sonede_indekseerija.py)
 
 ### **API: PÄRINGU NORMALISEERIJA: LEMMAD**
 
@@ -279,7 +282,7 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 6608 | smart-search-api-paring-lemmad | tilluteenused/smart_search_api_paring_soned:2023.06.02 | /api/paring-lemmad/version<br>/api/paring-lemmad/json<br>/api/paring-lemmad/text |
 
-**Testitud** 2023.06.03
+**Testitud** Vt [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/paring_lemmad/flask_api_paring_lemmad.py)
 
 ### **API: PÄRINGU NORMALISEERIJA: SÕNED**
 
@@ -326,6 +329,8 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 6609 | smart-search-api-paring-soned | tilluteenused/smart_search_api_paring_soned:2023.04.25 | /api/paring-soned/version<br>/api/paring-soned/json<br>/api/paring-soned/text|
 
+**Testitud** Vt [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/api/paring_soned/flask_api_paring_soned.py)
+
 ---
 ---
 
@@ -366,7 +371,8 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 6003 | smart-search-wp-speller | tilluteenused/smart_search_wp_speller:2023.05.22 | /wp/speller/version<br>/wp/speller/process |
 
-**Testitud** 2023.06.03
+**Testitud** Vt [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_speller/flask_wp_speller.py)
+
 
 
 ### **WP: INDEKSEERIJA**
@@ -410,9 +416,57 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 5000 | smart-search-wp-indekseerija | tilluteenused/smart_search_wp_indekseerija:2023.05.20 | /wp/indekseerija/version<br>/wp/indekseerija/process |
 
-**Testitud** 2023.06.03
+**Testitud** Vt [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_indekseerija/flask_wp_indekseerija.py)
 
-### **WP: OTSING LEMMAPÕHINE**
+### **WP: PARING**
+---
+
+[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_paring/flask_wp_paring.py)
+
+**Kubernetes**
+
+* **Sõltuvused** deployment'i:
+  * smart-search-api-paring-lemmad
+  * smart-search-api-paring-soned
+
+```yaml
+      containers:
+      - env:
+        - name: PARING_LEMMAD_IP
+          value: $(SMART_SEARCH_API_PARING_LEMMAD_SERVICE_HOST)
+        - name: PARING_LEMMAD_PORT
+          value: $(SMART_SEARCH_API_PARING_LEMMAD_SERVICE_PORT)
+        - name: PARING_SONED_IP
+          value: $(SMART_SEARCH_API_PARING_SONED_SERVICE_HOST)
+        - name: PARING_SONED_PORT
+          value: $(SMART_SEARCH_API_PARING_SONED_SERVICE_PORT)
+        image: tilluteenused/smart_search_wp_paring:2023.04.29.4
+```
+
+* **Konf** ```ingress```'is
+
+```yaml
+      - backend:
+          service:
+            name: smart-search-wp-paring
+            port:
+              number: 80
+        path: /wp/paring/?(.*)
+        pathType: Prefix
+```
+
+| port |  kubernetes | docker | path |
+|------|-------------|--------|------|
+| 5000 | smart-search-wp-paring | tilluteenused/smart_search_wp_paring:2023.05.23 | /wp/paring/version<br>/wp/paring/process |
+
+**Testitud** Vt [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_paring/flask_wp_paring.py)
+
+---
+---
+
+## API&WP
+
+### **API&WP: OTSING LEMMAPÕHINE**
 ---
 
 [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/flask-wp-otsing.py)
@@ -464,9 +518,9 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 6013 | smart-search-wp-otsing-lemmad | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-lemmad/version<br>/wp/otsing-lemmad/texts<br>/wp/otsing-lemmad/process<br>/api/lemmade-indeks/check<br>/api/lemmade-indeks/api-version |
 
-**Testitud** 2023.06.25
+**Testitud** Vt [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/flask-wp-otsing.py)
 
-### **WP: OTSING SÕNEPÕHINE**
+### **API&WP: OTSING SÕNEPÕHINE**
 ---
 
 [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/flask-wp-otsing.py)
@@ -517,50 +571,4 @@ kubectl edit ingress smart-search-api-ingress
 |------|------------|--------|------|
 | 6013 | smart-search-wp-otsing-soned | tilluteenused/smart_search_wp_otsing:2023.05.15 | /wp/otsing-soned/version<br>/wp/otsing-soned/texts<br>/wp/otsing-soned/process<br>/api/sonede-indeks/check<br>/api/sonede-indeks/api-version |
 
-**Testitud** 2023.06.23
-
-### **WP: PARING**
----
-
-[**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_paring/flask_wp_paring.py)
-
-**Kubernetes**
-
-* **Sõltuvused** deployment'i:
-  * smart-search-api-paring-lemmad
-  * smart-search-api-paring-soned
-
-```yaml
-      containers:
-      - env:
-        - name: PARING_LEMMAD_IP
-          value: $(SMART_SEARCH_API_PARING_LEMMAD_SERVICE_HOST)
-        - name: PARING_LEMMAD_PORT
-          value: $(SMART_SEARCH_API_PARING_LEMMAD_SERVICE_PORT)
-        - name: PARING_SONED_IP
-          value: $(SMART_SEARCH_API_PARING_SONED_SERVICE_HOST)
-        - name: PARING_SONED_PORT
-          value: $(SMART_SEARCH_API_PARING_SONED_SERVICE_PORT)
-        image: tilluteenused/smart_search_wp_paring:2023.04.29.4
-```
-
-* **Konf** ```ingress```'is
-
-```yaml
-      - backend:
-          service:
-            name: smart-search-wp-paring
-            port:
-              number: 80
-        path: /wp/paring/?(.*)
-        pathType: Prefix
-```
-
-| port |  kubernetes | docker | path |
-|------|-------------|--------|------|
-| 5000 | smart-search-wp-paring | tilluteenused/smart_search_wp_paring:2023.05.23 | /wp/paring/version<br>/wp/paring/process |
-
-**Testitud** 2023.06.03
-
----
----
+**Testitud** Vt [**Juhised ja näited**](https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/flask-wp-otsing.py)

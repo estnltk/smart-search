@@ -9,10 +9,11 @@ import os
 import requests
 import json
 from collections import OrderedDict
+from typing import List, Dict
 
 class SMART_SEARCH:
     def __init__(self):
-        self.VERSION="2023.06.24"                           # otsimootori versioon
+        self.VERSION="2023.06.26"                           # otsimootori versioon
 
         self.idxfile = os.environ.get('IDXFILE')            # otsime indeksfaili nime keskkonnamootujast
         if self.idxfile is None:                            # kui seal polnud...
@@ -22,22 +23,27 @@ class SMART_SEARCH:
         self.content = ''
 
 
-    def kas_on_indeksis(self, query_list):
-        '''
-        query_list = [token,...]
-        resp_json = {token: bool} # True:oli indeksis, False:polnud indeksis; liitsõnandusele ei pööra tähelepanu
-        '''
-        resp_json = {}
-        for token in query_list:
-            resp_json[token] = token in self.idx_json["index"]
-        return resp_json
+    def kas_on_indeksis(self, query_list:List)->List:
+        """Leiab millised tokenid olid indeksis
 
-    def otsing(self, fragments, query_json):
+        Args:
+            query_list (List): [token, ....] -- sisendtokenid
+
+        Returns:
+            List: [token,...] -- ainult need sisendtokenid mis olid lemmade/sõnavormide indeksis
+        """
+        resp_list = []
+        for token in query_list:
+            if token in self.idx_json["index"]:
+                resp_list.append(token)
+        return resp_list
+
+    def otsing(self, fragments:bool, query_json:Dict)->None:
         """Otsing: päringus ja indeksis lemmad
 
         Args:
-            fragments (_type_): True: vaatame liitsõna osasõnasid, False: ei vaata liitsõna osasõnasid
-            query_json (_type_): päring (vastava veebiteenusega lemmade kombinatsiooniks teisendatud otsisõned)
+            fragments (bool): True: vaatame liitsõna osasõnasid, False: ei vaata liitsõna osasõnasid
+            query_json (Dict): päring (vastava veebiteenusega lemmade kombinatsiooniks teisendatud otsisõned)
         """
         self.fragments = fragments                          # kas otsime liitsõna osasõndest
         self.query_json = query_json                        # jooksev päring (otsisõnade lemmad/sõnavormid)
@@ -46,15 +52,15 @@ class SMART_SEARCH:
         for docid in self.result_json:                      # järjestame otsingutulemused iga dokumendi siseselt
             self.result_json[docid] = OrderedDict(sorted(self.result_json[docid].items(), key=lambda t: t[0]))
 
-    def otsing_rec(self, query_idx, required_docid):
+    def otsing_rec(self, query_idx:int, required_docid:str)->bool:
         """Rekursiivne otsingualgoritm
 
         Args:
-            query_idx (_type_): parajasti vaatame niimitmendat päringusõne
-            required_idx_docid (_type_): otsitav peab olema selles dokumendis
+            query_idx (int): parajasti vaatame niimitmendat päringusõne
+            required_idx_docid (str): otsitav peab olema selles dokumendis
 
         Returns:
-            _type_: True: leidsime midagi sobivat, False: ei leidnud midagi sobivat
+            bool: True: leidsime midagi sobivat, False: ei leidnud midagi sobivat
         """
         if query_idx >= len(self.query_json["annotations"]["query"]):           # kõik otsinusõned on läbivaadatud
             return True                                                             # leidsime mingi sobiva kombinatsiooni tekstidest
@@ -107,12 +113,12 @@ class SMART_SEARCH:
         """Esita otsingu JSON-tulemus HTML-kujul
 
         Returns:
-            _type_: otsingu JSON-tulemus HTML-kujul
+            (str) self.content: otsingu JSON-tulemus HTML-kujul
         """
         self.content += "<h2>Tulemus:</h2>"
         self.content += json.dumps(self.result_json, ensure_ascii=False, indent=2).replace(' ', '&nbsp;').replace('\n', '<br>')+'<hr>'
 
-    def koosta_vastus_text(self, formaat)->None:
+    def koosta_vastus_text(self, formaat:str)->None:
         """Esita otsingu JSON-tulemus märgendatud tekstina HTML-kujul
 
         Returns:

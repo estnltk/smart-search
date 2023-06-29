@@ -24,6 +24,7 @@ RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt
 
 # copy current task related skripts
 COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_wp_speller.py ./
+ADD --chown=mere_mortal:mere_mortal templates/ ./templates/
 RUN chmod +x docker-entrypoint.sh flask_wp_speller.py
 # parameters for gunicorn
 ENV WORKERS=1

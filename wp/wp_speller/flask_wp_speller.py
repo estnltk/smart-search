@@ -4,6 +4,7 @@
 ----------------------------------------------
 
 Flask veebiserver spelleri pakendamiseks ja veebilehel domonstreerimiseks
+Testitud:2023.06.28
 
 ----------------------------------------------
 
@@ -20,8 +21,8 @@ Lähtekoodist pythoni skripti kasutamine
     $ PARING_SPELLER=https://smart-search.tartunlp.ai/api/speller/process \
         venv/bin/python3 ./flask_wp_speller.py
 1.4 Brauseriga veebilehe poole pöördumine
-    $ google-chrome http://localhost:6003/wp/speller/process
-    $ google-chrome http://localhost:6003/wp/speller/version
+    $ google-chrome http://localhost:6003/wp/speller/process &
+    $ google-chrome http://localhost:6003/wp/speller/version &
    
 ----------------------------------------------
 
@@ -30,11 +31,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart_search_github/wp/wp_speller
-    $ docker build -t tilluteenused/smart_search_wp_speller:2023.05.23 .
+    $ docker build -t tilluteenused/smart_search_wp_speller:2023.06.24 .
 2.3 Konteineri käivitamine
     $ docker run -p 6003:6003 \
-        --env PARING_SPELLER=https://smart-search.tartunlp.ai/api/speller/process
-        tilluteenused/smart_search_wp_speller:2023.05.23
+        --env PARING_SPELLER=https://smart-search.tartunlp.ai/api/speller/process \
+        tilluteenused/smart_search_wp_speller:2023.06.24
 2.4 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
 ----------------------------------------------
@@ -42,7 +43,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja brauseriga veebilehe poole pöördumine (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_wp_speller:2023.05.23
+    $ docker pull tilluteenused/smart_search_wp_speller:2023.06.24
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
@@ -50,8 +51,8 @@ DockerHUBist tõmmatud konteineri kasutamine
 
 TÜ pilves töötava konteineri kasutamine
 4 Brauseriga veebilehe poole pöördumine
-    $ google-chrome https://smart-search.tartunlp.ai/wp/speller/process
-    $ google-chrome https://smart-search.tartunlp.ai/wp/speller/version
+    $ google-chrome https://smart-search.tartunlp.ai/wp/speller/process &
+    $ google-chrome https://smart-search.tartunlp.ai/wp/speller/version &
 
 ----------------------------------------------
 '''
@@ -63,7 +64,7 @@ import json
 
 class ENVIRONMENT:
     def __init__(self):
-        self.VERSION="2023.05.23"
+        self.VERSION="2023.06.24"
 
         self.PARING_SPELLER_IP=None
         self.PARING_SPELLER_PORT=None
@@ -92,16 +93,16 @@ def process():
             try:                                                
                 json_out = json.loads(requests.post(environment.paring_speller, json={"content":query_words}).text)
                 if formaat == 'json':
-                    content += json.dumps(json_out, indent=2, ensure_ascii=False).replace(' ', '&nbsp;').replace('\n', '<br>')+'<br><br><hr><br>' 
+                    content += json.dumps(json_out, indent=2, ensure_ascii=False).replace(' ', '&nbsp;').replace('\n', '<br>')+'<br><br><hr>' 
                 else:       
                     for token in  json_out["annotations"]["tokens"]:
                         content += f'{token["features"]["token"]}'
                         if "suggestions" in token[ "features"]:
                             content += f' ⇒ {" ".join(token["features"]["suggestions"])}'
                         content += '<br>'
-                    content += '<br><br><hr><br>'
+                    content += '<br><hr>'
             except:                                            
-                content = 'Probleemid veebiteenusega<br><br><hr><br>'
+                content = 'Probleemid veebiteenusega<br><br><hr>'
     return render_template('process.html', content=content)
 
 

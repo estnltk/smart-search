@@ -4,7 +4,7 @@
 ----------------------------------------------
 
 Flask veebiserver päringu normaliseerija pakendamiseks ja veebilehel domonstreerimiseks
-
+Testitud: 2023.06.28
 ----------------------------------------------
 
 Lähtekoodist pythoni skripti kasutamine
@@ -18,11 +18,11 @@ Lähtekoodist pythoni skripti kasutamine
 1.3 Veebiserveri käivitamine pythoni koodist
     $ cd ~/git/smart_search_github/wp/wp_paring
     $ PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
-        PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
+      PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
         venv/bin/python3 ./flask_wp_paring.py
 1.4 Brauseriga veebilehe poole pöördumine
-    $ google-chrome http://localhost:6003/wp/paring/process
-    $ google-chrome http://localhost:6003/wp/paring/version
+    $ google-chrome http://localhost:6003/wp/paring/process &
+    $ google-chrome http://localhost:6003/wp/paring/version &
    
 ----------------------------------------------
 
@@ -31,13 +31,13 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart_search_github/wp/wp_paring
-    $ docker build -t tilluteenused/smart_search_wp_paring:2023.05.23 . 
+    $ docker build -t tilluteenused/smart_search_wp_paring:2023.06.25 . 
 2.3 Konteineri käivitamine
     $ cd ~/git/smart_search_github/wp/wp_paring 
     $ docker run -p 6003:6003 \
         --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
         --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
-        tilluteenused/smart_search_wp_paring:2023.05.23
+        tilluteenused/smart_search_wp_paring:2023.06.25
 2.4 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
 ----------------------------------------------
@@ -45,7 +45,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja brauseriga veebilehe poole pöördumine (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_wp_paring:2023.05.23 
+    $ docker pull tilluteenused/smart_search_wp_paring:2023.06.25 
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
@@ -53,8 +53,8 @@ DockerHUBist tõmmatud konteineri kasutamine
 
 TÜ pilves töötava konteineri kasutamine
 4 Brauseriga veebilehe poole pöördumine
-    $ google-chrome https://smart-search.tartunlp.ai/wp/paring/process
-    $ google-chrome https://smart-search.tartunlp.ai/wp/paring/version
+    $ google-chrome https://smart-search.tartunlp.ai/wp/paring/process &
+    $ google-chrome https://smart-search.tartunlp.ai/wp/paring/version &
 
 ----------------------------------------------
 '''
@@ -66,7 +66,7 @@ import json
 
 class ENVIRONMENT:
     def __init__(self):
-        self.VERSION="2023.05.23"
+        self.VERSION="2023.06.25"
 
         self.paring_soned = os.environ.get('PARING_SONED')
         if self.paring_soned is None:
@@ -88,6 +88,7 @@ environment = ENVIRONMENT()
 @app.route('/version', methods=['GET', 'POST'])
 def lemmatiseerija_versioon():
     return render_template('version.html',
+                           veebilehe_versioon=environment.VERSION,
                            lemmapohine_paringu_normaliseerija_url=environment.paring_lemmad,
                            sonavormipohine_paringu_normaliseerija_url=environment.paring_soned)
 

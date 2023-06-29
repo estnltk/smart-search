@@ -4,7 +4,7 @@
 ----------------------------------------------
 
 Flask veebiserver otsingumootori pakendamiseks ja veebilehel domonstreerimiseks
-
+Testitud: 2023.06.28
 ----------------------------------------------
 
 Lähtekoodist pythoni skripti kasutamine
@@ -30,21 +30,21 @@ Lähtekoodist pythoni skripti kasutamine
         venv/bin/python3 ./flask-wp-otsing.py
 1.4 Brauseriga veebilehe poole pöördumine: sõnepõhine otsingumootor (1.4.1) või lemmapõhine otsingumootor (1.4.2)
 1.4.1 Sõnepõhise otsingumootori poole pöördumine
-    $ google-chrome http://localhost:6013/wp/otsing-soned/version
-    $ google-chrome http://localhost:6013/wp/otsing-soned/texts
-    $ google-chrome http://localhost:6013/wp/otsing-soned/process
+    $ google-chrome http://localhost:6013/wp/otsing-soned/version &
+    $ google-chrome http://localhost:6013/wp/otsing-soned/texts &
+    $ google-chrome http://localhost:6013/wp/otsing-soned/process &
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data  '{"content":["presidendiga", "presidendiks", "president", "presidendi"]}' \
+        --data  '["presidendiga", "presidendiks", "president", "presidendi"]' \
         http://localhost:6013/api/sonede-indeks/check
     $ curl --silent --request POST --header "Content-Type: application/json" \
         http://localhost:6013/api/sonede-indeks/api-version        
 1.4.2 Lemmapõhise otsingumootori poole pöördumine
-    $ google-chrome http://localhost:6013/wp/otsing-lemmad/version
-    $ google-chrome http://localhost:6013/wp/otsing-lemmad/texts
-    $ google-chrome http://localhost:6013/wp/otsing-lemmad/process
+    $ google-chrome http://localhost:6013/wp/otsing-lemmad/version &
+    $ google-chrome http://localhost:6013/wp/otsing-lemmad/texts &
+    $ google-chrome http://localhost:6013/wp/otsing-lemmad/process &
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data  '{"content":["presidendiga", "presidendiks", "president", "presidendi"]}' \
-        http://localhost/api/lemmade-indeks/check
+        --data  '["presidendiga", "presidendiks", "president", "presidendi"]' \
+        http://localhost:6013/api/lemmade-indeks/check
     $ curl --silent --request POST --header "Content-Type: application/json" \
         http://localhost:6013/api/lemmade-indeks/api-version
 
@@ -55,7 +55,7 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart_search_github/wp/wp_otsing
-    $ docker build -t tilluteenused/smart_search_wp_otsing:2023.06.25 .
+    $ docker build -t tilluteenused/smart_search_wp_otsing:2023.06.26 .
 2.3 Konteineri käivitamine: sõnepõhine otsingumootor (2.3.1) või lemmapõhine otsingumootor (2.3.2)
 2.3.1 Sõnepõhise otsingumootori käivitamine
     $ cd ~/git/smart_search_github/wp/wp_otsing
@@ -63,13 +63,13 @@ Lähtekoodist tehtud konteineri kasutamine
         --env OTSINGU_VIIS=soned \
         --env IDXFILE=riigiteataja-soned-json.idx \
         --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
-        tilluteenused/smart_search_wp_otsing:2023.06.25
+        tilluteenused/smart_search_wp_otsing:2023.06.26
 2.3.2 Lemmapõhise otsingumootori käivitamine
     $ docker run -p 6013:6013 \
         --env OTSINGU_VIIS=lemmad \
         --env IDXFILE=riigiteataja-lemmad-json.idx  \
         --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
-        tilluteenused/smart_search_wp_otsing:2023.06.25
+        tilluteenused/smart_search_wp_otsing:2023.06.26
 2.4 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
 ----------------------------------------------
@@ -77,7 +77,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja brauseriga veebilehe poole pöördumine (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_wp_otsing:2023.06.25
+    $ docker pull tilluteenused/smart_search_wp_otsing:2023.06.26
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
@@ -86,20 +86,20 @@ DockerHUBist tõmmatud konteineri kasutamine
 TÜ pilves töötava konteineri kasutamine
 4 Brauseriga veebilehe poole pöördumine: sõnepõhine otsingumootor (4.1) või lemmapõhine otsingumootor (4.2)
 4.1 Sõnepõhise otsingumootori poole pöördumine
-    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/version
-    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/texts
-    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/process
+    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/version &
+    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/texts &
+    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-soned/process &
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data  '{"content":["presidendiga", "presidendiks", "president", "presidendi"]}' \
+        --data  '["presidendiga", "presidendiks", "president", "presidendi"]' \
         https://smart-search.tartunlp.ai/api/sonede-indeks/check
     $ curl --silent --request POST --header "Content-Type: application/json" \
         https://smart-search.tartunlp.ai/api/sonede-indeks/api-version
 4.2 Lemmapõhise otsingumootori poole pöördumine
-    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/version
-    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/texts
-    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/process
+    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/version &
+    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/texts &
+    $ google-chrome https://smart-search.tartunlp.ai/wp/otsing-lemmad/process &
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data  '{"content":["presidendiga", "presidendiks", "president", "presidendi"]}' \
+        --data  '["presidendiga", "presidendiks", "president", "presidendi"]' \
         https://smart-search.tartunlp.ai/api/lemmade-indeks/check
     $ curl --silent --request POST --header "Content-Type: application/json" \
         https://smart-search.tartunlp.ai/api/lemmade-indeks/api-version
@@ -117,7 +117,7 @@ import wp_otsing
 
 class ENVIRONMENT:
     def __init__(self):
-        self.VERSION="2023.06.25"
+        self.VERSION="2023.06.26"
 
         self.otsingu_viis = os.environ.get('OTSINGU_VIIS')                  # otsingu viis ("lemmad" või "soned") keskkonnamuutujast
         if self.otsingu_viis is None:                                       # keskkonnamuutujat polnud...
@@ -133,8 +133,8 @@ smart_search = wp_otsing.SMART_SEARCH()                     # otsingumootor
 environment = ENVIRONMENT()                                 # keskkonnamuutujatest võetud inf 
 app = Flask(__name__)                                       # Fläski äpp
 
-@app.route('/api/sonede-indeks/version', methods=['GET', 'POST'])
-@app.route('/api/lemmade-indeks/version', methods=['GET', 'POST'])
+@app.route('/api/sonede-indeks/api-version', methods=['GET', 'POST'])
+@app.route('/api/lemmade-indeks/api-version', methods=['GET', 'POST'])
 @app.route('/api-version', methods=['GET', 'POST'])
 def api_verioon():
     return jsonify({"veebilehe_versioon": environment.VERSION, "otsingu_versioon": smart_search.VERSION, "idxfile": smart_search.idxfile})  
@@ -220,11 +220,12 @@ def process():
 def check():
     """Võimaldab kontrollida, kas sõne/lemma oli indeksis (veebileheta päring)
 
-    JSONpäring: {token,...}
-    JSONvastus: {token: bool} # True:oli indeksis, False:polnud indeksis; liitsõnandusele ei pööra tähelepanu
+    JSONpäring: [token,...] -- token on kontrollitav sõne/lemma
+    JSONvastus: [token,...] -- ainult indeksis olevad token'id sisendist
     """
     try:
-        json_response = smart_search.kas_on_indeksis(request.json["content"])
+        #json_response = smart_search.kas_on_indeksis(request.json["content"])
+        json_response = smart_search.kas_on_indeksis(request.json)
     except Exception as e:
         json_response = e
     return jsonify(json_response)        

@@ -4,7 +4,7 @@
 ----------------------------------------------
 
 Flask veebiserver indekseerija pakendamiseks ja veebilehel domonstreerimiseks
-
+Testitud 2023.06.26
 ----------------------------------------------
 
 Lähtekoodist pythoni skripti kasutamine
@@ -31,12 +31,12 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart_search_github/wp/wp_indekseerija
-    $ docker build -t tilluteenused/smart_search_wp_indekseerija:2023.05.20 .
+    $ docker build -t tilluteenused/smart_search_wp_indekseerija:2023.06.26 .
 2.3 Konteineri käivitamine
     $ docker run -p 5000:5000 \
       --env INDEKSEERIJA_SONED=https://smart-search.tartunlp.ai/api/sonede-indekseerija/   \
       --env INDEKSEERIJA_LEMMAD=https://smart-search.tartunlp.ai/api/lemmade-indekseerija/ \
-      tilluteenused/smart_search_wp_indekseerija:2023.05.20 .
+      tilluteenused/smart_search_wp_indekseerija:2023.06.26
 2.4 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
 ----------------------------------------------
@@ -44,7 +44,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja brauseriga veebilehe poole pöördumine (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_wp_indekseerija:2023.05.20
+    $ docker pull tilluteenused/smart_search_wp_indekseerija:2023.06.26
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
@@ -52,8 +52,8 @@ DockerHUBist tõmmatud konteineri kasutamine
 
 TÜ pilves töötava konteineri kasutamine
 4 Brauseriga veebilehe poole pöördumine
-    $ google-chrome https://smart-search.tartunlp.ai/wp/indekseerija/process
-    $ google-chrome https://smart-search.tartunlp.ai/wp/indekseerija/version
+    $ google-chrome https://smart-search.tartunlp.ai/wp/indekseerija/process &
+    $ google-chrome https://smart-search.tartunlp.ai/wp/indekseerija/version &
 
 ----------------------------------------------
 '''
@@ -69,7 +69,7 @@ import json
 
 class ENVIRONMENT:
     def __init__(self):
-      self.VERSION="2023.05.20"
+      self.VERSION="2023.06.26"
 
       self.indekseerija_soned = os.environ.get('INDEKSEERIJA_SONED')
       if self.indekseerija_soned is None:
@@ -85,6 +85,7 @@ class ENVIRONMENT:
 
 environment = ENVIRONMENT()
 app = Flask(__name__)
+
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.txt','.json']
 #app.config['UPLOAD_PATH'] = 'uploads'      
