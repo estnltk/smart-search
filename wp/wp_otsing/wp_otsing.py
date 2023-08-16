@@ -34,7 +34,7 @@ class SMART_SEARCH:
         """
         resp_list = []
         for token in query_list:
-            if token in self.idx_json["index"]:
+            if token in self.idx_json["index"] and token not in resp_list:
                 resp_list.append(token)
         return resp_list
 
