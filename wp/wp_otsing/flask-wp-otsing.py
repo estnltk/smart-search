@@ -4,7 +4,7 @@
 ----------------------------------------------
 
 Flask veebiserver otsingumootori pakendamiseks ja veebilehel domonstreerimiseks
-Testitud: 2023.06.28
+Testitud: 2023.08.10
 ----------------------------------------------
 
 Lähtekoodist pythoni skripti kasutamine
