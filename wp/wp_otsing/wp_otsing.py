@@ -13,7 +13,7 @@ from typing import List, Dict
 
 class SMART_SEARCH:
     def __init__(self):
-        self.VERSION="2023.06.26"                           # otsimootori versioon
+        self.VERSION="2023.08.10"                           # otsimootori versioon
 
         self.idxfile = os.environ.get('IDXFILE')            # otsime indeksfaili nime keskkonnamootujast
         if self.idxfile is None:                            # kui seal polnud...
@@ -34,7 +34,7 @@ class SMART_SEARCH:
         """
         resp_list = []
         for token in query_list:
-            if token in self.idx_json["index"] and token not in resp_list:
+            if token in self.idx_json["index"] and token not in resp_list: # väldime kordusi
                 resp_list.append(token)
         return resp_list
 
