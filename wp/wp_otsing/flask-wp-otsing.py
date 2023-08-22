@@ -63,13 +63,13 @@ Lähtekoodist tehtud konteineri kasutamine
         --env OTSINGU_VIIS=soned \
         --env IDXFILE=riigiteataja-soned-json.idx \
         --env PARING_SONED=https://smart-search.tartunlp.ai/api/paring-soned/ \
-        tilluteenused/smart_search_wp_otsing:2023.06.26
+        tilluteenused/smart_search_wp_otsing:2023.08.10
 2.3.2 Lemmapõhise otsingumootori käivitamine
     $ docker run -p 6013:6013 \
         --env OTSINGU_VIIS=lemmad \
         --env IDXFILE=riigiteataja-lemmad-json.idx  \
         --env PARING_LEMMAD=https://smart-search.tartunlp.ai/api/paring-lemmad/ \
-        tilluteenused/smart_search_wp_otsing:2023.06.26
+        tilluteenused/smart_search_wp_otsing:2023.08.10
 2.4 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
 
 ----------------------------------------------

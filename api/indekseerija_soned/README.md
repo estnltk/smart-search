@@ -66,8 +66,8 @@ curl --silent --request POST --header "Content-Type: application/json" \
         }
       ]
     },
-    "jahi": {                    // dokumendi ID, kus sõne esines, selles tekstis esines 2 korda
-      "DOC_1": [
+    "jahi": {                       // tekstisõne              
+      "DOC_1": [                    // dokumendi ID, kus sõne esines, selles tekstis esines 2 korda
         {
           "end": 9,                 // sõne lõpupositsioon tekstis
           "liitsõna_osa": true,     // sõne oli liitsõna osa

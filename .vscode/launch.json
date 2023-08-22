@@ -5,6 +5,52 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask-ettearvutaja-version",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
+            "program": "./flask_api_paringu_ettearvutaja.py",
+            "env": {\
+                "OTSING_SONED": "https://smart-search.tartunlp.ai/api/sonede-indeks/check", \
+                "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
+                "INDEKSEERIJA_LEMMAD": "https://smart-search.tartunlp.ai/api/lemmade-indekseerija", \
+                "TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", \
+                "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \}
+            },
+        }, 
+
+        {
+            "name": "flask-ettearvut-usrdct-json",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja_userdct/",
+            "program": "./flask_api_paringu_ettearvutaja_userdct.py",
+            "env": {"OTSING_SONED": "https://smart-search.tartunlp.ai/api/sonede-indeks/check"},
+        }, 
+        {
+            "name": "ettearvut-usrdct-json",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja_userdct/",
+            "program": "./api_paringu_ettearvutaja_userdct.py",
+            "env": {"OTSING_SONED": "https://smart-search.tartunlp.ai/api/sonede-indeks/check"},
+            "args": [ "--indent=4", "--json={ \
+                \"president\":[\"presidendiga\", \"presidendiks\", \"president\", \"presidendi\"], \
+                \"prezident\":[\"prezidendiga\", \"prezidendiks\", \"prezident\", \"prezidendi\"], \
+                \"prezitent\":[\"presidendiga\", \"presidendiks\", \"presitent\", \"presitendi\"]  }" ]
+        }, 
+        {
+            "name": "ettearvut-usrdct-csv",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja_userdct/",
+            "program": "./api_paringu_ettearvutaja_userdct.py",
+            "env": {"OTSING_SONED": "https://smart-search.tartunlp.ai/api/sonede-indeks/check"},
+            "args": [ "--csv", "--json={\"president\":[\"presidendiga\", \"presidendiks\", \"president\", \"presidendi\"], \
+                                        \"prezident\":[\"prezidendiga\", \"prezidendiks\", \"prezident\", \"prezidendi\"], \
+                                        \"prezitent\":[\"presidendiga\", \"presidendiks\", \"presitent\", \"presitendi\"]  }" ]
+        }, 
+        {
             "name": "flask_wp_speller",
             "type": "python",
             "request": "launch",
