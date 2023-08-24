@@ -20,8 +20,7 @@ Lähtekoodist pythoni skripti kasutamine
     $ PARINGU_ETTEARVUTAJA=https://smart-search.tartunlp.ai/api/paringu-ettearvutaja/   \
         venv/bin/python3 ./flask_wp_paringu_ettearvutaja.py
 1.4 Brauseriga veebilehe poole pöördumine
-    $ google-chrome http://localhost:5000/wp/paringu-ettearvutaja/json
-    $ google-chrome http://localhost:5000/wp/paringu-ettearvutaja/csv
+    $ google-chrome http://localhost:5000/wp/paringu-ettearvutaja/process
     $ google-chrome http://localhost:5000/wp/paringu-ettearvutaja/version
    
 ----------------------------------------------
@@ -51,8 +50,7 @@ DockerHUBist tõmmatud konteineri kasutamine
 
 TÜ pilves töötava konteineri kasutamine
 4 Brauseriga veebilehe poole pöördumine
-    $ google-chrome https://smart-search.tartunlp.ai/wp/paringu-ettearvutaja/json &
-    $ google-chrome https://smart-search.tartunlp.ai/wp/paringu-ettearvutaja/csv &
+    $ google-chrome https://smart-search.tartunlp.ai/wp/paringu-ettearvutaja/process &
     $ google-chrome https://smart-search.tartunlp.ai/wp/paringu-ettearvutaja/version &
 
 ----------------------------------------------
@@ -91,9 +89,9 @@ def paringu_ettearvutaja_versioon():
     return render_template('version.html', veebilehe_versioon=environment.VERSION,
                            paringu_ettarvutaja_url=environment.paringu_ettearvutaja)
 
-@app.route('/wp/paringu-ettearvutaja/json', methods=['GET', 'POST'])
+@app.route('/wp/paringu-ettearvutaja/process', methods=['GET', 'POST'])
 @app.route('/json', methods=['GET', 'POST'])
-def paringu_ettearvutaja_json():
+def paringu_ettearvutaja_process():
     content = ''
     if request.method == 'POST':
       formaat = request.form.getlist('formaat')[0]
@@ -109,20 +107,19 @@ def paringu_ettearvutaja_json():
             try:
               query_json =json.loads(uploaded_content)
             except:
-              content = f'Vigane json:<br>{uploaded_file}'
-              return render_template_string(environment.html_pref+content+environment.form+environment.html_suf)
+              content = f'Vigane json: {uploaded_file.filename}'
+              return render_template('process.html', query_result=content)
           else: # file_ext == '.txt' # failis oli tekst, teeme JSONiks
             query_json = {"sources": {filename:{"content":uploaded_content}}}
           content = f'<h2>{filename} ⇒</h2>'
           try:
             response = requests.post(f'{environment.paringu_ettearvutaja}{formaat}', json=query_json)
             if response.status_code != 200:
-              content = f'Probleemid veebiteenusega: {environment.paringu_ettearvutaja}{formaat} status_code={response.status_code}'
-            else:
-              if formaat == 'json':
-                content += json.dumps(json.loads(response.text), indent=2, ensure_ascii=False).replace(' ', '&nbsp;').replace('\n', '<br>')+'<br><br>'
-              else: # formaat=='csv'
-                  content = response.text.replace('\n', '<br>')+'<br><br>'
+              raise Exception(f'Probleemid veebiteenusega: {environment.paringu_ettearvutaja}{formaat}')
+            if formaat == 'json':
+              content += json.dumps(json.loads(response.text), indent=2, ensure_ascii=False).replace(' ', '&nbsp;').replace('\n', '<br>')+'<br><br>'
+            else: # formaat=='csv'
+                content = response.text.replace('\n', '<br>')+'<br><br>'
           except:
             content = f'Probleemid veebiteenusega: {environment.paringu_ettearvutaja}{formaat}'
     return render_template('process.html', query_result=content)
