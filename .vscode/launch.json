@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask-wp-paringu-ettearvutaja",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/wp/wp_paringu_ettearvutaja/",
+            "program": "./flask_wp_paringu_ettearvutaja.py",
+            "env": { "PARINGU_ETTEARVUTAJA": "https://smart-search.tartunlp.ai/api/paringu-ettearvutaja/" },
+        }, 
+        {
             "name": "flask-ettearvutaja-version",
             "type": "python",
             "request": "launch",
@@ -15,10 +23,9 @@
                 "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
                 "INDEKSEERIJA_LEMMAD": "https://smart-search.tartunlp.ai/api/lemmade-indekseerija", \
                 "TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", \
-                "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \}
+                "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \
             },
         }, 
-
         {
             "name": "flask-ettearvut-usrdct-json",
             "type": "python",
