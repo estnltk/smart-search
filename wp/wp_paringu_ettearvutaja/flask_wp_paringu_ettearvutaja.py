@@ -67,13 +67,15 @@ import json
 
 class ENVIRONMENT:
     def __init__(self):
-      self.VERSION="2023.08.20"
+      """Initsialiseerime muutujad versiooninfo ja päringu ettearvutaja api URLiga
+      """
+      self.VERSION="2023.08.20" 
 
       self.paringu_ettearvutaja = os.environ.get('PARINGU_ETTEARVUTAJA')
       if self.paringu_ettearvutaja is None:
           self.PARINGU_ETTEARVUTAJA_IP=os.environ.get('PARINGU_ETTEARVUTAJA_IP') if os.environ.get('PARINGU_ETTEARVUTAJA_IP') != None else 'localhost'
-          self.INDEKSEERIJA_SONED_PORT=os.environ.get('PARINGU_ETTEARVUTAJA_PORT') if os.environ.get('PARINGU_ETTEARVUTAJA_PORT') != None else '6606'
-          self.paringu_ettearvutaja = f'http://{self.PARINGU_ETTEARVUTAJA_IP}:{self.PARINGU_ETTEARVUTAJA}/api/paringu-ettearvutaja/'
+          self.PARINGU_ETTEARVUTAJA_PORT=os.environ.get('PARINGU_ETTEARVUTAJA_PORT') if os.environ.get('PARINGU_ETTEARVUTAJA_PORT') != None else '6606'
+          self.paringu_ettearvutaja = f'http://{self.PARINGU_ETTEARVUTAJA_IP}:{self.PARINGU_ETTEARVUTAJA_PORT}/api/paringu-ettearvutaja/'
 
 
 environment = ENVIRONMENT()
@@ -85,13 +87,25 @@ app.config['UPLOAD_EXTENSIONS'] = ['.txt','.json']
 
 @app.route('/wp/paringu-ettearvutaja/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
-def paringu_ettearvutaja_versioon(): 
+def paringu_ettearvutaja_versioon():
+    """FLASK: Kuva veebilehel versiooni-infot ja kasutatavaid keskkonnamuutujaid/veebiteenuseid
+
+    Päringus: '/wp/paringu-ettearvutaja/version' või '/version'
+
+    """
     return render_template('version.html', veebilehe_versioon=environment.VERSION,
-                           paringu_ettarvutaja_url=environment.paringu_ettearvutaja)
+                            paringu_ettarvutaja_url=environment.paringu_ettearvutaja)
 
 @app.route('/wp/paringu-ettearvutaja/process', methods=['GET', 'POST'])
-@app.route('/json', methods=['GET', 'POST'])
+@app.route('/process', methods=['GET', 'POST'])
 def paringu_ettearvutaja_process():
+    """FLASK: Kuva veebilehel morf genereerimise etttearvutatud tulemusi
+
+    Päringus: '/wp/paringu-ettearvutaja/process' või '/process'.
+
+    Väljundit saab veebilehel vaadata JSON või CSV vormingus.
+
+    """
     content = ''
     if request.method == 'POST':
       formaat = request.form.getlist('formaat')[0]
