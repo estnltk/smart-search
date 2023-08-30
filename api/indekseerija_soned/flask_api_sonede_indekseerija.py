@@ -2,11 +2,7 @@
 
 VERSION="2023.04.20"
 
-""" 
-----------------------------------------------
-
-Flask veebiserver, pakendab sõnepõhise indekseerija veebiteenuseks
-
+"""Flask veebiserver, pakendab sõnepõhise indekseerija veebiteenuseks
 ----------------------------------------------
 
 Lähtekoodist pythoni skripti kasutamine

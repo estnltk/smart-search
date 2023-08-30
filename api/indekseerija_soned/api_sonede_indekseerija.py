@@ -59,15 +59,17 @@ class SONEDE_IDX:
 
 
     def string2json(self, str:str) -> Dict:
-        """_summary_
+        """String sisendJSONiga DICTiks
 
         Args:
-            str (str): _description_
+            str (str): String sisendJSONiga
 
         Raises:
-            Exception: Jama sisendJSONi parsimisega
+            Exception: Exception({"error": "JSON parse error"})
+
         Returns:
-            Dict: _description_
+            self.json_io
+        
         """
         self.json_io = {}
         try:
@@ -78,11 +80,11 @@ class SONEDE_IDX:
         
 
     def morfi(self)->None:
-        """_summary_
+        """Morfime sõnestatud sisendteksti(d)
 
         Raises:
-            Exception: Jama morf analüüsi veebiteenusega
-
+            Exception: Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
+            
         Returns:
             None: Lisab self.json_io'sse morf analüüsi 
         """
@@ -92,7 +94,7 @@ class SONEDE_IDX:
             try:
                 doc = json.loads(requests.post(self.analyser, json=self.json_io["sources"][docid]).text)
             except:
-                raise Exception({"warning":'Probleemid morf analüüsi veebiteenusega'})
+                raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
             for idx_token, token in enumerate(doc["annotations"]["tokens"]):        # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)
                 tokens = []                                                             # siia korjame erinevad tüvi+lõpp stringid
                 for mrf in token["features"]["mrf"]:                                    # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
@@ -113,7 +115,7 @@ class SONEDE_IDX:
             sortorder_reverse (bool): Sõnede pöördjärjestus
 
         Raises:
-            Exception: Jama sõnestamise veebiteenusega
+            Exception: Exception({"warning":f'Probleemid veebiteenusega {self.tokenizer}'}
 
         Returns:
             Dict: Indeks JSONkujul
@@ -124,7 +126,8 @@ class SONEDE_IDX:
             try:                                                # sõnestame
                 self.json_io["sources"][docid] = json.loads(requests.post(self.tokenizer, json=self.json_io["sources"][docid]).text)
             except:                                             # sõnestamine äpardus
-                return {"warning":'Probleemid sõnestamise veebiteenusega'}
+
+                raise Exception({"warning":f'Probleemid veebiteenusega {self.tokenizer}'})
         self.morfi()                                            # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=')   
         if "index" not in self.json_io:
             self.json_io["index"] = {}
