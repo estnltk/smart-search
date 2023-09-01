@@ -93,6 +93,7 @@ class ETTEARVUTAJA:
                 self.cur.execute('''
                     CREATE TABLE IF NOT EXISTS vorm_lemmaks(
                         vorm TEXT NOT NULL,
+                        vigane_vorm INT NOT NULL,
                         lemma TEXT NOT NULL,
                         PRIMARY KEY(vorm, lemma)
                         )
@@ -335,15 +336,17 @@ class ETTEARVUTAJA:
 
             self.data_vorm_lemmaks (list[])
         """            
+        self.data_vorm_lemmaks = [("täisparadigma_sõnavorm", "vigane_vorm", "lemma")]
+        for vorm in self.json_io["index"]["vorm_lemmaks"]:
+            for lemma in self.json_io["index"]["vorm_lemmaks"][vorm]:
+                self.data_vorm_lemmaks.append((vorm, 0, lemma))
+
         self.data_lemma_paradigma_korpuses = [("lemma", "sõnavorm_korpuses")]
         for lemma in self.json_io["index"]["lemma_paradigma_korpuses"]:
             for vorm in self.json_io["index"]["lemma_paradigma_korpuses"][lemma]:
                 self.data_lemma_paradigma_korpuses.append( (lemma, vorm) )
         
-        self.data_vorm_lemmaks = [("täisparadigma_sõnavorm", "lemma")]
-        for vorm in self.json_io["index"]["vorm_lemmaks"]:
-            for lemma in self.json_io["index"]["vorm_lemmaks"][vorm]:
-                self.data_vorm_lemmaks.append((vorm, lemma))
+
         pass
 
     def tee_csv(self)->Tuple[str, str]:
@@ -385,7 +388,7 @@ class ETTEARVUTAJA:
         """
         for d in self.data_vorm_lemmaks[1:]: # self.data_vorm_lemmaks[0] on veerunimed
             try:
-                self.cur.execute("INSERT INTO vorm_lemmaks VALUES(?, ?)", d)
+                self.cur.execute("INSERT INTO vorm_lemmaks VALUES(?, ?, ?)", d)
             except:
                 continue # selline juba oli 
         for d in self.data_lemma_paradigma_korpuses[1:]:  # self.data_vorm_lemmaks[0] on veerunimed
