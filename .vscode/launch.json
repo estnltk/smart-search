@@ -12,7 +12,7 @@
             "program": "./api_paringu_ettearvutaja.py",
             // "args": ["--json", "--indent=4", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
             //"args": ["--csv", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
-            "args": ["--verbose", "--db=../../testkorpused/microcorpus/ettervutaja.db", \
+            "args": ["--verbose", "--indent=4", "--db=../../testkorpused/microcorpus/ettervutaja.db", \
                 "../../testkorpused/microcorpus/microcorpus2.json", \
                 "../../testkorpused/microcorpus/microcorpus3.json", \
                 "../../testkorpused/microcorpus/microcorpus1.json"]
