@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-Silumiseks:
+Silumiseks (code):
 
     {
         "name": "api-paringu-ettearvutaja",
@@ -9,13 +9,11 @@ Silumiseks:
         "request": "launch",
         "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
         "program": "./api_paringu_ettearvutaja.py",
-        // "args": ["--json", "--indent=4", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
-        //"args": ["--csv", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
-        "args": ["--db=../../testkorpused/microcorpus/ettervutaja.db", \
+        "args": [ \
             "../../testkorpused/microcorpus/microcorpus2.json", \
             "../../testkorpused/microcorpus/microcorpus3.json", \
             "../../testkorpused/microcorpus/microcorpus1.json"]
-        "env": {\
+        "env": { \
             "OTSING_SONED": "https://smart-search.tartunlp.ai/api/sonede-indeks/check", \
             "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
             "INDEKSEERIJA_LEMMAD": "https://smart-search.tartunlp.ai/api/lemmade-indekseerija", \
@@ -24,7 +22,16 @@ Silumiseks:
         }
     }
 
-
+Käsurealt:
+    GENERATOR=https://smart-search.tartunlp.ai/api/generator/process \
+    TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process \
+    ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process  \
+        ./api_paringu_ettearvutaja.py  \
+            ../../testkorpused/microcorpus/microcorpus2.json \
+            ../../testkorpused/microcorpus/microcorpus3.json \
+            ../../testkorpused/microcorpus/microcorpus1.json | jq
+    
+JSON sees- ja välispidiseks kasutamiseks:
     self.json_io:
             
     {   "sources":
@@ -62,22 +69,14 @@ Silumiseks:
             }
         }
     }    
-
-
 """
 
-import fractions
 import os
 import sys
 import json
 import requests
-import json
-import argparse
 from typing import Dict, List, Tuple
-from collections import OrderedDict
-import sqlite3
-import csv
-import io
+
 
 class ETTEARVUTAJA:
     def __init__(self, db:str, verbose:bool)->None:
@@ -170,11 +169,12 @@ class ETTEARVUTAJA:
         """
         pass
 
-    def tee_sõnestamine(self) -> None:
-        """Tekitab lemmade indeksi
+    def tee_sõnestamine(self)->None:
+        """Sõnestame sisendtekstid
 
         Args:
-            json_in (Dict): SisendJSON, sisaldab korpusetekste
+            json_in (Dict): kasutab:
+            * ["sources"][DOCID]["content"]
 
         Raises:
             Exception: Exception({"warning":f'Probleemid veebiteenusega: {self.tokenizer}'})
@@ -373,18 +373,13 @@ class ETTEARVUTAJA:
             sys.stdout.write(') ')
 
     def tee_paradigmad(self, lemma:str)-> (List[str], List[str]):
-        """Leiame sisendlemma kõik vormid ja nende hulgast need mis tegelikult korpuses esinesid
+        """Leiame sisendlemma kõik vormid ja nende hulgast need mis tegelikult jooksvas sisendkorpuses esinesid
 
         Args:
             lemma (str): lemma
 
-        Kasutame: 
-            Sõnavormide genereerimise veebiteenust; veebiteenust mis ütleb millised sõnavormid tegelikult korpuses esinesid.
-
-
         Raises:
             Exception: Exception({"warning":'Probleemid veebiteenusega: {self.generator}'})
-            Exception: Exception({"warning":f'Probleemid veebiteenusega: {self.paring}'})
 
         Returns:
             List, List: paradigma_täielik -- lemma kõik vormid; paradigma_korpuses -- lemma sisendtekstides esinevad vormid
@@ -408,17 +403,13 @@ class ETTEARVUTAJA:
             for vorm in paradigma_täielik:
                 if vorm in self.json_io["annotations"]["indeks"]["indeksjson"]:
                    paradigma_korpuses.append(vorm) 
-            #try:
-            #    paradigma_korpuses = json.loads(requests.post(self.otsing, json=paradigma_täielik).text)
-            #except:
-            #    raise Exception({"warning":f'Probleemid veebiteenusega: {self.otsing}'})
         return paradigma_täielik, paradigma_korpuses
 
     def tee_generator(self) -> None:
         """Tekitab lemmade indeksi
 
         Args:
-            self.json_in (Dict): Kasutame
+            self.json_in (Dict): kasutame
             * ["sources"][docid]["annotations"]["tokens"][N]["features"]["tokens_lemma"]
             * ["annotations"]["indeks"]["indeksjson"]
 
@@ -426,9 +417,9 @@ class ETTEARVUTAJA:
             self.json_io: lisame:
             * ["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_korpuse_vormid"]
             * ["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_kõik_vomid"]
-            s
-            * ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"][(lemma, vorm)] -- lõpptulemuses
-            * ["annotations"]["generator"]["tabelid"]["vorm_lemmaks"][(vorm, 0,lemma)] -- lõpptulemuses
+            
+            * ["annotations"]["generator"]["tabelid"]["vorm_lemmaks"][(vorm, 0,lemma)] -- lõpptulemuses, lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
+            * ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"][(lemma, vorm)] -- lõpptulemuses, ainult jooksvas sisendkorpuses esinenud vormid
         """
         if self.verbose is True:
             sys.stdout.write(f"# teeme generaatori:")
@@ -466,7 +457,6 @@ class ETTEARVUTAJA:
                 self.json_io["annotations"]["generator"]["tabelid"]["vorm_lemmaks"].append( (vorm, 0,lemma) )
             for vorm in lemma_inf["lemma_korpuse_vormid"]:
                 self.json_io["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"].append( (lemma, vorm) )
-
 
         if self.verbose is True:
             sys.stdout.write('\n')
