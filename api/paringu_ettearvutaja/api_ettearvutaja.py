@@ -8,7 +8,7 @@ Silumiseks (code):
         "type": "python",
         "request": "launch",
         "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
-        "program": "./api_paringu_ettearvutaja.py",
+        "program": "./api_ettearvutaja.py",
         "args": [ \
             "../../testkorpused/microcorpus/microcorpus2.json", \
             "../../testkorpused/microcorpus/microcorpus3.json", \
@@ -26,7 +26,7 @@ Käsurealt:
     GENERATOR=https://smart-search.tartunlp.ai/api/generator/process \
     TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process \
     ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process  \
-        ./api_paringu_ettearvutaja.py  \
+        ./api_ettearvutaja.py  \
             ../../testkorpused/microcorpus/microcorpus2.json \
             ../../testkorpused/microcorpus/microcorpus3.json \
             ../../testkorpused/microcorpus/microcorpus1.json | jq
@@ -64,8 +64,11 @@ JSON sees- ja välispidiseks kasutamiseks:
                 },
                 "tabelid":
                 {   "vorm_lemmaks": [(VORM, PARITOLU, LEMMA)],  # tee_generator() -- lõpptulemuses
-                    "lemma_korpuse_vormid": [(LEMMA, VORM)]     # tee_generator() -- lõpptulemuses
+                    "lemma_korpuse_vormid": [(LEMMA, VORM)],    # tee_generator() -- lõpptulemuses
+                    "kirjavead": [(VIGANE_VORM, VORM, KAAL)]          # tee_kirjavead() -- lõpptulemuses
                 }
+
+                
             }
         }
     }    
@@ -461,6 +464,59 @@ class ETTEARVUTAJA:
         if self.verbose is True:
             sys.stdout.write('\n')
 
+    def trükiviga(self, vorm:str)->bool:
+        paring = \
+            {   "params": {"vmetajson":["--stem"]},
+                "annotations": 
+                {   "tokens": 
+                    [   {   "features":
+                            {   "token": vorm
+                            }
+                        }
+                    ]
+                }
+            }
+        try:
+            doc = json.loads(requests.post(self.analyser, json=paring).text)
+        except:
+            raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
+        return True if "mrf" not in doc["annotations"]["tokens"][0]["features"] else False
+
+    def tee_kirjavead(self):
+        kirjavead = []
+        klusiilid = (('g', 'b', 'd'),('k','p','t'), ('kk','pp','tt'))
+        for token in self.json_io["annotations"]["indeks"]["indeksjson"]:
+            for i in range(1,len(token)-1):
+                # 2 tähte vahetuses
+                t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]
+                if self.trükiviga(t): # kirjavigane variant                 
+                    kirjavead.append( (t, token, 0) )
+                # topelt
+                if token[i-1] == token [i]:
+                    t = token[:i-1]+token[i:]
+                    if self.trükiviga(t): # kirjavigane variant                 
+                        kirjavead.append( (t, token, 0) )
+                # klusiilid
+                for i in range(3):
+                    if (n := token.find(klusiilid[0][i])) > -1:
+                        t = token[:n]+klusiilid[1][i]+token[n+1:]   # g b d -> k p t
+                        if self.trükiviga(t): # kirjavigane variant                 
+                            kirjavead.append( (t, token, 0) )
+                    elif (n := token.find(klusiilid[2][i])) > -1:     
+                        t = token[:n]+klusiilid[1][i]+token[n+2:]   # kk pp tt -> k p t
+                        if self.trükiviga(t): # kirjavigane variant                 
+                            kirjavead.append( (t, token, 0) )
+                    elif (n := token.find(klusiilid[1][i])) > -1: 
+                        t = token[:n]+klusiilid[0][i]+token[n+1:]   # k p t -> g b d
+                        if self.trükiviga(t): # kirjavigane variant                 
+                            kirjavead.append( (t, token, 0) )         
+                        t = token[:n]+klusiilid[0][i]+token[n+2:]   # k p t -> kk pp tt
+                        if self.trükiviga(t): # kirjavigane variant                 
+                            kirjavead.append( (t, token, 0) )                                                            
+                pass
+            pass # lisame kirjavigased variandid
+        pass
+        #"kirjavead": [(VIGANE_VORM, VORM, KAAL)]          # tee_kirjavead() -- lõpptulemuses
 
     def kuva_tabelid(self, indent)-> None:
         """Lõpptulemus JSON kujul std väljundisse
@@ -529,6 +585,7 @@ if __name__ == '__main__':
             ettearvutaja.tee_sõnestamine()
             ettearvutaja.tee_sõnede_ja_osaõnede_indeks()
             ettearvutaja.tee_generator()
+            ettearvutaja.tee_kirjavead()
             ettearvutaja.kuva_tabelid(args.indent)
 
     except Exception as e:

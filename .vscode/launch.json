@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
-            "program": "./api_paringu_ettearvutaja.py",
+            "program": "./api_ettearvutaja.py",
             // "args": ["--json", "--indent=4", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
             //"args": ["--csv", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
             "args": ["--verbose", "--indent=4", \
