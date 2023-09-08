@@ -70,9 +70,9 @@ class DB:
                 )
         ''')
 
-        # ["sources"][DOCID]["content"]:DOKUMENDI_TEXT
+        # ["annotations"]["generator"]["tabelid"]["allikad"]:[(DOCID, CONTENT)]
         self.cur_indeks.execute('''    
-            CREATE TABLE IF NOT EXISTS sources(
+            CREATE TABLE IF NOT EXISTS allikad(
                 docid TEXT NOT NULL,        -- dokumendi id
                 content TEXT NOT NULL,      -- dokumendi text
                 PRIMARY KEY(docid)
@@ -95,36 +95,100 @@ class DB:
 
     def toimeta(self, file:str)->None:
         with open(file) as f:
-            for line in f:
+            for idx, line in enumerate(f):
+                if self.verbose:
+                    sys.stdout.write(f'# sisendfail: {f.name}, kirje {idx}\n')               
                 self.json_in = self.string2json(line)
-                self.täienda_vorm_lemmaks()
-
-    def täienda_vorm_lemmaks(self)->None:
+                self.täienda_tabelid()
+ 
+    def täienda_tabelid(self)->None:
+        """Kanna self.json_in'ist info andmbeaaaside tabelitesse
         """
-        
-        Kasutame:
+        """
         * self.json_in["annotations"]["generator"]["tabelid"]["vorm_lemmaks"]:[(VORM,PARITOLU,LEMMA)]
 
-        Tulemus: täiendatud:
         * self.cur_lemmatiseerija.vorm_lemmaks(
             vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
             paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevst sõnavormist; 1-vorm on lemma sünonüüm; 2-kirjavigane vorm
             lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
-            PRIMARY KEY(vorm, lemma)
+            PRIMARY KEY(vorm, lemma))
+
+        """
+        self.täienda_tabel(self.json_in["annotations"]["generator"]["tabelid"]["vorm_lemmaks"], 
+                             self.cur_lemmatiseerija, "vorm_lemmaks", "?, ?, ?")
+        
+
+        """
+        * ["annotations"]["generator"]["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)]
+        
+        *self.cur_lemmatiseerija.execute('''
+            kirjavead(
+                vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
+                vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
+                kaal INT,                   -- sagedasemad vms võiksid olla suurema kaaluga
+                PRIMARY KEY(vigane_vorm, vorm))
+        """
+        self.täienda_tabel(self.json_in["annotations"]["generator"]["tabelid"]["kirjavead"], 
+                             self.cur_lemmatiseerija, "kirjavead", "?, ?, ?")
+        
+        """
+        * ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
+        
+        * lemma_paradigma_korpuses(
+                lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
+                vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
+                PRIMARY KEY(lemma, vorm))
+        """
+        self.täienda_tabel(self.json_in["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"], 
+                             self.cur_indeks, "lemma_paradigma_korpuses", "?, ?")
+        
+        """
+        * ["annotations"]["indeks"]["sonavormid"]:[(TOKEN,DOCID,START,END,LIITSÕNA_OSA)]
+
+        * sonavormid(
+                vorm  TEXT NOT NULL,          -- (jooksvas) dokumendis esinenud sõnavorm
+                docid TEXT NOT NULL,          -- dokumendi id
+                start INT,                    -- vormi alguspositsioon tekstis
+                end INT,                      -- vormi lõpupositsioon tekstis
+                liitsona_osa,                 -- 0: pole liitsõna osa; 1: on liitsõna osa
+                PRIMARY KEY(vorm, docid, start, end))
+        """
+        self.täienda_tabel(self.json_in["annotations"]["indeks"]["sonavormid"], 
+                        self.cur_indeks, "sonavormid", "?, ?, ?, ?, ?")
+        
+        """
+        * ["annotations"]["generator"]["tabelid"]["allikad"]:[(DOCID, CONTENT)]
+        * allikad(
+                docid TEXT NOT NULL,        -- dokumendi id
+                content TEXT NOT NULL,      -- dokumendi text
+                PRIMARY KEY(docid))
+        """
+        self.täienda_tabel(self.json_in["annotations"]["generator"]["tabelid"]["allikad"], 
+                self.cur_indeks, "allikad", "?, ?")
+        
+    def täienda_tabel(self, values:List, cursor, table:str, values_pattern:str)->None: 
+        """Täiendame andmebaasi uute kirjetaga
+        
+        Args:
+            values (List): Selle massiivi elemendid lisame vastavasse andmebaasi tabelisse
+            cursor: andmebaasi kursor
+            table (str): andmebaasi tabeli nimi
+            values_pattern (str): lisatava kirje muster
         )
         """
         if self.verbose:
-            sys.stdout.write("#                         Täiendame tabelit lemmatiseerija.vorm_lemmaks\r")
-        for idx, rec in enumerate(self.json_in["annotations"]["generator"]["tabelid"]["vorm_lemmaks"]):
+            sys.stdout.write(f'#                         Täiendame tabelit {table}\r')
+        for idx, rec in enumerate(values):
             if self.verbose:
-                sys.stdout.write(f'{idx+1}/{len(self.json_in["annotations"]["generator"]["tabelid"]["vorm_lemmaks"])}\r')
+                sys.stdout.write(f'{idx+1}/{len(values)}\r')
             try:
-                self.cur_lemmatiseerija.execute("INSERT INTO vorm_lemmaks VALUES(?, ?, ?)", rec)
+                cursor.execute(f'INSERT INTO {table} VALUES({values_pattern})', rec)
             except:
                 continue # selline juba oli
         self.con_lemmatiseerija.commit()
         if self.verbose:
-            sys.stdout.write('\n')        
+            sys.stdout.write('\n')     
+
 
     def string2json(self, str:str)->Dict:
         """PRIVATE:String sisendJSONiga DICTiks
@@ -159,10 +223,8 @@ if __name__ == '__main__':
         db = DB(args.lemmatiseerija, args.indeks, args.verbose)
 
         for f  in args.file:
-            if db.verbose:
-                sys.stdout.write(f'\n# sisendfail: {f.name}\n')
-                db.toimeta(f.name)
-            pass    
+            db.toimeta(f.name)
+  
             
 
     except Exception as e:

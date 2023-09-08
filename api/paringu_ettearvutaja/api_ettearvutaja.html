@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module api_ettearvutaja</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>api_ettearvutaja</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/tarmo/git/smart-search_github/api/paringu_ettearvutaja/api_ettearvutaja.py">/home/tarmo/git/smart-search_github/api/paringu_ettearvutaja/api_ettearvutaja.py</a></font></td></tr></table>
+    <p><tt>Silumiseks&nbsp;(code):<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name":&nbsp;"api-paringu-ettearvutaja",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type":&nbsp;"python",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"request":&nbsp;"launch",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cwd":&nbsp;"${workspaceFolder}/api/paringu_ettearvutaja/",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"program":&nbsp;"./api_ettearvutaja.py",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"args":&nbsp;[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"../../testkorpused/microcorpus/microcorpus2.json",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"../../testkorpused/microcorpus/microcorpus3.json",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"../../testkorpused/microcorpus/microcorpus1.json"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"env":&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"OTSING_SONED":&nbsp;"<a href="https://smart-search.tartunlp.ai/api/sonede-indeks/check">https://smart-search.tartunlp.ai/api/sonede-indeks/check</a>",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"GENERATOR":&nbsp;"<a href="https://smart-search.tartunlp.ai/api/generator/process">https://smart-search.tartunlp.ai/api/generator/process</a>",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"INDEKSEERIJA_LEMMAD":&nbsp;"<a href="https://smart-search.tartunlp.ai/api/lemmade-indekseerija">https://smart-search.tartunlp.ai/api/lemmade-indekseerija</a>",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"TOKENIZER":&nbsp;"<a href="https://smart-search.tartunlp.ai/api/tokenizer/process">https://smart-search.tartunlp.ai/api/tokenizer/process</a>",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ANALYSER":&nbsp;"<a href="https://smart-search.tartunlp.ai/api/analyser/process">https://smart-search.tartunlp.ai/api/analyser/process</a>"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;<br>
+Käsurealt:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;GENERATOR=<a href="https://smart-search.tartunlp.ai/api/generator/process">https://smart-search.tartunlp.ai/api/generator/process</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TOKENIZER=<a href="https://smart-search.tartunlp.ai/api/tokenizer/process">https://smart-search.tartunlp.ai/api/tokenizer/process</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ANALYSER=<a href="https://smart-search.tartunlp.ai/api/analyser/process">https://smart-search.tartunlp.ai/api/analyser/process</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;./api_ettearvutaja.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;../../testkorpused/microcorpus/microcorpus2.json&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;../../testkorpused/microcorpus/microcorpus3.json&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;../../testkorpused/microcorpus/microcorpus1.json&nbsp;|&nbsp;jq<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+JSON&nbsp;sees-&nbsp;ja&nbsp;välispidiseks&nbsp;kasutamiseks:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"sources":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;DOCID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;(string)&nbsp;algne&nbsp;sisend:&nbsp;dokumendi&nbsp;unikaalne&nbsp;ID&nbsp;--&nbsp;lõpptulemuses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"content":&nbsp;string&nbsp;&nbsp;&nbsp;#&nbsp;algne&nbsp;sisend:&nbsp;dokumendi&nbsp;tekst&nbsp;("plain&nbsp;text")&nbsp;--&nbsp;lõpptulemuses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"annotations":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"tokens":&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_sõnestamine():&nbsp;sõnede&nbsp;massiiv&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"start":&nbsp;number,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_sõnestamine():&nbsp;sõne&nbsp;alguspositsioon&nbsp;algses&nbsp;tekstis&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"end":&nbsp;number,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_sõnestamine():&nbsp;sõne&nbsp;lõpupositsioon&nbsp;algses&nbsp;tekstis&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"features":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"token":&nbsp;string,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_sõnestamine():&nbsp;sõne<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tokens_stem":&nbsp;[string]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_sõnede_ja_osaõnede_indeks.morfi_sõned():&nbsp;liitsõnapiiriga&nbsp;sõnevariandid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tokens_lemma":&nbsp;[string]&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_generator.morfi_lemmadeks():&nbsp;liitsõnapiiriga&nbsp;lemmavariandid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"annotations":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"indeks":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"indeksjson":&nbsp;&nbsp;{TOKEN:&nbsp;{DOCID:&nbsp;[{'start':&nbsp;number,&nbsp;'end':&nbsp;number,&nbsp;'liitsõna_osa':&nbsp;bool}]}}&nbsp;#&nbsp;tee_sõnede_ja_osaõnede_indeks()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"sonavormid":&nbsp;[(TOKEN,&nbsp;&nbsp;DOCID,&nbsp;&nbsp;&nbsp;&nbsp;START,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;END,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIITSÕNA_OSA)]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_sõnede_ja_osaõnede_indeks()&nbsp;--&nbsp;lõpptulemuses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"generator":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"lemma_paradigmad":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;LEMMA:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"lemma_korpuse_vormid":&nbsp;[string],&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_generator()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lemma_kõik_vomid":&nbsp;[string]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_generator()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tabelid":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;"vorm_lemmaks":&nbsp;[(VORM,&nbsp;PARITOLU,&nbsp;LEMMA)],&nbsp;&nbsp;#&nbsp;tee_generator()&nbsp;--&nbsp;lõpptulemuses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lemma_korpuse_vormid":&nbsp;[(LEMMA,&nbsp;VORM)],&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_generator()&nbsp;--&nbsp;lõpptulemuses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"kirjavead":&nbsp;[(VIGANE_VORM,&nbsp;VORM,&nbsp;KAAL)]&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;tee_kirjavead()&nbsp;--&nbsp;lõpptulemuses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="requests.html">requests</a><br>
+</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="api_ettearvutaja.html#ETTEARVUTAJA">ETTEARVUTAJA</a>
+</font></dt><dt><font face="helvetica, arial"><a href="api_ettearvutaja.html#KIRJAVIGUR">KIRJAVIGUR</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ETTEARVUTAJA">class <strong>ETTEARVUTAJA</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ETTEARVUTAJA">ETTEARVUTAJA</a>(db:&nbsp;str,&nbsp;verbose:&nbsp;bool)&nbsp;-&amp;gt;&nbsp;None<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ETTEARVUTAJA-__del__"><strong>__del__</strong></a>(self) -&gt; None</dt><dd><tt>Sulgeb&nbsp;avatud&nbsp;andmebaasi&nbsp;(kui&nbsp;oli&nbsp;avatud).<br>
+&nbsp;<br>
+if&nbsp;self.<strong>con</strong>&nbsp;is&nbsp;not&nbsp;None:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>con</strong>.close()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;self.<strong>verbose</strong>&nbsp;is&nbsp;True:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f"#&nbsp;Suletud&nbsp;andmebaas&nbsp;{self.<strong>db_ettarvutatud_generaator</strong>}")</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-__init__"><strong>__init__</strong></a>(self, db: str, verbose: bool) -&gt; None</dt><dd><tt>Initsialiseerime&nbsp;muutujad:&nbsp;versiooninumber,kasutatavate&nbsp;veebiteenuste&nbsp;URLid,&nbsp;jne<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;verbose&nbsp;(bool):&nbsp;kuva&nbsp;tööjärjega&nbsp;seotud&nbsp;infot</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-kuva_tabelid"><strong>kuva_tabelid</strong></a>(self, indent) -&gt; None</dt><dd><tt>PUBLIC:Lõpptulemus&nbsp;JSON&nbsp;kujul&nbsp;std&nbsp;väljundisse<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;json_in&nbsp;(Dict):&nbsp;kasutab:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["content"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["indeks"]["sonavormid"][(VORM,&nbsp;DOCID,&nbsp;START,&nbsp;END,&nbsp;LIITSÕNAOSA)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["generator"]["tabelid"]["vorm_lemmaks"][(VORM,&nbsp;0,LEMMA)]&nbsp;--&nbsp;lemma&nbsp;kõik&nbsp;vormid,&nbsp;0:lemma&nbsp;jooksvas&nbsp;sisendkorpuses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"][(LEMMA,&nbsp;VORM)]&nbsp;--&nbsp;ainult&nbsp;jooksvas&nbsp;sisendkorpuses&nbsp;esinenud&nbsp;vormid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["generator"]["tabelid"]["kirjavead"][(VIGANE_VORM,&nbsp;VORM,&nbsp;KAAL)]&nbsp;--&nbsp;ainult&nbsp;jooksvas&nbsp;sisendkorpuses&nbsp;esinenud&nbsp;vormid</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-lisa_andmebaasi"><strong>lisa_andmebaasi</strong></a>(self)</dt><dd><tt>Lisame&nbsp;ettervutatud&nbsp;generaatori&nbsp;andmebaasi<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>data_lemma_paradigma_korpuses</strong>&nbsp;(list[])<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>data_vorm_lemmaks</strong>&nbsp;(list[])<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Täiendatud&nbsp;andmebaas&nbsp;kettal</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-morfi_lemmadeks"><strong>morfi_lemmadeks</strong></a>(self) -&gt; None</dt><dd><tt>PRIVATE:Morfime&nbsp;sõnestatud&nbsp;sisendteksti(d)<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:&nbsp;kasutame:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["annotations"]["tokens"][N]["features"][token]<br>
+&nbsp;<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Exception:&nbsp;Exception({"warning":f'Probleemid&nbsp;veebiteenusega&nbsp;{self.<strong>analyser</strong>}'})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:&nbsp;lisame:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"]</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-morfi_sõned"><strong>morfi_sõned</strong></a>(self) -&gt; None</dt><dd><tt>PRIVATE:Paneme&nbsp;sõnedesse&nbsp;liitsõna-&nbsp;ja&nbsp;järeliitepiirid&nbsp;sisse<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:&nbsp;kasutame<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["annotations"]["tokens"][N]["features"][token]<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Exception:&nbsp;Exception({"warning":f'Probleemid&nbsp;veebiteenusega&nbsp;{self.<strong>analyser</strong>}'})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:&nbsp;lisame&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["annotations"]["tokens"][IDX]["features"]["tokens_stem"]</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-string2json"><strong>string2json</strong></a>(self, str: str) -&gt; Dict</dt><dd><tt>PUBLIC:String&nbsp;sisendJSONiga&nbsp;DICTiks<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str&nbsp;(str):&nbsp;String&nbsp;sisendJSONiga<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Exception:&nbsp;Exception({"warning":"JSON&nbsp;parse&nbsp;error"})<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Dict:&nbsp;DICTiks&nbsp;tehtud&nbsp;sisendJSON</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-tee_generator"><strong>tee_generator</strong></a>(self) -&gt; None</dt><dd><tt>PUBLIC:Tekitab&nbsp;lemmade&nbsp;indeksi<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_in</strong>&nbsp;(Dict):&nbsp;kasutame<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][docid]["annotations"]["tokens"][N]["features"]["tokens_lemma"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["indeks"]["indeksjson"]<br>
+&nbsp;<br>
+Returns:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:&nbsp;lisame:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_korpuse_vormid"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_kõik_vomid"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["generator"]["tabelid"]["vorm_lemmaks"][(vorm,&nbsp;0,lemma)]&nbsp;--&nbsp;lõpptulemuses,&nbsp;lemma&nbsp;kõik&nbsp;vormid,&nbsp;0:lemma&nbsp;jooksvas&nbsp;sisendkorpuses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"][(lemma,&nbsp;vorm)]&nbsp;--&nbsp;lõpptulemuses,&nbsp;ainult&nbsp;jooksvas&nbsp;sisendkorpuses&nbsp;esinenud&nbsp;vormid</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-tee_kirjavead"><strong>tee_kirjavead</strong></a>(self) -&gt; None</dt><dd><tt>PUBLIC:Lisame&nbsp;kirjavead&nbsp;parandamiseks&nbsp;vajaliku&nbsp;tabeli<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:&nbsp;kasutame:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["indeks"]["indeksjson"]<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:&nbsp;lisame:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["generator"]["tabelid"]["kirjavead"][(VIGANE_VORM,&nbsp;VORM,&nbsp;KAAL)]</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-tee_paradigmad"><strong>tee_paradigmad</strong></a>(self, lemma: str) -&gt; (typing.List[str], typing.List[str])</dt><dd><tt>PRIVATE:Leiame&nbsp;sisendlemma&nbsp;kõik&nbsp;vormid&nbsp;ja&nbsp;nende&nbsp;hulgast&nbsp;need&nbsp;mis&nbsp;tegelikult&nbsp;jooksvas&nbsp;sisendkorpuses&nbsp;esinesid<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lemma&nbsp;(str):&nbsp;lemma<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Exception:&nbsp;Exception({"warning":'Probleemid&nbsp;veebiteenusega:&nbsp;{self.<strong>generator</strong>}'})<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List,&nbsp;List:&nbsp;paradigma_täielik&nbsp;--&nbsp;lemma&nbsp;kõik&nbsp;vormid;&nbsp;paradigma_korpuses&nbsp;--&nbsp;lemma&nbsp;sisendtekstides&nbsp;esinevad&nbsp;vormid</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-tee_sõnede_ja_osaõnede_indeks"><strong>tee_sõnede_ja_osaõnede_indeks</strong></a>(self) -&gt; None</dt><dd><tt>PUBLIC:Tekitab&nbsp;indeksi<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:&nbsp;sõnestatud&nbsp;dokumendid,&nbsp;kasutame:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["annotations"]["tokens"][N]["features"][token]<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>&nbsp;(Dict):&nbsp;lisame:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["annotations"]["tokens"][N]["features"]["tokens_stem"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["indeks"]["indeksjson"]:{TOKEN:&nbsp;{DOCID:&nbsp;[{'start':&nbsp;int,&nbsp;'end':&nbsp;int,&nbsp;'liitsõna_osa':&nbsp;bool}]}}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["annotations"]["indeks"]["sonavormid"][(TOKEN,&nbsp;DOCID,&nbsp;START,&nbsp;END,&nbsp;LIITSÕNAOSA)]&nbsp;--&nbsp;lõpptulemuses</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-tee_sõnestamine"><strong>tee_sõnestamine</strong></a>(self) -&gt; None</dt><dd><tt>PUBLIC:Sõnestame&nbsp;sisendtekstid<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;json_in&nbsp;(Dict):&nbsp;kasutab:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["content"]<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Exception:&nbsp;Exception({"warning":f'Probleemid&nbsp;veebiteenusega:&nbsp;{self.<strong>tokenizer</strong>}'})<br>
+&nbsp;<br>
+Returns:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>json_io</strong>:&nbsp;sõnestame&nbsp;dokumendid,&nbsp;lisame<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["annotations"]["tokens"][N]["start"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["annotations"]["tokens"][N]["end"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;["sources"][DOCID]["annotations"]["tokens"][N]["features"]["token"]</tt></dd></dl>
+
+<dl><dt><a name="ETTEARVUTAJA-version_json"><strong>version_json</strong></a>(self) -&gt; Dict</dt><dd><tt>PUBLIC:Kuva&nbsp;JSONkujul&nbsp;versiooniinfot&nbsp;ja&nbsp;kasutatavate&nbsp;veebiteenuste&nbsp;URLe<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Dict:&nbsp;versiooninfo&nbsp;ja&nbsp;URLid</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="KIRJAVIGUR">class <strong>KIRJAVIGUR</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#KIRJAVIGUR">KIRJAVIGUR</a>(analyser:&nbsp;str)&nbsp;-&amp;gt;&nbsp;None<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="KIRJAVIGUR-__init__"><strong>__init__</strong></a>(self, analyser: str) -&gt; None</dt><dd><tt>Initsialiseeri&nbsp;klass<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;analyser&nbsp;(str):&nbsp;morf&nbsp;analüsaatori&nbsp;URL</tt></dd></dl>
+
+<dl><dt><a name="KIRJAVIGUR-tee_kirjavead1"><strong>tee_kirjavead1</strong></a>(self, token: str) -&gt; List</dt><dd><tt>Genereeri&nbsp;sisendstrigist&nbsp;kirjavigased&nbsp;vormid<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;token&nbsp;(str):&nbsp;sisendstring<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List:&nbsp;kirjavigade&nbsp;(kirjavigane_vorm,&nbsp;algne_sõne,&nbsp;0)&nbsp;list</tt></dd></dl>
+
+<dl><dt><a name="KIRJAVIGUR-trükiviga"><strong>trükiviga</strong></a>(self, vorm: str) -&gt; bool</dt><dd><tt>Kontrolli&nbsp;kas&nbsp;võib&nbsp;olla&nbsp;kirjaviga<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;vorm&nbsp;(str):&nbsp;kontrollitav&nbsp;sõnavorm<br>
+&nbsp;<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Exception:&nbsp;Exception({"warning":f'Probleemid&nbsp;veebiteenusega&nbsp;{self.<strong>analyser</strong>}'})<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True:&nbsp;ilma&nbsp;oletamiseta&nbsp;morf&nbsp;jaoks&nbsp;tundmatu;&nbsp;False:&nbsp;oletamiseta&nbsp;morf&nbsp;tundis&nbsp;ära</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Dict</strong> = typing.Dict<br>
+<strong>List</strong> = typing.List<br>
+<strong>Tuple</strong> = typing.Tuple</td></tr></table>
+</body></html>

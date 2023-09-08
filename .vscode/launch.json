@@ -5,7 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "api-paringu-ettearvutaja",
+            "name": "api_lisa_andmebaasidesse",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
+            "program": "./api_lisa_andmebaasidesse.py",
+            "args": [\
+                "--lemmatiseerija=lemmataja.db", \
+                "--indeks=indeks.db", \
+                "--verbose", "korpus.json"],
+            "env": {}
+        }, 
+        {
+            "name": "api-ettearvutaja",
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",

@@ -35,16 +35,16 @@ JSON sees- ja välispidiseks kasutamiseks:
     self.json_io:
             
     {   "sources":
-        {   DOCID:              // algne sisend: dokumendi ID -- lõpptulemuses
-            {   "content": str  // algne sisend: dokumendi tekst ("plain text") -- lõpptulemuses
+        {   DOCID:                  # (string) algne sisend: dokumendi unikaalne ID 
+            {   "content": string   # algne sisend: dokumendi tekst ("plain text")
                 "annotations":
-                {   "tokens":                               // tee_sõnestamine(): sõnede massiiv 
-                    [   {   "start": number,                // tee_sõnestamine(): sõne alguspositsioon algses tekstis 
-                            "end": number,                  // tee_sõnestamine(): sõne lõpupositsioon algses tekstis 
+                {   "tokens":                               # tee_sõnestamine(): sõnede massiiv 
+                    [   {   "start": number,                # tee_sõnestamine(): sõne alguspositsioon algses tekstis 
+                            "end": number,                  # tee_sõnestamine(): sõne lõpupositsioon algses tekstis 
                             "features":
-                            {   "token": string,            // tee_sõnestamine(): sõne
-                                "tokens_stem": [string]     // tee_sõnede_ja_osaõnede_indeks.morfi_sõned(): liitsõnapiiriga sõnevariandid
-                                "tokens_lemma": [string]    // tee_generator.morfi_lemmadeks(): liitsõnapiiriga lemmavariandid
+                            {   "token": string,            # tee_sõnestamine(): sõne
+                                "tokens_stem": [string]     # tee_sõnede_ja_osaõnede_indeks.morfi_sõned(): liitsõnapiiriga sõnevariandid
+                                "tokens_lemma": [string]    # tee_generator.morfi_lemmadeks(): liitsõnapiiriga lemmavariandid
                             }
                         }
                     ],          
@@ -52,8 +52,8 @@ JSON sees- ja välispidiseks kasutamiseks:
             }
         "annotations":
         {   "indeks":
-            {   "indeksjson":   {TOKEN: {DOCID: [{'start': int, 'end': int, 'liitsõna_osa': bool}]}} # tee_sõnede_ja_osaõnede_indeks()
-                "sonavormid": [(TOKEN,  DOCID,    START,        END,        LIITSÕNAOSA)]            # tee_sõnede_ja_osaõnede_indeks() -- lõpptulemuses
+            {   "indeksjson":  {TOKEN: {DOCID: [{'start': number, 'end': number, 'liitsõna_osa': bool}]}} # tee_sõnede_ja_osaõnede_indeks()
+                "sonavormid": [(TOKEN,  DOCID,    START,           END,           LIITSÕNA_OSA)]           # tee_sõnede_ja_osaõnede_indeks() -- lõpptulemuses
             }
             "generator":
             {   "lemma_paradigmad":
@@ -65,10 +65,9 @@ JSON sees- ja välispidiseks kasutamiseks:
                 "tabelid":
                 {   "vorm_lemmaks": [(VORM, PARITOLU, LEMMA)],  # tee_generator() -- lõpptulemuses
                     "lemma_korpuse_vormid": [(LEMMA, VORM)],    # tee_generator() -- lõpptulemuses
-                    "kirjavead": [(VIGANE_VORM, VORM, KAAL)]          # tee_kirjavead() -- lõpptulemuses
+                    "kirjavead": [(VIGANE_VORM, VORM, KAAL)]    # tee_kirjavead() -- lõpptulemuses
+                    "allikad": [(DOCID, CONTENT)]            # tee_sources_tabeliks() -- lõpptulemuses
                 }
-
-                
             }
         }
     }    
@@ -80,13 +79,13 @@ import json
 import requests
 from typing import Dict, List, Tuple
 
+import kirjavigastaja
 
 class ETTEARVUTAJA:
-    def __init__(self, db:str, verbose:bool)->None:
-        """Initsialiseerime muutujad: versiooninumber,kasutatavate veebiteenuste URLid, andmebaasi nimi jne
+    def __init__(self, verbose:bool)->None:
+        """Initsialiseerime muutujad: versiooninumber,kasutatavate veebiteenuste URLid, jne
 
         Args:
-            db (str): andmebaasi nimi, eelistame seda keskkonnamuutujaga määratule
             verbose (bool): kuva tööjärjega seotud infot
         """
         self.verbose = verbose
@@ -112,98 +111,9 @@ class ETTEARVUTAJA:
             self.generator = f'http://{self.GENERATOR_IP}:{self.GENERATOR_PORT}/process' # NB! generaator ei ole selle koha peal analoogiline teiste teenustega
         
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
-        """
-        self.con = None
-        if self.db_ettarvutatud_generaator is not None:
-            if os.path.isfile(db) is False:
-                # andmebaasi veel pole, teeme tühja andmebaasi ja tabelid
-                self.con = sqlite3.connect(db)
-                self.cur = self.con.cursor()
-
-                self.cur.execute('''
-                    CREATE TABLE IF NOT EXISTS vorm_lemmaks(
-                        vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
-                        paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevst sõnavormist; 1-vorm on lemma sünonüüm; 2-kirjavigane vorm
-                        lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
-                        PRIMARY KEY(vorm, lemma)
-                        )
-                ''')
-                self.cur.execute('''
-                    CREATE TABLE IF NOT EXISTS lemma_paradigma_korpuses(
-                        lemma TEXT NOT NULL,        -- (jooksvas) dokumendis esinenud sõnavormi lemma
-                        vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis jooksvas dokumendis esinesid
-                        PRIMARY KEY(lemma, vorm)
-                        )
-                ''') 
-                self.cur.execute('''    
-                    CREATE TABLE IF NOT EXISTS index(
-                        vorm  TEXT NOT NULL,        -- (jooksvas) dokumendis esinenud sõnavorm
-                        docid TEXT NOT NULL,        -- dokumendi id
-                        start INT,                  -- vormi alguspositsioon tekstis
-                        end INT,                    -- vormi lõpupositsioon tekstis
-                        liitsona_osa,               -- 0: pole liitsõna osa; 1: on liitsõna osa
-                        PRIMARY KEY(vorm, docid, start, end)
-                        )
-                ''')
-                self.cur.execute('''    
-                    CREATE TABLE IF NOT EXISTS sources(
-                        docid TEXT NOT NULL,        -- dokumendi id
-                        content TEXT NOT NULL,      -- dokumendi text
-                        PRIMARY KEY(docid)
-                        )
-                ''')                
-                if self.verbose is True:
-                    print(f"# Loodud andmebaas {self.db_ettarvutatud_generaator} ja tabelid (vorm_lemmaks, lemma_paradigma_korpuses)")           
-            else:
-                self.con = sqlite3.connect(db)
-                self.cur = self.con.cursor()
-                if self.verbose is True:
-                    print(f"# Avatud andmebaas {self.db_ettarvutatud_generaator}")   
-        """
-
-    
-    def __del__(self)->None:
-        """Sulgeb avatud andmebaasi (kui oli avatud).
-
-        if self.con is not None:
-            self.con.close()
-            if self.verbose is True:
-                print(f"# Suletud andmebaas {self.db_ettarvutatud_generaator}")           
-        """
-        pass
-
-    def tee_sõnestamine(self)->None:
-        """Sõnestame sisendtekstid
-
-        Args:
-            json_in (Dict): kasutab:
-            * ["sources"][DOCID]["content"]
-
-        Raises:
-            Exception: Exception({"warning":f'Probleemid veebiteenusega: {self.tokenizer}'})
-
-        Returns: 
-            self.json_io: sõnestame dokumendid, lisame
-
-            * ["sources"][DOCID]["annotations"]["tokens"][N]["start"]
-            * ["sources"][DOCID]["annotations"]["tokens"][N]["end"]
-            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["token"]
-        """
-        if self.verbose is True:
-            sys.stdout.write("# sõnestamine:")
-        for docid in self.json_io["sources"]:
-            try:
-                if self.verbose is True:  
-                    sys.stdout.write(f" {docid}")           # sõnestame kõik dokumendid
-                self.json_io["sources"][docid] = json.loads(requests.post(self.tokenizer, json=self.json_io["sources"][docid]).text)
-                del self.json_io["sources"][docid]["annotations"]["sentences"]
-            except:                                     # sõnestamine äpardus
-                raise Exception({"warning":f'Probleemid veebiteenusega: {self.tokenizer}'})
-        if self.verbose is True:
-            sys.stdout.write("\n")
-
+ 
     def string2json(self, str:str)->Dict:
-        """String sisendJSONiga DICTiks
+        """PUBLIC:String sisendJSONiga DICTiks
 
         Args:
             str (str): String sisendJSONiga
@@ -220,18 +130,48 @@ class ETTEARVUTAJA:
         except:
             raise Exception({"warning":"JSON parse error"})
 
+    def tee_sõnestamine(self)->None:
+        """PUBLIC:Sõnestame sisendtekstid
+
+        Args:
+            json_in (Dict): kasutab:
+            * ["sources"][DOCID]["content"]
+
+        Raises:
+            Exception: Exception({"warning":f'Probleemid veebiteenusega: {self.tokenizer}'})
+
+        Returns: 
+            self.json_io: sõnestame dokumendid, lisame
+
+            * ["sources"][DOCID]["annotations"]["tokens"][N]["start"]:NUMBER
+            * ["sources"][DOCID]["annotations"]["tokens"][N]["end"]:NUMBER
+            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["token"]:VORM
+        """
+        if self.verbose is True:
+            sys.stdout.write("# sõnestamine:")
+        for docid in self.json_io["sources"]:
+            try:
+                if self.verbose is True:  
+                    sys.stdout.write(f" {docid}")           # sõnestame kõik dokumendid
+                self.json_io["sources"][docid] = json.loads(requests.post(self.tokenizer, json=self.json_io["sources"][docid]).text)
+                del self.json_io["sources"][docid]["annotations"]["sentences"]
+            except:                                     # sõnestamine äpardus
+                raise Exception({"warning":f'Probleemid veebiteenusega: {self.tokenizer}'})
+        if self.verbose is True:
+            sys.stdout.write("\n")
+
     def tee_sõnede_ja_osaõnede_indeks(self) -> None:
-        """Tekitab indeksi
+        """PUBLIC:Tekitab indeksi
 
         Args:
             self.json_io: sõnestatud dokumendid, kasutame:
-            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"][token]
+            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"][token]:VORM
 
         Returns:
             self.json_io (Dict): lisame:
-            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["tokens_stem"]
-            * ["annotations"]["indeks"]["indeksjson"]
-            * ["annotations"]["indeks"]["sonavormid"] -- lõpptulemuses
+            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["tokens_stem"]:[VORM]
+            * ["annotations"]["indeks"]["indeksjson"]:{TOKEN: {DOCID: [{'start': int, 'end': int, 'liitsõna_osa': bool}]}}
+            * ["annotations"]["indeks"]["sonavormid"]:[(TOKEN, DOCID, START, END, LIITSÕNAOSA)] -- lõpptulemuses
         """
         if self.verbose:
             sys.stdout.write("# tee_sõnede_ja_osaõnede_indeks: ")
@@ -302,127 +242,22 @@ class ETTEARVUTAJA:
         if self.verbose:
             sys.stdout.write('\n')
 
-    def morfi_sõned(self)->None:
-        """Paneme sõnedesse liitsõna- ja järeliitepiirid sisse
-
-        Args:
-            self.json_io: kasutame
-            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"][token]
-
-        Raises:
-            Exception: Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
-            
-        Returns:
-            self.json_io: lisame 
-            * ["sources"][DOCID]["annotations"]["tokens"][IDX]["features"]["tokens_stem"]
-        """
-
-        if self.verbose:
-            sys.stdout.write("(morfi_sõned:")
-        for docid in self.json_io["sources"]:
-            if self.verbose:
-                sys.stdout.write(f" {docid}")
-            self.json_io["sources"][docid]["params"] = {"vmetajson":["--stem", "--guess"]}
-            try:
-                doc = json.loads(requests.post(self.analyser, json=self.json_io["sources"][docid]).text)
-            except:
-                raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
-            for token_idx, token in enumerate(doc["annotations"]["tokens"]):    # tsükkel üle sõnede 
-                tokens_stem = []                                                    # siia korjame erinevad tüvi+lõpp stringid
-                for mrf in token["features"]["mrf"]:                                    # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
-                    if self.ignore_pos.find(mrf["pos"]) != -1:                              # selle sõnaliiiga tüvesid...
-                        continue                                                                # ...ignoreerime, neid ei indekseeri
-                    tkn = mrf["stem"]+mrf["ending"] if mrf["ending"] != '0' else mrf["stem"]# tüvi+lõpp
-                    if tkn not in tokens_stem:                                                      # sõne morf analüüside hulgas võib sama kujuga tüvi erineda ainult käände/põõrde poolest
-                        tokens_stem.append(tkn)                                                         # lisame uue tüvi+lõpp stringi, kui sellist veel polnud
-                self.json_io["sources"][docid]["annotations"]["tokens"][token_idx]["features"]["tokens_stem"] = tokens_stem # lisame tulemusse
-        if self.verbose:
-            sys.stdout.write(") ")
-
-    def morfi_lemmadeks(self)->None:
-        """Morfime sõnestatud sisendteksti(d)
-
-        Args:
-            self.json_io: kasutame:
-            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"][token]
-
-
-        Raises:
-            Exception: Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
-            
-        Returns:
-            self.json_io: lisame:
-            * ["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"]
-        """
-        if self.verbose:
-            sys.stdout.write("(morfime lemmadeks:")
-        for docid in self.json_io["sources"]:
-            if self.verbose:
-                sys.stdout.write(f" {docid}")
-            self.json_io["sources"][docid]["params"] = {"vmetajson":["--guess"]}
-            try:
-                doc = json.loads(requests.post(self.analyser, json=self.json_io["sources"][docid]).text)
-            except:
-                raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
-            for idx_token, token in enumerate(doc["annotations"]["tokens"]):        # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)
-                tokens_lemma = []                                                             # siia korjame erinevad tüvi+lõpp stringid
-                for mrf in token["features"]["mrf"]:                                    # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
-                    if self.ignore_pos.find(mrf["pos"]) != -1:                              # selle sõnaliiiga tüvesid...
-                        continue                                                                # ...ignoreerime, neid ei indekseeri
-                    if mrf["lemma_ma"] not in tokens_lemma:                                                   # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
-                        tokens_lemma.append( mrf["lemma_ma"])                                                        # lisame uue tüvi+lõpp stringi, kui sellist veel polnud
-                self.json_io["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"] = tokens_lemma # lisame tulemusse
-        if self.verbose:
-            sys.stdout.write(') ')
-
-    def tee_paradigmad(self, lemma:str)-> (List[str], List[str]):
-        """Leiame sisendlemma kõik vormid ja nende hulgast need mis tegelikult jooksvas sisendkorpuses esinesid
-
-        Args:
-            lemma (str): lemma
-
-        Raises:
-            Exception: Exception({"warning":'Probleemid veebiteenusega: {self.generator}'})
-
-        Returns:
-            List, List: paradigma_täielik -- lemma kõik vormid; paradigma_korpuses -- lemma sisendtekstides esinevad vormid
-        """
-        # gene selle lemma kõik vormid
-        try:
-            generator_out = json.loads(requests.post(self.generator, json={"type":"text", "content": lemma}).text)
-        except:
-            raise Exception({"warning":'Probleemid veebiteenusega: {self.generator}'})
-        # lisa saadud vormid päringusse
-        paradigma_täielik = []
-        for text in generator_out["response"]["texts"]:
-            for generated_form in text["features"]["generated_forms"]:
-                puhas_vorm = generated_form["token"].replace("_", "").replace("=", "").replace("+", "")
-                if puhas_vorm not in paradigma_täielik:
-                    paradigma_täielik.append(puhas_vorm)
-        
-        # leiame lemma kõigi vormide hulgast need, mis esinesid korpuses
-        paradigma_korpuses = []
-        if len(paradigma_täielik) > 0:
-            for vorm in paradigma_täielik:
-                if vorm in self.json_io["annotations"]["indeks"]["indeksjson"]:
-                   paradigma_korpuses.append(vorm) 
-        return paradigma_täielik, paradigma_korpuses
-
     def tee_generator(self) -> None:
-        """Tekitab lemmade indeksi
+        """PUBLIC:Tekitab lemmade indeksi
 
         Args:
             self.json_in (Dict): kasutame
-            * ["sources"][docid]["annotations"]["tokens"][N]["features"]["tokens_lemma"]
-            * ["annotations"]["indeks"]["indeksjson"]
+            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["token"]:VORM  
 
         Returns: 
             self.json_io: lisame:
-            * ["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_korpuse_vormid"]
-            * ["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_kõik_vomid"]
+            * ["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"]:[LEMMA] -- morfi_lemmadeks()
+
+            * ["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_korpuse_vormid"]:[VORM]
+            * ["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_kõik_vomid"]:[VORM]
             
-            * ["annotations"]["generator"]["tabelid"]["vorm_lemmaks"][(vorm, 0,lemma)] -- lõpptulemuses, lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
-            * ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"][(lemma, vorm)] -- lõpptulemuses, ainult jooksvas sisendkorpuses esinenud vormid
+            * ["annotations"]["generator"]["tabelid"]["vorm_lemmaks"]:[(vorm, 0,lemma)] -- lõpptulemuses, lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
+            * ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"]:[(lemma, vorm)] -- lõpptulemuses, ainult jooksvas sisendkorpuses esinenud vormid
         """
         if self.verbose is True:
             sys.stdout.write(f"# teeme generaatori:")
@@ -464,99 +299,180 @@ class ETTEARVUTAJA:
         if self.verbose is True:
             sys.stdout.write('\n')
 
-    def trükiviga(self, vorm:str)->bool:
-        paring = \
-            {   "params": {"vmetajson":["--stem"]},
-                "annotations": 
-                {   "tokens": 
-                    [   {   "features":
-                            {   "token": vorm
-                            }
-                        }
-                    ]
-                }
-            }
-        try:
-            doc = json.loads(requests.post(self.analyser, json=paring).text)
-        except:
-            raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
-        return True if "mrf" not in doc["annotations"]["tokens"][0]["features"] else False
+    def tee_kirjavead(self)->None:
+        """PUBLIC:Lisame kirjavead parandamiseks vajaliku tabeli
 
-    def tee_kirjavead(self):
+        Args:
+            self.json_io: kasutame:
+            * ["annotations"]["indeks"]["indeksjson"]
+
+        Returns:
+            self.json_io: lisame:
+            * ["annotations"]["generator"]["tabelid"]["kirjavead"][(VIGANE_VORM, VORM, KAAL)]
+        """
+        if self.verbose:
+            sys.stdout.write("# genereerime kirjavead\n")
+        kv = kirjavigastaja.KIRJAVIGASTAJA(self.verbose, self.analyser)
         kirjavead = []
-        klusiilid = (('g', 'b', 'd'),('k','p','t'), ('kk','pp','tt'))
-        for token in self.json_io["annotations"]["indeks"]["indeksjson"]:
-            for i in range(1,len(token)-1):
-                # 2 tähte vahetuses
-                t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]
-                if self.trükiviga(t): # kirjavigane variant                 
-                    kirjavead.append( (t, token, 0) )
-                # topelt
-                if token[i-1] == token [i]:
-                    t = token[:i-1]+token[i:]
-                    if self.trükiviga(t): # kirjavigane variant                 
-                        kirjavead.append( (t, token, 0) )
-                # klusiilid
-                for i in range(3):
-                    if (n := token.find(klusiilid[0][i])) > -1:
-                        t = token[:n]+klusiilid[1][i]+token[n+1:]   # g b d -> k p t
-                        if self.trükiviga(t): # kirjavigane variant                 
-                            kirjavead.append( (t, token, 0) )
-                    elif (n := token.find(klusiilid[2][i])) > -1:     
-                        t = token[:n]+klusiilid[1][i]+token[n+2:]   # kk pp tt -> k p t
-                        if self.trükiviga(t): # kirjavigane variant                 
-                            kirjavead.append( (t, token, 0) )
-                    elif (n := token.find(klusiilid[1][i])) > -1: 
-                        t = token[:n]+klusiilid[0][i]+token[n+1:]   # k p t -> g b d
-                        if self.trükiviga(t): # kirjavigane variant                 
-                            kirjavead.append( (t, token, 0) )         
-                        t = token[:n]+klusiilid[0][i]+token[n+2:]   # k p t -> kk pp tt
-                        if self.trükiviga(t): # kirjavigane variant                 
-                            kirjavead.append( (t, token, 0) )                                                            
-                pass
-            pass # lisame kirjavigased variandid
+        for idx, token in enumerate(self.json_io["annotations"]["indeks"]["indeksjson"]):
+            if self.verbose:
+                sys.stdout.write(f'{idx}/{len(self.json_io["annotations"]["indeks"]["indeksjson"])}\r')
+            kirjavead += kv.kirjavigur(token)
+        self.json_io["annotations"]["generator"]["tabelid"]["kirjavead"] = kirjavead
+        if self.verbose:
+            sys.stdout.write(f'#    kokku: sõnavorme:{len(self.json_io["annotations"]["indeks"]["indeksjson"])}, kirjavigasid:{len(kirjavead)}\n')
         pass
-        #"kirjavead": [(VIGANE_VORM, VORM, KAAL)]          # tee_kirjavead() -- lõpptulemuses
 
-    def kuva_tabelid(self, indent)-> None:
-        """Lõpptulemus JSON kujul std väljundisse
+    def tee_sources_tabeliks(self)->None:
         """
 
+        Args:
+            self.json_io: kasutame:
+            * ["sources"][DOCID]["content"]:string 
+        
+        Returns:
+            self.json_io: lisame:
+            * ["annotations]["generator"]["tabelid"]["dokumendid"]:[(DOCID, CONTENT)]            # tee_sources_tabeliks() -- lõpptulemuses
+        """
+        if self.verbose:
+            sys.stdout.write("# allikad tabeliks")
+        if "allikad" +not in self.json_io["annotations"]["generator"]["tabelid"]:
+            self.json_io["annotations"]["generator"]["tabelid"]["allikad"] = []
         for docid in self.json_io["sources"]:
-            del self.json_io["sources"][docid]["annotations"]
-            del self.json_io["sources"][docid]["params"]
+            self.json_io["annotations"]["generator"]["tabelid"]["allikad"].append((docid, self.json_io["sources"][docid]["content"]))
+            del self.json_io["sources"][docid]["content"]
+        if self.verbose:
+            sys.stdout.write("\n")
+        del self.json_io["sources"]
+
+    def kuva_tabelid(self, indent)-> None:
+        """PUBLIC:Lõpptulemus JSON kujul std väljundisse
+
+        Args:
+            json_in (Dict): kasutab:
+            * ["sources"][DOCID]["content"]
+            * ["annotations"]["indeks"]["sonavormid"]:[(VORM, DOCID, START, END, LIITSÕNAOSA)]
+            * ["annotations"]["generator"]["tabelid"]["vorm_lemmaks"]:[(VORM, 0,LEMMA)] -- lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
+            * ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)] -- ainult jooksvas sisendkorpuses esinenud vormid
+            * ["annotations"]["generator"]["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)] -- ainult jooksvas sisendkorpuses esinenud vormid
+            * ["annotations"]["generator"]["tabelid"]["dokumendid"]:[(DOCID,CONTENT)]
+        """
+
         del self.json_io["annotations"]["indeks"]["indeksjson"]
         del self.json_io["annotations"]["generator"]["lemma_paradigmad"]
 
         json.dump(self.json_io, sys.stdout, indent=indent, ensure_ascii=False)
         sys.stdout.write('\n')
    
-    def lisa_andmebaasi(self):
-        """Lisame ettervutatud generaatori andmebaasi
+    def morfi_sõned(self)->None:
+        """PRIVATE:Paneme sõnedesse liitsõna- ja järeliitepiirid sisse
 
         Args:
-            self.data_lemma_paradigma_korpuses (list[])
+            self.json_io: kasutame
+            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"][token]
 
-            self.data_vorm_lemmaks (list[])
-
-        Returns
-            Täiendatud andmebaas kettal 
-
+        Raises:
+            Exception: Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
+            
+        Returns:
+            self.json_io: lisame 
+            * ["sources"][DOCID]["annotations"]["tokens"][IDX]["features"]["tokens_stem"]
         """
-        for d in self.data_vorm_lemmaks[1:]: # self.data_vorm_lemmaks[0] on veerunimed
+
+        if self.verbose:
+            sys.stdout.write("(morfi_sõned:")
+        for docid in self.json_io["sources"]:
+            if self.verbose:
+                sys.stdout.write(f" {docid}")
+            self.json_io["sources"][docid]["params"] = {"vmetajson":["--stem", "--guess"]}
             try:
-                self.cur.execute("INSERT INTO vorm_lemmaks VALUES(?, ?, ?)", d)
+                doc = json.loads(requests.post(self.analyser, json=self.json_io["sources"][docid]).text)
             except:
-                continue # selline juba oli 
-        for d in self.data_lemma_paradigma_korpuses[1:]:  # self.data_vorm_lemmaks[0] on veerunimed
+                raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
+            for token_idx, token in enumerate(doc["annotations"]["tokens"]):    # tsükkel üle sõnede 
+                tokens_stem = []                                                    # siia korjame erinevad tüvi+lõpp stringid
+                for mrf in token["features"]["mrf"]:                                    # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
+                    if self.ignore_pos.find(mrf["pos"]) != -1:                              # selle sõnaliiiga tüvesid...
+                        continue                                                                # ...ignoreerime, neid ei indekseeri
+                    tkn = mrf["stem"]+mrf["ending"] if mrf["ending"] != '0' else mrf["stem"]# tüvi+lõpp
+                    if tkn not in tokens_stem:                                                      # sõne morf analüüside hulgas võib sama kujuga tüvi erineda ainult käände/põõrde poolest
+                        tokens_stem.append(tkn)                                                         # lisame uue tüvi+lõpp stringi, kui sellist veel polnud
+                self.json_io["sources"][docid]["annotations"]["tokens"][token_idx]["features"]["tokens_stem"] = tokens_stem # lisame tulemusse
+        if self.verbose:
+            sys.stdout.write(") ")
+
+    def morfi_lemmadeks(self)->None:
+        """PRIVATE:Morfime sõnestatud sisendteksti(d)
+
+        Args:
+            self.json_io: kasutame:
+            * ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["token"]:VORM
+
+
+        Raises:
+            Exception: Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
+            
+        Returns:
+            self.json_io: lisame:
+            * ["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"]:[LEMMA]
+        """
+        if self.verbose:
+            sys.stdout.write("(morfime lemmadeks:")
+        for docid in self.json_io["sources"]:
+            if self.verbose:
+                sys.stdout.write(f" {docid}")
+            self.json_io["sources"][docid]["params"] = {"vmetajson":["--guess"]}
             try:
-                self.cur.execute("INSERT INTO lemma_paradigma_korpuses VALUES(?, ?)", d)
+                doc = json.loads(requests.post(self.analyser, json=self.json_io["sources"][docid]).text)
             except:
-                continue # selline juba oli 
-        self.con.commit()
+                raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
+            for idx_token, token in enumerate(doc["annotations"]["tokens"]):        # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)
+                tokens_lemma = []                                                             # siia korjame erinevad tüvi+lõpp stringid
+                for mrf in token["features"]["mrf"]:                                    # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
+                    if self.ignore_pos.find(mrf["pos"]) != -1:                              # selle sõnaliiiga tüvesid...
+                        continue                                                                # ...ignoreerime, neid ei indekseeri
+                    if mrf["lemma_ma"] not in tokens_lemma:                                                   # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
+                        tokens_lemma.append( mrf["lemma_ma"])                                                        # lisame uue tüvi+lõpp stringi, kui sellist veel polnud
+                self.json_io["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"] = tokens_lemma # lisame tulemusse
+        if self.verbose:
+            sys.stdout.write(') ')
+
+    def tee_paradigmad(self, lemma:str)-> (List[str], List[str]):
+        """PRIVATE:Leiame sisendlemma kõik vormid ja nende hulgast need mis tegelikult jooksvas sisendkorpuses esinesid
+
+        Args:
+            lemma (str): lemma
+
+        Raises:
+            Exception: Exception({"warning":'Probleemid veebiteenusega: {self.generator}'})
+
+        Returns:
+            List, List: paradigma_täielik -- lemma kõik vormid; paradigma_korpuses -- lemma sisendtekstides esinevad vormid
+        """
+        # gene selle lemma kõik vormid
+        try:
+            generator_out = json.loads(requests.post(self.generator, json={"type":"text", "content": lemma}).text)
+        except:
+            raise Exception({"warning":'Probleemid veebiteenusega: {self.generator}'})
+        # lisa saadud vormid päringusse
+        paradigma_täielik = []
+        for text in generator_out["response"]["texts"]:
+            for generated_form in text["features"]["generated_forms"]:
+                puhas_vorm = generated_form["token"].replace("_", "").replace("=", "").replace("+", "")
+                if puhas_vorm not in paradigma_täielik:
+                    paradigma_täielik.append(puhas_vorm)
+        
+        # leiame lemma kõigi vormide hulgast need, mis esinesid korpuses
+        paradigma_korpuses = []
+        if len(paradigma_täielik) > 0:
+            for vorm in paradigma_täielik:
+                if vorm in self.json_io["annotations"]["indeks"]["indeksjson"]:
+                   paradigma_korpuses.append(vorm) 
+        return paradigma_täielik, paradigma_korpuses
+
 
     def version_json(self) -> Dict:
-        """Kuva JSONkujul versiooniinfot ja kasutatavate veebiteenuste URLe
+        """PUBLIC:Kuva JSONkujul versiooniinfot ja kasutatavate veebiteenuste URLe
 
         Returns:
             Dict: versiooninfo ja URLid
@@ -568,15 +484,12 @@ if __name__ == '__main__':
     import argparse
     argparser = argparse.ArgumentParser(allow_abbrev=False)
     argparser.add_argument('-v', '--verbose',  action="store_true", help='tulemus CSV vormingus std väljundisse')
-    argparser.add_argument('-c', '--csv',  action="store_true", help='tulemus CSV vormingus std väljundisse')
-    argparser.add_argument('-j', '--json', action="store_true", help='tulemus JSON vormingus std väljundisse')
     argparser.add_argument('-i', '--indent', type=int, default=None, help='indent for json output, None=all in one line')
-    argparser.add_argument('-d', '--db', type=str, help='väljundandmebaasi nimi')
     argparser.add_argument('file', type=argparse.FileType('r'), nargs='+')
     args = argparser.parse_args()
 
     try:
-        ettearvutaja = ETTEARVUTAJA(args.db, args.verbose)
+        ettearvutaja = ETTEARVUTAJA(args.verbose)
 
         for f  in args.file:
             if ettearvutaja.verbose:
@@ -586,6 +499,7 @@ if __name__ == '__main__':
             ettearvutaja.tee_sõnede_ja_osaõnede_indeks()
             ettearvutaja.tee_generator()
             ettearvutaja.tee_kirjavead()
+            ettearvutaja.tee_sources_tabeliks()
             ettearvutaja.kuva_tabelid(args.indent)
 
     except Exception as e:
