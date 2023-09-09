@@ -22,9 +22,9 @@ class DB:
         self.cur_lemmatiseerija = self.con_lemmatiseerija.cursor()
 
         # lisame puuduvad tabelid, kui nood puudusid
-        # ["annotations"]["generator"]["tabelid"]["vorm_lemmaks"]:[(VORM,PARITOLU,LEMMA)]
+        # ["tabelid"]["lemma_kõik_vormid"]:[(VORM,PARITOLU,LEMMA)]
         self.cur_lemmatiseerija.execute('''
-            CREATE TABLE IF NOT EXISTS vorm_lemmaks( 
+            CREATE TABLE IF NOT EXISTS lemma_kõik_vormid( 
                 vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
                 paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevst sõnavormist; 1-vorm on lemma sünonüüm
                 lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
@@ -32,7 +32,7 @@ class DB:
             )
         ''')
 
-        # ["annotations"]["generator"]["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)]
+        # ["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)]
         self.cur_lemmatiseerija.execute('''
             CREATE TABLE IF NOT EXISTS kirjavead(
                 vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
@@ -49,18 +49,18 @@ class DB:
 
         # lisame puuduvad tabelid, kui nood puudusid
 
-        # ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
+        # ["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
         self.cur_indeks.execute('''
-            CREATE TABLE IF NOT EXISTS lemma_paradigma_korpuses(
+            CREATE TABLE IF NOT EXISTS lemma_korpuse_vormid(
                 lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
                 vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
                 PRIMARY KEY(lemma, vorm)
                 )
         ''')
 
-        #  ["annotations"]["indeks"]["sonavormid"]:[(TOKEN,DOCID,START,END,LIITSÕNA_OSA)]
+        #  ["tabelid"]["indeks"][(TOKEN,DOCID,START,END,LIITSÕNA_OSA)]
         self.cur_indeks.execute('''    
-            CREATE TABLE IF NOT EXISTS sonavormid(
+            CREATE TABLE IF NOT EXISTS indeks(
                 vorm  TEXT NOT NULL,          -- (jooksvas) dokumendis esinenud sõnavorm
                 docid TEXT NOT NULL,          -- dokumendi id
                 start INT,                    -- vormi alguspositsioon tekstis
@@ -70,7 +70,7 @@ class DB:
                 )
         ''')
 
-        # ["annotations"]["generator"]["tabelid"]["allikad"]:[(DOCID, CONTENT)]
+        # ["tabelid"]["allikad"]:[(DOCID, CONTENT)]
         self.cur_indeks.execute('''    
             CREATE TABLE IF NOT EXISTS allikad(
                 docid TEXT NOT NULL,        -- dokumendi id
@@ -104,48 +104,41 @@ class DB:
     def täienda_tabelid(self)->None:
         """Kanna self.json_in'ist info andmbeaaaside tabelitesse
         """
+        
         """
-        * self.json_in["annotations"]["generator"]["tabelid"]["vorm_lemmaks"]:[(VORM,PARITOLU,LEMMA)]
-
-        * self.cur_lemmatiseerija.vorm_lemmaks(
+        * self.json_in["tabelid"]["lemma_kõik_vormid"]:[(VORM,PARITOLU,LEMMA)]
+        * self.cur_lemmatiseerija.lemma_kõik_vormid(
             vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
             paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevst sõnavormist; 1-vorm on lemma sünonüüm; 2-kirjavigane vorm
             lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
             PRIMARY KEY(vorm, lemma))
 
         """
-        self.täienda_tabel(self.json_in["annotations"]["generator"]["tabelid"]["vorm_lemmaks"], 
-                             self.cur_lemmatiseerija, "vorm_lemmaks", "?, ?, ?")
+        self.täienda_tabel(self.con_lemmatiseerija, self.cur_lemmatiseerija, "lemma_kõik_vormid", "?, ?, ?")
         
-
         """
-        * ["annotations"]["generator"]["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)]
-        
-        *self.cur_lemmatiseerija.execute('''
+        * self.json_in["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)]
+        * self.cur_lemmatiseerija.execute('''
             kirjavead(
                 vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
                 vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
                 kaal INT,                   -- sagedasemad vms võiksid olla suurema kaaluga
                 PRIMARY KEY(vigane_vorm, vorm))
         """
-        self.täienda_tabel(self.json_in["annotations"]["generator"]["tabelid"]["kirjavead"], 
-                             self.cur_lemmatiseerija, "kirjavead", "?, ?, ?")
+        self.täienda_tabel(self.con_lemmatiseerija, self.cur_lemmatiseerija, "kirjavead", "?, ?, ?")
         
         """
-        * ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
-        
-        * lemma_paradigma_korpuses(
+        * self.json_in["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
+        * self.cur_indeks.lemma_korpuse_vormid(
                 lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
                 vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
                 PRIMARY KEY(lemma, vorm))
         """
-        self.täienda_tabel(self.json_in["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"], 
-                             self.cur_indeks, "lemma_paradigma_korpuses", "?, ?")
+        self.täienda_tabel(self.con_indeks, self.cur_indeks, "lemma_korpuse_vormid", "?, ?")
         
         """
-        * ["annotations"]["indeks"]["sonavormid"]:[(TOKEN,DOCID,START,END,LIITSÕNA_OSA)]
-
-        * sonavormid(
+        * self.json_in["indeks"]:[(TOKEN,DOCID,START,END,LIITSÕNA_OSA)]
+        * self.cur_indeks.indeks(
                 vorm  TEXT NOT NULL,          -- (jooksvas) dokumendis esinenud sõnavorm
                 docid TEXT NOT NULL,          -- dokumendi id
                 start INT,                    -- vormi alguspositsioon tekstis
@@ -153,20 +146,18 @@ class DB:
                 liitsona_osa,                 -- 0: pole liitsõna osa; 1: on liitsõna osa
                 PRIMARY KEY(vorm, docid, start, end))
         """
-        self.täienda_tabel(self.json_in["annotations"]["indeks"]["sonavormid"], 
-                        self.cur_indeks, "sonavormid", "?, ?, ?, ?, ?")
+        self.täienda_tabel(self.con_indeks, self.cur_indeks, "indeks", "?, ?, ?, ?, ?")
         
         """
-        * ["annotations"]["generator"]["tabelid"]["allikad"]:[(DOCID, CONTENT)]
-        * allikad(
+        * self.json_in["annotations"]["generator"]["tabelid"]["allikad"]:[(DOCID, CONTENT)]
+        * self.cur_indeks.allikad(
                 docid TEXT NOT NULL,        -- dokumendi id
                 content TEXT NOT NULL,      -- dokumendi text
                 PRIMARY KEY(docid))
         """
-        self.täienda_tabel(self.json_in["annotations"]["generator"]["tabelid"]["allikad"], 
-                self.cur_indeks, "allikad", "?, ?")
+        self.täienda_tabel(self.con_indeks, self.cur_indeks, "allikad", "?, ?")
         
-    def täienda_tabel(self, values:List, cursor, table:str, values_pattern:str)->None: 
+    def täienda_tabel(self, connection, cursor, table:str, values_pattern:str)->None: 
         """Täiendame andmebaasi uute kirjetaga
         
         Args:
@@ -178,14 +169,15 @@ class DB:
         """
         if self.verbose:
             sys.stdout.write(f'#                         Täiendame tabelit {table}\r')
-        for idx, rec in enumerate(values):
+        for idx, rec in enumerate(self.json_in["tabelid"][table]):
             if self.verbose:
-                sys.stdout.write(f'{idx+1}/{len(values)}\r')
+                sys.stdout.write(f'{idx+1}/{len(self.json_in["tabelid"][table])}\r')
             try:
                 cursor.execute(f'INSERT INTO {table} VALUES({values_pattern})', rec)
             except:
                 continue # selline juba oli
-        self.con_lemmatiseerija.commit()
+        connection.commit()
+
         if self.verbose:
             sys.stdout.write('\n')     
 

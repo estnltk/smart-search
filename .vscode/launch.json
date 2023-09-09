@@ -13,7 +13,7 @@
             "args": [\
                 "--lemmatiseerija=lemmataja.db", \
                 "--indeks=indeks.db", \
-                "--verbose", "korpus.json"],
+                "--verbose", "tabelid.json"],
             "env": {}
         }, 
         {

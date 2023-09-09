@@ -14,9 +14,7 @@ Silumiseks (code):
             "../../testkorpused/microcorpus/microcorpus3.json", \
             "../../testkorpused/microcorpus/microcorpus1.json"]
         "env": { \
-            "OTSING_SONED": "https://smart-search.tartunlp.ai/api/sonede-indeks/check", \
             "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
-            "INDEKSEERIJA_LEMMAD": "https://smart-search.tartunlp.ai/api/lemmade-indekseerija", \
             "TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", \
             "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \
         }
@@ -50,25 +48,29 @@ JSON sees- ja välispidiseks kasutamiseks:
                     ],          
                 }
             }
-        "annotations":
-        {   "indeks":
-            {   "indeksjson":  {TOKEN: {DOCID: [{'start': number, 'end': number, 'liitsõna_osa': bool}]}} # tee_sõnede_ja_osaõnede_indeks()
-                "sonavormid": [(TOKEN,  DOCID,    START,           END,           LIITSÕNA_OSA)]           # tee_sõnede_ja_osaõnede_indeks() -- lõpptulemuses
-            }
-            "generator":
-            {   "lemma_paradigmad":
-                {   LEMMA:
-                    {   "lemma_korpuse_vormid": [string],       # tee_generator()
-                        "lemma_kõik_vomid": [string]            # tee_generator()
+        "indeks":    # tee_sõnede_ja_osaõnede_indeks()
+        {   TOKEN: 
+            {   DOCID: 
+                [   {   'start': number, 
+                        'end': number, 
+                        'liitsõna_osa': bool
                     }
-                },
-                "tabelid":
-                {   "vorm_lemmaks": [(VORM, PARITOLU, LEMMA)],  # tee_generator() -- lõpptulemuses
-                    "lemma_korpuse_vormid": [(LEMMA, VORM)],    # tee_generator() -- lõpptulemuses
-                    "kirjavead": [(VIGANE_VORM, VORM, KAAL)]    # tee_kirjavead() -- lõpptulemuses
-                    "allikad": [(DOCID, CONTENT)]            # tee_sources_tabeliks() -- lõpptulemuses
-                }
+                ]
             }
+        }   
+        "generator":
+        {   LEMMA:
+            {   "lemma_korpuse_vormid": [string],       # tee_generator()
+                "lemma_kõik_vormid": [string]            # tee_generator()
+            }
+        }
+        "tabelid":  # lõpptulemus
+        {   "indeks": [(TOKEN, DOCID, START, END, LIITSÕNA_OSA)]    # tee_sõnede_ja_osaõnede_indeks()
+            "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],              # tee_generator()
+            "lemma_korpuse_vormid": [(LEMMA, VORM)],                # tee_generator()
+            "kirjavead": [(VIGANE_VORM, VORM, KAAL)]                # tee_kirjavead()
+            "allikad": [(DOCID, CONTENT)]                           # tee_sources_tabeliks()
+            
         }
     }    
 """
@@ -170,14 +172,17 @@ class ETTEARVUTAJA:
         Returns:
             self.json_io (Dict): lisame:
             * ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["tokens_stem"]:[VORM]
-            * ["annotations"]["indeks"]["indeksjson"]:{TOKEN: {DOCID: [{'start': int, 'end': int, 'liitsõna_osa': bool}]}}
-            * ["annotations"]["indeks"]["sonavormid"]:[(TOKEN, DOCID, START, END, LIITSÕNAOSA)] -- lõpptulemuses
+            * ["indeks"]:{TOKEN: {DOCID: [{'start': int, 'end': int, 'liitsõna_osa': bool}]}}
+            * ["tabelid"]["indeks"]:[(TOKEN, DOCID, START, END, LIITSÕNAOSA)] -- lõpptulemuses
         """
         if self.verbose:
             sys.stdout.write("# tee_sõnede_ja_osaõnede_indeks: ")
-        self.morfi_sõned() # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=')   
-        self.json_io["annotations"] = {"indeks":{"indeksjson":{}, "sonavormid":{}}}
-        # teeme self.json_io["annotations"]["indeks"]["indeksjson"]
+        self.morfi_sõned() # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=') 
+
+        if "indeks" not in self.json_io:
+            self.json_io["indeks"] = {}
+
+        # teeme self.json_io["indeks"]
         for docid in self.json_io["sources"]:                   # tsükkel üle tekstide
             if self.verbose:
                 sys.stdout.write(f" {docid}")
@@ -188,13 +193,13 @@ class ETTEARVUTAJA:
                     continue                                            # ...laseme üle
                 for tkn in token["features"]["tokens_stem"]:             # tsükkel üle leitud liitsõnapiiridega sõnede
                     puhas_tkn = tkn.replace('_', '').replace('=', '')
-                    if puhas_tkn in self.json_io["annotations"]["indeks"]["indeksjson"]:              # kui selline sõne juba oli...
-                        if docid in self.json_io["annotations"]["indeks"]["indeksjson"][puhas_tkn]:       # ...selles dokumendis
-                            self.json_io["annotations"]["indeks"]["indeksjson"][puhas_tkn][docid].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
+                    if puhas_tkn in self.json_io["indeks"]:              # kui selline sõne juba oli...
+                        if docid in self.json_io["indeks"][puhas_tkn]:       # ...selles dokumendis
+                            self.json_io["indeks"][puhas_tkn][docid].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
                         else:                                               # ...polnud selles dokumendis
-                            self.json_io["annotations"]["indeks"]["indeksjson"][puhas_tkn][docid] = [{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]
+                            self.json_io["indeks"][puhas_tkn][docid] = [{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]
                     else:                                               # ...polnud seni üheski dokumendis                               
-                        self.json_io["annotations"]["indeks"]["indeksjson"][puhas_tkn] = {docid:[{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]}
+                        self.json_io["indeks"][puhas_tkn] = {docid:[{"liitsõna_osa":False, "start": token["start"], "end":token["end"]}]}
 
                     osasonad = tkn.replace('=', '').split('_')          # tükeldame liitsõna piirilt
                     if len(osasonad) <= 1:                              # kui pole liitsõna...
@@ -221,24 +226,28 @@ class ETTEARVUTAJA:
                                 else:
                                     fragmendid.append(sona)
                     for puhas_tkn in fragmendid:                        # lisame leitud osasõnad indeksisse 
-                        if puhas_tkn in self.json_io["annotations"]["indeks"]["indeksjson"]:          # kui selline sõne juba oli...
-                            if docid in self.json_io["annotations"]["indeks"]["indeksjson"][puhas_tkn]:   # ...selles dokumendis
-                                    self.json_io["annotations"]["indeks"]["indeksjson"][puhas_tkn][docid].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
+                        if puhas_tkn in self.json_io["indeks"]:          # kui selline sõne juba oli...
+                            if docid in self.json_io["indeks"][puhas_tkn]:   # ...selles dokumendis
+                                    self.json_io["indeks"][puhas_tkn][docid].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
                             else:                                           # ...polnud selles dokumendis
-                                self.json_io["annotations"]["indeks"]["indeksjson"][puhas_tkn][docid]= [{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]
+                                self.json_io["indeks"][puhas_tkn][docid]= [{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]
                         else:                                           # ...polnud seni üheski dokumendis                               
-                            self.json_io["annotations"]["indeks"]["indeksjson"][puhas_tkn] = {docid:[{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]}
+                            self.json_io["indeks"][puhas_tkn] = {docid:[{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]}
         if self.verbose:
             sys.stdout.write(' | järjestame...')
         # järjestame vastavalt etteantud parameetritele
-        self.json_io["annotations"]["indeks"]["indeksjson"] = dict(sorted(self.json_io["annotations"]["indeks"]["indeksjson"].items()))
+        self.json_io["indeks"] = dict(sorted(self.json_io["indeks"].items()))
 
-        # teeme tabeli self.json_io["annotations"]["indeks"]["sonavormid"]
-        self.json_io["annotations"]["indeks"]["sonavormid"] = []
-        for token in self.json_io["annotations"]["indeks"]["indeksjson"]:
-            for docid in self.json_io["annotations"]["indeks"]["indeksjson"][token]:
-                for inf in self.json_io["annotations"]["indeks"]["indeksjson"][token][docid]:
-                    self.json_io["annotations"]["indeks"]["sonavormid"].append((token, docid, inf["start"], inf["end"], int(inf["liitsõna_osa"])))
+        # teeme tabeli self.json_io["annotations"]["tabelid"]["indeks"]:[(TOKEN, DOCID, START, END, LIITSÕNAOSA)] -- lõpptulemuses
+        if "tabelid" not in self.json_io:
+            self.json_io["tabelid"] = {}
+        if "indeks" not in self.json_io["tabelid"]:
+            self.json_io["tabelid"]["indeks"] = []
+
+        for token in self.json_io["indeks"]:
+            for docid in self.json_io["indeks"][token]:
+                for inf in self.json_io["indeks"][token][docid]:
+                    self.json_io["tabelid"]["indeks"].append((token, docid, inf["start"], inf["end"], int(inf["liitsõna_osa"])))
         if self.verbose:
             sys.stdout.write('\n')
 
@@ -253,23 +262,20 @@ class ETTEARVUTAJA:
             self.json_io: lisame:
             * ["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"]:[LEMMA] -- morfi_lemmadeks()
 
-            * ["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_korpuse_vormid"]:[VORM]
-            * ["annotations"]["indeks"]["generator"]["lemma_paradigmad"][LEMMA]["lemma_kõik_vomid"]:[VORM]
+            * ["generator"][LEMMA]["lemma_kõik_vormid"]:[VORM]
+            * ["generator"][LEMMA]["lemma_korpuse_vormid"]:[VORM]
             
-            * ["annotations"]["generator"]["tabelid"]["vorm_lemmaks"]:[(vorm, 0,lemma)] -- lõpptulemuses, lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
-            * ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"]:[(lemma, vorm)] -- lõpptulemuses, ainult jooksvas sisendkorpuses esinenud vormid
+            * ["tabelid"]["lemma_kõik_vormid"]:[(vorm, 0,lemma)] -- lõpptulemuses, lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
+            * ["tabelid"]["lemma_korpuse_vormid"]:[(lemma, vorm)] -- lõpptulemuses, ainult jooksvas sisendkorpuses esinenud vormid
         """
         if self.verbose is True:
             sys.stdout.write(f"# teeme generaatori:")
 
-        self.morfi_lemmadeks()                                          # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=')   
-        self.json_io["annotations"]["generator"] = \
-            {   "lemma_paradigmad":{},
-                "tabelid":
-                {   "vorm_lemmaks":[], 
-                    "lemma_korpuse_vormid":[]
-                }
-            }
+        self.morfi_lemmadeks() 
+        if "generator" not in self.json_io:
+            self.json_io["generator"] ={}
+
+        # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=')   
         for docid in self.json_io["sources"]:                   # tsükkel üle tekstide
             if self.verbose is True:
                 sys.stdout.write(f' {docid}')
@@ -278,23 +284,29 @@ class ETTEARVUTAJA:
                     continue                                            # ...laseme üle
                 for tkn in token["features"]["tokens_lemma"]:           # tsükkel üle leitud liitsõnapiiridega lemmade
                     puhas_tkn = tkn.replace('_', '').replace('=', '')   # terviklemma lisamine...
-                    if puhas_tkn not in self.json_io["annotations"]["generator"]["lemma_paradigmad"]:
+                    if puhas_tkn not in self.json_io["generator"]:
                         # sellist lemmat meil veel polnud, lisame genetud/korpuse vormid
                         paradigma_täielik, paradigma_korpuses = self.tee_paradigmad(puhas_tkn) # leiame lemma kõik vormid ja korpuses esinenud vormid
                         assert puhas_tkn in paradigma_täielik, "Lemma ei sisaldu täisparadigmas"
                         if len(paradigma_korpuses) > 0: # ainult siis, kui päriselt korpuses esines
-                            self.json_io["annotations"]["generator"]["lemma_paradigmad"][puhas_tkn] = \
-                                {"lemma_korpuse_vormid":paradigma_korpuses, 
-                                 "lemma_kõik_vomid" :paradigma_täielik}
-
+                            self.json_io["generator"][puhas_tkn] = \
+                                { "lemma_korpuse_vormid":paradigma_korpuses, 
+                                  "lemma_kõik_vormid" :paradigma_täielik
+                                }
         if self.verbose is True:
             sys.stdout.write(' | Teeme tabelid...')
-        for lemma in self.json_io["annotations"]["generator"]["lemma_paradigmad"]:
-            lemma_inf = self.json_io["annotations"]["generator"]["lemma_paradigmad"][lemma]
-            for vorm in lemma_inf["lemma_kõik_vomid"]:
-                self.json_io["annotations"]["generator"]["tabelid"]["vorm_lemmaks"].append( (vorm, 0,lemma) )
+        if "tabelid" not in self.json_io:
+            self.json_io["tabelid"] = {}
+        if "lemma_kõik_vormid" not in self.json_io["tabelid"]:
+            self.json_io["tabelid"]["lemma_kõik_vormid"] = []
+        if "lemma_korpuse_vormid" not in self.json_io["tabelid"]:
+            self.json_io["tabelid"]["lemma_korpuse_vormid"] = []
+        for lemma in self.json_io["generator"]:
+            lemma_inf = self.json_io["generator"][lemma]
+            for vorm in lemma_inf["lemma_kõik_vormid"]:
+                self.json_io["tabelid"]["lemma_kõik_vormid"].append( (vorm, 0,lemma) )
             for vorm in lemma_inf["lemma_korpuse_vormid"]:
-                self.json_io["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"].append( (lemma, vorm) )
+                self.json_io["tabelid"]["lemma_korpuse_vormid"].append( (lemma, vorm) )
 
         if self.verbose is True:
             sys.stdout.write('\n')
@@ -304,24 +316,23 @@ class ETTEARVUTAJA:
 
         Args:
             self.json_io: kasutame:
-            * ["annotations"]["indeks"]["indeksjson"]
+            * ["indeks"]
 
         Returns:
             self.json_io: lisame:
-            * ["annotations"]["generator"]["tabelid"]["kirjavead"][(VIGANE_VORM, VORM, KAAL)]
+            * ["tabelid"]["kirjavead"][(VIGANE_VORM, VORM, KAAL)]
         """
         if self.verbose:
-            sys.stdout.write("# genereerime kirjavead\n")
+            sys.stdout.write("# genereerime kirjavigade tabeli\n")
         kv = kirjavigastaja.KIRJAVIGASTAJA(self.verbose, self.analyser)
-        kirjavead = []
-        for idx, token in enumerate(self.json_io["annotations"]["indeks"]["indeksjson"]):
+        if "kirjavead" not in self.json_io["tabelid"]:
+            self.json_io["tabelid"]["kirjavead"] = []
+        for idx, token in enumerate(self.json_io["indeks"]):
             if self.verbose:
-                sys.stdout.write(f'{idx}/{len(self.json_io["annotations"]["indeks"]["indeksjson"])}\r')
-            kirjavead += kv.kirjavigur(token)
-        self.json_io["annotations"]["generator"]["tabelid"]["kirjavead"] = kirjavead
+                sys.stdout.write(f'{idx}/{len(self.json_io["indeks"])}\r')
+            self.json_io["tabelid"]["kirjavead"] += kv.kirjavigur(token)
         if self.verbose:
-            sys.stdout.write(f'#    kokku: sõnavorme:{len(self.json_io["annotations"]["indeks"]["indeksjson"])}, kirjavigasid:{len(kirjavead)}\n')
-        pass
+            sys.stdout.write(f'#    kokku: sõnavorme:{len(self.json_io["indeks"])}, kirjavigasid:{len(self.json_io["tabelid"]["kirjavead"])}\n')
 
     def tee_sources_tabeliks(self)->None:
         """
@@ -332,14 +343,16 @@ class ETTEARVUTAJA:
         
         Returns:
             self.json_io: lisame:
-            * ["annotations]["generator"]["tabelid"]["dokumendid"]:[(DOCID, CONTENT)]            # tee_sources_tabeliks() -- lõpptulemuses
+            * ["tabelid"]["allikad"]:[(DOCID, CONTENT)]            # tee_sources_tabeliks() -- lõpptulemuses
         """
         if self.verbose:
             sys.stdout.write("# allikad tabeliks")
-        if "allikad" +not in self.json_io["annotations"]["generator"]["tabelid"]:
-            self.json_io["annotations"]["generator"]["tabelid"]["allikad"] = []
+        if "tabelid" not in self.json_io:
+            self.json_io["tabelid"] = {}
+        if "allikad" not in self.json_io["tabelid"]:
+            self.json_io["tabelid"]["allikad"] = []
         for docid in self.json_io["sources"]:
-            self.json_io["annotations"]["generator"]["tabelid"]["allikad"].append((docid, self.json_io["sources"][docid]["content"]))
+            self.json_io["tabelid"]["allikad"].append((docid, self.json_io["sources"][docid]["content"]))
             del self.json_io["sources"][docid]["content"]
         if self.verbose:
             sys.stdout.write("\n")
@@ -349,17 +362,19 @@ class ETTEARVUTAJA:
         """PUBLIC:Lõpptulemus JSON kujul std väljundisse
 
         Args:
-            json_in (Dict): kasutab:
-            * ["sources"][DOCID]["content"]
-            * ["annotations"]["indeks"]["sonavormid"]:[(VORM, DOCID, START, END, LIITSÕNAOSA)]
-            * ["annotations"]["generator"]["tabelid"]["vorm_lemmaks"]:[(VORM, 0,LEMMA)] -- lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
-            * ["annotations"]["generator"]["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)] -- ainult jooksvas sisendkorpuses esinenud vormid
-            * ["annotations"]["generator"]["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)] -- ainult jooksvas sisendkorpuses esinenud vormid
-            * ["annotations"]["generator"]["tabelid"]["dokumendid"]:[(DOCID,CONTENT)]
+            indent (int): taande pikkus JSON väljundis, None korral kõik ühel real
+            self.json_io["indeks"]
+            self.json_io["generator"]
+            
+        Std väljundisse:    
+            * ["tabelid"]["vorm_lemmaks"]:[(VORM, 0,LEMMA)] -- lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
+            * ["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)] -- ainult jooksvas sisendkorpuses esinenud vormid
+            * ["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)] -- ainult jooksvas sisendkorpuses esinenud vormid
+            * ["tabelid"]["allikad"]:[(DOCID,CONTENT)]
         """
 
-        del self.json_io["annotations"]["indeks"]["indeksjson"]
-        del self.json_io["annotations"]["generator"]["lemma_paradigmad"]
+        del self.json_io["indeks"]
+        del self.json_io["generator"]
 
         json.dump(self.json_io, sys.stdout, indent=indent, ensure_ascii=False)
         sys.stdout.write('\n')
@@ -466,7 +481,7 @@ class ETTEARVUTAJA:
         paradigma_korpuses = []
         if len(paradigma_täielik) > 0:
             for vorm in paradigma_täielik:
-                if vorm in self.json_io["annotations"]["indeks"]["indeksjson"]:
+                if vorm in self.json_io["indeks"]:
                    paradigma_korpuses.append(vorm) 
         return paradigma_täielik, paradigma_korpuses
 
