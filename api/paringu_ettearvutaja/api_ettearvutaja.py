@@ -75,6 +75,7 @@ JSON sees- ja välispidiseks kasutamiseks:
     }    
 """
 
+import csv
 import os
 import sys
 import json
@@ -114,7 +115,7 @@ class ETTEARVUTAJA:
         
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
  
-    def string2json(self, str:str)->Dict:
+    def string2json(self, str:str)->None:
         """PUBLIC:String sisendJSONiga DICTiks
 
         Args:
@@ -124,13 +125,42 @@ class ETTEARVUTAJA:
             Exception: Exception({"warning":"JSON parse error"})
 
         Returns:
-            Dict: DICTiks tehtud sisendJSON
+            self.json_io (Dict): DICTiks tehtud sisendJSON
         """
-        json_in = {}
         try:
-            return json.loads(str.replace('\n', ' '))
+            self.json_io = json.loads(str.replace('\n', ' '))
         except:
             raise Exception({"warning":"JSON parse error"})
+
+    def csvpealkrjadest(self, f)->None:
+        """_summary_
+
+        Args:
+            f : CSV faili read
+
+        Returns:
+            self.json_io (Dict): DICTiks tehtud sisendCSV
+
+            {   "sources":
+                {   DOCID:
+                    {   "content": str,
+                        "globaalID": str,
+                        "liik": str,
+                        "url": str
+                    }
+                }
+            }
+        """
+        data = list(csv.reader(f, delimiter=","))
+        self.json_io = {"sources": {}}
+        for d in data:
+            assert len(d)==5
+            self.json_io["sources"][f'{d[1]}_{d[2]}'] = {
+                    "content" : d[3],
+                    "globaalID": d[1],
+                    "liik": d[2],
+                    "url": d[4]
+                }
 
     def tee_sõnestamine(self)->None:
         """PUBLIC:Sõnestame sisendtekstid
@@ -498,7 +528,8 @@ class ETTEARVUTAJA:
 if __name__ == '__main__':
     import argparse
     argparser = argparse.ArgumentParser(allow_abbrev=False)
-    argparser.add_argument('-v', '--verbose',  action="store_true", help='tulemus CSV vormingus std väljundisse')
+    argparser.add_argument('-p', '--csvpealkirjad',  action="store_true", help='sisendfaili formaat')
+    argparser.add_argument('-v', '--verbose',  action="store_true", help='kuva rohkem infot tööjärje kohta')
     argparser.add_argument('-i', '--indent', type=int, default=None, help='indent for json output, None=all in one line')
     argparser.add_argument('file', type=argparse.FileType('r'), nargs='+')
     args = argparser.parse_args()
@@ -509,7 +540,10 @@ if __name__ == '__main__':
         for f  in args.file:
             if ettearvutaja.verbose:
                 sys.stdout.write(f'\n# sisendfail: {f.name}\n')
-            ettearvutaja.json_io = ettearvutaja.string2json(f.read())
+            if args.csvpealkirjad:
+                ettearvutaja.csvpealkrjadest(f.readlines())
+            else:
+                ettearvutaja.string2json(f.read())
             ettearvutaja.tee_sõnestamine()
             ettearvutaja.tee_sõnede_ja_osaõnede_indeks()
             ettearvutaja.tee_generator()
