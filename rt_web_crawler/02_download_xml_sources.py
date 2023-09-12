@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Käsurelt kastumiseks kohendatud 02_download_xml_sources.ipynb
+Käsurelt kasutamiseks kohendatud 02_download_xml_sources.ipynb
 '''
 
 import time
