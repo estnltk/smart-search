@@ -4,7 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "name": "02_download_xml_sources.py",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/rt_web_crawler",
+            "program": "./02_download_xml_sources.py",
+        }, 
         {
             "name": "api_lisa_andmebaasidesse",
             "type": "python",
