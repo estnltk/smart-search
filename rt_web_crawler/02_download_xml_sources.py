@@ -29,7 +29,7 @@ class DOWNLOAD_RT:
 
     def download(self, source_file, target_path)->None:
         sources = read_csv(source_file, header=0)
-        pbar = tqdm(sources.iterrows(), total=len(sources), disable=not self.verbose)
+        pbar = tqdm(sources.iterrows(), total=len(sources), disable=(not self.verbose))
         for idx, row in pbar:
             input_file = row['xml_source']
             output_file = f"{target_path}/{input_file.split('/')[-1]}"
