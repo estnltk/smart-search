@@ -21,11 +21,11 @@ class DOWNLOAD_RT:
             self.SLEEP_MAX = float(sleep_max)
         self.liigid = ['state_laws','government_regulations','local_government_acts','government_orders']
 
-    def download_all(self):
+    def download_all(self)->None:
         for liik in self.liigid:
             if self.verbose:
                print(f'\n-----------\n{liik}')
-            self. download(f'results/{liik}.csv', f'results/xml_sources/{liik}')
+            self.download(f'results/{liik}.csv', f'results/xml_sources/{liik}')
 
     def download(self, source_file, target_path)->None:
         sources = read_csv(source_file, header=0)
