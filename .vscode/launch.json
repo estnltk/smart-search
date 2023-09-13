@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "02_download_xml_sources.py",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/rt_web_crawler",
+            "program": "./02_download_xml_sources.py",
+        }, 
+        {
             "name": "api_lisa_andmebaasidesse",
             "type": "python",
             "request": "launch",
@@ -16,6 +23,22 @@
                 "--verbose", "tabelid.json"],
             "env": {}
         }, 
+        {
+            "name": "api-csv-ettearvutaja",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
+            "program": "./api_ettearvutaja.py",
+            // "args": ["--json", "--indent=4", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
+            //"args": ["--csv", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
+            "args": ["--csvpealkirjad", \
+                "../../rt_web_crawler/results/government_orders.csv"]
+            "env": {\
+                "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
+                "TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", \
+                "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \
+            }
+        },
         {
             "name": "api-ettearvutaja",
             "type": "python",

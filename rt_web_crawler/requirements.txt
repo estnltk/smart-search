@@ -1,0 +1,6 @@
+# requirements 4 venv
+notebook
+nbconvert
+lxml
+pandas
+tqdm

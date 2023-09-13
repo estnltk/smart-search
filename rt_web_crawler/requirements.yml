@@ -1,0 +1,15 @@
+# requirements 4 conda
+
+# conda create --name rt-web-crawler python=3.9
+# conda activate 
+name: cenv
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - jupyter
+  - nbconvert
+  - lxml
+  - pandas
+  - tqdm
