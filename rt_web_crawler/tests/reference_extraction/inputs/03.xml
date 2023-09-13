@@ -1,0 +1,105 @@
+<oigusakt schemaLocation="tyviseadus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/tyviseadus_1_10.02.2010.xsd">
+  <metaandmed>
+    <valjaandja>Riigikogu</valjaandja>
+    <dokumentLiik>seadus</dokumentLiik>
+    <tekstiliik>terviktekst</tekstiliik>
+    <marksona>konventsioon</marksona>
+    <marksona>sisse-, välja- ja transiitvedu</marksona>
+    <marksona>ühinemise seadus</marksona>
+    <dokumentEtapp>avaldamine</dokumentEtapp>
+    <dokumentStaatus>avaldatud</dokumentStaatus>
+    <vastuvoetud>
+      <aktikuupaev>1995-09-26+02:00</aktikuupaev>
+      <avaldamismarge>
+        <RTosa>RT II</RTosa>
+        <RTaasta>1995</RTaasta>
+        <RTnr>37</RTnr>
+        <RTartikkel>160</RTartikkel>
+        <aktViide>34850</aktViide>
+      </avaldamismarge>
+      <joustumine>1995-10-27+02:00</joustumine>
+    </vastuvoetud>
+    <kehtivus>
+      <kehtivuseAlgus>2002-06-01+03:00</kehtivuseAlgus>
+    </kehtivus>
+    <skeemiNimi>tyviseadus_1_10.02.2010.xsd</skeemiNimi>
+    <globaalID>22339</globaalID>
+    <metaandmedVersioon>1</metaandmedVersioon>
+    <metaandmedVersioonKuupaev>2010-10-28+03:00</metaandmedVersioonKuupaev>
+    <metaandmedVersioonPohjustaja>migraator</metaandmedVersioonPohjustaja>
+    <terviktekstiGrupiID>159297</terviktekstiGrupiID>
+  </metaandmed>
+  <aktinimi>
+    <nimi>
+      <pealkiri>Ajutise sisseveo konventsiooniga ühinemise seadus</pealkiri>
+    </nimi>
+  </aktinimi>
+  <muutmismarge>
+    <aktikuupaev>2000-12-05+02:00</aktikuupaev>
+    <avaldamismarge>
+      <RTosa>RT II</RTosa>
+      <RTaasta>2001</RTaasta>
+      <RTnr>1</RTnr>
+      <RTartikkel>1</RTartikkel>
+      <aktViide>78297</aktViide>
+    </avaldamismarge>
+    <joustumine>2001-01-13+02:00</joustumine>
+  </muutmismarge>
+  <sisu>
+    <paragrahv id="para1">
+      <paragrahvNr>1</paragrahvNr>
+      <kuvatavNr>§ 1.</kuvatavNr>
+      <loige id="lg1">
+        <sisuTekst>
+          <tavatekst>Ühineda juurdelisatud </tavatekst>
+          <viide>
+            <kuvatavTekst>ajutise sisseveo konventsiooniga</kuvatavTekst>
+            <viideURID>
+              <viideURI>./12914432</viideURI>
+            </viideURID>
+          </viide>
+          <tavatekst>, mis on sõlmitud 1990. aasta 28. juunil Istanbulis.</tavatekst>
+        </sisuTekst>
+      </loige>
+    </paragrahv>
+    <paragrahv id="para2">
+      <paragrahvNr>2</paragrahvNr>
+      <kuvatavNr>§ 2.</kuvatavNr>
+      <loige id="lg2">
+        <sisuTekst>
+          <tavatekst>Deklareerida, et vastavalt konventsiooni artiklile 24 nõustub Eesti Vabariik konventsiooni lisadega A, B.1, B.2, B.3, B.5, B.6, B.9, C ja D.</tavatekst>
+        </sisuTekst>
+      </loige>
+    </paragrahv>
+    <paragrahv id="para3">
+      <paragrahvNr>3</paragrahvNr>
+      <kuvatavNr>§ 3.</kuvatavNr>
+      <loige id="lg3">
+        <sisuTekst>
+          <viide>
+            <kuvatavTekst>Vabariigi Valitsus kehtestab</kuvatavTekst>
+            <viideURID>
+              <viideURI>./dyn=22339&amp;id=72812</viideURI>
+            </viideURID>
+          </viide>
+          <tavatekst> ajutise sisseveo konventsiooni rakendamiseks määruse ning vajadusel viib vastavalt konventsiooni artiklile 29 sisse ja võtab tagasi lisatingimused käesoleva seaduse §-s 2 nimetatud lisade suhtes.</tavatekst>
+          <muutmismarge>
+            <avaldamismarge>
+              <RTosa>RT II</RTosa>
+              <RTaasta>2001</RTaasta>
+              <RTnr>1</RTnr>
+              <RTartikkel>1</RTartikkel>
+              <aktViide>78297</aktViide>
+            </avaldamismarge>
+            <joustumine>2001-01-13+02:00</joustumine>
+          </muutmismarge>
+        </sisuTekst>
+      </loige>
+      <loige id="lg4">
+        <sisuTekst>
+          <tavatekst>Riigikogu esimees Toomas SAVI</tavatekst>
+        </sisuTekst>
+      </loige>
+    </paragrahv>
+  </sisu>
+</oigusakt>

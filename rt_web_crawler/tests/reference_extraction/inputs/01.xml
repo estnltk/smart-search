@@ -1,0 +1,101 @@
+<oigusakt schemaLocation="tyviseadus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/tyviseadus_1_10.02.2010.xsd">
+  <metaandmed>
+    <valjaandja>Riigikogu</valjaandja>
+    <dokumentLiik>seadus</dokumentLiik>
+    <tekstiliik>algtekst-terviktekst</tekstiliik>
+    <marksona>Euroopa</marksona>
+    <marksona>leping</marksona>
+    <marksona>põhiseadus</marksona>
+    <marksona>ratifitseerimise seadus</marksona>
+    <dokumentEtapp>avaldamine</dokumentEtapp>
+    <dokumentStaatus>avaldatud</dokumentStaatus>
+    <vastuvoetud>
+      <aktikuupaev>2006-05-09+03:00</aktikuupaev>
+    </vastuvoetud>
+    <valjakuulutamine>
+      <valjakuulutatud>
+        <kellepoolt>Vabariigi President</kellepoolt>
+        <kuupaev>2006-05-22+03:00</kuupaev>
+        <otsusnr>1014</otsusnr>
+      </valjakuulutatud>
+    </valjakuulutamine>
+    <avaldamismarge>
+      <RTosa>RT II</RTosa>
+      <avaldamineKuupaev>2006-06-16+03:00</avaldamineKuupaev>
+      <RTnr>13</RTnr>
+      <RTartikkel>35</RTartikkel>
+      <aktViide>http://www.riigiteataja.ee/akt/1031532</aktViide>
+    </avaldamismarge>
+    <kehtivus>
+      <kehtivuseAlgus>2006-06-26+03:00</kehtivuseAlgus>
+    </kehtivus>
+    <skeemiNimi>tyviseadus_1_10.02.2010.xsd</skeemiNimi>
+    <globaalID>1031532</globaalID>
+    <metaandmedVersioon>1</metaandmedVersioon>
+    <metaandmedVersioonKuupaev>2010-10-28+03:00</metaandmedVersioonKuupaev>
+    <metaandmedVersioonPohjustaja>migraator</metaandmedVersioonPohjustaja>
+    <terviktekstiGrupiID>304549</terviktekstiGrupiID>
+  </metaandmed>
+  <metaandmed>
+    <valjaandja>Riigikogu</valjaandja>
+    <dokumentLiik>seadus</dokumentLiik>
+    <tekstiliik>algtekst-terviktekst</tekstiliik>
+    <marksona>Euroopa</marksona>
+    <marksona>leping</marksona>
+    <marksona>põhiseadus</marksona>
+    <marksona>ratifitseerimise seadus</marksona>
+    <dokumentEtapp>avaldamine</dokumentEtapp>
+    <dokumentStaatus>avaldatud</dokumentStaatus>
+    <vastuvoetud>
+      <aktikuupaev>2006-05-09+03:00</aktikuupaev>
+    </vastuvoetud>
+    <valjakuulutamine>
+      <valjakuulutatud>
+        <kellepoolt>Vabariigi President</kellepoolt>
+        <kuupaev>2006-05-22+03:00</kuupaev>
+        <otsusnr>1014</otsusnr>
+      </valjakuulutatud>
+    </valjakuulutamine>
+    <avaldamismarge>
+      <RTosa>RT II</RTosa>
+      <avaldamineKuupaev>2006-06-16+03:00</avaldamineKuupaev>
+      <RTnr>13</RTnr>
+      <RTartikkel>35</RTartikkel>
+      <aktViide>http://www.riigiteataja.ee/akt/1031532</aktViide>
+    </avaldamismarge>
+    <kehtivus>
+      <kehtivuseAlgus>2006-06-26+03:00</kehtivuseAlgus>
+    </kehtivus>
+    <skeemiNimi>tyviseadus_1_10.02.2010.xsd</skeemiNimi>
+    <globaalID>1031532</globaalID>
+    <metaandmedVersioon>2</metaandmedVersioon>
+    <metaandmedVersioonKuupaev>2010-10-31+02:00</metaandmedVersioonKuupaev>
+    <metaandmedVersioonPohjustaja>Mall Ruiso</metaandmedVersioonPohjustaja>
+    <terviktekstiGrupiID>304549</terviktekstiGrupiID>
+  </metaandmed>
+  <aktinimi>
+    <nimi>
+      <pealkiri>Euroopa põhiseaduse lepingu ratifitseerimise seadus</pealkiri>
+    </nimi>
+  </aktinimi>
+  <sisu>
+    <sisuTekst>
+      <tavatekst>Ratifitseerida juurdelisatud Euroopa põhiseaduse leping, mis on alla kirjutatud 2004. aasta 29. oktoobril Roomas.</tavatekst>
+      <HTMLKonteiner>&lt;table summary="allkiri" width="100%"&gt;
+      &lt;tbody&gt;&lt;tr valign="top"&gt;
+        &lt;td width="60%"&gt;
+
+        &lt;/td&gt;
+        &lt;td width="39%"&gt;
+          &lt;b&gt;&lt;font size="-1" style="font-size:-1px"&gt;Riigikogu esimees Toomas VAREK&lt;/font&gt;&lt;/b&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;&lt;/table&gt;</HTMLKonteiner>
+      <HTMLKonteiner>&lt;font size="-1" style="font-size:-1px"&gt;Märkus. «Euroopa põhiseaduse leping» on avaldatud
+    elektroonilises Riigi Teatajas (Alus: «Riigi Teataja seaduse» § 4 lg 2,
+    riigisekretäri 9.06.2006 resolutsioon nr 17-1/06-03715) ja Euroopa Liidu
+    Teatajas C 310, 16.12.2004, lk 1–465.&lt;br/&gt;&lt;br/&gt;&lt;a href="./1034169"&gt;Euroopa
+    põhiseaduse leping&lt;/a&gt;&lt;/font&gt;</HTMLKonteiner>
+    </sisuTekst>
+  </sisu>
+</oigusakt>

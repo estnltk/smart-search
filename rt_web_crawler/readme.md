@@ -4,3 +4,4 @@
  conda install lxml
  conda install pandas
  conda install tqdm
+ conda install bs4

@@ -1,0 +1,60 @@
+<oigusakt schemaLocation="tyviseadus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/tyviseadus_1_10.02.2010.xsd">
+	<metaandmed>
+		<valjaandja>Riigikogu</valjaandja>
+		<dokumentLiik>seadus</dokumentLiik>
+		<tekstiliik>algtekst-terviktekst</tekstiliik>
+		<marksona>kaitse</marksona>
+		<marksona>piiriveekogu</marksona>
+		<marksona>konventsioon</marksona>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2007-01-24+02:00</aktikuupaev>
+		</vastuvoetud>
+		<valjakuulutamine>
+			<valjakuulutatud>
+				<kellepoolt>Vabariigi President</kellepoolt>
+				<kuupaev>2007-02-07+02:00</kuupaev>
+				<otsusnr>96</otsusnr>
+			</valjakuulutatud>
+		</valjakuulutamine>
+		<avaldamismarge>
+			<RTosa>RT II</RTosa>
+			<avaldamineKuupaev>2007-02-14+02:00</avaldamineKuupaev>
+			<RTaasta>2007</RTaasta>
+			<RTnr>3</RTnr>
+			<RTartikkel>9</RTartikkel>
+			<aktViide>12789389</aktViide>
+		</avaldamismarge>
+		<kehtivus>
+			<kehtivuseAlgus>2007-02-24+02:00</kehtivuseAlgus>
+		</kehtivus>
+		<skeemiNimi>tyviseadus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>12789389</globaalID>
+		<metaandmedVersioon>2</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2013-04-09</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Imre Sobnin</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>310396</terviktekstiGrupiID>
+	</metaandmed>
+	<aktinimi>
+		<nimi>
+			<pealkiri>Piiriveekogude ja rahvusvaheliste järvede kaitse ja kasutamise konventsiooni muudatuse heakskiitmise seadus</pealkiri>
+		</nimi>
+	</aktinimi>
+	<sisu>
+		<sisuTekst>
+			<HTMLKonteiner>Kiita heaks juurdelisatud piiriveekogude ja rahvusvaheliste järvede kaitse ja kasutamise konventsiooni (RT II 1995, 13, 64) &lt;a href="./12789395"&gt;muudatus&lt;/a&gt;, mis võeti vastu 2003. aasta 28. novembril Madridis toimunud piiriveekogude ja rahvusvaheliste järvede kaitse ja kasutamise konventsiooni osaliste kolmanda kohtumise otsusega III/1.</HTMLKonteiner>
+			<HTMLKonteiner>&lt;table summary="allkiri" width="100%"&gt;
+      &lt;tbody&gt;&lt;tr valign="top"&gt;
+        &lt;td width="60%"&gt;
+
+        &lt;/td&gt;
+        &lt;td width="39%"&gt;
+          &lt;b&gt;Riigikogu esimees Toomas VAREK&lt;/b&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;&lt;/table&gt;</HTMLKonteiner>
+
+		</sisuTekst>
+	</sisu>
+</oigusakt>
