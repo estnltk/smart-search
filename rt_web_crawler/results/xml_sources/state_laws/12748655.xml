@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt xsi:schemaLocation="tyviseadus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/tyviseadus_1_10.02.2010.xsd" xmlns="tyviseadus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<metaandmed>
+		<valjaandja>Riigikogu</valjaandja>
+		<dokumentLiik>seadus</dokumentLiik>
+		<tekstiliik>algtekst-terviktekst</tekstiliik>
+		<marksona>ratifitseerimise seadus</marksona>
+		<marksona>Euroopa Ühendused</marksona>
+		<marksona>leping</marksona>
+		<marksona>Tadžikistani Vabariik</marksona>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2006-10-18+03:00</aktikuupaev>
+		</vastuvoetud>
+		<valjakuulutamine>
+			<valjakuulutatud>
+				<kellepoolt>Vabariigi President</kellepoolt>
+				<kuupaev>2006-11-02+02:00</kuupaev>
+				<otsusnr>19</otsusnr>
+			</valjakuulutatud>
+		</valjakuulutamine>
+		<avaldamismarge>
+			<RTosa>RT II</RTosa>
+			<avaldamineKuupaev>2006-11-23+02:00</avaldamineKuupaev>
+			<RTaasta>2006</RTaasta>
+			<RTnr>25</RTnr>
+			<RTartikkel>67</RTartikkel>
+			<aktViide>12748655</aktViide>
+		</avaldamismarge>
+		<kehtivus>
+			<kehtivuseAlgus>2006-12-03+02:00</kehtivuseAlgus>
+		</kehtivus>
+		<skeemiNimi>tyviseadus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>12748655</globaalID>
+		<metaandmedVersioon>3</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2013-04-09</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Imre Sobnin</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>307789</terviktekstiGrupiID>
+	</metaandmed>
+	<aktinimi>
+		<nimi>
+			<pealkiri>Partnerlus- ja koostöölepingu, millega seatakse sisse partnerlus ühelt poolt Euroopa ühenduste ja nende liikmesriikide ning teiselt poolt Tadžikistani Vabariigi vahel, ratifitseerimise seadus</pealkiri>
+		</nimi>
+	</aktinimi>
+	<sisu>
+		<sisuTekst>
+			<HTMLKonteiner><![CDATA[Ratifitseerida juurdelisatud <a href="./12748725">partnerlus- ja koostööleping, millega seatakse sisse partnerlus ühelt poolt Euroopa ühenduste ja nende liikmesriikide ning teiselt poolt Tadžikistani Vabariigi vahel</a>, mis on koostatud 2004. aasta 11. oktoobril Luxembourgis.]]></HTMLKonteiner>
+			<HTMLKonteiner><![CDATA[<table summary="allkiri" width="100%">
+      <tbody><tr valign="top">
+        <td width="60%">
+          
+        </td>
+        <td width="39%">
+          <b>Riigikogu esimees Toomas VAREK</b>
+        </td>
+      </tr>
+    </tbody></table>]]></HTMLKonteiner>
+
+		</sisuTekst>
+	</sisu>
+</oigusakt>

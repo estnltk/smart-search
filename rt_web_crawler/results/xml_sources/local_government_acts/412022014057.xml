@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="e91e15e3-b757-40fa-9311-c217b965a693" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Mõniste Vallavolikogu</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2009-12-15</aktikuupaev>
+			
+			<joustumine>2010-01-01</joustumine>
+			<aktiNr>10</aktiNr>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-12</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>57</RTartikkel><aktViide>412022014057</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-15</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-10</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>412022014057</globaalID>
+		<metaandmedVersioon>18</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1008100</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2012-12-04</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Eve Mändmaa</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>7</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2012-12-07+02:00</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Marike Võime</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>avaldatud</dokumentStaatus>
+			<metaandmedVersioon>12</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2014-02-10</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>13</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2014-02-10</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Eve Mändmaa</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="75d81df9-0316-401f-adeb-af29609ba192">
+		<nimi id="c80f6368-1fdd-4311-9a47-9c8a0e825067">
+			<pealkiri id="c830c63b-39b2-4a89-b18a-32865e1a2809">Vallavolikogu tööst osavõtu eest makstava tasu ja hüvituse suurus ning maksmise kord</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="460deb1e-8987-4509-b2d7-f25bf8ffa945">
+		<tavatekst id="7173c441-388d-409b-9557-0e0590236855">Kehtetu</tavatekst>
+		<avaldamismarge id="5cd1624b-e764-4ee6-975f-3a1b1eae16ce">
+			<RTosa id="f64eb766-15b0-49e6-9bd2-46ead2b731a0">RT IV</RTosa>
+			<avaldamineKuupaev id="350b24e0-6866-4c55-b366-72789a4f2a61">2014-02-12</avaldamineKuupaev>
+			<RTartikkel id="c7765a82-1d68-4cc2-b722-bf139b26d0ad">31</RTartikkel>
+			<aktViide id="14cfa5ca-8689-4552-8ec5-3f0e4e4db4e8">412022014031</aktViide>
+		</avaldamismarge>
+		<joustumine id="e7f3dab7-871a-4532-b931-85accadc6772">2014-02-15</joustumine>
+	</muutmismarge>
+	<sisu id="ca4a247f-2a8e-4965-823e-0d6cf39f4338"/>
+</oigusakt>

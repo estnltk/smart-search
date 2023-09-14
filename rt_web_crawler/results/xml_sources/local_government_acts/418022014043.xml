@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="6e592cf0-d422-4c85-bcce-dffa6c3db2f9" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Värska Vallavolikogu</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2013-01-24</aktikuupaev>
+			<avaldamismarge>
+				<RTosa>RT IV</RTosa>
+				<avaldamineKuupaev>2013-02-08</avaldamineKuupaev>
+				<RTaasta>2013</RTaasta>
+				<RTartikkel>72</RTartikkel>
+				<aktViide>408022013072</aktViide>
+			</avaldamismarge>
+			<aktiNr>6</aktiNr>
+			<joustumine>2013-02-11</joustumine>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-18</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>43</RTartikkel><aktViide>418022014043</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-21</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-13</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>418022014043</globaalID>
+		<metaandmedVersioon>12</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-17</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1010604</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2013-01-29</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Kaire Lepaste</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>7</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2013-02-06</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Liis Laursoo</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="7efaec5c-b6b2-4755-8085-9863a8e75c79">
+		<nimi id="f054d6b3-cc3a-474b-87b9-9754b30a5c8c">
+			<pealkiri id="ac74fedb-dcdb-4f6f-9601-b81ae320f646">Volikogu liikmetele ja komisjoni liikmetele volikogu tööst osavõtu eest hüvitise suuruse ja maksmise korra kehtestamine</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="5233ecae-421f-493a-bbfa-4d705d63174a">
+		<tavatekst id="b9f2d91a-3a06-413f-93ee-77917e71f10a">Kehtetu</tavatekst>
+		<avaldamismarge id="de962fc8-be7d-4349-b4f9-1baa26dabd4b">
+			<RTosa id="49fd358e-32a8-4972-b74f-28b776040c48">RT IV</RTosa>
+			<avaldamineKuupaev id="c77b26ca-10e0-4139-818b-ae7310326c33">2014-02-18</avaldamineKuupaev>
+			<RTartikkel id="ae277d38-1afe-42cd-a6e1-b9ef0ea42660">5</RTartikkel>
+			<aktViide id="e6ea13fe-87c2-4b5a-ae97-87bc773d4225">418022014005</aktViide>
+		</avaldamismarge>
+		<joustumine id="9e5d091a-24bb-4a89-b13c-481e7da71d15">2014-02-21</joustumine>
+		<tavatekst>, rakendatakse alates 01.01.2014</tavatekst>
+	</muutmismarge>
+	<sisu id="74a51d35-586b-43b3-96f6-78d1a6a733c9"/>
+</oigusakt>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt xsi:schemaLocation="tyviseadus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/tyviseadus_1_10.02.2010.xsd" xmlns="tyviseadus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Riigikogu</valjaandja>
+		<dokumentLiik>seadus</dokumentLiik>
+		<tekstiliik>algtekst-terviktekst</tekstiliik>
+		<marksona>kapitalimaks</marksona>
+		<marksona>tulumaks</marksona>
+		<marksona>Luksemburgi Suurhertsogiriik</marksona>
+		<marksona>topeltmaksustamine</marksona>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2006-12-13+02:00</aktikuupaev>
+		</vastuvoetud>
+		<valjakuulutamine>
+			<valjakuulutatud>
+				<kellepoolt>Vabariigi President</kellepoolt>
+				<kuupaev>2006-12-21+02:00</kuupaev>
+				<otsusnr>63</otsusnr>
+			</valjakuulutatud>
+		</valjakuulutamine>
+		<avaldamismarge>
+			<RTosa>RT II</RTosa>
+			<avaldamineKuupaev>2007-01-12+02:00</avaldamineKuupaev>
+			<RTnr>1</RTnr>
+			<RTartikkel>2</RTartikkel>
+			<aktViide>12768739</aktViide>
+		</avaldamismarge>
+		<kehtivus>
+			<kehtivuseAlgus>2007-01-22+02:00</kehtivuseAlgus>
+		</kehtivus>
+		<skeemiNimi>tyviseadus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>12768739</globaalID>
+		<metaandmedVersioon>3</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2011-11-16+02:00</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Martin Parik</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>309061</terviktekstiGrupiID>
+	</metaandmed>
+	<aktinimi>
+		<nimi>
+			<pealkiri>Eesti Vabariigi valitsuse ja Luksemburgi Suurhertsogiriigi valitsuse vahelise tulu- ja kapitalimaksudega topeltmaksustamise vältimise ning maksudest hoidumise tõkestamise lepingu ja selle juurde kuuluva protokolli ratifitseerimise seadus</pealkiri>
+		</nimi>
+	</aktinimi>
+	<sisu>
+		<sisuTekst>
+			<HTMLKonteiner><![CDATA[<p>Ratifitseerida juurdelisatud <a href="./12768745">Eesti Vabariigi valitsuse ja Luksemburgi Suurhertsogiriigi valitsuse vaheline tulu- ja kapitalimaksudega topeltmaksustamise vältimise ning maksudest hoidumise tõkestamise leping ja selle juurde kuuluv protokoll</a>, mis on alla kirjutatud 2006. aasta 23. mail Tallinnas.</p>
+			<table summary="allkiri" width="100%">
+      <tbody><tr valign="top">
+        <td width="60%">
+          
+        </td>
+        <td width="39%">
+          <b>Riigikogu esimees Toomas VAREK</b>
+        </td>
+      </tr>
+    </tbody></table>]]></HTMLKonteiner>
+		</sisuTekst>
+	</sisu>
+</oigusakt>

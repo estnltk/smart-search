@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="83ca0b8a-c175-4953-b859-f1d2065ffa5a" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+ 
+ <valjaandja>Väike-Maarja Vallavolikogu</valjaandja>
+ <dokumentLiik>määrus</dokumentLiik>
+ 
+ <tekstiliik>terviktekst</tekstiliik>
+ 
+ 
+ 
+ <dokumentEtapp>avaldamine</dokumentEtapp>
+ <dokumentStaatus>avaldatud</dokumentStaatus>
+ <vastuvoetud>
+  
+  <aktikuupaev>2012-11-29</aktikuupaev>
+  <avaldamismarge>
+	<RTosa id="120be270-4cef-4b15-8b8b-9d35c05368c9">RT IV</RTosa>
+	<avaldamineKuupaev id="c6a2b68f-cc8b-4ea8-88df-7c85fd80fdc8">2012-12-19</avaldamineKuupaev>
+	<RTaasta id="441b5d38-6989-4498-af09-162e584b606c">2012</RTaasta>
+	
+	<RTartikkel id="bf8fb455-70a7-4805-a9c9-acaf0de0125f">84</RTartikkel>
+	<aktViide id="694894bf-79e6-4740-9a8c-b1c7bb686185">419122012084</aktViide>
+  </avaldamismarge>
+  <joustumine>2013-01-01</joustumine>
+  <aktiNr>21</aktiNr>
+ </vastuvoetud>
+ 
+ 
+ 
+ 
+ 
+ <avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-12</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>76</RTartikkel><aktViide>412022014076</aktViide></avaldamismarge><kehtivus>
+  <kehtivuseAlgus>2014-02-15</kehtivuseAlgus>
+  
+  
+  
+ </kehtivus>
+ <versioon>
+  <dokumentVersioon>1</dokumentVersioon>
+  <dokumentVersioonKuupaev>2014-02-11</dokumentVersioonKuupaev>
+ </versioon>
+ <skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+ <globaalID>412022014076</globaalID>
+ <metaandmedVersioon>11</metaandmedVersioon>
+ <metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev>
+ <metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+ <terviktekstiGrupiID>1008527</terviktekstiGrupiID>
+ <eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2012-12-11</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Peeter Rahnik</metaandmedVersioonPohjustaja>
+		</versiooniMuutus><versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>7</metaandmedVersioon><metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja></versiooniMuutus></metaandmed>
+	<aktinimi id="f00659aa-2ea0-4f0d-8476-1d8d46acc44f">
+		<nimi id="2e73ee1a-83a1-4e18-94b1-2778bd86e405">
+			<pealkiri id="e4e5a3a6-ff6e-4f54-867f-0c1fa4f19d4a">Eluruumi alaliste kulude piirmäärade kehtestamine</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="4f1b6b24-e414-482b-98b5-2d46b193c3a9"><tavatekst id="71e1998f-df95-465d-aa91-98db5543a6cc">Kehtetu</tavatekst><avaldamismarge id="ffb633e1-c3d1-4e9c-bf7e-53778662de7e"><RTosa id="940ad79a-9f45-478d-b489-ef79ed4e0013">RT IV</RTosa><avaldamineKuupaev id="50bbb92b-5675-40e3-8ff9-009c5872ee11">2014-02-12</avaldamineKuupaev><RTartikkel id="dca7ba4a-41ac-44c4-b3c2-21aa136b9f66">4</RTartikkel><aktViide id="92b9e0e9-72a2-456d-ab1c-fd1f52a6d549">412022014004</aktViide></avaldamismarge><joustumine id="e5616c96-daab-48fd-9113-192db0493ada">2014-02-15</joustumine></muutmismarge><sisu id="ad0641cd-852a-498c-8acf-39a5ff2e5e7a"/>
+	
+</oigusakt>

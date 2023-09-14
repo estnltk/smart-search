@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="a28085ad-2dbb-4ee0-ac86-c127175e3fd2" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Narva Linnavalitsus</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2014-01-22</aktikuupaev>
+			<avaldamismarge>
+				<RTosa id="ba7eea22-4839-4992-a2f8-aacdd4acb135">RT IV</RTosa>
+				<avaldamineKuupaev id="fb49d9a3-805f-4761-96ef-945450d4672f">2014-01-30</avaldamineKuupaev>
+				<RTartikkel id="33b3398a-1177-4acb-87a8-dcc166e84d81">14</RTartikkel>
+				<aktViide id="10e4d8ca-a59d-48e7-a7b6-4da15a262f27">430012014014</aktViide>
+			</avaldamismarge>
+			<joustumine>2014-02-02</joustumine>
+			<aktiNr>5</aktiNr>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-12</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>51</RTartikkel><aktViide>412022014051</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-15+02:00</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-10</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>412022014051</globaalID>
+		<metaandmedVersioon>12</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1021044</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2014-01-24</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Silvi Altmann</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="209047ea-87ce-41d3-849a-7f85741332c6">
+		<nimi id="ddc7764b-df1b-47b4-ba5b-3fd3e9d23d82">
+			<pealkiri id="3a29541f-ba36-4fe4-8ae2-14aa454827b6">Narva munitsipaalsete spordikoolide poolt osutavate teenuste hindade kehtestamine </pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="9dc7922a-5d4d-40a2-aba8-f66d77281b82">
+		<tavatekst id="41806cf3-4906-47c3-9269-4e1f8e4fc30f">Kehtetu</tavatekst>
+		<avaldamismarge id="e07eff15-e01e-4f75-bb0e-31d5bca21da6">
+			<RTosa id="6845ead6-1dfc-42d6-b5d9-83e865c25fff">RT IV</RTosa>
+			<avaldamineKuupaev id="e1dc4d7e-8bcb-4d07-9249-b1f3c6a6ab01">2014-02-12</avaldamineKuupaev>
+			<RTartikkel id="80d8f288-a655-4205-ade7-d654e033b4c6">35</RTartikkel>
+			<aktViide id="71b7af0b-22fc-4913-82c8-364ed8ec74cb">412022014035</aktViide>
+		</avaldamismarge>
+		<joustumine id="86838d7a-6a98-4f37-bc4a-e90eea5ae9b9">2014-02-15</joustumine>
+	</muutmismarge>
+	<sisu id="0dbd56f7-8861-445e-ac7f-db86dc91a0b3"/>
+</oigusakt>

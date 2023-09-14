@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt xsi:schemaLocation="juurakt_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/juurakt_1_10.02.2010.xsd" xmlns="juurakt_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Vabariigi Valitsus</valjaandja>
+		<dokumentLiik>korraldus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<marksona>volitamine</marksona>
+		<marksona>kindlustus</marksona>
+		<marksona>Läti Vabariik</marksona>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2007-02-19+02:00</aktikuupaev>
+			<avaldamismarge>
+				<RTosa>RT II</RTosa>
+				<RTaasta>2007</RTaasta>
+				<RTnr>4</RTnr>
+				<RTartikkel>15</RTartikkel>
+				<aktViide>12793912</aktViide>
+			</avaldamismarge>
+			<joustumine>2007-02-19+02:00</joustumine>
+			<aktiNr>95</aktiNr>
+		</vastuvoetud>
+		<kehtivus>
+			<kehtivuseAlgus>2007-06-21+03:00</kehtivuseAlgus>
+		</kehtivus>
+		<skeemiNimi>juurakt_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>12846956</globaalID>
+		<metaandmedVersioon>2</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2013-07-30</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Marike Võime</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>310724</terviktekstiGrupiID>
+	</metaandmed>
+	<aktinimi>
+		<nimi>
+			<pealkiri>«Eesti Vabariigi valitsuse ja Läti Vabariigi valitsuse vahelise endise NSV Liidu territooriumil täitunud kindlustusperioodide arvessevõtmise lepingu» eelnõu heakskiitmine ja volituste andmine</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge>
+		<aktikuupaev>2007-06-21</aktikuupaev>
+		<avaldamismarge>
+			<RTosa>RTL</RTosa>
+			<RTaasta>2007</RTaasta>
+			<RTnr>52</RTnr>
+			<RTartikkel>961</RTartikkel>
+			<aktViide>12845377</aktViide>
+		</avaldamismarge>
+		<joustumine>2007-06-21</joustumine>
+	</muutmismarge>
+	<sisu>
+	<preambul>
+		<tavatekst>«Välissuhtlemisseaduse» § 16 ja § 17 lõike 2 alusel: </tavatekst>
+	</preambul>
+	
+		<sisuTekst>
+			<HTMLKonteiner><![CDATA[</p>
+<p><b>1.</b> Kiita 
+heaks «Eesti Vabariigi valitsuse ja Läti Vabariigi valitsuse vahelise endise NSV 
+Liidu territooriumil täitunud kindlustusperioodide arvessevõtmise lepingu» 
+eelnõu. </p>
+<p><b>2.</b> Volitada sotsiaalminister Maret Maripuud Vabariigi Valitsuse nimel alla 
+kirjutama “Eesti Vabariigi valitsuse ja Läti Vabariigi valitsuse vahelisele 
+endise NSV Liidu territooriumil täitunud kindlustusperioodide arvessevõtmise 
+lepingule”.</p>
+<p>[<a href="./12845377">RTL 2007, 52, 961</a> – jõust. 21.06.2007]</p>]]></HTMLKonteiner>
+		</sisuTekst>
+	</sisu>
+</oigusakt>

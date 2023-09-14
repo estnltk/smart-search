@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="198821aa-41b2-436a-a388-6097bd905321" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Värska Vallavolikogu</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2013-01-24</aktikuupaev>
+			<avaldamismarge>
+				<RTosa id="9f73a338-6980-4417-8ee2-fe1fbb0ea8cd">RT IV</RTosa>
+				<avaldamineKuupaev id="307f8c91-5a32-4f94-ab89-7c387264368d">2013-02-08</avaldamineKuupaev>
+				<RTaasta id="19f19c6e-ba8b-4b33-80b3-a1e95aac675a">2013</RTaasta>
+				<RTartikkel id="774fa7d0-7c4f-4aee-ad4a-49ba39a149a8">71</RTartikkel>
+				<aktViide id="081b22f0-032f-445a-907f-58c3caa90c63">408022013071</aktViide>
+			</avaldamismarge>
+			<aktiNr>5</aktiNr>
+			<joustumine>2013-02-11</joustumine>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-18</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>44</RTartikkel><aktViide>418022014044</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-21</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-13</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>418022014044</globaalID>
+		<metaandmedVersioon>11</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-17</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1010603</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2013-01-29</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Kaire Lepaste</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>6</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2014-02-13</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Liis Laursoo</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="4330c22e-102a-4640-8320-f02ef552b27c">
+		<nimi id="e4bfd7fb-f864-429b-b1c8-9d89ad8e4e94">
+			<pealkiri id="649ce89c-f8dc-4b3c-bfd4-4b9e78bce8d9">Õpetajate töötasustamise aluste ja palgamäärade kinnitamine</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="4ac3ec28-9545-4a99-b0ee-692de9eec4de">
+		<tavatekst id="02b0a733-cee2-42b6-aeb5-f1cdbde8c136">Kehtetu</tavatekst>
+		<avaldamismarge id="5c602877-bb60-40be-82ef-c12766141f8d">
+			<RTosa id="9aa58d08-6977-4933-9ef2-b8f883988de8">RT IV</RTosa>
+			<avaldamineKuupaev id="93854cc4-fbea-4cab-9475-6a87b4f14eba">2014-02-18</avaldamineKuupaev>
+			<RTartikkel id="af0168a9-7782-44e8-a36d-900783275bae">3</RTartikkel>
+			<aktViide id="9696d411-1baa-42ba-87c1-587eb684a916">418022014003</aktViide>
+		</avaldamismarge>
+		<joustumine id="5718e600-b58c-4488-ab2c-bf5b834b01fb">2014-02-21</joustumine>
+		<tavatekst>, rakendatakse alates 01.01.2014</tavatekst>
+	</muutmismarge>
+	<sisu id="af3cc149-5368-4077-94cf-8b1afa8db19c"/>
+</oigusakt>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="08017c16-f734-4550-8dff-ebdb7de77771" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Narva-Jõesuu Linnavolikogu</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2013-06-26</aktikuupaev>
+			<avaldamismarge>
+				<RTosa>RT IV</RTosa>
+				<avaldamineKuupaev>2013-07-04</avaldamineKuupaev>
+				<RTartikkel>34</RTartikkel>
+				<aktViide>404072013034</aktViide>
+			</avaldamismarge>
+			<aktiNr>99</aktiNr>
+			<joustumine>2013-07-07</joustumine>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-12</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>72</RTartikkel><aktViide>412022014072</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-15</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-10</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>412022014072</globaalID>
+		<metaandmedVersioon>10</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1015184</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>6</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2014-02-10</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Marike Võime</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="097aa2f9-8a30-443d-9cd7-8320f309de0f">
+		<nimi id="99f2d40c-9c51-440b-a3a7-9a09facb3fe1">
+			<pealkiri id="6520adda-abb5-4a55-84e4-1605ff4f5feb">Narva-Jõesuu Keskkooli töötajate (v. a. pedagoogid) töötasustamise alused (uus redaktsioon)</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="ee16d879-80dc-4f3a-ae82-161444042b1a">
+		<tavatekst id="1130e7df-9d97-4ccd-96a8-2da6649035ff">Kehtetu</tavatekst>
+				<avaldamismarge id="693ecefc-91d9-43e6-95e6-8da75296c17a">
+				<RTosa>RT IV</RTosa>
+			<avaldamineKuupaev id="f48b3dd6-6528-42b3-b1c3-eeccf21b2147">2014-02-12</avaldamineKuupaev>
+			<RTartikkel id="92460ba4-d017-48c1-9676-2563d9e7be8e">9</RTartikkel>
+			<aktViide id="7096661b-b92d-4644-8e0d-fe66bb090505">412022014009</aktViide>
+		</avaldamismarge>
+		<joustumine id="1fa0ecae-7140-4354-990c-68c85bf74541">2014-02-15</joustumine>
+	</muutmismarge>
+	<sisu id="fc55e022-125c-4bfe-a369-6e9ecca651d6"/>
+</oigusakt>

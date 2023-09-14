@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt xsi:schemaLocation="juurakt_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/juurakt_1_10.02.2010.xsd" xmlns="juurakt_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Vabariigi Valitsus</valjaandja>
+		<dokumentLiik>korraldus</dokumentLiik>
+		<tekstiliik>algtekst-terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2007-07-05+03:00</aktikuupaev>
+			<aktiNr>334</aktiNr>
+		</vastuvoetud>
+		<avaldamismarge>
+			<RTosa>RT II</RTosa>
+			<avaldamineKuupaev>2007-07-12+03:00</avaldamineKuupaev>
+			<RTaasta>2007</RTaasta>
+			<RTnr>10</RTnr>
+			<RTartikkel>38</RTartikkel>
+			<aktViide>12851190</aktViide>
+		</avaldamismarge>
+		<kehtivus>
+			<kehtivuseAlgus>2007-07-05+03:00</kehtivuseAlgus>
+		</kehtivus>
+		<skeemiNimi>juurakt_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>12851190</globaalID>
+		<metaandmedVersioon>2</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2013-06-12</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Imre Sobnin</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>314167</terviktekstiGrupiID>
+	</metaandmed>
+	<aktinimi>
+		<nimi>
+			<pealkiri>“Eesti Vabariigi ja Hispaania Kuningriigi haridus-, kultuuri- ja teaduskoostöö kokkuleppe” eelnõu heakskiitmine ja volituse andmine</pealkiri>
+		</nimi>
+	</aktinimi>
+	<sisu>
+		<sisuTekst>
+			<HTMLKonteiner><![CDATA[
+			
+	
+
+ <p>
+ <a href="./12933150">Eesti Vabariigi ja Hispaania Kuningriigi haridus-, kultuuri- ja teaduskoostöö kokkulepe</a>
+ </p>		
+			
+			
+			<p>
+      «Välissuhtlemisseaduse» § 16 ja § 17 lõike 2 alusel:
+    </p>
+    <p>
+      <b>1.</b> Kiita heaks «Eesti Vabariigi ja Hispaania Kuningriigi 
+      haridus-, kultuuri- ja teaduskoostöö kokkuleppe» eelnõu.
+    </p>
+    <p>
+      <b>2.</b> Volitada kultuuriminister Laine Jänest kirjutama Eesti 
+      Vabariigi nimel alla punktis 1 nimetatud kokkuleppele.
+    </p>
+    <p>
+      
+    </p>
+    <table summary="allkiri" width="100%">
+      <tbody><tr valign="top">
+        <td width="60%">
+          
+        </td>
+        <td width="39%">
+          <font size="-1" style="font-size:-1px"><b>Peaminister Andrus ANSIP</b></font>
+        </td>
+      </tr>
+    </tbody></table>
+    <p>
+      
+    </p>
+    <table summary="allkiri" width="100%">
+      <tbody><tr valign="top">
+        <td width="60%">
+          
+        </td>
+        <td width="39%">
+          <font size="-1" style="font-size:-1px"><b>Riigisekretär Heiki LOOT</b></font>
+        </td>
+      </tr>
+    </tbody></table>]]></HTMLKonteiner>
+		</sisuTekst>
+	</sisu>
+</oigusakt>

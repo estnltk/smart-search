@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt xsi:schemaLocation="tyviseadus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/tyviseadus_1_10.02.2010.xsd" xmlns="tyviseadus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<metaandmed>
+		<valjaandja>Riigikogu</valjaandja>
+		<dokumentLiik>seadus</dokumentLiik>
+		<tekstiliik>algtekst-terviktekst</tekstiliik>
+		<marksona>õigusabi</marksona>
+		<marksona>ratifitseerimise seadus</marksona>
+		<marksona>Vabariigi Valitsus</marksona>
+		<marksona>kokkulepe</marksona>
+		<marksona>kriminaalasi</marksona>
+		<marksona>Ameerika Ühendriigid</marksona>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2006-10-18+03:00</aktikuupaev>
+		</vastuvoetud>
+		<valjakuulutamine>
+			<valjakuulutatud>
+				<kellepoolt>Vabariigi President</kellepoolt>
+				<kuupaev>2006-11-02+02:00</kuupaev>
+				<otsusnr>14</otsusnr>
+			</valjakuulutatud>
+		</valjakuulutamine>
+		<avaldamismarge>
+			<RTosa>RT II</RTosa>
+			<avaldamineKuupaev>2006-11-14+02:00</avaldamineKuupaev>
+			<RTaasta>2006</RTaasta>
+			<RTnr>23</RTnr>
+			<RTartikkel>60</RTartikkel>
+			<aktViide>12748766</aktViide>
+		</avaldamismarge>
+		<kehtivus>
+			<kehtivuseAlgus>2006-11-24+02:00</kehtivuseAlgus>
+		</kehtivus>
+		<skeemiNimi>tyviseadus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>12748766</globaalID>
+		<metaandmedVersioon>3</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2013-04-09</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Imre Sobnin</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>307792</terviktekstiGrupiID>
+	</metaandmed>
+	<aktinimi>
+		<nimi>
+			<pealkiri>Eesti Vabariigi valitsuse ja Ameerika Ühendriikide valitsuse vahelise lepingu vastastikusest õigusabist kriminaalasjades muutmise kokkuleppe ratifitseerimise seadus</pealkiri>
+		</nimi>
+	</aktinimi>
+	<sisu>
+		<paragrahv id="para1">
+			<paragrahvNr>1</paragrahvNr>
+			<kuvatavNr><![CDATA[§ 1.]]></kuvatavNr>
+			<loige id="lg1">
+				<sisuTekst>
+					<tavatekst>Ratifitseerida juurdelisatud «</tavatekst><viide>
+						<kuvatavTekst><![CDATA[2003. aasta 25. juunil alla kirjutatud Euroopa Liidu ja Ameerika Ühendriikide vahelise vastastikuse õigusabi osutamise lepingu artikli 3 lõike 2 alusel koostatud ning selle lepingu kohaldamist 1998. aasta 2. aprillil alla kirjutatud Eesti Vabariigi valitsuse ja Ameerika Ühendriikide valitsuse vahelisele lepingule vastastikusest õigusabist kriminaalasjades käsitlev kokkulepe]]></kuvatavTekst>
+						<viideURID>
+							<viideURI><![CDATA[./12748783]]></viideURI>
+						</viideURID>
+					</viide><tavatekst>», millele kirjutati alla 2006. aasta 8. veebruaril Tallinnas.</tavatekst>
+				</sisuTekst>
+			</loige>
+		</paragrahv>
+		<paragrahv id="para2">
+			<paragrahvNr>2</paragrahvNr>
+			<kuvatavNr><![CDATA[§ 2.]]></kuvatavNr>
+			<loige id="lg2">
+				<sisuTekst>
+					<tavatekst>Käesoleva seaduse §-s 1 nimetatud kokkuleppe lisa artikli 17<sup>1 </sup> lõike 3 kohaselt teavitada Euroopa Liidu Nõukogu, et Eesti Vabariik edastab abitaotlused pangainfo identifitseerimise kohta Riigiprokuratuuri kaudu.</tavatekst>
+				</sisuTekst>
+				<sisuTekst>
+					<HTMLKonteiner><![CDATA[<table summary="allkiri" width="100%">
+      <tbody><tr valign="top">
+        <td width="60%">
+          
+        </td>
+        <td width="39%">
+          <b>Riigikogu esimees Toomas VAREK</b>
+        </td>
+      </tr>
+    </tbody></table>]]></HTMLKonteiner>
+
+				</sisuTekst>
+			</loige>
+		</paragrahv>
+	</sisu>
+</oigusakt>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="c74dc45b-ce7c-43d4-8ef6-2f5eb5c93b61" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <metaandmed>
+ 
+ <valjaandja>Lihula Vallavolikogu</valjaandja>
+ <dokumentLiik>määrus</dokumentLiik>
+ 
+ <tekstiliik>terviktekst</tekstiliik>
+ 
+ 
+ 
+ <dokumentEtapp>avaldamine</dokumentEtapp>
+ <dokumentStaatus>avaldatud</dokumentStaatus>
+ <vastuvoetud>
+  
+  <aktikuupaev>2012-10-25</aktikuupaev>
+  <avaldamismarge>
+	<RTosa>RT IV</RTosa>
+	<avaldamineKuupaev>2013-12-03</avaldamineKuupaev>
+	
+	
+	<RTartikkel>15</RTartikkel>
+	<aktViide>403122013015</aktViide>
+  </avaldamismarge>
+  <joustumine>2013-01-01</joustumine>
+  <aktiNr>15</aktiNr>
+ </vastuvoetud>
+ 
+ 
+ 
+ 
+ 
+ <avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-12</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>67</RTartikkel><aktViide>412022014067</aktViide></avaldamismarge><kehtivus>
+  <kehtivuseAlgus>2014-03-01</kehtivuseAlgus>
+  
+  
+  
+ </kehtivus>
+ <versioon>
+  <dokumentVersioon>1</dokumentVersioon>
+  <dokumentVersioonKuupaev>2014-02-10</dokumentVersioonKuupaev>
+ </versioon>
+ <skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+ <globaalID>412022014067</globaalID>
+ <metaandmedVersioon>11</metaandmedVersioon>
+ <metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev>
+ <metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+ <terviktekstiGrupiID>1018718</terviktekstiGrupiID>
+ <eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+<versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>1</metaandmedVersioon><metaandmedVersioonKuupaev>2013-11-20</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>?Teadmata? ?Teadmata?</metaandmedVersioonPohjustaja></versiooniMuutus><versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>6</metaandmedVersioon><metaandmedVersioonKuupaev>2013-11-29</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja></versiooniMuutus></metaandmed>
+ <aktinimi id="5c180849-f198-4dac-9b52-cab7dedd6e62">
+  <nimi id="47af0700-1851-45ff-94c9-be9081bd4b75">
+   <pealkiri id="5abb40dc-6326-4dbe-8788-b9d1cf603e3d">SA Lõuna-Läänemaa Tervishoiu ja Sotsiaalhoolekande Keskuse teenuste hindade kinnitamine</pealkiri>
+  </nimi>
+ </aktinimi>
+ <muutmismarge id="c4dc8a7d-77b6-4caf-b3d5-23e41f30dba1"><tavatekst id="8c5a3dfa-0a31-4016-b85c-cb575b7b7499">Kehtetu</tavatekst><avaldamismarge id="67731702-c2ef-4645-a79e-69b71b228c6e"><RTosa id="885cd12e-fdd5-4c4e-afae-6879dc7dd257">RT IV</RTosa><avaldamineKuupaev id="6daee150-d59e-4eb6-bb1a-6cb431801c3d">2014-02-12</avaldamineKuupaev><RTartikkel id="f5cbd817-bae2-4286-9df1-31811e090fb8">33</RTartikkel><aktViide id="0c4a8dec-5279-42fd-9e9f-0d7ad9c768cd">412022014033</aktViide></avaldamismarge><joustumine id="86b18d9b-3e8e-40b9-9b2d-8642cb738469">2014-03-01</joustumine></muutmismarge><sisu id="07550583-d49b-4a50-ac0d-77d1d8e1cb20"/>
+</oigusakt>

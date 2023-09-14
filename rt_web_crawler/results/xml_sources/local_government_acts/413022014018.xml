@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="06881c3d-7efd-42c6-94bf-0cdccd44e318" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <metaandmed>
+ 
+ <valjaandja>Padise Vallavolikogu</valjaandja>
+ <dokumentLiik>määrus</dokumentLiik>
+ 
+ <tekstiliik>terviktekst</tekstiliik>
+ 
+ 
+ 
+ <dokumentEtapp>avaldamine</dokumentEtapp>
+ <dokumentStaatus>avaldatud</dokumentStaatus>
+ <vastuvoetud>
+  
+  <aktikuupaev>2010-10-27</aktikuupaev>
+  <avaldamismarge>
+	<RTosa>RT IV</RTosa>
+	<avaldamineKuupaev>2012-09-26</avaldamineKuupaev>
+	
+	
+	<RTartikkel>3</RTartikkel>
+	<aktViide>426092012003</aktViide>
+  </avaldamismarge>
+  <joustumine>2010-11-01</joustumine>
+  <aktiNr>17</aktiNr>
+ </vastuvoetud>
+ 
+ 
+ 
+ 
+ 
+ <avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-13</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>18</RTartikkel><aktViide>413022014018</aktViide></avaldamismarge><kehtivus>
+  <kehtivuseAlgus>2014-02-16</kehtivuseAlgus>
+  
+  
+  
+ </kehtivus>
+ <versioon>
+  <dokumentVersioon>1</dokumentVersioon>
+  <dokumentVersioonKuupaev>2014-02-12</dokumentVersioonKuupaev>
+ </versioon>
+ <skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+ <globaalID>413022014018</globaalID>
+ <metaandmedVersioon>12</metaandmedVersioon>
+ <metaandmedVersioonKuupaev>2014-02-12</metaandmedVersioonKuupaev>
+ <metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+ <terviktekstiGrupiID>1004655</terviktekstiGrupiID>
+ <eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+<versiooniMuutus><dokumentEtapp>koostamine</dokumentEtapp><dokumentStaatus>koostamisel</dokumentStaatus><metaandmedVersioon>1</metaandmedVersioon><metaandmedVersioonKuupaev>2012-09-19</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Evelin Pärnamets</metaandmedVersioonPohjustaja></versiooniMuutus><versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>2</metaandmedVersioon><metaandmedVersioonKuupaev>2012-09-19</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Evelin Pärnamets</metaandmedVersioonPohjustaja></versiooniMuutus><versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>7</metaandmedVersioon><metaandmedVersioonKuupaev>2012-09-25+03:00</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja></versiooniMuutus></metaandmed>
+ <aktinimi id="83004a5a-74ad-4684-88db-f2aec61fc3ec">
+  <nimi id="79139898-9069-4c34-a451-b0815edbe20e">
+   <pealkiri id="68e61687-b046-45b8-8edd-28a659418c07">Padise Vallavolikogu eelarve- ja majanduskomisjoni põhimäärus</pealkiri>
+  </nimi>
+ </aktinimi>
+ <muutmismarge id="ac467966-6402-4656-beb2-0032df18f700"><tavatekst id="3270814b-2171-4481-8cd3-f03379c50ec9">Kehtetu</tavatekst><avaldamismarge id="fc930147-87a8-4f52-a741-9bcba7b39cc7"><RTosa id="1de59b93-9cf3-4b42-b872-3a9ac90a5ad1">RT IV</RTosa><avaldamineKuupaev id="d7740432-29b7-4441-a594-73626595a82c">2014-02-13</avaldamineKuupaev><RTartikkel id="6eea31e6-8be6-4076-809b-db4609924866">3</RTartikkel><aktViide id="47726d93-529c-4237-9b22-de16d56bfc3e">413022014003</aktViide></avaldamismarge><joustumine id="0e134762-f17e-4d4a-a36f-900dac2b650a">2014-02-16</joustumine></muutmismarge><sisu id="43796683-bdc7-4514-b0b4-aa524d8bf83d"/>
+</oigusakt>

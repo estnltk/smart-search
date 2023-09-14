@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="8bd96ff1-0af1-494c-8e8f-d4000f48b0f8" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+ 
+ <valjaandja>Jõgeva Linnavalitsus</valjaandja>
+ <dokumentLiik>määrus</dokumentLiik>
+ 
+ <tekstiliik>terviktekst</tekstiliik>
+ 
+ 
+ 
+ <dokumentEtapp>avaldamine</dokumentEtapp>
+ <dokumentStaatus>avaldatud</dokumentStaatus>
+ <vastuvoetud>
+  
+  <aktikuupaev>2003-02-03</aktikuupaev>
+  
+  <joustumine>2003-02-10</joustumine>
+  <aktiNr>2</aktiNr>
+ </vastuvoetud>
+ 
+ 
+ 
+ 
+ 
+ <avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-14</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>23</RTartikkel><aktViide>414022014023</aktViide></avaldamismarge><kehtivus>
+  <kehtivuseAlgus>2014-02-17+02:00</kehtivuseAlgus>
+  
+  
+  
+ </kehtivus>
+ <versioon>
+  <dokumentVersioon>1</dokumentVersioon>
+  <dokumentVersioonKuupaev>2014-02-13</dokumentVersioonKuupaev>
+ </versioon>
+ <skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+ <globaalID>414022014023</globaalID>
+ <metaandmedVersioon>6</metaandmedVersioon>
+ <metaandmedVersioonKuupaev>2014-02-13</metaandmedVersioonKuupaev>
+ <metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+ 
+ <terviktekstiGrupiID>1002246</terviktekstiGrupiID><eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+</metaandmed>
+	<aktinimi id="e759ca58-4b94-471d-8ff6-562b60f19774">
+		<nimi id="cfe3aeb5-542b-4e06-9bb7-a48a0d366284">
+			<pealkiri id="73266bea-9dd3-49e4-88bc-1dd3e44e6c15">Jõgeva linna alatise spordikomisjoni moodustamine, koosseisu ja põhimääruse kinnitamine</pealkiri>
+		</nimi>
+	</aktinimi>
+	
+  <muutmismarge id="16390901-323e-4300-985d-08d99ea87d55"><tavatekst id="2f8c5a2f-7cbe-4354-b523-59b21ca3bd5f">Kehtetu</tavatekst><avaldamismarge id="59748074-68d1-4718-b435-fb37e24d0c25"><RTosa id="19fc990d-b7a0-40fb-b4ca-15eb245d4671">RT IV</RTosa><avaldamineKuupaev id="ed5946e6-7c3a-487a-97f5-8c475c1b197a">2014-02-14</avaldamineKuupaev><RTartikkel id="fc1ee821-b1bd-49f7-905c-c749784df987">13</RTartikkel><aktViide id="1772bea2-394d-4da5-8f98-f95ac0546ec2">414022014013</aktViide></avaldamismarge><joustumine id="983ef45f-ab66-482a-883d-571e25083b8e">2014-02-17</joustumine></muutmismarge><sisu id="2569eaad-c917-44b6-85b7-3eb0b242d7e7">
+		
+		
+	</sisu>
+	
+	
+	
+</oigusakt>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="1a7cd63f-bc1f-4197-9e5a-e117a3f9b987" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <metaandmed>
+ 
+ <valjaandja>Väike-Maarja Vallavolikogu</valjaandja>
+ <dokumentLiik>määrus</dokumentLiik>
+ 
+ <tekstiliik>terviktekst</tekstiliik>
+ 
+ 
+ 
+ <dokumentEtapp>avaldamine</dokumentEtapp>
+ <dokumentStaatus>avaldatud</dokumentStaatus>
+ <vastuvoetud>
+  
+  <aktikuupaev>2013-03-28</aktikuupaev>
+  <avaldamismarge>
+	<RTosa>RT IV</RTosa>
+	<avaldamineKuupaev>2013-04-04</avaldamineKuupaev>
+	<RTaasta>2013</RTaasta>
+	
+	<RTartikkel>48</RTartikkel>
+	<aktViide>404042013048</aktViide>
+  </avaldamismarge>
+  <joustumine>2013-04-07</joustumine>
+  <aktiNr>7</aktiNr>
+ </vastuvoetud>
+ 
+ 
+ 
+ 
+ 
+ <avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-12</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>77</RTartikkel><aktViide>412022014077</aktViide></avaldamismarge><kehtivus>
+  <kehtivuseAlgus>2014-02-15</kehtivuseAlgus>
+  
+  
+  
+ </kehtivus>
+ <versioon>
+  <dokumentVersioon>1</dokumentVersioon>
+  <dokumentVersioonKuupaev>2014-02-11</dokumentVersioonKuupaev>
+ </versioon>
+ <skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+ <globaalID>412022014077</globaalID>
+ <metaandmedVersioon>11</metaandmedVersioon>
+ <metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev>
+ <metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+ <terviktekstiGrupiID>1012674</terviktekstiGrupiID>
+ <eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+<versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>1</metaandmedVersioon><metaandmedVersioonKuupaev>2013-04-01</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Peeter Rahnik</metaandmedVersioonPohjustaja></versiooniMuutus><versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>avaldatud</dokumentStaatus><metaandmedVersioon>6</metaandmedVersioon><metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Marike Võime</metaandmedVersioonPohjustaja></versiooniMuutus><versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>7</metaandmedVersioon><metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Peeter Rahnik</metaandmedVersioonPohjustaja></versiooniMuutus></metaandmed>
+ <aktinimi id="097fab9a-9dc7-4ad0-9bd6-2995c6f9c092">
+  <nimi id="0d56a9ad-5db5-48c7-805a-4302ba66de67">
+   <pealkiri id="e4409054-5b92-4c98-a67e-93795ddf772e">Volikogu liikmetele volikogu tööst osavõtu eest tasu maksmise kord</pealkiri>
+  </nimi>
+ </aktinimi>
+ <muutmismarge id="bc5b6d8e-6151-461a-ab83-7de27a708e19"><tavatekst id="d39f90de-d450-40ad-9e58-bbedf378bee6">Kehtetu</tavatekst><avaldamismarge id="1e25ea36-6d90-40ec-8933-630f761af67c"><RTosa id="3f6ae2ec-b366-4265-9da8-6d151809c09c">RT IV</RTosa><avaldamineKuupaev id="1442c6fd-f661-4127-953d-3593bff2e8e4">2014-02-12</avaldamineKuupaev><RTartikkel id="8148ddcf-3ed7-42f8-80e0-b67fd5112c1c">5</RTartikkel><aktViide id="20615717-b69b-46d8-ac19-e231668b7466">412022014005</aktViide></avaldamismarge><joustumine id="d3ce7a54-d7e3-4e51-8be0-283f5f6929f9">2014-02-15</joustumine></muutmismarge><sisu id="db07ef66-454f-4b93-9ba2-c415c0a9f5e6"/>
+</oigusakt>

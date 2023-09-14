@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="15b6fa54-7a3f-4441-ac88-10fe9f44698e" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Pöide Vallavolikogu</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2006-10-26</aktikuupaev>
+			<avaldamismarge>
+				<RTosa id="acd4e45f-ec14-49bc-ba3a-1efd906e567d">RT IV</RTosa>
+				<avaldamineKuupaev id="7bdeb1d9-8ce7-49a9-a6fd-256b5bc6da65">2013-12-13</avaldamineKuupaev>
+				<RTartikkel id="7540d8da-6dfd-4935-ba58-74e20699fcae">39</RTartikkel>
+				<aktViide id="aa775d95-70ff-4321-81de-f60a1d06d68f">413122013039</aktViide>
+			</avaldamismarge>
+			<joustumine>2006-11-01</joustumine>
+			<aktiNr>31</aktiNr>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-12</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>42</RTartikkel><aktViide>412022014042</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-15</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-10</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>412022014042</globaalID>
+		<metaandmedVersioon>11</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1019376</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2013-12-12</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Maire Käärid</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="dcfa3a08-7ff6-4834-813b-083aaf8772f1">
+		<nimi id="885f813d-b4bf-4723-bced-34e0cf8f1089">
+			<pealkiri id="681aee5c-05f0-41c9-a19d-a27344af73fd">Jäätmevaldajate registri asutamine ja registri pidamise korra kehtestamine</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="c1e2c2d0-2971-47ec-8b88-d56b049e4672">
+		<tavatekst id="38249c41-02c3-4437-bd95-18e02eb89080">Kehtetu</tavatekst>
+		<avaldamismarge id="4346eda3-0df5-4380-a4f2-72bc0aa74a45">
+			<RTosa id="b37f23f9-f750-40f4-94b1-ea09e74f1fed">RT IV</RTosa>
+			<avaldamineKuupaev id="621b0975-34d9-495f-a11b-8ba8b93f3216">2014-02-12</avaldamineKuupaev>
+			<RTartikkel id="4811de53-148e-4a85-8cac-e875806bac34">30</RTartikkel>
+			<aktViide id="904054bc-ba14-4371-82d5-034d872528e4">412022014030</aktViide>
+		</avaldamismarge>
+		<joustumine id="e5321a1a-6d51-40f8-8889-222a5efac9c0">2014-02-15</joustumine>
+	</muutmismarge>
+	<sisu id="bfe45fd7-d552-41e8-8bb3-71b0e4fb718b"/>
+</oigusakt>

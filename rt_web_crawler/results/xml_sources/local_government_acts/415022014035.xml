@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="f0a397bf-feb5-4651-a405-b0c4d86fa092" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <metaandmed>
+ 
+ <valjaandja>Saue Linnavalitsus</valjaandja>
+ <dokumentLiik>määrus</dokumentLiik>
+ 
+ <tekstiliik>terviktekst</tekstiliik>
+ 
+ 
+ 
+ <dokumentEtapp>avaldamine</dokumentEtapp>
+ <dokumentStaatus>avaldatud</dokumentStaatus>
+ <vastuvoetud>
+  
+  <aktikuupaev>2004-03-25</aktikuupaev>
+  <avaldamismarge>
+	<RTosa id="b1853b14-658c-4aa4-9a30-294f3c1df83e">RT IV</RTosa>
+	<avaldamineKuupaev id="39c97829-977f-4996-b9dc-061728bc645f">2013-07-26</avaldamineKuupaev>
+	
+	
+	<RTartikkel id="fd3a88af-01ff-475a-882d-1e155c871f1f">12</RTartikkel>
+	<aktViide id="58c6b3e1-3cdb-4612-82de-128b056406e2">426072013012</aktViide>
+  </avaldamismarge>
+  <joustumine>2004-03-30</joustumine>
+  <aktiNr>1</aktiNr>
+ </vastuvoetud>
+ 
+ 
+ 
+ 
+ 
+ <avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-15</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>35</RTartikkel><aktViide>415022014035</aktViide></avaldamismarge><kehtivus>
+  <kehtivuseAlgus>2014-02-18</kehtivuseAlgus>
+  
+  
+  
+ </kehtivus>
+ <versioon>
+  <dokumentVersioon>1</dokumentVersioon>
+  <dokumentVersioonKuupaev>2014-02-14</dokumentVersioonKuupaev>
+ </versioon>
+ <skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+ <globaalID>415022014035</globaalID>
+ <metaandmedVersioon>10</metaandmedVersioon>
+ <metaandmedVersioonKuupaev>2014-02-14</metaandmedVersioonKuupaev>
+ <metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+ <terviktekstiGrupiID>1015551</terviktekstiGrupiID>
+ <eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+<versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>1</metaandmedVersioon><metaandmedVersioonKuupaev>2013-07-22</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>?Teadmata? ?Teadmata?</metaandmedVersioonPohjustaja></versiooniMuutus><versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>6</metaandmedVersioon><metaandmedVersioonKuupaev>2014-02-14</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Liis Laursoo</metaandmedVersioonPohjustaja></versiooniMuutus></metaandmed>
+ <aktinimi id="c11b2891-3edc-491d-b2c4-3eee5dd99a89">
+  <nimi id="12d6cf51-9713-48ce-ba8e-defd243e4fad">
+   <pealkiri id="9a4f2de1-e84c-41a5-a4ca-761d457cde91">Saue linna haridusasutuste juhtide vabade ametikohtade täitmiseks korraldatava konkursi läbiviimise kord</pealkiri>
+  </nimi>
+ </aktinimi>
+ <muutmismarge id="b9e46b03-8963-4d7f-b9dd-bf8c69744f63"><tavatekst id="cdf8ae36-e3f0-4613-8dd6-d843bfd2c9d5">Kehtetu</tavatekst><avaldamismarge id="1075bb47-1d0a-4dec-ab81-2f8ec62a27be"><RTosa id="f257be26-0b6e-450a-969f-db3e5a1a8809">RT IV</RTosa><avaldamineKuupaev id="56c6f96c-55f4-49d8-8b33-69dc32c3b51d">2014-02-15</avaldamineKuupaev><RTartikkel id="2ec11039-ac79-4f45-ac7e-af99e43aed18">23</RTartikkel><aktViide id="190fcbb2-204a-4cf3-8e74-0b822dc557df">415022014023</aktViide></avaldamismarge><joustumine id="0b315d66-e2ab-4c57-929a-c041abd0ebf6">2014-02-18</joustumine></muutmismarge><sisu id="582ba84d-d351-4994-bf27-e9af74ff9d23"/>
+<lisaViide id="7063d239-a441-470a-a5b8-4e7f7bf71c1f">
+<lisaViit id="03c983cf-6c3a-4d4c-ba48-bc72834834af"/>
+<lisaPealkiri id="a951f590-baa3-4cc1-9858-157fa7d78873">
+<lisaNimi id="c2537c7a-9136-431f-adce-08d98e18e215"/>
+</lisaPealkiri>
+</lisaViide></oigusakt>

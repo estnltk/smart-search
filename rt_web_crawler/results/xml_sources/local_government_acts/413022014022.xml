@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="b8dabb34-6dc3-4c51-bdef-adc1dddb2d43" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <metaandmed>
+ 
+ <valjaandja>Järva-Jaani Vallavolikogu</valjaandja>
+ <dokumentLiik>määrus</dokumentLiik>
+ 
+ <tekstiliik>terviktekst</tekstiliik>
+ 
+ 
+ 
+ <dokumentEtapp>avaldamine</dokumentEtapp>
+ <dokumentStaatus>avaldatud</dokumentStaatus>
+ <vastuvoetud>
+  
+  <aktikuupaev>2004-09-30</aktikuupaev>
+  
+  <joustumine>2004-10-15</joustumine>
+  <aktiNr>14</aktiNr>
+ </vastuvoetud>
+ 
+ 
+ 
+ 
+ 
+ <avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-13</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>22</RTartikkel><aktViide>413022014022</aktViide></avaldamismarge><kehtivus>
+  <kehtivuseAlgus>2014-02-16</kehtivuseAlgus>
+  
+  
+  
+ </kehtivus>
+ <versioon>
+  <dokumentVersioon>1</dokumentVersioon>
+  <dokumentVersioonKuupaev>2014-02-12</dokumentVersioonKuupaev>
+ </versioon>
+ <skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+ <globaalID>413022014022</globaalID>
+ <metaandmedVersioon>12</metaandmedVersioon>
+ <metaandmedVersioonKuupaev>2014-02-12</metaandmedVersioonKuupaev>
+ <metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+ <terviktekstiGrupiID>1011851</terviktekstiGrupiID>
+ <eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+<versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>1</metaandmedVersioon><metaandmedVersioonKuupaev>2013-03-11</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Marine Vanna</metaandmedVersioonPohjustaja></versiooniMuutus></metaandmed>
+ <aktinimi id="4efe32f0-581a-4bb9-ab36-ba59a1b0df6a">
+  <nimi id="6de0acfb-0bbe-4e98-aede-8b2c82731a12">
+   <pealkiri id="61c57458-a5e7-4503-bf0a-dc9b0c92319b">Munitsipaalomandis olevate eluruumide üüri piirmäärade kehtestamine </pealkiri>
+  </nimi>
+ </aktinimi>
+ <muutmismarge id="3816cec3-d0b5-4cd1-8a97-64027f4b1b8c"><tavatekst id="45ebe721-d87d-4c5c-875c-68987cd75436">Kehtetu</tavatekst><avaldamismarge id="b29f859a-5dac-4b45-8e8f-77bb24442d52"><RTosa id="29d2a1ff-f843-4ea6-8d74-eb20e15bb031">RT IV</RTosa><avaldamineKuupaev id="751857fa-2192-4fa4-8dbf-3e5a7e426d74">2014-02-13</avaldamineKuupaev><RTartikkel id="c1e2e813-3648-4525-8249-7237631deee0">7</RTartikkel><aktViide id="2143f510-77df-4207-ae70-90ed0d80d8d9">413022014007</aktViide></avaldamismarge><joustumine id="a3bd0273-7008-4916-b626-29d3e9c459f0">2014-02-16</joustumine></muutmismarge><sisu id="6503e771-a6f0-42a6-9f53-be2853389494"/>
+</oigusakt>

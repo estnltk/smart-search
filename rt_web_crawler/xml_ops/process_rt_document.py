@@ -5,18 +5,6 @@ import itertools
 from bs4 import BeautifulSoup
 from pandas import DataFrame
 
-def document_has_content(xml_doc) -> True:
-
-    content = xml_doc.xpath('//sisu')
-    if len(content) != 1:
-        return False
-    content = content[0]
-
-    if len(content) == 0:
-        return content.text is not None and re.match('^\s*$', content.text) is None
-
-    return True
-
 
 def extract_text_from_sisutext(content_block) -> str:
     """Extracts texts from an <sisuTekst> element"""

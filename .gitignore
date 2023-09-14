@@ -9,3 +9,8 @@ rt_web_crawler/results/xml_sources/state_laws/*.xml
 rt_web_crawler/results/xml_sources/government_orders/*.xml
 rt_web_crawler/results/xml_sources/government_regulations/*.xml
 rt_web_crawler/results/xml_sources/local_government_acts/*.xml
+
+rt_web_crawler/results/txt_sources/state_laws/*.txt
+rt_web_crawler/results/txt_sources/government_orders/*.txt
+rt_web_crawler/results/txt_sources/government_regulations/*.txt
+rt_web_crawler/results/txt_sources/local_government_acts/*.txt

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt xsi:schemaLocation="tyviseadus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/tyviseadus_1_10.02.2010.xsd" xmlns="tyviseadus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<metaandmed>
+		<valjaandja>Riigikogu</valjaandja>
+		<dokumentLiik>seadus</dokumentLiik>
+		<tekstiliik>algtekst-terviktekst</tekstiliik>
+		<marksona>ratifitseerimise seadus</marksona>
+		<marksona>Ida- ja Kesk-Euroopa Kalanduse Arendamise Rahvusvaheline Organisatsioon (EUROFISH)</marksona>
+		<marksona>Euroopa</marksona>
+		<marksona>asutamine</marksona>
+		<marksona>leping</marksona>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2006-10-11+03:00</aktikuupaev>
+		</vastuvoetud>
+		<valjakuulutamine>
+			<valjakuulutatud>
+				<kellepoolt>Vabariigi President</kellepoolt>
+				<kuupaev>2006-10-27+03:00</kuupaev>
+				<otsusnr>9</otsusnr>
+			</valjakuulutatud>
+		</valjakuulutamine>
+		<avaldamismarge>
+			<RTosa>RT II</RTosa>
+			<avaldamineKuupaev>2006-11-14+02:00</avaldamineKuupaev>
+			<RTaasta>2006</RTaasta>
+			<RTnr>23</RTnr>
+			<RTartikkel>59</RTartikkel>
+			<aktViide>12747451</aktViide>
+		</avaldamismarge>
+		<kehtivus>
+			<kehtivuseAlgus>2006-11-24+02:00</kehtivuseAlgus>
+		</kehtivus>
+		<skeemiNimi>tyviseadus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>12747451</globaalID>
+		<metaandmedVersioon>3</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2013-04-09</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Imre Sobnin</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>307684</terviktekstiGrupiID>
+	</metaandmed>
+	<aktinimi>
+		<nimi>
+			<pealkiri>Ida- ja Kesk-Euroopa Kalanduse Arendamise Rahvusvahelise Organisatsiooni (EUROFISH) asutamislepingu ratifitseerimise seadus</pealkiri>
+		</nimi>
+	</aktinimi>
+	<sisu>
+		<sisuTekst>
+			<HTMLKonteiner><![CDATA[Ratifitseerida juurdelisatud <a href="./12747692">Ida- ja Kesk-Euroopa Kalanduse Arendamise Rahvusvahelise Organisatsiooni (EUROFISH) asutamisleping</a>, mis on koostatud 2000. aasta 23. mail Kopenhaagenis.]]></HTMLKonteiner>
+			<HTMLKonteiner><![CDATA[<table summary="allkiri" width="100%">
+      <tbody><tr valign="top">
+        <td width="60%">
+          
+        </td>
+        <td width="39%">
+          <b>Riigikogu esimees Toomas VAREK</b>
+        </td>
+      </tr>
+    </tbody></table>]]></HTMLKonteiner>
+			
+		</sisuTekst>
+	</sisu>
+</oigusakt>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="7b4b672b-a7cd-42bd-9c78-a6aec36ddcab" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Laheda Vallavolikogu</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2012-09-20</aktikuupaev>
+			<avaldamismarge>
+				<RTosa>RT IV</RTosa>
+				<avaldamineKuupaev>2012-12-19</avaldamineKuupaev>
+				<RTartikkel>64</RTartikkel>
+				<aktViide>419122012064</aktViide>
+			</avaldamismarge>
+			<joustumine>2012-09-24</joustumine>
+			<aktiNr>8</aktiNr>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-12</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>65</RTartikkel><aktViide>412022014065</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-15</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-10</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>412022014065</globaalID>
+		<metaandmedVersioon>11</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1008502</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2012-12-05</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Piia Roost</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>6</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2012-12-18</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="7c01d430-dc03-411e-93d9-e3e0f129b5db">
+		<nimi id="8271d72e-e7f0-431c-ac19-efded85c2f06">
+			<pealkiri id="4040869c-6784-4d28-a0aa-b4b44ef9a9d3">Pedagoogide töötasu alammäärade kehtestamine</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="3b5ee36a-444c-4aa0-abfe-974a4b31cc0c">
+		<tavatekst id="d5f2bda1-6ce0-45fa-b363-7855dbdc0340">Kehtetu</tavatekst>
+		<avaldamismarge id="934bdbbc-7f19-4437-8f22-2a7b38ba6fa4">
+			<RTosa id="9418b946-302c-49aa-a702-3970aa6b997e">RT IV</RTosa>
+			<avaldamineKuupaev id="4589aa18-aebb-468c-8764-3d0b8e8a8052">2014-02-12</avaldamineKuupaev>
+			<RTartikkel id="92c8c7e5-6bf4-40a1-88ea-5e832dc42903">28</RTartikkel>
+			<aktViide id="df6caff1-1061-4772-a5eb-5e1c5c1090fa">412022014028</aktViide>
+		</avaldamismarge>
+		<joustumine id="463b60f0-3f97-4300-ad1f-31a8eac95653">2014-02-15</joustumine>
+		<tavatekst>, rakendatakse alates 01.01.2014</tavatekst>
+	</muutmismarge>
+	<sisu id="679b8af2-9319-4ca8-823d-6ce1b25eafdc"/>
+</oigusakt>

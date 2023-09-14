@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="f7e6a61f-a89f-414a-b13a-f391aaf78eee" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <metaandmed>
+ 
+ <valjaandja>Tallinna Linnavalitsus</valjaandja>
+ <dokumentLiik>määrus</dokumentLiik>
+ 
+ <tekstiliik>terviktekst</tekstiliik>
+ 
+ 
+ 
+ <dokumentEtapp>avaldamine</dokumentEtapp>
+ <dokumentStaatus>avaldatud</dokumentStaatus>
+ <vastuvoetud>
+  
+  <aktikuupaev>2010-01-13</aktikuupaev>
+  
+  <joustumine>2010-01-18</joustumine>
+  <aktiNr>3</aktiNr>
+ </vastuvoetud>
+ 
+ 
+ 
+ 
+ 
+ <avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-18</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>65</RTartikkel><aktViide>418022014065</aktViide></avaldamismarge><kehtivus>
+  <kehtivuseAlgus>2014-02-21</kehtivuseAlgus>
+  
+  
+  
+ </kehtivus>
+ <versioon>
+  <dokumentVersioon>1</dokumentVersioon>
+  <dokumentVersioonKuupaev>2014-02-13</dokumentVersioonKuupaev>
+ </versioon>
+ <skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+ <globaalID>418022014065</globaalID>
+ <metaandmedVersioon>4</metaandmedVersioon>
+ <metaandmedVersioonKuupaev>2014-02-17</metaandmedVersioonKuupaev>
+ <metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+ <terviktekstiGrupiID>1014054</terviktekstiGrupiID>
+ <eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+</metaandmed>
+    <aktinimi id="d4cb70c4-e590-4e7c-8215-48a386220cd3">
+        <nimi id="bc68118b-2517-41df-9898-f845f5aefa2f">
+            <pealkiri id="c41c0e4a-525a-4aa5-94fc-421c40687b00">Messitoetuse taotluse ja messil osalemise aruande vormide kinnitamine</pealkiri>
+        </nimi>
+    </aktinimi>
+    <muutmismarge id="d957edd3-e095-4f77-9b2c-7c260b4a6b50">
+        <tavatekst id="5f13420a-97c7-41ee-9b48-b900aa6e0474">Kehtetu</tavatekst>
+        <avaldamismarge id="6b43519d-82fc-440c-83cc-52e2f2f0244e">
+                  <RTosa id="82f3aa5e-e173-4fbe-b941-31b8d636af97">RT IV</RTosa>
+                  <avaldamineKuupaev id="6bd1f115-b19b-4cbd-8bd3-3473ffc32830">2014-02-18</avaldamineKuupaev>
+                  <RTartikkel id="05e1ff16-d694-47a6-93df-e3b859f625cd">13</RTartikkel>
+                  <aktViide id="54be1a16-a963-49bf-9eb9-f70f37d37b6e">418022014013</aktViide>
+        </avaldamismarge>
+        <joustumine id="e46d7dfe-717b-4d4a-9dd5-04af6addda5e">2014-02-21</joustumine>
+    </muutmismarge>
+    <sisu id="e5dc7b5a-4eb8-4dad-9e49-3822d6d02299">
+    </sisu>
+</oigusakt>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="6652f8bb-48f4-44df-a2bf-6b9e50b78b10" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Värska Vallavolikogu</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2013-11-21</aktikuupaev>
+			<avaldamismarge>
+				<RTosa>RT IV</RTosa>
+				<avaldamineKuupaev>2013-11-29</avaldamineKuupaev>
+				<RTaasta>2013</RTaasta>
+				<RTartikkel>40</RTartikkel>
+				<aktViide>429112013040</aktViide>
+			</avaldamismarge>
+			<aktiNr>14</aktiNr>
+			<joustumine>2013-12-02</joustumine>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-18</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>42</RTartikkel><aktViide>418022014042</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-21</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-13</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>418022014042</globaalID>
+		<metaandmedVersioon>11</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-17</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1018689</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2013-11-26</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Kaire Lepaste</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>6</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2013-11-28</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Marike Võime</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="b266feae-aafc-476d-8128-d820d56f1ea6">
+		<nimi id="336670de-69d4-488d-aff3-18d10c7f1a5a">
+			<pealkiri id="5e9e26c9-b0d0-425f-88df-f04b34fe760c">Anne Vabarna nimelise omakultuuripreemia väljaandmise kord</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="b8ac93df-1514-4e62-8487-b7e097ff68e1">
+		<tavatekst id="dcaaa759-bd0d-456b-b7fa-baf762a86166">Kehtetu</tavatekst>
+		<avaldamismarge id="c49faa06-eba7-45ca-a8d1-8c6a94d05bcf">
+			<RTosa id="b7b733b1-df40-44bb-a43b-c72e7a62f0b7">RT IV</RTosa>
+			<avaldamineKuupaev id="fd76a045-aa59-484b-8da8-f90633e144df">2014-02-18</avaldamineKuupaev>
+			<RTartikkel id="faf61c67-e3a2-4d4d-8a7d-9c386821d3fc">6</RTartikkel>
+			<aktViide id="e7374b55-e08d-4629-b076-3f24f5473e03">418022014006</aktViide>
+		</avaldamismarge>
+		<joustumine id="5c9dc78c-bde0-41fb-a104-155fecd9c93c">2014-02-21</joustumine>
+	</muutmismarge>
+	<sisu id="62bfa795-f69b-4688-82a3-26789bbfa855"/>
+</oigusakt>

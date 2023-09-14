@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="5511d3e1-6c01-4cec-98a4-d61390026de5" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Värska Vallavolikogu</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2013-01-24</aktikuupaev>
+			<avaldamismarge>
+				<RTosa id="05103b6f-95cc-4701-b44d-6ced28681a52">RT IV</RTosa>
+				<avaldamineKuupaev id="3961bed2-f158-4ab8-9bac-36804dd6e023">2013-02-08</avaldamineKuupaev>
+				<RTartikkel id="fe4a047a-ab79-4a18-8304-80d1f3de117a">69</RTartikkel>
+				<aktViide id="7df51ee1-2ae9-496e-9d22-bda754698afb">408022013069</aktViide>
+			</avaldamismarge>
+			<joustumine>2013-02-11</joustumine>
+			<aktiNr>4</aktiNr>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-18</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>40</RTartikkel><aktViide>418022014040</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-21</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-13</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>418022014040</globaalID>
+		<metaandmedVersioon>15</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-17</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1010601</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2013-06-25</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Kaire Lepaste</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>avaldatud</dokumentStaatus>
+			<metaandmedVersioon>9</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2014-02-13</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>10</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2014-02-13</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Kaire Lepaste</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="27a643be-610a-4302-bd85-d9bc950f8981">
+		<nimi id="89aea270-d5a1-462c-b40d-4226a66ff911">
+			<pealkiri id="7b85fe10-676d-4758-8767-65b60b712f35">Värska valla hallatavate asutuste koosseisude ja palkade kinnitamine</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="5dc1595b-420a-4e7d-b27c-b064258061ca">
+		<tavatekst id="676b07e9-e862-4e55-8177-75e97b15412a">Kehtetu</tavatekst>
+		<avaldamismarge id="4bc4fde0-2174-4883-bcc7-340c1bf570af">
+			<RTosa id="a37a13f8-1c9e-4edf-b28b-b91a67a8fc40">RT IV</RTosa>
+			<avaldamineKuupaev id="1e7ee05b-bb48-460f-86cc-2b29349de39d">2014-02-18</avaldamineKuupaev>
+			<RTartikkel id="a361093c-b702-408f-9a66-ea0a194347ff">4</RTartikkel>
+			<aktViide id="5352a381-8d0f-4c4b-9b7f-26c43bd05270">418022014004</aktViide>
+		</avaldamismarge>
+		<joustumine id="8d0f7e3a-eafe-49ae-b907-4ff15a508595">2014-02-21</joustumine>
+		<tavatekst>, rakendatakse alates 01.01.2014</tavatekst>
+	</muutmismarge>
+	<sisu id="0ab43522-f423-4189-b5a1-a15a0ff8661f"/>
+</oigusakt>

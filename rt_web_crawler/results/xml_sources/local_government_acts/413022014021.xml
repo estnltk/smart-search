@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="404eeef6-7c7b-4b38-80ad-460f7dbb0787" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Padise Vallavolikogu</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2010-10-27</aktikuupaev>
+			<avaldamismarge>
+<RTosa>RT IV</RTosa>
+<avaldamineKuupaev>2012-10-16</avaldamineKuupaev>		
+<RTartikkel>13</RTartikkel>	
+<aktViide>416102012013</aktViide>
+			</avaldamismarge>
+			<joustumine>2010-11-01</joustumine>
+			<aktiNr>19</aktiNr>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-13</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>21</RTartikkel><aktViide>413022014021</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-16</kehtivuseAlgus>
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-11</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>413022014021</globaalID>
+		<metaandmedVersioon>10</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-12</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1005473</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2012-10-05</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Evelin Pärnamets</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>6</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2012-10-12+03:00</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Maret Mauer</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="c71d82f7-f8bf-4687-b3a9-bb1b06016048">
+		<nimi id="1ca52053-4025-496a-ae4d-f0129313f5f2">
+			<pealkiri id="c5e32049-f2cf-4385-b3d0-69fbdae55b6e">Padise Vallavolikogu maa- ja keskkonnakomisjoni põhimäärus</pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="c6816939-7131-4cc8-b06b-d18a163b7326">
+		<tavatekst id="5cd8e3e4-9af3-41fd-aee5-c9d151c17b63">Kehtetu</tavatekst>
+		<avaldamismarge id="2fa44e17-54eb-4bf6-82d5-3e978be78d01">
+			<RTosa id="eaf0debe-a1ca-419c-a60e-be6666c49b76">RT IV</RTosa>
+			<avaldamineKuupaev id="7f29559d-bb8f-402d-8675-c1d4ee6975ed">2014-02-13</avaldamineKuupaev>
+			<RTartikkel id="d24c1f10-8a10-45aa-8ede-61dfed78f35d">4</RTartikkel>
+			<aktViide id="a7629315-ca6c-49e2-8891-6e6618df400f">413022014004</aktViide>
+		</avaldamismarge>
+		<joustumine id="a3ecdf1d-4c63-4a53-b55d-cbfb7faf1eb0">2014-02-16</joustumine>
+	</muutmismarge>
+	<sisu id="6ce7b343-016f-44f7-86bd-1ee0b3da6f15"/>
+</oigusakt>

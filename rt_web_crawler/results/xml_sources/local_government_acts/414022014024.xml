@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="bceab1e7-4de2-427f-9f86-5642be8d3660" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <metaandmed>
+ 
+ <valjaandja>Võru Linnavolikogu</valjaandja>
+ <dokumentLiik>määrus</dokumentLiik>
+ 
+ <tekstiliik>terviktekst</tekstiliik>
+ 
+ 
+ 
+ <dokumentEtapp>avaldamine</dokumentEtapp>
+ <dokumentStaatus>avaldatud</dokumentStaatus>
+ <vastuvoetud>
+  
+  <aktikuupaev>2013-04-17</aktikuupaev>
+  <avaldamismarge>
+	<RTosa id="7be569ef-d677-4b3c-93d2-566e551aec1c">RT IV</RTosa>
+	<avaldamineKuupaev id="e56fc1a8-5986-4bba-be1f-eaa09e24eca7">2013-04-23</avaldamineKuupaev>
+	
+	
+	<RTartikkel id="77f70f61-6219-4e5a-a848-2ace32927ad1">5</RTartikkel>
+	<aktViide id="97ba9d24-21aa-42df-9ba0-3e9943c4ba62">423042013005</aktViide>
+  </avaldamismarge>
+  <joustumine>2013-04-26</joustumine>
+  <aktiNr>15</aktiNr>
+ </vastuvoetud>
+ 
+ 
+ 
+ 
+ 
+ <avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-14</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>24</RTartikkel><aktViide>414022014024</aktViide></avaldamismarge><kehtivus>
+  <kehtivuseAlgus>2014-02-17</kehtivuseAlgus>
+  
+  
+  
+ </kehtivus>
+ <versioon>
+  <dokumentVersioon>1</dokumentVersioon>
+  <dokumentVersioonKuupaev>2014-02-13</dokumentVersioonKuupaev>
+ </versioon>
+ <skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+ <globaalID>414022014024</globaalID>
+ <metaandmedVersioon>11</metaandmedVersioon>
+ <metaandmedVersioonKuupaev>2014-02-13</metaandmedVersioonKuupaev>
+ <metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+ <terviktekstiGrupiID>1013071</terviktekstiGrupiID>
+ <eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+<versiooniMuutus><dokumentEtapp>avaldamine</dokumentEtapp><dokumentStaatus>esitatud avaldamiseks</dokumentStaatus><metaandmedVersioon>1</metaandmedVersioon><metaandmedVersioonKuupaev>2013-04-18</metaandmedVersioonKuupaev><metaandmedVersioonPohjustaja>Liisi Kondratjeva</metaandmedVersioonPohjustaja></versiooniMuutus></metaandmed>
+ <aktinimi id="a4ce72f6-b539-41f4-ac6c-a7478996fa05">
+  <nimi id="bb5aac55-6e65-410b-9acc-1b9e74d03289">
+   <pealkiri id="01420321-72f0-4f36-81e4-5285eadb40ce">Võru linna ühisveevärgi ja -kanalisatsiooni arendamise kava aastateks 2013-2025</pealkiri>
+  </nimi>
+ </aktinimi>
+ <muutmismarge id="897235b9-5653-4ebb-9f76-aaf106b82d30"><tavatekst id="9a03ecd2-621c-4df5-95ab-3ed5a868f2a8">Kehtetu</tavatekst><avaldamismarge id="12d6808e-62a0-4f6e-9f10-282f476090fb"><RTosa id="aa3f0c76-3b37-4d6a-b1b9-7c6b49cb4efb">RT IV</RTosa><avaldamineKuupaev id="f661fd46-c5a5-400e-94cb-d79a1ee2a9f7">2014-02-14</avaldamineKuupaev><RTartikkel id="84ed3296-2859-49e4-b1b0-6eadc9ba777a">22</RTartikkel><aktViide id="304b645d-d3c1-43fc-a217-120699737138">414022014022</aktViide></avaldamismarge><joustumine id="2ab5d93d-bbd1-4c95-acdc-13e62a212193">2014-02-17</joustumine></muutmismarge><sisu id="2f27bed2-aca0-4b0e-9f6e-06de5b537024"/>
+</oigusakt>

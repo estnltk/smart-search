@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt xsi:schemaLocation="juurakt_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/juurakt_1_10.02.2010.xsd" xmlns="juurakt_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Vabariigi Valitsus</valjaandja>
+		<dokumentLiik>korraldus</dokumentLiik>
+		<tekstiliik>algtekst-terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2007-07-05+03:00</aktikuupaev>
+			<aktiNr>335</aktiNr>
+		</vastuvoetud>
+		<avaldamismarge>
+			<RTosa>RT II</RTosa>
+			<avaldamineKuupaev>2007-07-12+03:00</avaldamineKuupaev>
+			<RTnr>10</RTnr>
+			<RTartikkel>39</RTartikkel>
+			<aktViide>12851194</aktViide>
+		</avaldamismarge>
+		<kehtivus>
+			<kehtivuseAlgus>2007-07-05+03:00</kehtivuseAlgus>
+		</kehtivus>
+		<skeemiNimi>juurakt_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>12851194</globaalID>
+		<metaandmedVersioon>2</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2013-07-11</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Imre Sobnin</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>314168</terviktekstiGrupiID>
+	</metaandmed>
+	<aktinimi>
+		<nimi>
+			<pealkiri>“Spordis dopingu kasutamise vastase rahvusvahelise konventsiooni” heakskiitmine</pealkiri>
+		</nimi>
+	</aktinimi>
+	<sisu>
+		<sisuTekst>
+			<HTMLKonteiner><![CDATA[<p>
+      «Välissuhtlemisseaduse» § 16 alusel kiita heaks «<a href="./12881066">Spordis dopingu 
+      kasutamise vastane rahvusvaheline konventsioon</a>», mis on vastu võetud 
+      19. oktoobril 2005. a Pariisis.
+    </p>
+    <p>
+      
+    </p>
+    <table summary="allkiri" width="100%">
+      <tbody><tr valign="top">
+        <td width="60%">
+          
+        </td>
+        <td width="39%">
+          <font size="-1" style="font-size:-1px"><b>Peaminister Andrus ANSIP</b></font>
+        </td>
+      </tr>
+    </tbody></table>
+    <p>
+      
+    </p>
+    <table summary="allkiri" width="100%">
+      <tbody><tr valign="top">
+        <td width="60%">
+          
+        </td>
+        <td width="39%">
+          <font size="-1" style="font-size:-1px"><b>Riigisekretär Heiki LOOT</b></font>
+        </td>
+      </tr>
+    </tbody></table>]]></HTMLKonteiner>
+		</sisuTekst>
+	</sisu>
+</oigusakt>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oigusakt id="3c009fa2-e0f0-4e0a-ac91-2ea22bb78de6" xsi:schemaLocation="maarus_1_10.02.2010 http://xmlr.eesti.ee/xml/schemas/oigusakt/maarus_1_10.02.2010.xsd" xmlns="maarus_1_10.02.2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metaandmed>
+		<valjaandja>Türi Vallavalitsus</valjaandja>
+		<dokumentLiik>määrus</dokumentLiik>
+		<tekstiliik>terviktekst</tekstiliik>
+		<dokumentEtapp>avaldamine</dokumentEtapp>
+		<dokumentStaatus>avaldatud</dokumentStaatus>
+		<vastuvoetud>
+			<aktikuupaev>2013-08-27</aktikuupaev>
+			<avaldamismarge>
+				<RTosa id="a5fa4ac5-ff64-45bd-bbb9-38d86e17ea4b">RT IV</RTosa>
+				<avaldamineKuupaev id="0de207e0-7759-4f3b-b253-49ede6fdd305">2013-09-03</avaldamineKuupaev>
+				<RTaasta id="961c3b7e-07e0-45d0-9570-930ddfada985">2013</RTaasta>
+				<RTartikkel id="0de92415-8b21-48fb-a68f-d9f6aa64497b">40</RTartikkel>
+				<aktViide id="7ad09a5b-b88a-4965-aac0-6459f682834f">403092013040</aktViide>
+			</avaldamismarge>
+			<joustumine>2013-09-06</joustumine>
+			<aktiNr>8</aktiNr>
+		</vastuvoetud>
+		<avaldamismarge><RTosa>RT IV</RTosa><avaldamineKuupaev>2014-02-12</avaldamineKuupaev><RTaasta>2014</RTaasta><RTartikkel>40</RTartikkel><aktViide>412022014040</aktViide></avaldamismarge><kehtivus>
+			<kehtivuseAlgus>2014-02-15+02:00</kehtivuseAlgus>
+
+		</kehtivus>
+		<versioon>
+			<dokumentVersioon>1</dokumentVersioon>
+			<dokumentVersioonKuupaev>2014-02-10</dokumentVersioonKuupaev>
+		</versioon>
+		<skeemiNimi>maarus_1_10.02.2010.xsd</skeemiNimi>
+		<globaalID>412022014040</globaalID>
+		<metaandmedVersioon>13</metaandmedVersioon>
+		<metaandmedVersioonKuupaev>2014-02-11</metaandmedVersioonKuupaev>
+		<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		<terviktekstiGrupiID>1016180</terviktekstiGrupiID>
+		<eesmark>Määruse raamskeem XML struktuuri koostamiseks</eesmark>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>1</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2013-08-27</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Merike Lõhmus</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+		<versiooniMuutus>
+			<dokumentEtapp>avaldamine</dokumentEtapp>
+			<dokumentStaatus>esitatud avaldamiseks</dokumentStaatus>
+			<metaandmedVersioon>7</metaandmedVersioon>
+			<metaandmedVersioonKuupaev>2014-02-10</metaandmedVersioonKuupaev>
+			<metaandmedVersioonPohjustaja>Gerly Kuivkaev</metaandmedVersioonPohjustaja>
+		</versiooniMuutus>
+	</metaandmed>
+	<aktinimi id="19f186e7-ea83-4df6-8899-dac012747f56">
+		<nimi id="2eee223c-ebd4-46e2-9888-2ef7cfc0aee1">
+			<pealkiri id="e3044a48-6cab-4556-a2b4-2a7b0945ed24">Kabala Kooli-Lasteaia arengukava aastateks 2013-2015 kinnitamine </pealkiri>
+		</nimi>
+	</aktinimi>
+	<muutmismarge id="f981cba8-dc21-4928-96de-19160aa14ad2">
+		<tavatekst id="10c7c419-1ba1-4514-8842-2ab35990b47e">Kehtetu</tavatekst>
+		<avaldamismarge id="2f55825a-cfbb-498f-bb18-94fcaf1c430a">
+			<RTosa id="5c5c936f-6fa1-4c35-835a-35bdbc45a5b9">RT IV</RTosa>
+			<avaldamineKuupaev id="e0819b9e-044d-4866-a419-a4e298ab0646">2014-02-12</avaldamineKuupaev>
+			<RTartikkel id="bd0786a6-a035-4fb9-afab-d7e490509776">34</RTartikkel>
+			<aktViide id="c5520763-7fca-4225-907b-d6df604c2eb8">412022014034</aktViide>
+		</avaldamismarge>
+		<joustumine id="f1d3d6cb-d74c-426d-b835-50f706b73af3">2014-02-15</joustumine>
+	</muutmismarge>
+	<sisu id="62ef7884-6f4b-406a-a0f4-c72edad614ab"/>
+
+</oigusakt>
