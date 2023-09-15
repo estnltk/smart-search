@@ -21,7 +21,7 @@ Lähtekoodist pythoni skripti kasutamine
         venv/bin/python3 ./flask_api_ettearvutaja.py
 1.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"sources": {"DOC_1":{"content":"Presidendi kantselei."}}}' \
+        --data '{"sources": {"DOC_1":{"content":"Peaministri kantselei."}}}' \
         localhost:6602/api/ettearvutaja/json | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
         localhost:6602/api/ettearvutaja/version | jq
