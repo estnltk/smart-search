@@ -29,21 +29,22 @@ class KIRJAVIGASTAJA:
         """
         võimalikud_kirjavead = []
         for i in range(len(token)):
-            # 2 tähte vahetuses: tigu -> itgu, tgiu, tiug
-            if i > 0 and token[i] != token[i-1]: # kahte ühesugust tähte ei vaheta
-                t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]    
+            if len(token) > 1: # peab olema vähemalt 2 tähte
+                # 2 tähte vahetuses: tigu -> itgu, tgiu, tiug
+                if i > 0 and token[i] != token[i-1]: # kahte ühesugust tähte ei vaheta
+                    t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]    
+                    pigem_kirjavead = võimalikud_kirjavead.append(t) 
+                # 1 täht läheb topelt
+                t = token[:i]+token[i]+token[i]+token[i+1:]
                 pigem_kirjavead = võimalikud_kirjavead.append(t) 
-            # 1 täht läheb topelt
-            t = token[:i]+token[i]+token[i]+token[i+1:]
-            pigem_kirjavead = võimalikud_kirjavead.append(t) 
-            # 1 täht kaob ära
-            t = token[:i]+token[i+1:]
-            pigem_kirjavead = võimalikud_kirjavead.append(t) 
+                # 1 täht kaob ära
+                t = token[:i]+token[i+1:]
+                pigem_kirjavead = võimalikud_kirjavead.append(t) 
 
-            # g b d k p t-> k p t g b d
-            if (n := "gbdkpt".find(token[i])) > -1:
-                t = token[:i]+"kptgbd"[n]+token[i+1:]                   
-                pigem_kirjavead = võimalikud_kirjavead.append(t)
+                # g b d k p t-> k p t g b d
+                if (n := "gbdkpt".find(token[i])) > -1:
+                    t = token[:i]+"kptgbd"[n]+token[i+1:]                   
+                    pigem_kirjavead = võimalikud_kirjavead.append(t)
         pigem_kirjavead = self.leia_kirjavead(võimalikud_kirjavead)
         kirjavead = []
         for vk in pigem_kirjavead:

@@ -5,6 +5,7 @@ import sys
 import json
 import requests
 import sqlite3
+from tqdm import tqdm
 from typing import Dict, List, Tuple
 
 class DB:
@@ -94,10 +95,10 @@ class DB:
                 print(f"# Suletud andmebaas {self.indeks}")                          
 
     def toimeta(self, file:str)->None:
+        if self.verbose:
+            sys.stdout.write(f'# sisendfail: {file}\n') 
         with open(file) as f:
-            for idx, line in enumerate(f):
-                if self.verbose:
-                    sys.stdout.write(f'# sisendfail: {f.name}, kirje {idx}\n')               
+            for line in f:
                 self.json_in = self.string2json(line)
                 self.täienda_tabelid()
  
@@ -169,17 +170,15 @@ class DB:
         """
         if self.verbose:
             sys.stdout.write(f'#                         Täiendame tabelit {table}\r')
-        for idx, rec in enumerate(self.json_in["tabelid"][table]):
-            if self.verbose:
-                sys.stdout.write(f'{idx+1}/{len(self.json_in["tabelid"][table])}\r')
+        pbar = tqdm(self.json_in["tabelid"][table])
+        pbar.set_description(f'# {table}')
+        for rec in pbar:
             try:
                 cursor.execute(f'INSERT INTO {table} VALUES({values_pattern})', rec)
             except:
                 continue # selline juba oli
         connection.commit()
-
-        if self.verbose:
-            sys.stdout.write('\n')     
+   
 
 
     def string2json(self, str:str)->Dict:
@@ -213,11 +212,7 @@ if __name__ == '__main__':
 
     try:
         db = DB(args.lemmatiseerija, args.indeks, args.verbose)
-
         for f  in args.file:
             db.toimeta(f.name)
-  
-            
-
     except Exception as e:
         print(f"\n\n\nAn exception occurred: {str(e)}")
