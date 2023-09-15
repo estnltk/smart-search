@@ -45,8 +45,6 @@ class KIRJAVIGASTAJA:
                 t = token[:i]+"kptgbd"[n]+token[i+1:]                   
                 pigem_kirjavead = võimalikud_kirjavead.append(t)
         pigem_kirjavead = self.leia_kirjavead(võimalikud_kirjavead)
-        if self.verbose:
-            sys.stdout.write(f'#    {len(võimalikud_kirjavead)}/{len(pigem_kirjavead)}\n')
         kirjavead = []
         for vk in pigem_kirjavead:
             kirjavead.append((vk, token, 0))

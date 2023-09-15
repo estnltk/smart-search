@@ -65,12 +65,11 @@ JSON sees- ja välispidiseks kasutamiseks:
             }
         }
         "tabelid":  # lõpptulemus
-        {   "indeks": [(TOKEN, DOCID, START, END, LIITSÕNA_OSA)]    # tee_sõnede_ja_osaõnede_indeks()
-            "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],              # tee_generator()
+        {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],         # tee_generator()
             "lemma_korpuse_vormid": [(LEMMA, VORM)],                # tee_generator()
+            "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)]     # tee_sõnede_ja_osaõnede_indeks()
             "kirjavead": [(VIGANE_VORM, VORM, KAAL)]                # tee_kirjavead()
-            "allikad": [(DOCID, CONTENT)]                           # tee_sources_tabeliks()
-            
+            "allikad": [(DOCID, CONTENT)]                           # tee_sources_tabeliks() 
         }
     }    
 """
@@ -80,6 +79,7 @@ import os
 import sys
 import json
 import requests
+from tqdm import tqdm
 from typing import Dict, List, Tuple
 
 import kirjavigastaja
@@ -93,7 +93,7 @@ class ETTEARVUTAJA:
         """
         self.verbose = verbose
 
-        self.VERSION="2023.08.22"
+        self.VERSION="2023.09.05"
 
         self.tokenizer = os.environ.get('TOKENIZER') # veebiteenus sõnestamiseks
         if self.tokenizer is None:
@@ -139,14 +139,15 @@ class ETTEARVUTAJA:
             f : CSV faili read
 
         Returns:
+
             self.json_io (Dict): DICTiks tehtud sisendCSV
 
             {   "sources":
-                {   DOCID:
+                {   DOCID: // "pk"+globaalID+liik
                     {   "content": str,
-                        "globaalID": str,
-                        "liik": str,
-                        "url": str
+                        "globaalID": str,   # praegu pealkirja korral
+                        "liik": str,        # praegu pealkirja korral
+                        "url": str          # praegu pealkirja korral - vist ei paku huvi?
                     }
                 }
             }
@@ -155,7 +156,7 @@ class ETTEARVUTAJA:
         self.json_io = {"sources": {}}
         for d in data:
             assert len(d)==5
-            self.json_io["sources"][f'{d[1]}_{d[2]}'] = {
+            self.json_io["sources"][f'pk{d[1]}_{d[2]}'] = {
                     "content" : d[3],
                     "globaalID": d[1],
                     "liik": d[2],
@@ -179,18 +180,17 @@ class ETTEARVUTAJA:
             * ["sources"][DOCID]["annotations"]["tokens"][N]["end"]:NUMBER
             * ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["token"]:VORM
         """
-        if self.verbose is True:
-            sys.stdout.write("# sõnestamine:")
-        for docid in self.json_io["sources"]:
+        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose))
+        for docid in pbar:
             try:
-                if self.verbose is True:  
-                    sys.stdout.write(f" {docid}")           # sõnestame kõik dokumendid
+                pbar.set_description(f"sõnestamine: {docid}")
                 self.json_io["sources"][docid] = json.loads(requests.post(self.tokenizer, json=self.json_io["sources"][docid]).text)
                 del self.json_io["sources"][docid]["annotations"]["sentences"]
+                pbar.set_description(f"sõnestamine")
             except:                                     # sõnestamine äpardus
                 raise Exception({"warning":f'Probleemid veebiteenusega: {self.tokenizer}'})
-        if self.verbose is True:
-            sys.stdout.write("\n")
+    
+
 
     def tee_sõnede_ja_osaõnede_indeks(self) -> None:
         """PUBLIC:Tekitab indeksi
@@ -205,19 +205,15 @@ class ETTEARVUTAJA:
             * ["indeks"]:{TOKEN: {DOCID: [{'start': int, 'end': int, 'liitsõna_osa': bool}]}}
             * ["tabelid"]["indeks"]:[(TOKEN, DOCID, START, END, LIITSÕNAOSA)] -- lõpptulemuses
         """
-        if self.verbose:
-            sys.stdout.write("# tee_sõnede_ja_osaõnede_indeks: ")
         self.morfi_sõned() # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=') 
 
         if "indeks" not in self.json_io:
             self.json_io["indeks"] = {}
 
         # teeme self.json_io["indeks"]
-        for docid in self.json_io["sources"]:                   # tsükkel üle tekstide
-            if self.verbose:
-                sys.stdout.write(f" {docid}")
-            if self.verbose:
-                sys.stdout.write(f' {docid}')
+        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose))
+        for docid in pbar:                   # tsükkel üle tekstide
+            pbar.set_description(f"tee_sõnede_ja_osaõnede_indeks: {docid}")
             for token in self.json_io["sources"][docid]["annotations"]["tokens"]: # tsükkel üle sõnede
                 if len(token["features"]["tokens_stem"])==0:            # kui pole ühtegi meid huvitava sõnaliigiga...
                     continue                                            # ...laseme üle
@@ -263,8 +259,9 @@ class ETTEARVUTAJA:
                                 self.json_io["indeks"][puhas_tkn][docid]= [{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]
                         else:                                           # ...polnud seni üheski dokumendis                               
                             self.json_io["indeks"][puhas_tkn] = {docid:[{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]}
+            pbar.set_description(f"tee_sõnede_ja_osaõnede_indeks")                
         if self.verbose:
-            sys.stdout.write(' | järjestame...')
+            sys.stdout.write('järjestame ja teeme tabelid...')
         # järjestame vastavalt etteantud parameetritele
         self.json_io["indeks"] = dict(sorted(self.json_io["indeks"].items()))
 
@@ -298,17 +295,15 @@ class ETTEARVUTAJA:
             * ["tabelid"]["lemma_kõik_vormid"]:[(vorm, 0,lemma)] -- lõpptulemuses, lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
             * ["tabelid"]["lemma_korpuse_vormid"]:[(lemma, vorm)] -- lõpptulemuses, ainult jooksvas sisendkorpuses esinenud vormid
         """
-        if self.verbose is True:
-            sys.stdout.write(f"# teeme generaatori:")
 
         self.morfi_lemmadeks() 
         if "generator" not in self.json_io:
             self.json_io["generator"] ={}
 
         # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=')   
-        for docid in self.json_io["sources"]:                   # tsükkel üle tekstide
-            if self.verbose is True:
-                sys.stdout.write(f' {docid}')
+        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose))
+        for docid in pbar:                   # tsükkel üle tekstide
+            pbar.set_description(f"tee_generator: {docid}")    
             for token in self.json_io["sources"][docid]["annotations"]["tokens"]: # tsükkel üle sõnede
                 if len(token["features"]["tokens_lemma"])==0:           # kui pole ühtegi meid huvitava sõnaliigiga lemmat...
                     continue                                            # ...laseme üle
@@ -316,15 +311,17 @@ class ETTEARVUTAJA:
                     puhas_tkn = tkn.replace('_', '').replace('=', '')   # terviklemma lisamine...
                     if puhas_tkn not in self.json_io["generator"]:
                         # sellist lemmat meil veel polnud, lisame genetud/korpuse vormid
+                        #if puhas_tkn == 'salastatu':
+                        #    pass
                         paradigma_täielik, paradigma_korpuses = self.tee_paradigmad(puhas_tkn) # leiame lemma kõik vormid ja korpuses esinenud vormid
-                        assert puhas_tkn in paradigma_täielik, "Lemma ei sisaldu täisparadigmas"
                         if len(paradigma_korpuses) > 0: # ainult siis, kui päriselt korpuses esines
                             self.json_io["generator"][puhas_tkn] = \
                                 { "lemma_korpuse_vormid":paradigma_korpuses, 
                                   "lemma_kõik_vormid" :paradigma_täielik
                                 }
+            pbar.set_description(f"tee_generator")
         if self.verbose is True:
-            sys.stdout.write(' | Teeme tabelid...')
+            sys.stdout.write('tee_generator: tabelite genereerimine...')
         if "tabelid" not in self.json_io:
             self.json_io["tabelid"] = {}
         if "lemma_kõik_vormid" not in self.json_io["tabelid"]:
@@ -352,17 +349,15 @@ class ETTEARVUTAJA:
             self.json_io: lisame:
             * ["tabelid"]["kirjavead"][(VIGANE_VORM, VORM, KAAL)]
         """
-        if self.verbose:
-            sys.stdout.write("# genereerime kirjavigade tabeli\n")
         kv = kirjavigastaja.KIRJAVIGASTAJA(self.verbose, self.analyser)
         if "kirjavead" not in self.json_io["tabelid"]:
             self.json_io["tabelid"]["kirjavead"] = []
-        for idx, token in enumerate(self.json_io["indeks"]):
-            if self.verbose:
-                sys.stdout.write(f'{idx}/{len(self.json_io["indeks"])}\r')
+        pbar = tqdm(self.json_io["indeks"].keys(), disable=(not self.verbose))
+        for token in pbar:
+            pbar.set_description(f"tee_kirjavead: {token}")
             self.json_io["tabelid"]["kirjavead"] += kv.kirjavigur(token)
-        if self.verbose:
-            sys.stdout.write(f'#    kokku: sõnavorme:{len(self.json_io["indeks"])}, kirjavigasid:{len(self.json_io["tabelid"]["kirjavead"])}\n')
+            pbar.set_description(f"tee_kirjavead")
+
 
     def tee_sources_tabeliks(self)->None:
         """
@@ -376,17 +371,26 @@ class ETTEARVUTAJA:
             * ["tabelid"]["allikad"]:[(DOCID, CONTENT)]            # tee_sources_tabeliks() -- lõpptulemuses
         """
         if self.verbose:
-            sys.stdout.write("# allikad tabeliks")
+            sys.stdout.write("tee_sources_tabeliks...")
         if "tabelid" not in self.json_io:
             self.json_io["tabelid"] = {}
         if "allikad" not in self.json_io["tabelid"]:
             self.json_io["tabelid"]["allikad"] = []
-        for docid in self.json_io["sources"]:
+        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose))
+        for docid in pbar:
+            pbar.set_description(f"tee_sources_tabeliks: {docid}")
             self.json_io["tabelid"]["allikad"].append((docid, self.json_io["sources"][docid]["content"]))
             del self.json_io["sources"][docid]["content"]
+            pbar.set_description(f"tee_sources_tabeliks")
         if self.verbose:
-            sys.stdout.write("\n")
+            sys.stdout.write('kustutame sortsud...')
         del self.json_io["sources"]
+        if self.verbose:
+            sys.stdout.write('\n')
+
+    def kustuta_vahetulemused(self)->None:
+        del self.json_io["indeks"]
+        del self.json_io["generator"]
 
     def kuva_tabelid(self, indent)-> None:
         """PUBLIC:Lõpptulemus JSON kujul std väljundisse
@@ -402,10 +406,6 @@ class ETTEARVUTAJA:
             * ["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)] -- ainult jooksvas sisendkorpuses esinenud vormid
             * ["tabelid"]["allikad"]:[(DOCID,CONTENT)]
         """
-
-        del self.json_io["indeks"]
-        del self.json_io["generator"]
-
         json.dump(self.json_io, sys.stdout, indent=indent, ensure_ascii=False)
         sys.stdout.write('\n')
    
@@ -423,12 +423,10 @@ class ETTEARVUTAJA:
             self.json_io: lisame 
             * ["sources"][DOCID]["annotations"]["tokens"][IDX]["features"]["tokens_stem"]
         """
+        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose))
+        for docid in pbar:
+            pbar.set_description(f"morfi_sõned: {docid}")
 
-        if self.verbose:
-            sys.stdout.write("(morfi_sõned:")
-        for docid in self.json_io["sources"]:
-            if self.verbose:
-                sys.stdout.write(f" {docid}")
             self.json_io["sources"][docid]["params"] = {"vmetajson":["--stem", "--guess"]}
             try:
                 doc = json.loads(requests.post(self.analyser, json=self.json_io["sources"][docid]).text)
@@ -443,8 +441,7 @@ class ETTEARVUTAJA:
                     if tkn not in tokens_stem:                                                      # sõne morf analüüside hulgas võib sama kujuga tüvi erineda ainult käände/põõrde poolest
                         tokens_stem.append(tkn)                                                         # lisame uue tüvi+lõpp stringi, kui sellist veel polnud
                 self.json_io["sources"][docid]["annotations"]["tokens"][token_idx]["features"]["tokens_stem"] = tokens_stem # lisame tulemusse
-        if self.verbose:
-            sys.stdout.write(") ")
+
 
     def morfi_lemmadeks(self)->None:
         """PRIVATE:Morfime sõnestatud sisendteksti(d)
@@ -461,11 +458,9 @@ class ETTEARVUTAJA:
             self.json_io: lisame:
             * ["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"]:[LEMMA]
         """
-        if self.verbose:
-            sys.stdout.write("(morfime lemmadeks:")
-        for docid in self.json_io["sources"]:
-            if self.verbose:
-                sys.stdout.write(f" {docid}")
+        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose))
+        for docid in pbar:
+            pbar.set_description(f"morfi_lemmadeks: {docid}")
             self.json_io["sources"][docid]["params"] = {"vmetajson":["--guess"]}
             try:
                 doc = json.loads(requests.post(self.analyser, json=self.json_io["sources"][docid]).text)
@@ -475,12 +470,11 @@ class ETTEARVUTAJA:
                 tokens_lemma = []                                                             # siia korjame erinevad tüvi+lõpp stringid
                 for mrf in token["features"]["mrf"]:                                    # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
                     if self.ignore_pos.find(mrf["pos"]) != -1:                              # selle sõnaliiiga tüvesid...
-                        continue                                                                # ...ignoreerime, neid ei indekseeri
-                    if mrf["lemma_ma"] not in tokens_lemma:                                                   # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
+                        continue                                                                # ...ignoreerime, neid ei indekseeri 
+                                     
+                    if mrf["lemma_ma"] not in tokens_lemma:                                                  # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
                         tokens_lemma.append( mrf["lemma_ma"])                                                        # lisame uue tüvi+lõpp stringi, kui sellist veel polnud
                 self.json_io["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"] = tokens_lemma # lisame tulemusse
-        if self.verbose:
-            sys.stdout.write(') ')
 
     def tee_paradigmad(self, lemma:str)-> (List[str], List[str]):
         """PRIVATE:Leiame sisendlemma kõik vormid ja nende hulgast need mis tegelikult jooksvas sisendkorpuses esinesid
@@ -506,6 +500,8 @@ class ETTEARVUTAJA:
                 puhas_vorm = generated_form["token"].replace("_", "").replace("=", "").replace("+", "")
                 if puhas_vorm not in paradigma_täielik:
                     paradigma_täielik.append(puhas_vorm)
+        if len(paradigma_täielik) == 0:
+            paradigma_täielik.append(lemma)
         
         # leiame lemma kõigi vormide hulgast need, mis esinesid korpuses
         paradigma_korpuses = []
@@ -522,7 +518,7 @@ class ETTEARVUTAJA:
         Returns:
             Dict: versiooninfo ja URLid
         """
-        return  {"ettearvutaja.version": self.VERSION, "otsing": self.otsing  , "tokenizer": self.tokenizer, "analyser": self.analyser,  "generator:": self.generator}
+        return  {"ettearvutaja.version": self.VERSION, "tokenizer": self.tokenizer, "analyser": self.analyser,  "generator:": self.generator}
 
 
 if __name__ == '__main__':
@@ -549,6 +545,7 @@ if __name__ == '__main__':
             ettearvutaja.tee_generator()
             ettearvutaja.tee_kirjavead()
             ettearvutaja.tee_sources_tabeliks()
+            ettearvutaja.kustuta_vahetulemused()
             ettearvutaja.kuva_tabelid(args.indent)
 
     except Exception as e:

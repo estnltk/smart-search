@@ -5,12 +5,45 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flask-api-ettearvutaja",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
+            "program": "./flask_api_ettearvutaja.py",
+            "env": {\
+                "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
+                "TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", \
+                "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \
+            }
+        },
+        {
+            "name": "api-ettearvutaja",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
+            "program": "./api_ettearvutaja.py",
+            "args": ["--verbose", "--indent=4", \
+                "../../testkorpused/riigiteataja/riigiteataja.json"]
+            "env": {\
+                "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
+                "TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", \
+                "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \
+            }
+        }, 
+        {
+            "name": "04_crawl_additional_references.py",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/rt_web_crawler",
+            "program": "./04_crawl_additional_references.py",
+        },         
+        {
             "name": "02_download_xml_sources.py",
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}/rt_web_crawler",
             "program": "./02_download_xml_sources.py",
-        }, 
+        },
         {
             "name": "api_lisa_andmebaasidesse",
             "type": "python",
@@ -39,24 +72,6 @@
                 "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \
             }
         },
-        {
-            "name": "api-ettearvutaja",
-            "type": "python",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
-            "program": "./api_ettearvutaja.py",
-            // "args": ["--json", "--indent=4", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
-            //"args": ["--csv", "microcorpus2.json", "microcorpus3.json", "microcorpus1.json"]
-            "args": ["--verbose", "--indent=4", \
-                "../../testkorpused/microcorpus/microcorpus2.json", \
-                "../../testkorpused/microcorpus/microcorpus3.json", \
-                "../../testkorpused/microcorpus/microcorpus1.json"]
-            "env": {\
-                "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
-                "TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", \
-                "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \
-            }
-        }, 
         {
             "name": "json2db",
             "type": "python",
