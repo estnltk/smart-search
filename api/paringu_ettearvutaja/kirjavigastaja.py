@@ -29,7 +29,7 @@ class KIRJAVIGASTAJA:
         """
         võimalikud_kirjavead = []
         for i in range(len(token)):
-            if len(token) > 1: # peab olema vähemalt 2 tähte
+            if len(token) > 1: # peab olema vähemalt 2 tähtegit
                 # 2 tähte vahetuses: tigu -> itgu, tgiu, tiug
                 if i > 0 and token[i] != token[i-1]: # kahte ühesugust tähte ei vaheta
                     t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]    
