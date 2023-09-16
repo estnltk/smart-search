@@ -8,9 +8,6 @@ Sisaldab kahte seadust ja ühte eeskirja:
 
 Dokumendid indekseerimiseks sobival JSON-kujul on failis ```riigiteataja.json```.
 
-Indekseerimise tulemused:
+Sellest saadud andmebaaside jaoks vajalikud tabelid on failis ```tabelid.json```
 
-* ```riigiteataja-lemmad-json.idx``` -- Indeksfail sisaldab lemmasid ja on JSON-kujul.
-* ```riigiteataja-soned-json.idx``` -- Indeksfail sisaldab tekstisonesid ja on JSON-kujul.
-* ```riigiteataja-lemmad-csv.idx``` -- Indeksfail sisaldab lemmasid ja on CSV-kujul.
-* ```riigiteataja-soned-csv.idx``` -- Indeksfail sisaldab tekstisonesid ja on CSV-kujul.
+Tabelid on jaotatud kahe andmebaasi vahel: ```lemmataja.db``` ja ```indeks.db```
