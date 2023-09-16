@@ -25,9 +25,7 @@ Käsurealt:
     TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process \
     ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process  \
         ./api_ettearvutaja.py  \
-            ../../testkorpused/microcorpus/microcorpus2.json \
-            ../../testkorpused/microcorpus/microcorpus3.json \
-            ../../testkorpused/microcorpus/microcorpus1.json | jq
+            ../../testkorpused/riigiteataja/riigiteataja.json > tabelid.json
     
 JSON sees- ja välispidiseks kasutamiseks:
     self.json_io:
@@ -36,13 +34,13 @@ JSON sees- ja välispidiseks kasutamiseks:
         {   DOCID:                  # (string) algne sisend: dokumendi unikaalne ID 
             {   "content": string   # algne sisend: dokumendi tekst ("plain text")
                 "annotations":
-                {   "tokens":                               # tee_sõnestamine(): sõnede massiiv 
-                    [   {   "start": number,                # tee_sõnestamine(): sõne alguspositsioon algses tekstis 
-                            "end": number,                  # tee_sõnestamine(): sõne lõpupositsioon algses tekstis 
+                {   "tokens":                                  # tee_sõnestamine(): sõnede massiiv 
+                    [   {   "start": number,                   # tee_sõnestamine(): sõne alguspositsioon algses tekstis 
+                            "end": number,                     # tee_sõnestamine(): sõne lõpupositsioon algses tekstis 
                             "features":
-                            {   "token": string,            # tee_sõnestamine(): sõne
-                                "tokens_stem": [string]     # tee_sõnede_ja_osaõnede_indeks.morfi_sõned(): liitsõnapiiriga sõnevariandid
-                                "tokens_lemma": [string]    # tee_generator.morfi_lemmadeks(): liitsõnapiiriga lemmavariandid
+                            {   "token": string,               # tee_sõnestamine(): sõne
+                                "tokens_stem": [string],       # tee_sõnede_ja_osaõnede_indeks.morfi_sõned(): liitsõnapiiriga sõnevariandid
+                                "tokens_lemma": [string],      # tee_generator.morfi_lemmadeks(): liitsõnapiiriga lemmavariandid
                             }
                         }
                     ],          
@@ -61,12 +59,17 @@ JSON sees- ja välispidiseks kasutamiseks:
         "generator":
         {   LEMMA:
             {   "lemma_korpuse_vormid": [string],       # tee_generator()
-                "lemma_kõik_vormid": [string]            # tee_generator()
+                "lemma_kõik_vormid": [string]           # tee_generator()
             }
         }
+        "lemmas_2_ignore": 
+        {   "lemmas": [string], # tee_generator.morfi_lemmadeks(): ingoreeritavad lemmad (sidesõnad jms)
+        }
+
         "tabelid":  # lõpptulemus
         {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],         # tee_generator()
             "lemma_korpuse_vormid": [(LEMMA, VORM)],                # tee_generator()
+            "ignoreeritavad_vormid": [(VORM, 0)],                   # tee_ignoreeritavad_vormid(), 0:vorm tuleneb korpusest
             "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)]     # tee_sõnede_ja_osaõnede_indeks()
             "kirjavead": [(VIGANE_VORM, VORM, KAAL)]                # tee_kirjavead()
             "allikad": [(DOCID, CONTENT)]                           # tee_sources_tabeliks() 
@@ -301,7 +304,7 @@ class ETTEARVUTAJA:
             self.json_io["generator"] ={}
 
         # leiame iga tekstisõne võimalikud sobiva sõnaliigiga tüvi+lõpud (liitsõnapiir='_', järelliite eraldaja='=')   
-        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose))
+        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose), desc="tee_generator")
         for docid in pbar:                   # tsükkel üle tekstide
             pbar.set_description(f"tee_generator: {docid}")    
             for token in self.json_io["sources"][docid]["annotations"]["tokens"]: # tsükkel üle sõnede
@@ -319,24 +322,49 @@ class ETTEARVUTAJA:
                                 { "lemma_korpuse_vormid":paradigma_korpuses, 
                                   "lemma_kõik_vormid" :paradigma_täielik
                                 }
-            pbar.set_description(f"tee_generator")
-        if self.verbose is True:
-            sys.stdout.write('tee_generator: tabelite genereerimine...')
+
         if "tabelid" not in self.json_io:
             self.json_io["tabelid"] = {}
         if "lemma_kõik_vormid" not in self.json_io["tabelid"]:
             self.json_io["tabelid"]["lemma_kõik_vormid"] = []
         if "lemma_korpuse_vormid" not in self.json_io["tabelid"]:
             self.json_io["tabelid"]["lemma_korpuse_vormid"] = []
-        for lemma in self.json_io["generator"]:
+        pbar = tqdm(self.json_io["generator"].keys(), disable=(not self.verbose), desc="tee_generator: tabelite genereerimine")
+        for lemma in pbar:
             lemma_inf = self.json_io["generator"][lemma]
             for vorm in lemma_inf["lemma_kõik_vormid"]:
                 self.json_io["tabelid"]["lemma_kõik_vormid"].append( (vorm, 0,lemma) )
             for vorm in lemma_inf["lemma_korpuse_vormid"]:
                 self.json_io["tabelid"]["lemma_korpuse_vormid"].append( (lemma, vorm) )
 
-        if self.verbose is True:
-            sys.stdout.write('\n')
+
+    def tee_ignoreeritavad_vormid(self)->None:
+        """Genereerime ignoreeritavad vormid
+
+        Args:
+            * self.json_io["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma_igno"]:[LEMMA]
+
+
+        Return
+            * self.json_io["tabelid"]["ignoreeritavad_vormid"]: [vorm]
+        """
+
+        ignoreeritavad_vormid = []
+        pbar = tqdm(self.json_io["lemmas_2_ignore"]["lemmad"], disable=(not self.verbose), desc="tee_ignoreeritavad_vormid")
+        for lemma in pbar:
+            try:
+                generator_out = json.loads(requests.post(self.generator, json={"type":"text", "content": lemma}).text)
+            except:
+                raise Exception({"warning":'Probleemid veebiteenusega: {self.generator}'})
+            # lisa saadud vormid ignoreeritavate vormide loendisse
+            for text in generator_out["response"]["texts"]:
+                for generated_form in text["features"]["generated_forms"]:
+                    puhas_vorm = generated_form["token"].replace("_", "").replace("=", "").replace("+", "")
+                    if puhas_vorm not in ignoreeritavad_vormid:
+                        ignoreeritavad_vormid.append((puhas_vorm, 0))
+        del self.json_io["lemmas_2_ignore"]["lemmad"]
+        self.json_io["tabelid"]["ignoreeritavad_vormid"] = ignoreeritavad_vormid
+
 
     def tee_kirjavead(self)->None:
         """PUBLIC:Lisame kirjavead parandamiseks vajaliku tabeli
@@ -352,11 +380,11 @@ class ETTEARVUTAJA:
         kv = kirjavigastaja.KIRJAVIGASTAJA(self.verbose, self.analyser)
         if "kirjavead" not in self.json_io["tabelid"]:
             self.json_io["tabelid"]["kirjavead"] = []
-        pbar = tqdm(self.json_io["indeks"].keys(), disable=(not self.verbose))
+        pbar = tqdm(self.json_io["indeks"].keys(), disable=(not self.verbose), desc="tee_kirjavead")
         for token in pbar:
-            pbar.set_description(f"tee_kirjavead: {token}")
-            self.json_io["tabelid"]["kirjavead"] += kv.kirjavigur(token)
-            pbar.set_description(f"tee_kirjavead")
+            if any(char.isdigit() for char in token) is False:
+                self.json_io["tabelid"]["kirjavead"] += kv.kirjavigur(token)
+                #pbar.set_description(f"tee_kirjavead")
 
 
     def tee_sources_tabeliks(self)->None:
@@ -457,7 +485,11 @@ class ETTEARVUTAJA:
         Returns:
             self.json_io: lisame:
             * ["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"]:[LEMMA]
+            * ["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma_igno"]:[LEMMA]
         """
+
+        if "lemmas_2_ignore" not in self.json_io:
+            self.json_io["lemmas_2_ignore"] = {"lemmad":[]}
         pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose))
         for docid in pbar:
             pbar.set_description(f"morfi_lemmadeks: {docid}")
@@ -467,12 +499,13 @@ class ETTEARVUTAJA:
             except:
                 raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
             for idx_token, token in enumerate(doc["annotations"]["tokens"]):        # tsükkel üle sõnede (ainult üks sõne meil antud juhul on)
-                tokens_lemma = []                                                             # siia korjame erinevad tüvi+lõpp stringid
+                tokens_lemma = []                                                   # siia korjame erinevad tüvi+lõpp stringid
+                                                           
                 for mrf in token["features"]["mrf"]:                                    # tsükkel üle sama sõne alüüsivariantide (neid võib olla mitu)
                     if self.ignore_pos.find(mrf["pos"]) != -1:                              # selle sõnaliiiga tüvesid...
-                        continue                                                                # ...ignoreerime, neid ei indekseeri 
-                                     
-                    if mrf["lemma_ma"] not in tokens_lemma:                                                  # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
+                        if mrf["pos"] != "Z" and mrf["lemma_ma"] not in self.json_io["lemmas_2_ignore"]["lemmad"]:
+                            self.json_io["lemmas_2_ignore"]["lemmad"].append( mrf["lemma_ma"])                                                              # ...ignoreerime, neid ei indekseeri                            
+                    elif mrf["lemma_ma"] not in tokens_lemma:                                                  # sõne morf analüüside hulgas võib sama kujuga lemma erineda ainult käände/põõrde poolest
                         tokens_lemma.append( mrf["lemma_ma"])                                                        # lisame uue tüvi+lõpp stringi, kui sellist veel polnud
                 self.json_io["sources"][docid]["annotations"]["tokens"][idx_token]["features"]["tokens_lemma"] = tokens_lemma # lisame tulemusse
 
@@ -543,6 +576,7 @@ if __name__ == '__main__':
             ettearvutaja.tee_sõnestamine()
             ettearvutaja.tee_sõnede_ja_osaõnede_indeks()
             ettearvutaja.tee_generator()
+            ettearvutaja.tee_ignoreeritavad_vormid()
             ettearvutaja.tee_kirjavead()
             ettearvutaja.tee_sources_tabeliks()
             ettearvutaja.kustuta_vahetulemused()

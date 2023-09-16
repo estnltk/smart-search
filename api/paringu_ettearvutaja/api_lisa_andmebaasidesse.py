@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
-import os
+#import os
 import sys
 import json
-import requests
+#import requests
 import sqlite3
 from tqdm import tqdm
 from typing import Dict, List, Tuple
@@ -43,6 +43,15 @@ class DB:
             )
         ''')
         
+        # ["tabelid"]["ignoreeritavad_vormid"]:[VORM]
+        self.cur_lemmatiseerija.execute('''
+            CREATE TABLE IF NOT EXISTS ignoreeritavad_vormid(
+                ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus
+                paritolu INT NOT NULL,            -- 0:korpusest tuletatud, 1:etteantud vorm                       
+                PRIMARY KEY(ignoreeritav_vorm)
+            )
+        ''')       
+
         # päringule vastamine : lemma -> sõnavormid korpuses -> indeksist esinemiskohad dokumentides
         # loome/avame andmebaasi
         self.con_indeks = sqlite3.connect(self.indeks)
@@ -119,8 +128,7 @@ class DB:
         
         """
         * self.json_in["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)]
-        * self.cur_lemmatiseerija.execute('''
-            kirjavead(
+        * self.cur_lemmatiseerija.kirjavead(
                 vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
                 vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
                 kaal INT,                   -- sagedasemad vms võiksid olla suurema kaaluga
@@ -128,6 +136,14 @@ class DB:
         """
         self.täienda_tabel(self.con_lemmatiseerija, self.cur_lemmatiseerija, "kirjavead", "?, ?, ?")
         
+        """
+        # self.json_in["tabelid"]["ignoreeritavad_vormid"]:[VORM]
+        self.cur_lemmatiseerija.ignoreeritavad_vormid(
+                ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus
+                PRIMARY KEY(ignoreeritav_vorm))       
+        """
+        self.täienda_tabel(self.con_lemmatiseerija, self.cur_lemmatiseerija, "ignoreeritavad_vormid", "?, ?")
+
         """
         * self.json_in["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
         * self.cur_indeks.lemma_korpuse_vormid(
@@ -170,8 +186,8 @@ class DB:
         """
         if self.verbose:
             sys.stdout.write(f'#                         Täiendame tabelit {table}\r')
-        pbar = tqdm(self.json_in["tabelid"][table])
-        pbar.set_description(f'# {table}')
+        pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {table}')
+        #pbar.set_description(f'# {table}')
         for rec in pbar:
             try:
                 cursor.execute(f'INSERT INTO {table} VALUES({values_pattern})', rec)
@@ -179,8 +195,6 @@ class DB:
                 continue # selline juba oli
         connection.commit()
    
-
-
     def string2json(self, str:str)->Dict:
         """PRIVATE:String sisendJSONiga DICTiks
 
