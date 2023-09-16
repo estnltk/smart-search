@@ -119,9 +119,9 @@ class DB:
         * self.json_in["tabelid"]["lemma_kõik_vormid"]:[(VORM,PARITOLU,LEMMA)]
         * self.cur_lemmatiseerija.lemma_kõik_vormid(
             vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
-            paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevst sõnavormist; 1-vorm on lemma sünonüüm; 2-kirjavigane vorm
+            paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevast sõnavormist; 1-vorm on lemma sünonüüm
             lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
-            PRIMARY KEY(vorm, lemma))
+            PRIMARY KEY(vorm, lemma)
 
         """
         self.täienda_tabel(self.con_lemmatiseerija, self.cur_lemmatiseerija, "lemma_kõik_vormid", "?, ?, ?")
@@ -132,7 +132,7 @@ class DB:
                 vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
                 vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
                 kaal INT,                   -- sagedasemad vms võiksid olla suurema kaaluga
-                PRIMARY KEY(vigane_vorm, vorm))
+                PRIMARY KEY(vigane_vorm, vorm)
         """
         self.täienda_tabel(self.con_lemmatiseerija, self.cur_lemmatiseerija, "kirjavead", "?, ?, ?")
         
@@ -140,7 +140,8 @@ class DB:
         # self.json_in["tabelid"]["ignoreeritavad_vormid"]:[VORM]
         self.cur_lemmatiseerija.ignoreeritavad_vormid(
                 ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus
-                PRIMARY KEY(ignoreeritav_vorm))       
+                paritolu INT NOT NULL,            -- 0:korpusest tuletatud, 1:etteantud vorm                       
+                PRIMARY KEY(ignoreeritav_vorm)
         """
         self.täienda_tabel(self.con_lemmatiseerija, self.cur_lemmatiseerija, "ignoreeritavad_vormid", "?, ?")
 
@@ -149,7 +150,7 @@ class DB:
         * self.cur_indeks.lemma_korpuse_vormid(
                 lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
                 vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
-                PRIMARY KEY(lemma, vorm))
+                PRIMARY KEY(lemma, vorm)
         """
         self.täienda_tabel(self.con_indeks, self.cur_indeks, "lemma_korpuse_vormid", "?, ?")
         
@@ -161,7 +162,7 @@ class DB:
                 start INT,                    -- vormi alguspositsioon tekstis
                 end INT,                      -- vormi lõpupositsioon tekstis
                 liitsona_osa,                 -- 0: pole liitsõna osa; 1: on liitsõna osa
-                PRIMARY KEY(vorm, docid, start, end))
+                PRIMARY KEY(vorm, docid, start, end)
         """
         self.täienda_tabel(self.con_indeks, self.cur_indeks, "indeks", "?, ?, ?, ?, ?")
         
@@ -170,7 +171,7 @@ class DB:
         * self.cur_indeks.allikad(
                 docid TEXT NOT NULL,        -- dokumendi id
                 content TEXT NOT NULL,      -- dokumendi text
-                PRIMARY KEY(docid))
+                PRIMARY KEY(docid)
         """
         self.täienda_tabel(self.con_indeks, self.cur_indeks, "allikad", "?, ?")
         
