@@ -34,16 +34,14 @@ Returns:
                 [LEMMA21, LEMMA22, ...],    # [str]: 2. päringusõnele vastavad LEMMAD
                 ...                         
             ]
-            "typos"                     # optional, kui see olemas tuleb tegeleda
-                                        # kirjavigade parandamisega, mitte pärnguga 
+            "typos" # kui see olemas tuleb tegeleda kirjavigade parandamisega, mitte päringuga 
             {   TYPO:                   # [[str,int]]: kirjavigaste sõnede massiiv
                 [   {   "suggestion": SUGGESTED_WORDFORM,   # str: soovitus
                         "weight": WEIGHT                    # int: kaal
                     }
-                
                 ]
             }
-            "unknown": [VORM]       # täiesti käsitlematu pärinusõne       
+            "unknown": [VORM] # täiesti käsitlematu päringusõne, sellise päringuga pole midagi peale hakata    
         }
     }
 """
