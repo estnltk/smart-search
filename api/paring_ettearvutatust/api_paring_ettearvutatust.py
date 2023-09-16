@@ -1,8 +1,26 @@
 #!/usr/bin/python3
 
 """
-
 Sisse:
+    Amdmebaas 3 tabeliga
+
+    * lemma_kõik_vormid(
+            vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
+            paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevast sõnavormist; 1-vorm on lemma sünonüüm
+            lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
+            PRIMARY KEY(vorm, lemma)
+
+    * kirjavead(
+                vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
+                vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
+                kaal INT,                   -- sagedasemad vms võiksid olla suurema kaaluga
+                PRIMARY KEY(vigane_vorm, vorm)
+
+    * ignoreeritavad_vormid(
+                ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus
+                paritolu INT NOT NULL,            -- 0:korpusest tuletatud, 1:etteantud vorm                       
+                PRIMARY KEY(ignoreeritav_vorm)
+
     json_io (Dict): 
         {   "content": str // päringustring
         }
