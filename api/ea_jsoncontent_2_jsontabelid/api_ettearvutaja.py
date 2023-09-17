@@ -4,20 +4,24 @@
 Silumiseks (code):
 
     {
-        "name": "api-paringu-ettearvutaja",
+        "name": "api_ea_paring_A",
         "type": "python",
         "request": "launch",
-        "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
-        "program": "./api_ettearvutaja.py",
-        "args": [ \
-            "../../testkorpused/microcorpus/microcorpus2.json", \
-            "../../testkorpused/microcorpus/microcorpus3.json", \
-            "../../testkorpused/microcorpus/microcorpus1.json"]
-        "env": { \
-            "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
-            "TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", \
-            "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \
-        }
+        "cwd": "${workspaceFolder}/api/ea_paring/",
+        "program": "./api_ea_paring.py",
+        "args": [\
+            "--lemmatiseerija=../../testkorpused/riigiteataja/lemmataja.db", \
+            "--json={\"content\":\"presitendi ja  polekorpuses kantseleis\"}"],
+    }
+
+    {
+        "name": "api_ea_paring_B",
+        "type": "python",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/api/ea_paring/",
+        "program": "./api_ea_paring.py",
+        "args": ["--json={\"content\":\"presitendi ja  polekorpuses kantseleis\"}"],
+        "env": {"DB_LEMATISEERIJA":"../../testkorpused/riigiteataja/lemmataja.db"},
     }
 
 Käsurealt:
