@@ -1,9 +1,31 @@
 #!/usr/bin/python3
 
-#import os
+'''
+Kasutamine:
+Code:
+
+    {
+        "name": "api_lisa_andmebaasidesse",
+        "type": "python",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/api/ea_jsontabelid_2_db/",
+        "program": "./api_jsontabelid_2_db.py",
+        "args": [\
+            "--verbose", \
+            "--lemmatiseerija=lemmataja.db", \
+            "--indeks=indeks.db", \
+            "./tabelid.json"],
+        "env": {}
+    }
+
+Käsurealt:
+$ ./create_venv.sh
+$ ./venv/bin/python3 ./api_jsontabelid_2_db.py \
+    --verbose --lemmatiseerija=lemmataja.db --indeks=indeks.db ./tabelid.json
+    
+'''
 import sys
 import json
-#import requests
 import sqlite3
 from tqdm import tqdm
 from typing import Dict, List, Tuple

@@ -29,7 +29,7 @@ class KIRJAVIGASTAJA:
         """
         võimalikud_kirjavead = []
         for i in range(len(token)):
-            if len(token) > 1: # peab olema vähemalt 2 tähtegit
+            if len(token) > 3: # peab olema vähemalt 3 tähte
                 # 2 tähte vahetuses: tigu -> itgu, tgiu, tiug
                 if i > 0 and token[i] != token[i-1]: # kahte ühesugust tähte ei vaheta
                     t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]    
@@ -76,4 +76,11 @@ class KIRJAVIGASTAJA:
             if "mrf" not in kv["features"]:
                 kirjavead.append(kv["features"]["token"])
         return kirjavead
+
+if __name__ == '__main__':
+    kv = KIRJAVIGASTAJA(True, 'https://smart-search.tartunlp.ai/api/analyser/process')
+    for token in sys.argv[1:]:
+        kirjavead = kv.kirjavigur(token)
+        print(token, ':', kirjavead)
+
 
