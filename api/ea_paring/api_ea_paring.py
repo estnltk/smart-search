@@ -104,7 +104,7 @@ class PARING_SONED:
         """
         # https://stackoverflow.com/questions/48218065/objects-created-in-a-thread-can-only-be-used-in-that-same-thread
         # kui me midagi andmebaasi ei kirjuta, ei tohiks csthread=False asju pekki keerata
-        self.VERSION="2023.09.15"
+        self.VERSION="2023.09.16"
         self.json_io = {}
         self.con_lemmatiseerija = None
         self.lemmatiseerija = db_lemmatiseerija
@@ -171,8 +171,10 @@ class PARING_SONED:
                 WHERE vorm = "{sone}"
                 ''')
             if len(res_fetchall:=res.fetchall()) > 0:
+                vormid = []
                 for res in res_fetchall:
-                    self.json_io["annotations"]["query"].append(res[1])
+                    vormid.append(res[1])
+                self.json_io["annotations"]["query"].append(vormid)
                 continue # leidsime päringusõne lemma korpusest
             
             # vaatame kas jooksev korpusesõne on kirjavigade loendis

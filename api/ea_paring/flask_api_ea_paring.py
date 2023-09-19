@@ -29,11 +29,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/ea_paring
-    $ docker build -t tilluteenused/smart_search_api_ea_paring:2023.09.15 . 
+    $ docker build -t tilluteenused/smart_search_api_ea_paring:2023.09.16 . 
 2.3 Konteineri käivitamine
     $ docker run -p 6602:6602  \
         --env DB_LEMATISEERIJA='./lemmataja.db' \
-        tilluteenused/smart_search_api_ea_paring:2023.09.15 
+        tilluteenused/smart_search_api_ea_paring:2023.09.16 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -41,7 +41,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_ea_paring:2023.09.15
+    $ docker pull tilluteenused/smart_search_api_ea_paring:2023.09.16
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
@@ -50,10 +50,10 @@ DockerHUBist tõmmatud konteineri kasutamine
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"sources": {"DOC_1":{"content":"Presidendi kantselei."}}}' \
-        https://smart-search.tartunlp.ai/api/ettearvutaja/json
+        --data "{\"content\":\"presitendi ja polekorpuses kantseleis\"}" \
+        https://smart-search.tartunlp.ai/api/ea_paring/json
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/ettearvutaja/version | jq
+        https://smart-search.tartunlp.ai/api/ea_paring/version | jq
 ----------------------------------------------
 
 '''
