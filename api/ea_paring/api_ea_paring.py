@@ -104,15 +104,15 @@ class PARING_SONED:
         """
         # https://stackoverflow.com/questions/48218065/objects-created-in-a-thread-can-only-be-used-in-that-same-thread
         # kui me midagi andmebaasi ei kirjuta, ei tohiks csthread=False asju pekki keerata
-        self.VERSION="2023.09.16"
+        self.VERSION="2023.09.17"
         self.json_io = {}
         self.con_lemmatiseerija = None
-        self.lemmatiseerija = db_lemmatiseerija
+        self.db_lemmatiseerija = db_lemmatiseerija
 
-        if self.lemmatiseerija == None:
-            self.lemmatiseerija = os.environ.get('DB_LEMATISEERIJA') # veebiteenus sõnestamiseks
+        if self.db_lemmatiseerija == None:
+            self.db_lemmatiseerija = os.environ.get('DB_LEMATISEERIJA') # veebiteenus sõnestamiseks
 
-        self.con_lemmatiseerija = sqlite3.connect(self.lemmatiseerija, check_same_thread=csthread)
+        self.con_lemmatiseerija = sqlite3.connect(self.db_lemmatiseerija, check_same_thread=csthread)
         self.cur_lemmatiseerija = self.con_lemmatiseerija.cursor()
 
     def __del__(self)->None:
@@ -198,7 +198,7 @@ class PARING_SONED:
         Returns:
             Dict: {"version": self.VERSION}
         """
-        return {"version": self.VERSION}
+        return {"version": self.VERSION, "DB_LEMATISEERIJA": self.db_lemmatiseerija}
         
 if __name__ == '__main__':
     import argparse
