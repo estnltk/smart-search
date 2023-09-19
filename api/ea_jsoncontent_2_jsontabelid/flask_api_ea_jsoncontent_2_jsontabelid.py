@@ -11,34 +11,34 @@ Lähtekoodist pythoni skripti kasutamine
     $ mkdir -p ~/git/ ; cd ~/git/
     $ git clone git@github.com:estnltk/smart-search.git smart_search_github
 1.2 Virtuaalkeskkonna loomine
-    $ cd ~/git/smart_search_github/api/paringu_ettearvutaja
+    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
     $ ./create_venv.sh
 1.3 Veebiserveri käivitamine pythoni koodist
-    $ cd  ~/git/smart_search_github/api/paringu_ettearvutaja
+    $ cd  ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
     $ TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process'   \
       ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process'     \
       GENERATOR='https://smart-search.tartunlp.ai/api/generator/process'   \
-        venv/bin/python3 ./flask_api_ettearvutaja.py
+        venv/bin/python3 ./flask_api_ea_jsoncontent_2_jsontabelid.py
 1.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"sources": {"DOC_1":{"content":"Peaministri kantselei."}}}' \
-        localhost:6602/api/ettearvutaja/json | jq
+        localhost:6602/api/ea_jsoncontent_2_jsontabelid/json | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        localhost:6602/api/ettearvutaja/version | jq
+        localhost:6602/api/ea_jsoncontent_2_jsontabelid/version | jq
 ----------------------------------------------
 
 Lähtekoodist tehtud konteineri kasutamine
 2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
-    $ cd ~/git/smart-search_github/api/paringu_ettearvutaja
-    $ docker build -t tilluteenused/smart_search_api_ettearvutaja:2023.09.06 . 
+    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
+    $ docker build -t tilluteenused/smart_search_api_ea_jsoncontent_2_jsontabelid:2023.09.16 . 
 2.3 Konteineri käivitamine
     $ docker run -p 6602:6602  \
         --env TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
         --env ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
         --env GENERATOR='https://smart-search.tartunlp.ai/api/generator/process' \
-        tilluteenused/smart_search_api_ettearvutaja:2023.09.06 
+        tilluteenused/smart_search_api_ea_jsoncontent_2_jsontabelid:2023.09.16 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -46,7 +46,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_ettearvutaja:2023.09.06 
+    $ docker pull tilluteenused/smart_search_api_ettearvutaja:2023.09.16 
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
@@ -56,9 +56,9 @@ TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"sources": {"DOC_1":{"content":"Presidendi kantselei."}}}' \
-        https://smart-search.tartunlp.ai/api/ettearvutaja/json
+        https://smart-search.tartunlp.ai/api/ea_jsoncontent_2_jsontabelid/json | jq | less
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/ettearvutaja/version | jq
+        https://smart-search.tartunlp.ai/api/ea_jsoncontent_2_jsontabelid/version | jq
 ----------------------------------------------
 
 '''
@@ -75,13 +75,13 @@ from flask import Flask, request, jsonify, make_response
 from typing import Dict, List, Tuple
 from collections import OrderedDict
 
-import api_ettearvutaja
+import api_ea_jsoncontent_2_jsontabelid
 
-ettearvutaja = api_ettearvutaja.ETTEARVUTAJA(False)
+ettearvutaja = api_ea_jsoncontent_2_jsontabelid.ETTEARVUTAJA(False)
 
-app = Flask("api_lemmade_ettervutaja")
+app = Flask("api_ea_jsoncontent_2_jsontabelid")
 
-@app.route('/api/ettearvutaja/json', methods=['POST'])
+@app.route('/api/ea_jsoncontent_2_jsontabelid/json', methods=['POST'])
 @app.route('/json', methods=['POST'])
 def api_lemmade_ettearvutaja_json():
     """Leia sisendkorpuse sõnede kõikvõimalikud vormid ja nonde hulgast need, mis esinesid korpuses
@@ -125,7 +125,7 @@ def api_lemmade_ettearvutaja_json():
     except Exception as e:
         return jsonify(e.args[0])    
 
-@app.route('/api/ettearvutaja/version', methods=['GET', 'POST'])
+@app.route('/api/ea_jsoncontent_2_jsontabelid/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['POST'])
 def api_lemmade_ettearvutaja_version():
     """Kuvame versiooni ja muud infot

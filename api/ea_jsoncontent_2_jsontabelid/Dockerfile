@@ -23,8 +23,8 @@ RUN ./venv/bin/python3 -m pip install --upgrade pip
 RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt 
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_ettearvutaja.py api_ettearvutaja.py kirjavigastaja.py ./
-RUN chmod +x docker-entrypoint.sh flask_api_ettearvutaja.py api_ettearvutaja.py kirjavigastaja.py
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_ea_jsoncontent_2_jsontabelid.py api_ea_jsoncontent_2_jsontabelid.py kirjavigastaja.py ./
+RUN chmod +x *.sh *.py
 # parameters for gunicorn
 ENV WORKERS=1
 ENV TIMEOUT=30
