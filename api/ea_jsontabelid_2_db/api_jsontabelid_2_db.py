@@ -19,6 +19,7 @@ Code:
     }
 
 Käsurealt:
+$ cd ~/git/smart-search_github/api/ea_jsontabelid_2_db
 $ ./create_venv.sh
 $ ./venv/bin/python3 ./api_jsontabelid_2_db.py \
     --verbose --lemmatiseerija=lemmataja.db --indeks=indeks.db ./tabelid.json
