@@ -261,7 +261,7 @@ class ETTEARVUTAJA:
                     for puhas_tkn in fragmendid:                        # lisame leitud osasõnad indeksisse 
                         if puhas_tkn in self.json_io["indeks"]:          # kui selline sõne juba oli...
                             if docid in self.json_io["indeks"][puhas_tkn]:   # ...selles dokumendis
-                                    self.json_io["indeks"][puhas_tkn][docid].append({"liitsõna_osa":False, "start": token["start"], "end":token["end"]})
+                                    self.json_io["indeks"][puhas_tkn][docid].append({"liitsõna_osa":True, "start": token["start"], "end":token["end"]})
                             else:                                           # ...polnud selles dokumendis
                                 self.json_io["indeks"][puhas_tkn][docid]= [{"liitsõna_osa":True, "start": token["start"], "end":token["end"]}]
                         else:                                           # ...polnud seni üheski dokumendis                               
