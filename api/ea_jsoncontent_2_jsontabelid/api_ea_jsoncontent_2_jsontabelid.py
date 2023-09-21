@@ -100,7 +100,7 @@ class ETTEARVUTAJA:
         """
         self.verbose = verbose
 
-        self.VERSION="2023.09.06"
+        self.VERSION="2023.09.20"
 
         self.tokenizer = os.environ.get('TOKENIZER') # veebiteenus sõnestamiseks
         if self.tokenizer is None:
