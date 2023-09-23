@@ -18,8 +18,12 @@ Code:
         ],
     }
     
-Kasutamine (ei vaja virtuaalkeskkonda):
-    ./rt_web_crawler_csv_2_db.py --verbose \
+Kasutamine:
+* Teeme virtuaalkeskkonna:
+    ./create_env.sh
+
+* Käivitame programmi
+    ./venv/bin/python3 ./rt_web_crawler_csv_2_db.py --verbose \
         --lemma_inf=../results/caption_index/state_laws.csv \
         --all_wordforms=../results/caption_index/state_laws_all_wordforms.csv \
         --normalisation_dictionary=../results/caption_index/state_laws_normalisation_dictionary.csv \
@@ -30,6 +34,7 @@ import csv
 import sys
 import sqlite3
 from typing import Dict, List, Tuple
+import pandas as pd
 
 class DB:
     def __init__(self, db_name:str, verbose:bool)->None:
@@ -83,10 +88,9 @@ class DB:
     def load_csv_2_db(self, table, pattern, csv_file)->None:
         if self.verbose:
             sys.stdout.write(f'# {inspect.currentframe().f_code.co_name}({table})...')
-        my_csv = csv.reader(csv_file, delimiter=',')
-        # normalisation_dictionary (misspelling:bool, search_string:str, lemma:str)
+        my_csv = pd.read_csv(csv_file, header=0)
         insert_cmd = f"INSERT OR IGNORE INTO {table} VALUES({pattern})"
-        self.cur_db.executemany(insert_cmd, my_csv)
+        self.cur_db.executemany(insert_cmd, my_csv.values)
         self.con_db.commit()  
         if self.verbose:
             sys.stdout.write('ok\n')
@@ -95,10 +99,11 @@ if __name__ == '__main__':
     import argparse
     argparser = argparse.ArgumentParser(allow_abbrev=False)
     argparser.add_argument('-v', '--verbose',  action="store_true", help='tulemus CSV vormingus std väljundisse')
-    argparser.add_argument('-l', '--lemma_inf', type=argparse.FileType('r'), help='CSV faili nimi')
-    argparser.add_argument('-a', '--all_wordforms', type=argparse.FileType('r'), help='CSV faili nimi')
-    argparser.add_argument('-b', '--normalisation_dictionary', type=argparse.FileType('r'), help='CSV faili nimi')
     argparser.add_argument('-d', '--db', type=str, help='andmebaasi nimi')
+    argparser.add_argument('-l', '--lemma_inf', type=str, help='CSV faili nimi')
+    argparser.add_argument('-a', '--all_wordforms', type=str, help='CSV faili nimi')
+    argparser.add_argument('-b', '--normalisation_dictionary', type=str, help='CSV faili nimi')
+
     args = argparser.parse_args()
 
     try:
