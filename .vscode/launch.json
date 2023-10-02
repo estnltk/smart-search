@@ -5,16 +5,71 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flask-api-ettearvutaja",
+            "name": "rt_web_crawler_csv_2_db",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
-            "program": "./flask_api_ettearvutaja.py",
+            "cwd": "${workspaceFolder}/rt_web_crawler/rt_web_crawler_csv_2_db/",
+            "program": "./rt_web_crawler_csv_2_db.py",
+            "args": [   \
+                "--verbose", \
+                "--lemma_inf=../results/caption_index/state_laws.csv", \
+                "--all_wordforms=../results/caption_index/state_laws_all_wordforms.csv", \
+                "--normalisation_dictionary=../results/caption_index/state_laws_normalisation_dictionary.csv", \
+                "--db=hl_normalization.db"
+            ],
+        }, 
+        {
+            "name": "kirjavigastaja",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
+            "program": "./kirjavigastaja.py",
+            "args": ["kurk", "kala"],
+        }, 
+        {
+            "name": "flask_api_ea_paring_otsing",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/ea_paring_otsing/",
+            "program": "./flask_api_ea_paring_otsing.py",
+            "env": { \
+                "DB_INDEX": "./index.db", \
+                "EA_PARING": "http://localhost:6602/api/ea_paring/json", \
+           }
+        },
+        {
+            "name": "api_ea_paring_A",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/ea_paring/",
+            "program": "./api_ea_paring.py",
+            "args": [\
+                "--lemmatiseerija=../../testkorpused/riigiteataja/lemmataja.db", \
+                "--json={\"content\":\"presitendi ja  polekorpuses kantseleis\"}"],
+        }, 
+        {
+            "name": "api_ea_paring_B",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/ea_paring/",
+            "program": "./api_ea_paring.py",
+            "args": ["--json={\"content\":\"presidendi kantseleis\"}"],
+            "env": {"DB_LEMATISEERIJA":"../../testkorpused/riigiteataja/lemmataja.db"},
+        },        
+        {
+            "name": "ea_jsoncontent_2_jsontabelid",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
+            "program": "./api_ea_jsoncontent_2_jsontabelid.py",
             "env": {\
-                "GENERATOR": "https://smart-search.tartunlp.ai/api/generator/process", \
-                "TOKENIZER": "https://smart-search.tartunlp.ai/api/tokenizer/process", \
-                "ANALYSER": "https://smart-search.tartunlp.ai/api/analyser/process" \
-            }
+                "GENERATOR": "http://localhost:7008/api/vm/generator/process", \
+                "TOKENIZER": "http://localhost:6000/api/tokenizer/process", \
+                "ANALYSER": "http://localhost:7007/api/analyser/process" \
+            },
+            "args": ["--verbose", \
+                "test-in.json", \
+            ]
         },
         {
             "name": "api-ettearvutaja",
@@ -51,9 +106,10 @@
             "cwd": "${workspaceFolder}/api/paringu_ettearvutaja/",
             "program": "./api_lisa_andmebaasidesse.py",
             "args": [\
+                "--verbose", \
                 "--lemmatiseerija=lemmataja.db", \
                 "--indeks=indeks.db", \
-                "--verbose", "tabelid.json"],
+                "./tabelid.json"],
             "env": {}
         }, 
         {

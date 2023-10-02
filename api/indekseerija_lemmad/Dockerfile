@@ -23,8 +23,8 @@ RUN ./venv/bin/python3 -m pip install --upgrade pip
 RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt 
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_lemmade_indekseerija.py api_lemmade_indekseerija.py ./
-RUN chmod +x docker-entrypoint.sh flask_api_lemmade_indekseerija.py api_lemmade_indekseerija.py
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_lemmade_indekseerija.py api_lemmade_indekseerija.py kirjavigastaja.py ./
+RUN chmod +x docker-entrypoint.sh flask_api_lemmade_indekseerija.py api_lemmade_indekseerija.py kirjavigastaja.py
 # parameters for gunicorn
 ENV WORKERS=1
 ENV TIMEOUT=30
