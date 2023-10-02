@@ -42,7 +42,7 @@ class SEARCH_DB:
         if self.con_index is not None:
             self.con_index.close()
 
-    def otsing(self, fragments:bool, query_json:Dict)->None:
+    def otsing(self, fragments:bool, query_str:str, query_json:Dict)->None:
         """Public: Otsing: päringus ja indeksis sõnavormid
 
         Args:
@@ -54,16 +54,19 @@ class SEARCH_DB:
             kombinatsiooniks teisendatud otsisõned)
         """
         self.fragments = fragments      # kas otsime liitsõna osasõndest
-        self.query_json = query_json    # jooksev päring
+        self.query_str = query_str      # jokksev päringustring
+        self.query_json = query_json    # jooksev päringujson
         self.result_json = {}           # otsingutulemus
 
         self.otsing_rec(0, [])        # rekursiivne otsing, tulemus self.result_json
+        for docid in self.result_json:
+            self.result_json[docid] = sorted(self.result_json[docid].items())
 
         # otsingutulemuste korrastamine
         #for docid in self.result_json:  #järjestame otsingutulemused iga dokumendi siseselt
         #    self.result_json[docid] = OrderedDict(sorted(self.result_json[docid].items(), key=lambda t: t[0]))
 
-    def otsing_rec(self, query_idx:int, required_docid:List[str])->bool:
+    def otsing_rec(self, query_idx:int, required_docids:List[str])->bool:
         """Private: Rekursiivne otsingualgoritm
 
         Args:
@@ -77,92 +80,63 @@ class SEARCH_DB:
             bool: False: ei leidnud midagi sobivat; True: leidsime midagi 
             sobivat, vt self.result_json 
         """
-        if query_idx >= len(self.query_json["annotations"]["query"]):           # kõik otsinusõned on läbivaadatud
-            return True # kõik  päringusõned läbivaadatud                                                          # leidsime mingi sobiva kombinatsiooni tekstidest
-        retval = False
 
-        idx_list = self.korpusevormid_2_idxrec(self.lemmad_2_korpusevormid(query_idx), required_docid)
-        if len(idx_list) < 1: # pole midagi otsida
-            return False
-        docid_list = list(set(map(itemgetter(0),idx_list)))
-        pass
-
-        for docid in docid_list:
-            pass
-
-        '''
-        # tsükkel üle query_idx'inda päringusõne lemmade/sõnavormide
-        documents = self.idx_json["index"].get(token)                           # leiame, millistes dokumentides esines
-        if documents is None: # polnud üheski dokumendis, laseme üle            # polnud üheski dokumendis...
-            continue                                                                # ...laseme üle
-        for docid in documents:                                                 # tsükkel üle dokumentide kus vajalik päringusõne lemmade/sõnavorm esines
-            if (required_docid is not None) and (required_docid != docid):          # polnud nõutavas dokumendis...
-                continue                                                                # ...laseme üle
-            for x in documents[docid]:                                              # tsükkel üle esinemiste
-                if (self.fragments is False) and x["liitsõna_osa"] is True:         # ei soovi liitsõna osasõnu, aga see on...
-                    continue                                                            # laseme üle
-                if self.otsing_rec(query_idx+1, docid) is False:                    # järgmiste päringusõnede lemmade/sõnavormide seas polnud sobivat...
-                    continue; # ei sobinud                                              # laseme üle
-                                                                                    # ühel või teisel moel sobis, läheb tulemusse
-                if docid in self.result_json:                                       # selline DOCID on olnud
-                    if x["start"] in self.result_json[docid]:                           # selline stardipositsioon juba oli
-                        if token not in self.result_json[docid][x["start"]]["tokens"]:      # sellist lemmat/sõnavormi polnud...
-                            self.result_json[docid][x["start"]]["tokens"].append(token)         # ...lisame
-                    else:                                                                   # sellist stardipositsiooni polnud...
-                        self.result_json[docid][x["start"]] = \
-                        {"end":x["end"], "tokens":[token],
-                            "token": self.idx_json["sources"][docid]["content"][x["start"]:x["end"]]}  # ...lisame
-                else:                                                                   # sellist DOCIDi pole olnud...
-                    self.result_json[docid] = \
-                    {x["start"]: {"end":x["end"], "tokens":[token],
-                        "token": self.idx_json["sources"][docid]["content"][x["start"]:x["end"]]}} # ...lisame kogu kupatuse
-                retval = True                                                    # leidsime midagi sobivat
-        '''
-        return retval                                                           # anname teada, kas leidsime midagi sobivat
-
-    def lemmad_2_korpusevormid(self, query_idx:int)->Tuple[str]:
-        """Lemmadele vastavad vormid korpuses
-
-        Args:
-            query_idx (int): Niimeitmendale päringusõnele vastavaid lemmasid vaatame
-
-        Returns:
-            List[Tuple[str]]: Korpusevormid, neid hakkame indeksist otsima
-        """
-        lemmade_loend = f'lemma = "{self.query_json["annotations"]["query"][query_idx][0]}"'
-        for lemma in self.query_json["annotations"]["query"][query_idx][1:]:
-            lemmade_loend += f' OR lemma = "{lemma}"'
-
-        res = self.cur_index.execute(f'''
-            SELECT vorm FROM lemma_korpuse_vormid 
-            WHERE {lemmade_loend}''')
-        return sum(res.fetchall(), ())
-
-    def korpusevormid_2_idxrec(self, korpusevormid:Tuple[str], required_docid:List[str])->List:
-        if len(korpusevormid) <= 0:
-            return []
+        docids_list, res_dct = self.leia_indeksist(query_idx, required_docids)
+        if len(docids_list) < 1:
+            return False # mitte ükski dokument ei sobinud
         
-        where_vormid = 'vorm in ("' + '","'.join(korpusevormid) + '")'
-        where_liitsõna = ' AND liitsona_osa = 0' if self.fragments is False else ''
-        if len(required_docid) == 0:
-            
-        if len(required_docid)==0:
-            where_docid = ''
-        else:
+        if query_idx+1 >= len(self.query_json["annotations"]["query"]):
+            self.result_json = res_dct  # Lisame viimase märksõnaga seotud info
+            return True                 # Otsing andis tulemusi
+        
+        if self.otsing_rec(query_idx+1, docids_list) is False:
+            return False
+        
+        for docid in res_dct:
+            if docid in self.result_json:
+                self.result_json[docid].update(res_dct[docid])
 
-            where_docid = 'docid in ("' + '","'.join(required_docid) + '")'
+        return True                                                       # anname teada, kas leidsime midagi sobivat
 
-        res = self.cur_index.execute(f'''
-            SELECT docid, vorm, start, end, liitsona_osa
-            FROM indeks
-            WHERE {where_vormid} {where_liitsõna} {where_docid}                  
-            ORDER BY docid''')
+    def leia_indeksist(self, query_idx:int, required_docids:List[str])->Tuple[List[str], Dict]:
+        where_tingimus = 'lemma in ("' + '","'.join(self.query_json["annotations"]["query"][query_idx]) + '")'
+        if self.fragments is False:
+            where_tingimus += f' AND "liitsona_osa" = 0'
+        if len(required_docids) > 0:
+            where_tingimus += ' AND docid in ("' + '","'.join(required_docids) + '")'
 
-        return res.fetchall()
+        res_exec = self.cur_index.execute(f'''
+            SELECT
+                indeks.docid,
+                indeks.start,
+                indeks.end,                
+                lemma_korpuse_vormid.vorm,
+                lemma_korpuse_vormid.lemma,
+                indeks.liitsona_osa
+            FROM lemma_korpuse_vormid
+            INNER JOIN indeks ON lemma_korpuse_vormid.vorm = indeks.vorm
+            WHERE {where_tingimus}''')
+        res_list = res_exec.fetchall()
+        #           0      1      2    3     4      5             
+        # res_list[(docid, start, end, vorm, lemma, liitsona_osa)]
+        #  res_dct = { DOCID: { START: { "end":int, "features":[{"vorm":str, "lemma":str, liitsona_osa:int }]}}
+        res_dct = {}
+        docids_list = []
+        for list_item in res_list:
+            if list_item[0] not in docids_list:
+                docids_list.append(list_item[0])
+            if list_item[0] not in res_dct:  # docid
+                res_dct[list_item[0]] = {}
+            if list_item[1] not in res_dct[list_item[0]]: # start
+                res_dct[list_item[0]][list_item[1]] = {"end":list_item[2], "features":[]}
+            item = (list_item[3], list_item[4],list_item[5])
+            if item not in res_dct[list_item[0]][list_item[1]]["features"]:
+                res_dct[list_item[0]][list_item[1]]["features"].append(item)
+        return docids_list, res_dct        
 
 
 
-    def koosta_vastus(self, formaat:str, paringu_str:str)->None:
+    def koosta_vastus(self, formaat:str, norm_paring:bool)->None:
         """Public: Otsingutulemus moel või teisel HTML-kujule
 
         Args:
@@ -172,7 +146,10 @@ class SEARCH_DB:
             str: Soovitud kujul otsingutulemus
         """
         self.content = '<hr><h2>Päring:</h2>'
-        self.content += f'{paringu_str}<hr><hr>'
+        if norm_paring is True:
+            self.content += json.dumps(self.query_json, ensure_ascii=False, indent=2).replace(' ', '&nbsp;').replace('\n', '<br>')+'<hr>'
+        else:
+            self.content += f'{self.query_str}<hr><hr>'
         if formaat == 'json':
             self.koosta_vastus_json()
         else:
@@ -200,21 +177,21 @@ class SEARCH_DB:
         if len(self.result_json) <= 0:
             self.content += 'Päringule vastavaid dokumente ei leidunud!'
         else:
-            for dokid in self.result_json:
-                links = self.result_json[dokid]
-                link_prev = {"end":0}
-                for idx, start in enumerate(links):
-                    link = links[start]
-                    if idx == 0:
-                        self.content += f'<h2>DocID: {dokid}</h2>'
-                    self.content += self.idx_json["sources"][dokid]["content"][link_prev["end"]:start]
-                    link_prev = link
-                    #content += f' <b>{self.idx_json["sources"][dokid]["content"][start:link["end"]]}</b>'
-                    self.content += f' <mark><b>{self.idx_json["sources"][dokid]["content"][start:link["end"]]}</b></mark>'
-                    if formaat == 'text_details':
-                        self.content += f'<i>[{", ".join(link["tokens"])}]</i>'
-                self.content += self.idx_json["sources"][dokid]["content"][link_prev["end"]:] + '<hr>'
-
+            #  res_dct = { DOCID: { START: { "end":int, "features":[{"vorm":str, "lemma":str, liitsona_osa:int }]}}
+            for docid in self.result_json:
+                # võtame andmebaasist teksti
+                source_content = self.cur_index.execute(
+                        f'''SELECT content FROM allikad
+                            WHERE docid = "{docid}"''').fetchall()[0][0]
+                self.content += f'<h2>DocID: {docid}</h2>'
+                prev_end = 0
+                for inf in self.result_json[docid]: # (START, { "end":int, [{"vorm":str, "lemma":str, liitsona_osa:int }] })
+                    self.content += source_content[prev_end:inf[0]] # eelmise lõpust jooksva alguseni
+                    self.content += f' <mark><b>{source_content[inf[0]:inf[1]["end"]]}</b></mark>'
+                    #if formaat == 'text_details':
+                    #    self.content += f'<i>[{", ".join(link["tokens"])}]</i>'
+                    prev_end = inf[1]["end"]
+                self.content += f'{source_content[prev_end:]}<hr>'
         self.content = self.content.replace('\n', '<br>')
 
     

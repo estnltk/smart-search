@@ -104,7 +104,7 @@ class PARING_SONED:
         """
         # https://stackoverflow.com/questions/48218065/objects-created-in-a-thread-can-only-be-used-in-that-same-thread
         # kui me midagi andmebaasi ei kirjuta, ei tohiks csthread=False asju pekki keerata
-        self.VERSION="2023.09.17"
+        self.VERSION="2023.09.19"
         self.json_io = {}
         self.con_lemmatiseerija = None
         self.db_lemmatiseerija = db_lemmatiseerija
