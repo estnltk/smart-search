@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="et">
+    <head>
+      <meta charset="UTF-8">
+      <title>Päringuvorm</title>
+    </head>
+    <body>
+        <form method='POST' enctype='multipart/form-data'>
+            <b>Vali dokument:</b><br>
+                <input type="radio" name="document", 
+                    value="kuberturvalisuse-seadus_1_peatukk"> Küberturvalisuse seadus. 1. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="kuberturvalisuse-seadus_2_peatukk"> Küberturvalisuse seadus. 2. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="kuberturvalisuse-seadus_3_peatukk"> Küberturvalisuse seadus. 3. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="kuberturvalisuse-seadus_4_peatukk"> Küberturvalisuse seadus. 4. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="kuberturvalisuse-seadus_5_peatukk"> Küberturvalisuse seadus. 5. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="kuberturvalisuse-seadus_6_peatukk"> Küberturvalisuse seadus. 6. peatükk </input><br>
+
+                <input type="radio" name="document", 
+                    value="vabariigi-presidendi-valimise-seadus_1_peatukk"> Vabariigi presidendi valimise seadus. 1. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="vabariigi-presidendi-valimise-seadus_2_peatukk"> Vabariigi presidendi valimise seadus. 2. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="vabariigi-presidendi-valimise-seadus_3_peatukk"> Vabariigi presidendi valimise seadus. 3. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="vabariigi-presidendi-valimise-seadus_4_peatukk"> Vabariigi presidendi valimise seadus. 4. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="vabariigi-presidendi-valimise-seadus_5_peatukk"> Vabariigi presidendi valimise seadus. 5. peatükk </input><br>
+                <input type="radio" name="document", 
+                    value="vabariigi-presidendi-valimise-seadus_6_peatukk"> Vabariigi presidendi valimise seadus. 6. peatükk </input><br>
+
+                <input type="radio" name="document", 
+                    value="osmussaare-maastikukaitseala-kaitse-eeskiri_1_peatukk"> Osmussaare maastikukaitseala kaitse-eeskiri. 1. peatukk </input><br>
+                <input type="radio" name="document", 
+                    value="osmussaare-maastikukaitseala-kaitse-eeskiri_2_peatukk"> Osmussaare maastikukaitseala kaitse-eeskiri. 2. peatukk </input><br>
+                <input type="radio" name="document", 
+                    value="osmussaare-maastikukaitseala-kaitse-eeskiri_3_peatukk"> Osmussaare maastikukaitseala kaitse-eeskiri. 3. peatukk </input><br>
+                <input type="radio" name="document", 
+                    value="osmussaare-maastikukaitseala-kaitse-eeskiri_4_peatukk"> Osmussaare maastikukaitseala kaitse-eeskiri. 4. peatukk </input><br>
+                <input type="radio" name="document", 
+                    value="osmussaare-maastikukaitseala-kaitse-eeskiri_5_peatukk"> Osmussaare maastikukaitseala kaitse-eeskiri. 5. peatukk </input><br>
+                <br>
+
+            <input type="submit" name='kuva' value="Kuva" >
+            <hr>
+        </form>
+
+        {% autoescape false %}
+            {{ query_result }}
+        {% endautoescape %}
+
+        <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_otsing/README.md">Kasutusjuhend</a>        
+    </body>
+</html>
