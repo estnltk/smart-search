@@ -166,7 +166,8 @@ class DB:
                 paritolu INT NOT NULL,            -- 0:korpusest tuletatud, 1:etteantud vorm                       
                 PRIMARY KEY(ignoreeritav_vorm)
         """
-        self.täienda_tabel(self.con_lemmatiseerija, self.cur_lemmatiseerija, "ignoreeritavad_vormid", "?, ?")
+        if "ignoreeritavad_vormid" in self.json_in["tabelid"]:
+            self.täienda_tabel(self.con_lemmatiseerija, self.cur_lemmatiseerija, "ignoreeritavad_vormid", "?, ?")
 
         """
         * self.json_in["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
