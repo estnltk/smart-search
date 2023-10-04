@@ -1,25 +1,43 @@
 #!/usr/bin/python3
 
-'''Flask api, eelarvuta kõigi sisendkorpuses esinevate lemmade kõikvõimalikud vormid
-ja millised neist esinevad tegelikult korpuses esinevad
+'''Flask api, eelarvutab JSON-failid
 
 ----------------------------------------------
 
-Lähtekoodist pythoni skripti kasutamine
-1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiteenuse käivitamine pythoni koodist (1.3) ja CURLiga veebiteenuse kasutamise näited (1.4)
+Lähtekoodist pythoni skripti kasutamine:
+1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), kasutavate teenuste paikasättimine (1.3) ja pythoni skripti käivitamine(1.4)
 1.1 Lähtekoodi allalaadimine
     $ mkdir -p ~/git/ ; cd ~/git/
     $ git clone git@github.com:estnltk/smart-search.git smart_search_github
 1.2 Virtuaalkeskkonna loomine
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
     $ ./create_venv.sh
-1.3 Veebiserveri käivitamine pythoni koodist
-    $ cd  ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-    $ TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process'   \
-      ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process'     \
-      GENERATOR='https://smart-search.tartunlp.ai/api/generator/process'   \
-        venv/bin/python3 ./flask_api_ea_jsoncontent_2_jsontabelid.py
-1.4 CURLiga veebiteenuse kasutamise näited
+1.3 Sätime paika kasutatvad teenused: kasutame veebis olevaid konteinereid (1.3.1) või kasutame kohalikus masinas töötavaid konteinereid (1.3.2)
+1.3.1 Kasutame veebis olevaid konteinereid
+    $ export TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process \
+    $ export GENERATOR=https://smart-search.tartunlp.ai/api/vm/generator/process \
+    $ export ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process  \
+1.3.2 Kasutame kohalikus masinas töötavaid konteinereid        
+    $ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18
+    $ docker run -p 7008:7008 tilluteenused/vmetsjson:2023.09.21
+    $ docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.01
+1.4 Pythoni skripti käivitamine
+    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
+    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py --verbose --indent=4\
+        ../../testkorpused/microcorpus/microcorpus1.json \
+        ../../testkorpused/microcorpus/microcorpus2.json
+
+----------------------------------------------
+
+Lähtekoodist veebiserveri käivitamine & kasutamine
+2 Lähtekoodi allalaadimine (2.1), virtuaalkeskkonna loomine (2.2), kasutavate teenuste paikasättimine (2.3) veebiteenuse käivitamine pythoni koodist (2.4) ja CURLiga veebiteenuse kasutamise näited (2.5)
+2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
+2.2 Virtuaalkeskkonna loomine: järgi punkti 1.2
+2.3 Sätime paika kasutatvad teenused: järgi punkti 1.3
+2.4 Veebiteenuse käivitamine pythoni koodist
+    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
+    $ ./venv/bin/python3 ./flask_api_ea_jsoncontent_2_jsontabelid.py
+2.5 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"sources": {"DOC_1":{"content":"Peaministri kantselei."}}}' \
         localhost:6602/api/ea_jsoncontent_2_jsontabelid/json | jq
@@ -28,7 +46,7 @@ Lähtekoodist pythoni skripti kasutamine
 ----------------------------------------------
 
 Lähtekoodist tehtud konteineri kasutamine
-2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
+3 Lähtekoodi allalaadimine (3.1), konteineri kokkupanemine (3.2), konteineri käivitamine (3.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
@@ -60,7 +78,6 @@ TÜ pilves töötava konteineri kasutamine
     $ curl --silent --request POST --header "Content-Type: application/json" \
         https://smart-search.tartunlp.ai/api/ea_jsoncontent_2_jsontabelid/version | jq
 ----------------------------------------------
-
 '''
 
 
@@ -106,9 +123,10 @@ def api_lemmade_ettearvutaja_json():
 
         {   "tabelid":  // lõpptulemus
             {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],     # (LEMMA_kõik_vormid, 0:korpusest|1:abisõnastikust, sisendkorpuses_esinenud_sõnavormi_LEMMA)
-                "lemma_korpuse_vormid": [(LEMMA, VORM)],            # (sisendkorpuses_esinenud_sõnavormi_LEMMA, kõik_LEMMA_vormid_mis_sisendkorpuses_esinesid)
-                "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)] # (sisendkorpuses_esinenud_sõnaVORM, dokumendi_id, alguspos, lõpupos, True:liitsõna_osa|False:terviksõna)
+                "ignoreeritavad_vormid": [(VORM, 0)],               # tee_ignoreeritavad_vormid(), 0:vorm on genereeritud etteantud lemmast
                 "kirjavead": [(VIGANE_VORM, VORM, KAAL)]            # (kõikvõimalikud_VORMi_kirjavigased_variandid, sisendkorpuses_esinenud_sõnaVORM, kaal_hetkel_alati_0)
+                "lemma_korpuse_vormid": [(LEMMA, VORM)],             # (sisendkorpuses_esinenud_sõnavormi_LEMMA, kõik_LEMMA_vormid_mis_sisendkorpuses_esinesid)
+                "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)] # (sisendkorpuses_esinenud_sõnaVORM, dokumendi_id, alguspos, lõpupos, True:liitsõna_osa|False:terviksõna)
                 "allikad": [(DOCID, CONTENT)]                       # (docid, dokumendi_"plain_text"_mille_suhtes_on_arvutatud_START_ja_END)
             }
         }  

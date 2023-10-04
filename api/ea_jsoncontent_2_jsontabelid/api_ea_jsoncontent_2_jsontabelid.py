@@ -1,48 +1,24 @@
 #!/usr/bin/python3
 
 """
-Käsurealt:
-$   cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-$   GENERATOR=https://smart-search.tartunlp.ai/api/generator/process \
-    TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process \
-    ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process  \
-        ./api_ea_jsoncontent_2_jsontabelid.py  \
-            ../../testkorpused/riigiteataja/riigiteataja.json \
-        > ../../testkorpused/riigiteataja/tabelid.json
-    
-        
-export GENERATOR=https://smart-search.tartunlp.ai/api/vm/generator/process ;
-export  TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process ;
-export  ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process ;
-
-/bin/time --output=log1.log ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py --verbose \
-            ../../testkorpused/riigiteataja/kuberturvalisuse-seadus.json \
-            > ../../testkorpused/riigiteataja/tabelid_kuberturvalisuse-seadus_1.json
-
-
-export GENERATOR=http://localhost:7008/api/vm/generator/process ;
-export TOKENIZER=http://localhost:6000/api/tokenizer/process ;
-export ANALYSER=http://localhost:7007/api/analyser/process ;          
-
-/bin/time --output=log2.log ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py --verbose \
-            ../../testkorpused/riigiteataja/kuberturvalisuse-seadus.json \
-            > ../../testkorpused/riigiteataja/tabelid_kuberturvalisuse-seadus_2.json
-
 
 JSON sees- ja välispidiseks kasutamiseks:
     self.json_io:
             
-    {   "sources":
-        {   DOCID:                  # (string) algne sisend: dokumendi unikaalne ID 
-            {   "content": string   # string2json(): algne sisend: dokumendi tekst ("plain text")
+    {
+        "lemmas_2_ignore": 
+        {   "lemmas": [string],     # sisse: kasutab tee_ignoreeritavad_vormid(): ingoreeritavad lemmad
+        }
+        "sources":
+        {   DOCID:                  # sisse (string): dokumendi unikaalne ID 
+            {   "content": string   # sisse string2json()/csvpealkrjadest(): "plain text"
                 "annotations":
                 {   "tokens":                                  # tee_sõnestamine(): sõnede massiiv 
                     [   {   "start": number,                   # tee_sõnestamine(): sõne alguspositsioon algses tekstis 
                             "end": number,                     # tee_sõnestamine(): sõne lõpupositsioon algses tekstis 
                             "features":
                             {   "token": string,               # tee_sõnestamine(): sõne
-                                "token_stems": [string],       # tee_sõnede_ja_osaõnede_indeks.morfi_sõned(): liitsõnapiiriga sõnevariandid
-                                "tokens_lemma": [string],      # tee_generator.morfi_lemmadeks(): liitsõnapiiriga lemmavariandid
+                                "token_stems": [string],       # morfi_sõned(): liitsõnapiiriga sõnevariandid
                             }
                         }
                     ],          
@@ -60,18 +36,14 @@ JSON sees- ja välispidiseks kasutamiseks:
         }   
         "generator":
         {   LEMMA:
-            {   "lemma_korpuse_vormid": [string],       # tee_generator()
-                "lemma_kõik_vormid": [string]           # tee_generator()
+            {   "lemma_kõik_vormid": [string]           # tee_generator()
             }
-        }
-        "lemmas_2_ignore": 
-        {   "lemmas": [string], # tee_generator.morfi_lemmadeks(): ingoreeritavad lemmad (sidesõnad jms)
         }
 
         "tabelid":  # lõpptulemus
-        {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],         # tee_generator()
-            "ignoreeritavad_vormid": [(VORM, 0)],                   # tee_ignoreeritavad_vormid(), 0:vorm tuleneb korpusest
-            "kirjavead": [(VIGANE_VORM, VORM, KAAL)]                # tee_kirjavead()
+        {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],         # tee_generator(),(LEMMA_kõik_vormid, 0:korpusest|1:abisõnastikust, sisendkorpuses_esinenud_sõnavormi_LEMMA)
+            "ignoreeritavad_vormid": [(VORM, 0)],                   # tee_ignoreeritavad_vormid(), 0:vorm on genereeritud etteantud lemmast
+            "kirjavead": [(VIGANE_VORM, VORM, KAAL)]                # tee_kirjavead_loendikaupa()
             "lemma_korpuse_vormid": [(LEMMA, VORM)],                # tee_generator()
             "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)]     # tee_sõnede_ja_osaõnede_indeks()
             "allikad": [(DOCID, CONTENT)]                           # tee_sources_tabeliks() 
@@ -143,6 +115,29 @@ class ETTEARVUTAJA:
         except:
             raise Exception({"warning":"JSON parse error"})
 
+    def csvpealkrjadest(self, f)->None:
+        """PUBLIC: sisendiks pealkirjad CSV failist
+
+        Args:
+            f : CSV faili read
+
+        Returns:
+
+            self.json_io (Dict): DICTiks tehtud sisendCSV
+
+            {   "sources":
+                {   DOCID: // "pk"+globaalID+liik
+                    {   "content": str, // pealkiri
+                    }
+                }
+            }
+        """
+        data = list(csv.reader(f, delimiter=","))
+        self.json_io = {"sources": {}}
+        for d in data[1:]:
+            assert len(d)==4
+            self.json_io["sources"][f'pk_{d[1]}_{d[0]}'] = {"content" : d[2]}
+
     def tee_päring(self, url:str, json_in:Dict)->Dict:
         """PRIVATE: Päringu tegemine
 
@@ -164,32 +159,6 @@ class ETTEARVUTAJA:
             raise Exception({"warning":f'Probleemid veebiteenusega {url}'})
         
 
-    def csvpealkrjadest(self, f)->None:
-        """Hetkel poolik, äkki tulevikus läüheb vaja
-
-        Args:
-            f : CSV faili read
-
-        Returns:
-
-            self.json_io (Dict): DICTiks tehtud sisendCSV
-
-            {   "sources":
-                {   DOCID: // "pk"+globaalID+liik
-                    {   "content": str,
-                        "globaalID": str,   # praegu pealkirja korral
-                        "liik": str,        # praegu pealkirja korral
-                        "url": str          # praegu pealkirja korral - vist ei paku huvi?
-                    }
-                }
-            }
-        """
-        data = list(csv.reader(f, delimiter=","))
-        self.json_io = {"sources": {}}
-        for d in data[1:]:
-            assert len(d)==4
-            self.json_io["sources"][f'pk_{d[1]}_{d[0]}'] = {"content" : d[2]}
-
     def tee_sõnestamine(self)->None:
         """PUBLIC: Sõnestame sisendtekstid
 
@@ -204,7 +173,7 @@ class ETTEARVUTAJA:
             Sõnestame dokumendid, lisame:
             * self.json_io["sources"][DOCID]["annotations"]["tokens"][N]["start"]:NUMBER
             * self.json_io["sources"][DOCID]["annotations"]["tokens"][N]["end"]:NUMBER
-            *self.json_io ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["token"]:VORM
+            * self.json_io ["sources"][DOCID]["annotations"]["tokens"][N]["features"]["token"]:VORM
         """
         pbar = tqdm(self.json_io["sources"].keys(), desc='# sõnestamine', disable=(not self.verbose))
         for docid in pbar:
@@ -425,9 +394,6 @@ class ETTEARVUTAJA:
         Returns:
             Lisame:
             * self.json_io["tabelid"]["kirjavead"] : [(VIGANE_VORM, VORM, KAAL)]
-
-            Kustutame:
-            * self.json_io["generator"]
         """
         kv = kirjavigastaja.KIRJAVIGASTAJA(self.verbose, self.analyser)
         if "kirjavead" not in self.json_io["tabelid"]:
@@ -478,11 +444,6 @@ class ETTEARVUTAJA:
     def kuva_tabelid(self, indent)-> None:
         """PUBLIC:Lõpptulemus JSON kujul std väljundisse
 
-        Args:
-            indent (int): taande pikkus JSON väljundis, None korral kõik ühel real
-            self.json_io["indeks"]
-            self.json_io["generator"]
-            
         Std väljundisse:    
             * ["tabelid"]["vorm_lemmaks"]:[(VORM, 0,LEMMA)] -- lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
             * ["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)] -- ainult jooksvas sisendkorpuses esinenud vormid
