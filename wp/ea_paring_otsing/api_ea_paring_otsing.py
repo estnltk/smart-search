@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-
-
 import os
 import requests
 import json
@@ -12,7 +10,7 @@ from operator import itemgetter
 
 class SEARCH_DB:
     def __init__(self):
-        self.VERSION="2023.09.16"                   # otsimootori versioon
+        self.VERSION="2023.09.17"                   # otsimootori versioon
 
         self.db_index = os.environ.get('DB_INDEX')  # otsime andmebaasi nime keskkonnamootujast
         if self.db_index is None:                   # kui seal polnud...
