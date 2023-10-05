@@ -14,7 +14,7 @@ Lähtekoodist pythoni skripti kasutamine
     $ ./create_venv.sh
 1.3 Veebiserveri käivitamine pythoni koodist
     $ cd  ~/git/smart-search_github/api/ea_paring
-    $ DB_LEMATISEERIJA="./lemmataja.db" \
+    $ DB_LEMATISEERIJA="./lemmataja.sqlite" \
         venv/bin/python3 ./flask_api_ea_paring.py
 1.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
@@ -29,11 +29,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/ea_paring
-    $ docker build -t tilluteenused/smart_search_api_ea_paring:2023.09.19 . 
+    $ docker build -t tilluteenused/smart_search_api_ea_paring:2023.10.01 . 
 2.3 Konteineri käivitamine
     $ docker run -p 6602:6602  \
-        --env DB_LEMATISEERIJA='./lemmataja.db' \
-        tilluteenused/smart_search_api_ea_paring:2023.09.19 
+        --env DB_LEMATISEERIJA='./lemmataja.sqlite' \
+        tilluteenused/smart_search_api_ea_paring:2023.10.01 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -41,7 +41,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_ea_paring:2023.09.19
+    $ docker pull tilluteenused/smart_search_api_ea_paring:2023.10.01
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 

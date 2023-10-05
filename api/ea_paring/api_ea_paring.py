@@ -66,8 +66,8 @@ Code:
         "request": "launch",
         "cwd": "${workspaceFolder}/api/ea_paring/",
         "program": "./api_ea_paring.py",
-        "args": ["--json={\"content\":\"presitendi ja  polekorpuses kantseleis\"}"],
-        "env": {"DB_LEMATISEERIJA":"./lemmataja.db"},
+        "args": ["--json={\"content\":\"presidendi ja  polekorpuses kantseleis\"}"],
+        "env": {"DB_LEMATISEERIJA":"./lemmataja.sqlite"},
     }
     
 Käsurealt:
@@ -104,7 +104,7 @@ class PARING_SONED:
         """
         # https://stackoverflow.com/questions/48218065/objects-created-in-a-thread-can-only-be-used-in-that-same-thread
         # kui me midagi andmebaasi ei kirjuta, ei tohiks csthread=False asju pekki keerata
-        self.VERSION="2023.09.19"
+        self.VERSION="2023.10.01"
         self.json_io = {}
         self.con_lemmatiseerija = None
         self.db_lemmatiseerija = db_lemmatiseerija
@@ -154,7 +154,7 @@ class PARING_SONED:
         paring = self.json_io["content"].split() # ei kasuta sõnestamist, näit "Sarved&Sõrad" tüüpi asjad lähevad pekki
 
         
-        self.json_io["annotations"] = {"query":[], "typos": {}, "unknown": []}
+        self.json_io["annotations"] = {"query":[], "typos": {}, "unknown": [], "ignore": []}
         for sone in paring:
 
             # vaatame kas jooksev päringusõne on ignoreeritavate loendis
@@ -162,8 +162,13 @@ class PARING_SONED:
                 SELECT ignoreeritav_vorm FROM ignoreeritavad_vormid 
                 WHERE ignoreeritav_vorm = "{sone}"
                 ''')
-            if len(res_fetchall:=res.fetchall()) > 0:
-                continue # seda päringusõne ignoreerime
+            #if len(res_fetchall:=res.fetchall()) > 0:
+            #    continue # seda päringusõne ignoreerime
+            res_fetchall = res.fetchall()
+            if len(res_fetchall) > 0:
+                continue
+            #for res in res_fetchall:
+            #    self.json_io["annotations"]["ignore"].append(res[0])
 
             # vaatame kas leiame jooksvale päringusõnele vastava korpuselemma
             res = self.cur_lemmatiseerija.execute(f'''
