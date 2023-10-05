@@ -27,6 +27,22 @@ Lähtekoodist pythoni skripti kasutamine:
         ../../testkorpused/microcorpus/microcorpus1.json \
         ../../testkorpused/microcorpus/microcorpus2.json
 
+    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py \
+        --csvpealkirjad ../../rt_web_crawler/results/government_orders.csv \
+        > table_government_orders.json
+
+    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py \
+        --csvpealkirjad ../../rt_web_crawler/results/government_regulations.csv\
+        > table_government_regulations.json
+
+    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py \
+        --csvpealkirjad ../../rt_web_crawler/results/local_government_acts.csv\
+        > table_local_government_acts.json
+        
+    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py \
+        --csvpealkirjad ../../rt_web_crawler/results/state_laws.csv\
+        > table_state_laws.json
+
 ----------------------------------------------
 
 Lähtekoodist veebiserveri käivitamine & kasutamine
