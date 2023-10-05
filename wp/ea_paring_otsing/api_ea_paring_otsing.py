@@ -10,11 +10,16 @@ from operator import itemgetter
 
 class SEARCH_DB:
     def __init__(self):
-        self.VERSION="2023.09.17"                   # otsimootori versioon
+        """Muutijate algväärtustamine ja andmebaasi avamine
+
+        Raises:
+            Exception: Kui andmebaasi avamine ebaõnnestus
+        """
+        self.VERSION="2023.10.02"                   # otsimootori versioon
 
         self.db_index = os.environ.get('DB_INDEX')  # otsime andmebaasi nime keskkonnamootujast
         if self.db_index is None:                   # kui seal polnud...
-            self.db_index = './index.db'            # ...võtame vaikimisi
+            self.db_index = './index.sqlite'            # ...võtame vaikimisi
 
         # avame andmebaasi ainult lugemiseks
 
@@ -56,9 +61,10 @@ class SEARCH_DB:
         self.query_json = query_json    # jooksev päringujson
         self.result_json = {}           # otsingutulemus
 
-        self.otsing_rec(0, [])        # rekursiivne otsing, tulemus self.result_json
-        for docid in self.result_json:
-            self.result_json[docid] = sorted(self.result_json[docid].items())
+        if len(self.query_json["annotations"]["query"]) > 0:
+            self.otsing_rec(0, [])        # rekursiivne otsing, tulemus self.result_json
+            for docid in self.result_json:
+                self.result_json[docid] = sorted(self.result_json[docid].items())
 
         # otsingutulemuste korrastamine
         #for docid in self.result_json:  #järjestame otsingutulemused iga dokumendi siseselt
