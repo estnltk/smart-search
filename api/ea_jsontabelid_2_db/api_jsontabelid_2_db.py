@@ -26,7 +26,7 @@ Käsurealt:
 $ cd ~/git/smart-search_github/api/ea_jsontabelid_2_db
 $ ./create_venv.sh
 $ ./venv/bin/python3 ./api_jsontabelid_2_db.py \
-    --verbose --paring=paring.sqlite --indeks=index.sqlite \
+    --verbose --päring=paring.sqlite --indeks=index.sqlite \
     ../ea_jsoncontent_2_jsontabelid/table_government_orders.json \
     ../ea_jsoncontent_2_jsontabelid/table_government_regulations.json \
     ../ea_jsoncontent_2_jsontabelid/table_local_government_acts.json \
