@@ -12,7 +12,7 @@ Code:
         "program": "./api_jsontabelid_2_db.py",
         "args": [\
             "--verbose", \
-            "--paring=päring.sqlite", \
+            "--päring=paring.sqlite", \
             "--indeks=index.sqlite", \
             "../ea_jsoncontent_2_jsontabelid/table_government_orders.json", \
             "../ea_jsoncontent_2_jsontabelid/table_government_regulations.json" \
