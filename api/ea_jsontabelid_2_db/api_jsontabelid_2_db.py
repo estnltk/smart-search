@@ -12,8 +12,7 @@ Code:
         "program": "./api_jsontabelid_2_db.py",
         "args": [\
             "--verbose", \
-            "--päring=paring.sqlite", \
-            "--indeks=index.sqlite", \
+            "--db_name=koondbaas.sqlite", \
             "../ea_jsoncontent_2_jsontabelid/table_government_orders.json", \
             "../ea_jsoncontent_2_jsontabelid/table_government_regulations.json" \
             "../ea_jsoncontent_2_jsontabelid/table_local_government_acts.json", \
@@ -26,7 +25,7 @@ Käsurealt:
 $ cd ~/git/smart-search_github/api/ea_jsontabelid_2_db
 $ ./create_venv.sh
 $ ./venv/bin/python3 ./api_jsontabelid_2_db.py \
-    --verbose --päring=paring.sqlite --indeks=index.sqlite \
+    --verbose --db_name=koondbaas.sqlite" \
     ../ea_jsoncontent_2_jsontabelid/table_government_orders.json \
     ../ea_jsoncontent_2_jsontabelid/table_government_regulations.json \
     ../ea_jsoncontent_2_jsontabelid/table_local_government_acts.json \
@@ -42,6 +41,9 @@ indeks
     "lemma_korpuse_vormid": [(LEMMA, VORM)],            # (sisendkorpuses_esinenud_sõnavormi_LEMMA, kõik_LEMMA_vormid_mis_sisendkorpuses_esinesid)
     "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)] # (sisendkorpuses_esinenud_sõnaVORM, dokumendi_id, alguspos, lõpupos, True:liitsõna_osa|False:terviksõna)
     "allikad": [(DOCID, CONTENT)]                       # (docid, dokumendi_"plain_text"_mille_suhtes_on_arvutatud_START_ja_END)
+
+TODO et saaks asju uuesti kahte baasi ka panna
+        
 '''
 
 import sys
@@ -51,22 +53,21 @@ from tqdm import tqdm
 from typing import Dict, List, Tuple
 
 class DB:
-    def __init__(self, paring:str, indeks:str, verbose:bool)->None:
+    def __init__(self, db_name:str, verbose:bool)->None:
         self.verbose = verbose
-        self.paring = paring
-        self.indeks = indeks
+        self.db_name = db_name
 
         if self.verbose:
             sys.stdout.write("# teeme/avame andmebaasi ja tabelid")
 
         # päringu normaliseerimine: päringusõned -> lemmad
         # loome/avame andmebaasi
-        self.con_paring = sqlite3.connect(self.paring)
-        self.cur_paring = self.con_paring.cursor()
+        self.con_baas = sqlite3.connect(self.db_name)
+        self.cur_baas = self.con_baas.cursor()
 
         # lisame puuduvad tabelid, kui nood puudusid
         # ["tabelid"]["lemma_kõik_vormid"]:[(VORM,PARITOLU,LEMMA)]
-        self.cur_paring.execute('''
+        self.cur_baas.execute('''
             CREATE TABLE IF NOT EXISTS lemma_kõik_vormid( 
                 vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
                 paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevst sõnavormist; 1-vorm on lemma sünonüüm
@@ -76,7 +77,7 @@ class DB:
         ''')
 
         # ["tabelid"]["kirjavead"]:[(VIGANE_VORM, VORM, KAAL)]
-        self.cur_paring.execute('''
+        self.cur_baas.execute('''
             CREATE TABLE IF NOT EXISTS kirjavead(
                 vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
                 vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
@@ -86,7 +87,7 @@ class DB:
         ''')
         
         # ["tabelid"]["ignoreeritavad_vormid"]:[VORM]
-        self.cur_paring.execute('''
+        self.cur_baas.execute('''
             CREATE TABLE IF NOT EXISTS ignoreeritavad_vormid(
                 ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus
                 paritolu INT NOT NULL,            -- 0:etteantud lemmast genreeritud                       
@@ -96,13 +97,12 @@ class DB:
 
         # päringule vastamine : lemma -> sõnavormid korpuses -> indeksist esinemiskohad dokumentides
         # loome/avame andmebaasi
-        self.con_indeks = sqlite3.connect(self.indeks)
-        self.cur_indeks = self.con_indeks.cursor()       
+     
 
         # lisame puuduvad tabelid, kui nood puudusid
 
         # ["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
-        self.cur_indeks.execute('''
+        self.cur_baas.execute('''
             CREATE TABLE IF NOT EXISTS lemma_korpuse_vormid(
                 lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
                 vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
@@ -111,7 +111,7 @@ class DB:
         ''')
 
         #  ["tabelid"]["indeks"][(TOKEN,DOCID,START,END,LIITSÕNA_OSA)]
-        self.cur_indeks.execute('''    
+        self.cur_baas.execute('''    
             CREATE TABLE IF NOT EXISTS indeks(
                 vorm  TEXT NOT NULL,          -- (jooksvas) dokumendis esinenud sõnavorm
                 docid TEXT NOT NULL,          -- dokumendi id
@@ -123,7 +123,7 @@ class DB:
         ''')
 
         # ["tabelid"]["allikad"]:[(DOCID, CONTENT)]
-        self.cur_indeks.execute('''    
+        self.cur_baas.execute('''    
             CREATE TABLE IF NOT EXISTS allikad(
                 docid TEXT NOT NULL,        -- dokumendi id
                 content TEXT NOT NULL,      -- dokumendi text
@@ -136,24 +136,19 @@ class DB:
             sys.stdout.write("\n")
 
     def __del__(self)->None:
-        if self.con_paring is not None:
-            self.con_paring.close()
+        if self.con_baas is not None:
+            self.con_baas.close()
             if self.verbose is True:
-                print(f"# Suletud andmebaas {self.paring}")  
-        if self.con_indeks is not None:
-            self.con_indeks.close()
-            if self.verbose is True:
-                print(f"# Suletud andmebaas {self.indeks}")                          
+                print(f"# Suletud andmebaas {self.db_name}")  
+                     
 
     def toimeta(self, file:str)->None:
-        if self.verbose:
-            sys.stdout.write(f'# sisendfail: {file}\n') 
         with open(file) as f:
             for line in f:
                 self.json_in = self.string2json(line)
-                self.täienda_tabelid()
+                self.täienda_tabelid(file)
  
-    def täienda_tabelid(self)->None:
+    def täienda_tabelid(self, file:str)->None:
         """Kanna self.json_in'ist info andmbeaaaside tabelitesse
         """
         
@@ -166,16 +161,16 @@ class DB:
             PRIMARY KEY(vorm, lemma)
 
         """
-        self.täienda_tabel(self.con_paring, self.cur_paring, "paring", "lemma_kõik_vormid", "?, ?, ?")
+        self.täienda_tabel(self.con_baas, self.cur_baas, file+':'+self.db_name, "lemma_kõik_vormid", "?, ?, ?")
         
         """
         * self.json_in["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
-        * self.cur_indeks.lemma_korpuse_vormid(
+        * self.cur_baas.lemma_korpuse_vormid(
                 lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
                 vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
                 PRIMARY KEY(lemma, vorm)
         """
-        self.täienda_tabel(self.con_paring, self.cur_paring, "paring", "lemma_korpuse_vormid", "?, ?")
+        self.täienda_tabel(self.con_baas, self.cur_baas, file+':'+self.db_name, "lemma_korpuse_vormid", "?, ?")
 
 
         """
@@ -186,7 +181,7 @@ class DB:
                 kaal INT,                   -- sagedasemad vms võiksid olla suurema kaaluga
                 PRIMARY KEY(vigane_vorm, vorm)
         """
-        self.täienda_tabel(self.con_paring, self.cur_paring, "paring", "kirjavead", "?, ?, ?")
+        self.täienda_tabel(self.con_baas, self.cur_baas, file+':'+self.db_name, f"kirjavead", "?, ?, ?")
         
         """
         # self.json_in["tabelid"]["ignoreeritavad_vormid"]:[VORM]
@@ -196,20 +191,11 @@ class DB:
                 PRIMARY KEY(ignoreeritav_vorm)
         """
         if "ignoreeritavad_vormid" in self.json_in["tabelid"]:
-            self.täienda_tabel(self.con_paring, self.cur_paring, "paring", "ignoreeritavad_vormid", "?, ?")
+            self.täienda_tabel(self.con_baas, self.cur_baas, file+':'+self.db_name, "ignoreeritavad_vormid", "?, ?")
 
         """
-        * self.json_in["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)]
-        * self.cur_indeks.lemma_korpuse_vormid(
-                lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
-                vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
-                PRIMARY KEY(lemma, vorm)
-        """
-        self.täienda_tabel(self.con_indeks, self.cur_indeks, "indeks", "lemma_korpuse_vormid", "?, ?")
-        
-        """
         * self.json_in["indeks"]:[(TOKEN,DOCID,START,END,LIITSÕNA_OSA)]
-        * self.cur_indeks.indeks(
+        * self.cur_baas.indeks(
                 vorm  TEXT NOT NULL,          -- (jooksvas) dokumendis esinenud sõnavorm
                 docid TEXT NOT NULL,          -- dokumendi id
                 start INT,                    -- vormi alguspositsioon tekstis
@@ -217,16 +203,16 @@ class DB:
                 liitsona_osa,                 -- 0: pole liitsõna osa; 1: on liitsõna osa
                 PRIMARY KEY(vorm, docid, start, end)
         """
-        self.täienda_tabel(self.con_indeks, self.cur_indeks, "indeks","indeks", "?, ?, ?, ?, ?")
+        self.täienda_tabel(self.con_baas, self.cur_baas, file+':'+self.db_name, "indeks", "?, ?, ?, ?, ?")
         
         """
         * self.json_in["annotations"]["generator"]["tabelid"]["allikad"]:[(DOCID, CONTENT)]
-        * self.cur_indeks.allikad(
+        * self.cur_baas.allikad(
                 docid TEXT NOT NULL,        -- dokumendi id
                 content TEXT NOT NULL,      -- dokumendi text
                 PRIMARY KEY(docid)
         """
-        self.täienda_tabel(self.con_indeks, self.cur_indeks, "indeks","allikad", "?, ?")
+        self.täienda_tabel(self.con_baas, self.cur_baas, file+self.db_name, "allikad", "?, ?")
         
     def täienda_tabel(self, connection, cursor, prefstr:str, table:str, values_pattern:str)->None: 
         """Täiendame andmebaasi uute kirjetaga
@@ -238,10 +224,7 @@ class DB:
             values_pattern (str): lisatava kirje muster
         )
         """
-        if self.verbose:
-            sys.stdout.write(f'#                         Täiendame tabelit {table}\r')
-        pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {prefstr} {table}')
-        #pbar.set_description(f'# {table}')
+        pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {prefstr} {table}', disable=(not self.verbose))
         for rec in pbar:
             try:
                 cursor.execute(f'INSERT INTO {table} VALUES({values_pattern})', rec)
@@ -273,13 +256,12 @@ if __name__ == '__main__':
     import argparse
     argparser = argparse.ArgumentParser(allow_abbrev=False)
     argparser.add_argument('-v', '--verbose',  action="store_true", help='tulemus CSV vormingus std väljundisse')
-    argparser.add_argument('-p', '--päring', type=str, help='väljundandmebaasi nimi')
-    argparser.add_argument('-i', '--indeks', type=str, help='väljundandmebaasi nimi')
+    argparser.add_argument('-b', '--db_name', type=str, help='väljundandmebaasi nimi')
     argparser.add_argument('file', type=argparse.FileType('r'), nargs='+')
     args = argparser.parse_args()
 
     try:
-        db = DB(args.päring, args.indeks, args.verbose)
+        db = DB(args.db_name, args.verbose)
         for f  in args.file:
             db.toimeta(f.name)
     except Exception as e:
