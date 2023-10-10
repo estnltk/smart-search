@@ -5,6 +5,7 @@
  conda install pandas
  conda install tqdm
  conda install bs4
+ conda install -c conda-forge rise
 
 # Virtuaalkeskondade loomine ja kasutamine
 
