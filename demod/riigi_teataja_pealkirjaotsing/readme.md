@@ -39,12 +39,40 @@ kujul, tuleb tekste siiski valideerida ja puhastada. Piisavalt suures andmekogus
 on alati vigu ja ootamatusi.
 
 **Kuidas ülesannet püstitada:**
-TBA
+Antud ülesande lahendamise juures on kõige olulisem määrata, milliseid dokumente
+tuleb töödelda. See määrab ära üle milliste dokumentide tulevane otsing töötab.
+Antud kontekstis tuleb meil vastata järgmistele küsimustele:
+* Kas otsing peab toimima üle kõigi dokumeniversioonide või ainlult üle hetkel
+  kehtivate dolumendiversioonide?
+* Kas otsing peab toimima üle küigi dokumendiliikide või üle konkreetse
+  dokumendiliigi näiteks seaduste?
+
+Teiseks tuleb määrata, millistele tingimustele peab vastama puhastatud kujul
+olev tekst. Seda on *apriori* raske määrata. Kindlasti saab esitada hulga
+vormilisi nõudeid:
+* Tekst peaks olema UTF8 kodeeringus (*unicode*) ja sisaldama vaid eesti keeles
+  kasutatavaid sümboleid.
+  * Riigi Teataja tekstide korral pole kodeeringu probleem nii oluline, aga
+    teistes infosüsteemides on tekste Latin-1 ja Windows-1257 kodeerngus.
+    Selliste kodeeringute korral on täpitähtede bitiesitus teine ja kodeeringuga
+    mitte arvestamine tekitab tekstidesse vigu.
+  * Eestikeelsed sõnad on tüüpiliselt kirjutatud eesti tähestiku tähtedega.
+    Teistsuguste sümbolite esinemine viitab tavaliselt mingitele erijuhtudele
+    või tekstitöötlusvigadele
+* Tekstis olevad sõnad peaksid olema üksteisest eraldatud tühikutega.
+  * Eestikeelsed sõnad ei sisalda tavaliselt numbreid ja muid erisümboleid.
+    Nende esinemine sõnades viitab erijuhtudele (lühendid) või sõnastusvigadele.
+  * Vahetevahel eraldatakse sõnu tekstides teiste sümbolitega nagu reavahetus,
+    tabulatsioonimärk või erikujulised tühikusümbolid. Teksti edasise analüüsi
+    lihtsustamiseks tuleks need sümbolid tekstis asendada.       
 
 **Kuidas tulemust kontrollida:**
-TBA
+Tulemuse kontrollimiseks on tarvis fikseerida hulk näitetekste nii, et kõik
+erijuhud oleks kaetud. Seejärel saab kontrollida, kas tekstide puhastamine
+toimib, nii nagu me eeldame.  
+* Tellija peaks fikseerima esialgse näitetekstide andmestiku
+* Arendaja peaks seda jooksvalt täiendama ning selle koos koodiga üle andma.
 
-**Viited**
 
 ### I.B. Tekstide indekseerimine
 
