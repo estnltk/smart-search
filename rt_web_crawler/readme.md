@@ -1,3 +1,5 @@
+
+
  conda create --name rt-web-crawler python=3.9
  conda activate rt-web-crawler
  conda install jupyter
@@ -5,7 +7,16 @@
  conda install pandas
  conda install tqdm
  conda install bs4
+ pip install jupyterthemes
+
+--
+ conda create --name rise_slides
+ conda install notebook=6.5.6
  conda install -c conda-forge rise
+ conda install request
+ conda install pandas
+ conda install tqdm
+ conda install -c conda-forge ipywidgets
 
 # Virtuaalkeskondade loomine ja kasutamine
 
