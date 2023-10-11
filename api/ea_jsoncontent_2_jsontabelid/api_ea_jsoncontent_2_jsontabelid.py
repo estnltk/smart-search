@@ -1,6 +1,25 @@
 #!/usr/bin/python3
 
 """
+Silumiseks:
+    {
+        "name": "content_2_tabelid_DB",
+        "type": "python",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
+        "program": "./api_ea_jsoncontent_2_jsontabelid.py",
+        "env": {\
+            "GENERATOR": "http://localhost:7008/api/vm/generator/process", \
+            "TOKENIZER": "http://localhost:6000/api/tokenizer/process", \
+            "ANALYSER": "http://localhost:7007/api/analyser/process" \
+        },
+        "args": ["--verbose", "--csvpealkirjad", \
+            "../../rt_web_crawler/results/government_orders.csv", \
+            "../../rt_web_crawler/results/government_regulations.csv", \
+            "../../rt_web_crawler/results/local_government_acts.csv", \
+            "../../rt_web_crawler/results/state_laws.csv"\
+        ]
+    },
 
 JSON sees- ja välispidiseks kasutamiseks:
     self.json_io:
@@ -404,6 +423,23 @@ class ETTEARVUTAJA:
             if any(char.isdigit() for char in lemma) is False:
                 self.json_io["tabelid"]["kirjavead"] += kv.kirjavigastaja(self.json_io["generator"][lemma]["lemma_kõik_vormid"])
 
+        print("DEBUG OSA")
+        db = {}
+        max_cnt = 0
+        max_key = ""
+        pbar = tqdm(self.json_io["tabelid"]["kirjavead"], desc="# kirjavigade analüüs")
+        for rec in pbar:
+            if rec[0] not in db:
+                db[rec[0]] = []
+            if rec[1] not in db[rec[0]]:
+                db[rec[0]].append(rec[1])
+            if len( db[rec[0]]) > max_cnt:
+                max_cnt = len( db[rec[0]])
+                max_key = rec[0]
+        pass        
+        print("### ", max_key, max_cnt, db[max_key])
+        pass
+
     def tee_sources_tabeliks(self)->None:
         """
 
@@ -487,9 +523,9 @@ if __name__ == '__main__':
             ettearvutaja.tee_generator()
             ettearvutaja.tee_ignoreeritavad_vormid()
             ettearvutaja.tee_kirjavead_loendikaupa()
-            ettearvutaja.tee_sources_tabeliks()
-            ettearvutaja.kustuta_vahetulemused()
-            ettearvutaja.kuva_tabelid(args.indent)
+            #ettearvutaja.tee_sources_tabeliks()
+            #ettearvutaja.kustuta_vahetulemused()
+            #ettearvutaja.kuva_tabelid(args.indent)
 
     except Exception as e:
         print(f"An exception occurred: {str(e)}")
