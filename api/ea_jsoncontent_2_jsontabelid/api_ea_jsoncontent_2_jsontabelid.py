@@ -523,9 +523,9 @@ if __name__ == '__main__':
             ettearvutaja.tee_generator()
             ettearvutaja.tee_ignoreeritavad_vormid()
             ettearvutaja.tee_kirjavead_loendikaupa()
-            #ettearvutaja.tee_sources_tabeliks()
-            #ettearvutaja.kustuta_vahetulemused()
-            #ettearvutaja.kuva_tabelid(args.indent)
+            ettearvutaja.tee_sources_tabeliks()
+            ettearvutaja.kustuta_vahetulemused()
+            ettearvutaja.kuva_tabelid(args.indent)
 
     except Exception as e:
         print(f"An exception occurred: {str(e)}")
