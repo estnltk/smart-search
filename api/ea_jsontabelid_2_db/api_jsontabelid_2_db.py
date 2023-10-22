@@ -5,7 +5,7 @@ Kasutamine:
 Code:
 
     {
-        "name": "api_lisa_andmebaasidesse",
+        "name": "api_lisa_andmebaasidesse_1",
         "type": "python",
         "request": "launch",
         "cwd": "${workspaceFolder}/api/ea_jsontabelid_2_db/",
@@ -21,22 +21,24 @@ Code:
 
 Käsurealt:
 $ cd ~/git/smart-search_github/api/ea_jsontabelid_2_db
+$ export PREFIKS=1019-
 $ ./create_venv.sh
 $ ./venv/bin/python3 ./api_jsontabelid_2_db.py \
-    --verbose --db_name=1017-baas_sl.sqlite \
-    --tables=kirjavead_2:kirjavead:ignoreeritavad_vormid:lemma_korpuse_vormid:lemma_kõik_vormid:liitsõnad:indeks_vormid:indeks_lemmad \
-    ../ea_jsoncontent_2_jsontabelid/1017-*.json 
+    --verbose --db_name=${PREFIKS}baas.sqlite \
+    --tables=indeks_vormid:indeks_lemmad:liitsõnad:lemma_kõik_vormid:lemma_korpuse_vormid:kirjavead:kirjavead_2:allikad:ignoreeritavad_vormid \
+    ../ea_jsoncontent_2_jsontabelid/${PREFIKS}*.json 
 
 SisendJson:
-    {"tabelid":{ "kirjavead":[[VIGANE_VORM, VORM, KAAL]] }
-    {"tabelid":{ "kirjavead_2": [[typo, lemma, correct_wordform, confidence]] }
-    {"tabelid":{ "ignoreeritavad_vormid":[VORM] }
-    {"tabelid":{ "lemma_korpuse_vormid":[(VORM, LEMMA)] }
-    {"tabelid":{ "lemma_kõik_vormid":[(VORM, 0, LEMMA)] }
-    {"tabelid":{ "liitsõnad":[(OSALEMMA, LIITLEMMA)] }
-    {"tabelid":{ "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)] }
-    {"tabelid":{ "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)] }
-
+    {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
+        "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
+        "liitsõnad":[(OSALEMMA, LIITLEMMA)],
+        "lemma_kõik_vormid":[(VORM, LEMMA)],
+        "lemma_korpuse_vormid":[(VORM, 0, LEMMA)],
+        "kirjavead":[[VIGANE_VORM, VORM, KAAL]],
+        "kirjavead_2": [[typo, lemma, correct_wordform, confidence]]
+        "allikad":[(DOCID, CONTENT)],
+        "ignoreeritavad_vormid":[VORM]
+    }
  '''
 import os
 import sys
@@ -86,7 +88,7 @@ class DB:
             PRIMARY KEY(ignoreeritav_vorm)
         )''')       
 
-        # {"tabelid":{ "lemma_korpuse_vormid":[(VORM, LEMMA)] }
+        # {"tabelid":{ "lemma_korpuse_vormid":[(LEMMA, VORM)] }
         self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS lemma_korpuse_vormid(
             lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
             vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
@@ -203,8 +205,8 @@ class DB:
                         test = f"INSERT INTO {table} VALUES{tuple(rec)}"
                         self.cur_baas.execute(f"INSERT INTO {table} VALUES{tuple(rec)}")
                     except Exception as e:
-                        assert False, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                        #continue # selline juba oli
+                        # assert False, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
+                        continue # selline juba oli
             self.con_baas.commit()         
         
     def string2json(self, str:str)->Dict:
