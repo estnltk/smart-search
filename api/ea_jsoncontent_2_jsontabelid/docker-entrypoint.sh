@@ -8,4 +8,4 @@ exec /usr/bin/tini -- venv/bin/gunicorn --bind=0.0.0.0:6602 \
     "--timeout=${TIMEOUT}" \
     "--worker-class=${WORKER_CLASS}" \
     --worker-tmp-dir=/dev/shm "$@" \
-    flask_api_ea_jsoncontent_2_jsontabelid:app
+    flask_api_ea_jsoncontent_2_jsontabelid_2:app

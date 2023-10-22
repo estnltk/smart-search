@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 """
+VANA. ei kära enam
+
 Silumiseks:
     {
         "name": "content_2_tabelid_DB",

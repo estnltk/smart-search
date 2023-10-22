@@ -11,7 +11,7 @@ $ docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.01
 
 silumiseks:
     {
-        "name": "content_2_tabelid_2",
+        "name": "content_2_tabelid_2_test",
         "type": "python",
         "request": "launch",
         "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
@@ -26,18 +26,40 @@ silumiseks:
         ]
     },
 
+   	$(PREF)-state_laws.json : ../../rt_web_crawler/results/state_laws.csv
+		echo venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py --csvpealkirjad $< > $@
+
+	$(PREF)-government_orders.json : ../../rt_web_crawler/results/government_			orders.csv
+		echo venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py --csvpealkirjad $< > $@
+
+	$(PREF)-government_regulations.json : ../../rt_web_crawler/results/government_regulations.csv
+		echo venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py --csvpealkirjad $< > $@
+
+	(PREF)-local_government_acts.json : ../../rt_web_crawler/results/local_government_acts.csv
+		echo venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py --csvpealkirjad $< > $@ 
+
+    {
+        "name": "content_2_tabelid_2",
+        "type": "python",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
+        "program": "./api_ea_jsoncontent_2_jsontabelid_2.py",
+        "env": {\
+            "GENERATOR": "http://localhost:7008/api/vm/generator/process", \
+            "TOKENIZER": "http://localhost:6000/api/tokenizer/process", \
+            "ANALYSER": "http://localhost:7007/api/analyser/process" \
+        },
+        "args": ["--verbose", "--csvpealkirjad", \
+            "../../rt_web_crawler/results/state_laws.csv" \
+            "../../rt_web_crawler/results/government_orders.csv" \
+            "../../rt_web_crawler/results/government_regulations.csv" \
+            "../../rt_web_crawler/results/local_government_acts.csv" \
+        ]
+    },
+
 Käsurealt (vaikimisi kohalikud konteinerid):
 cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-export FAILID="government_orders.csv government_regulations.csv local_government_acts.csv state_laws.csv"
-export PREFIKS=1017
-
-for f in $(echo "${FAILID}")
-do
-    echo ${f} '>' ${PREFIKS}-${f/.csv/.json}
-    venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py \
-    --csvpealkirjad \
-        ../../rt_web_crawler/results/${f} > ${PREFIKS}-${f/.csv/.json}
-done
+make -j all
 
 
 JSON sees- ja välispidiseks kasutamiseks:
@@ -77,6 +99,7 @@ import requests
 import inspect
 from tqdm import tqdm
 from typing import Dict, List, Tuple
+from inspect import currentframe, getframeinfo
 
 import kirjavigastaja
 
@@ -154,7 +177,7 @@ class TEE_JSON:
         data = list(csv.reader(f, delimiter=","))
         self.json_io = {"sources": {}}
         for d in data[1:]:
-            assert len(d)==4
+            assert len(d)==4, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
             self.json_io["sources"][f'pk_{d[1]}_{d[0]}'] = {"content" : d[2]}
 
     def tee_päring(self, url:str, json_in:Dict)->Dict:
@@ -270,7 +293,9 @@ class TEE_JSON:
         Sisse/välja:
         self.json_io:
 
-        * {"sõnavormid"   :{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}} -- ilma punktuatsiooni, side- ja asesõnadeta. Algustähe suutusega mÄngitud         {"osasõnavormid":{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
+        Punktuatsioon, asesõnad, sidesõnad väljavisatud, kõik suurtäheliseks
+        * {"sõnavormid"   :{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
+        * {"osasõnavormid":{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
         """
         self.json_io["sõnavormid"] = {}
         self.json_io["osasõnavormid"] = {}
@@ -291,6 +316,7 @@ class TEE_JSON:
                 vorm = mrf["stem"]
                 if mrf["ending"] != '0':
                     vorm += mrf["ending"]
+                #puhas_vorm = vorm.upper().replace('=', '').replace('_', '')
                 puhas_vorm = vorm.replace('=', '').replace('_', '')
                 if puhas_vorm not in self.json_io["sõnavormid"]:
                     self.json_io["sõnavormid"][puhas_vorm] = {}
@@ -302,7 +328,7 @@ class TEE_JSON:
                             self.json_io["sõnavormid"][puhas_vorm][docid].append(pos)
 
                 # leiame liitsõna osasõnad  
-
+                #osasõnad = vorm.upper().replace('=', '').split('_')
                 osasõnad = vorm.replace('=', '').split('_')
                 if len(osasõnad) < 2:
                     continue
@@ -340,9 +366,10 @@ class TEE_JSON:
         for vorm, docids in pbar:
             for docid, poslist in docids.items():
                 for pos in poslist:
-                    self.json_io["tabelid"]["indeks_vormid"].append(
-                        (vorm, docid, pos["start"], pos["end"], False)
-            )
+                    kirje = (vorm, docid, pos["start"], pos["end"], False)
+                    if kirje in self.json_io["tabelid"]["indeks_vormid"]:
+                        continue
+                    self.json_io["tabelid"]["indeks_vormid"].append(kirje)
 
         pbar = tqdm(list(self.json_io["osasõnavormid"].items()),
                     desc=f'# {inspect.currentframe().f_code.co_name} osasõnavormid ',
@@ -350,8 +377,10 @@ class TEE_JSON:
         for vorm, docids in pbar:
             for docid, poslist in docids.items():
                 for pos in poslist:
-                    self.json_io["tabelid"]["indeks_vormid"].append(
-                        (vorm, docid, pos["start"], pos["end"], True))        
+                    kirje = (vorm, docid, pos["start"], pos["end"], True)
+                    if kirje in self.json_io["tabelid"]["indeks_vormid"]:
+                        continue
+                    self.json_io["tabelid"]["indeks_vormid"].append(kirje)        
         pass
 
     def lisa_osasõna(self, osasõna:str, v:Dict)->None:
@@ -396,6 +425,8 @@ class TEE_JSON:
             morf_out = self.tee_päring(self.analyser, morf_in)
             puhtad_lemmad = []
             for mrf in morf_out["annotations"]["tokens"][0]["features"]["mrf"]:
+                #self.tee_liitsõnandus(mrf["lemma_ma"].upper())
+                #if (puhas_lemma := mrf["lemma_ma"].upper().replace('=', '').replace('_', '')) not in puhtad_lemmad:
                 self.tee_liitsõnandus(mrf["lemma_ma"])
                 if (puhas_lemma := mrf["lemma_ma"].replace('=', '').replace('_', '')) not in puhtad_lemmad:
                     puhtad_lemmad.append(puhas_lemma)
@@ -418,7 +449,9 @@ class TEE_JSON:
                 disable=(not self.verbose))
         for osasõna, liitsõnad in pbar:
             for liitsõna in liitsõnad:
-                self.json_io["tabelid"]["liitsõnad"].append((osasõna, liitsõna))
+                kirje = (osasõna, liitsõna)
+                if kirje not in self.json_io["tabelid"]["liitsõnad"]:
+                    self.json_io["tabelid"]["liitsõnad"].append(kirje)
         del self.json_io["liitsõnad"]
 
         self.json_io["osalemmad"] = {}
@@ -430,6 +463,7 @@ class TEE_JSON:
             morf_out = self.tee_päring(self.analyser, morf_in)
             puhtad_lemmad = []
             for mrf in morf_out["annotations"]["tokens"][0]["features"]["mrf"]:
+                #if (puhas_lemma := mrf["lemma_ma"].upper().replace('=', '').replace('_', '')) not in puhtad_lemmad:
                 if (puhas_lemma := mrf["lemma_ma"].replace('=', '').replace('_', '')) not in puhtad_lemmad:
                     puhtad_lemmad.append(puhas_lemma)
             if len(puhtad_lemmad) < 1:
@@ -454,18 +488,22 @@ class TEE_JSON:
         for lemma, docids in pbar:
             for docid, poslist in docids.items():
                 for pos in poslist:
-                    self.json_io["tabelid"]["indeks_lemmad"].append(
-                        (lemma, docid, pos["start"], pos["end"], False)
-            )  
+                    kirje = (lemma, docid, pos["start"], pos["end"], False)
+                    if kirje in self.json_io["tabelid"]["indeks_lemmad"]: #DB
+                        continue
+                    #assert kirje not in self.json_io["tabelid"]["indeks_lemmad"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
+                    self.json_io["tabelid"]["indeks_lemmad"].append(kirje)  
         pbar = tqdm(list(self.json_io["osalemmad"].items()),
                     desc=f'# {inspect.currentframe().f_code.co_name} osalemmad ',
                     disable=(not self.verbose))
         for lemma, docids in pbar:
             for docid, poslist in docids.items():
                 for pos in poslist:
-                    self.json_io["tabelid"]["indeks_lemmad"].append(
-                        (lemma, docid, pos["start"], pos["end"], True)
-            )                      
+                    kirje = (lemma, docid, pos["start"], pos["end"], True)
+                    if kirje in self.json_io["tabelid"]["indeks_lemmad"]:
+                        continue
+                    #assert kirje not in self.json_io["tabelid"]["indeks_lemmad"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
+                    self.json_io["tabelid"]["indeks_lemmad"].append(kirje)                      
         pass
 
 
@@ -505,16 +543,18 @@ class TEE_JSON:
         puhtad_lemmad = []
         for token in morf_out["annotations"]["tokens"]:
             for mrf in token["features"]["mrf"]:
+                #if (puhas_lemma := mrf["lemma_ma"].upper().replace('=', '').replace('_', '')) not in puhtad_lemmad:
                 if (puhas_lemma := mrf["lemma_ma"].replace('=', '').replace('_', '')) not in puhtad_lemmad:
                     puhtad_lemmad.append(puhas_lemma)
         # "liitsõnad" :{OSASÕNALEMMA:[LIITSÕNALEMMA]}
         if "liitsõnad" not in self.json_io:
             self.json_io["liitsõnad"] = {}
+        puhas_liitlemma = lemma_ma.replace('=', '').replace('_', '')
         for puhas_lemma in puhtad_lemmad:
             if puhas_lemma not in self.json_io["liitsõnad"]:
                 self.json_io["liitsõnad"][puhas_lemma] = []
             if lemma_ma not in self.json_io["liitsõnad"][puhas_lemma]:
-                self.json_io["liitsõnad"][puhas_lemma].append(lemma_ma)
+                self.json_io["liitsõnad"][puhas_lemma].append(puhas_liitlemma)
         pass
 
     def tee_ignoreeritavad_vormid(self)->None:
@@ -595,6 +635,7 @@ class TEE_JSON:
                     vorm = mrf["stem"].replace('=', '').replace('_', '')
                     if mrf["ending"] != '0':
                         vorm += mrf["ending"]
+                    #vorm = vorm.upper()
                     if vorm not in self.json_io["generator"][lemma]["lemma_kõik_vormid"]:
                             self.json_io["generator"][lemma]["lemma_kõik_vormid"].append(vorm)
                     kirje = (vorm, 0, lemma) # (vorm, genereeritud_korpusesõnest, lemma)
@@ -638,7 +679,7 @@ class TEE_JSON:
             kaal = 0
             for poslist in doclist.values():
                 kaal += len(poslist)
-            assert sõnavorm not in sõnavormi_kaal_ja_vead
+            assert sõnavorm not in sõnavormi_kaal_ja_vead, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
             sõnavormi_kaal_ja_vead[sõnavorm] = {
                 "vead": kv.gene_potentsiaalsed_kirjavead(sõnavorm),
                 "kaal": kaal}
@@ -664,8 +705,9 @@ class TEE_JSON:
         pbar = tqdm(sõnavormi_kaal_ja_vead.items(), disable=(not self.verbose), desc="# kirjavead tabeliks ")
         for sõnavorm, kaal_ja_vead in pbar:
             for vigane_vorm in kaal_ja_vead["vead"]:
-                assert [vigane_vorm, kaal_ja_vead["kaal"], sõnavorm] not in self.json_io["tabelid"]["kirjavead"], f'Pole unikaalne [{vigane_vorm}, {sõnavorm}, {kaal_ja_vead["kaal"]}]'
-                self.json_io["tabelid"]["kirjavead"].append([vigane_vorm, sõnavorm, kaal_ja_vead["kaal"]])
+                kirje = (vigane_vorm, sõnavorm, kaal_ja_vead["kaal"])
+                assert kirje not in self.json_io["tabelid"]["kirjavead"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno} | Pole unikaalne {kirje}'
+                self.json_io["tabelid"]["kirjavead"].append(kirje)
 
     def tee_kirjavead_2(self)->None:
         '''
@@ -684,13 +726,15 @@ class TEE_JSON:
                     morf_in["annotations"]["tokens"] = [{"features":{"token": vorm}}]
                     morf_out = self.tee_päring(self.analyser, morf_in)
                     puhtad_lemmad = []
-                    assert len(morf_out["annotations"]["tokens"]) == 1
+                    assert len(morf_out["annotations"]["tokens"]) == 1, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
                     for mrf in morf_out["annotations"]["tokens"][0]["features"]["mrf"]:
+                        #if (puhas_lemma := mrf["lemma_ma"].upper().replace('=', '').replace('_', '')) not in puhtad_lemmad:
                         if (puhas_lemma := mrf["lemma_ma"].replace('=', '').replace('_', '')) not in puhtad_lemmad:
                             puhtad_lemmad.append(puhas_lemma)
                 for lemma in puhtad_lemmad:
-                    assert [vigane_vorm, lemma, vorm, kaal] not in self.json_io["tabelid"]["kirjavead_2"]
-                    self.json_io["tabelid"]["kirjavead_2"].append([vigane_vorm, lemma, vorm, kaal])
+                    kirje = (vigane_vorm, lemma, vorm, kaal)
+                    assert kirje not in self.json_io["tabelid"]["kirjavead_2"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}| Pole unikaalne {kirje}'  #DB
+                    self.json_io["tabelid"]["kirjavead_2"].append(kirje)
             except:
                 pass
 
@@ -731,6 +775,28 @@ class TEE_JSON:
         if self.verbose:
             sys.stdout.write('\n')
         pass
+
+    def kordused_tabelitest_välja(self):
+        '''
+        {   "tabelid":
+            {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
+                "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
+                "liitsõnad":[(OSALEMMA, LIITLEMMA)],
+                "lemma_kõik_vormid":[(VORM, LEMMA)],
+                "lemma_korpuse_vormid":[(VORM, 0, LEMMA)],
+                "kirjavead":[[VIGANE_VORM, VORM, KAAL]],
+                "kirjavead_2": [[typo, lemma, correct_wordform, confidence]]
+                "allikad":[(DOCID, CONTENT)],
+                "ignoreeritavad_vormid":[VORM]
+            }
+        }
+        '''
+        tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid", "kirjavead", "kirjavead_2", "ignoreeritavad_vormid"]
+        pbar = tqdm(tabelid,
+                disable=(not self.verbose))
+        for tabel in pbar:
+            pbar.set_description(f'# {inspect.currentframe().f_code.co_name} : {tabel}')
+            self.json_io["tabelid"][tabel] = list(set(self.json_io["tabelid"][tabel]))
 
     def kuva_tabelid(self, indent)-> None:
         """PUBLIC:Lõpptulemus JSON kujul std väljundisse
@@ -781,6 +847,7 @@ if __name__ == '__main__':
             tj.tee_kirjavead_2()
             tj.tee_sources_tabeliks()
             tj.kustuta_vahetulemused()
+            tj.kordused_tabelitest_välja()
             tj.kuva_tabelid(args.indent)
 
     except Exception as e:
