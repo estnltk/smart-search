@@ -26,6 +26,8 @@ silumiseks:
         ]
     },
 
+    "../../rt_web_crawler/results/state_laws.csv"
+
    	$(PREF)-state_laws.json : ../../rt_web_crawler/results/state_laws.csv
 		echo venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py --csvpealkirjad $< > $@
 
@@ -80,12 +82,10 @@ JSON sees- ja välispidiseks kasutamiseks:
         {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
             "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
             "liitsõnad":[(OSALEMMA, LIITLEMMA)],
-            "lemma_kõik_vormid":[(VORM, LEMMA)],
-            "lemma_korpuse_vormid":[(VORM, 0, LEMMA)],
-            "kirjavead":[[VIGANE_VORM, VORM, KAAL]],
-            "kirjavead_2": [[typo, lemma, correct_wordform, confidence]]
+            "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
+            "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
+            "kirjavead":[(VIGANE_VORM, VORM)],
             "allikad":[(DOCID, CONTENT)],
-            "ignoreeritavad_vormid":[VORM]
         }
     }
 
@@ -287,8 +287,8 @@ class TEE_JSON:
         Sisse:
             "algsedsõnavormid":{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}
 
-        * self.json_io["sõnavormid"]:{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}} algsete hulgast eemaldame punktuatsiooni, sidesõnad, asesõnad. Suurtähega mängitud
-        * self.json_io["osasõnavormid"]:{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}} sisaldab liitsõna 1-4 komponendilisi osasõnesid.
+        * {"sõnavormid"   :{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}} algsete hulgast eemaldame punktuatsiooni, sidesõnad, asesõnad. Suurtähega mängitud
+        * {"osasõnavormid":{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}} sisaldab liitsõna 1-4 komponendilisi osasõnesid.
 
         Sisse/välja:
         self.json_io:
@@ -475,7 +475,7 @@ class TEE_JSON:
                     if docid not in self.json_io["osalemmad"][puhas_lemma]:
                         self.json_io["osalemmad"][puhas_lemma][docid] = []
                     self.json_io["osalemmad"][puhas_lemma][docid] += poslist
-        pass
+        pass #DB
 
     def tabelisse_lemmade_indeks(self):
         if "tabelid" not in self.json_io:
@@ -504,7 +504,7 @@ class TEE_JSON:
                         continue
                     #assert kirje not in self.json_io["tabelid"]["indeks_lemmad"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
                     self.json_io["tabelid"]["indeks_lemmad"].append(kirje)                      
-        pass
+        pass #DB
 
 
     def tee_liitsõnandus(self, lemma_ma:str)->None:
@@ -557,38 +557,6 @@ class TEE_JSON:
                 self.json_io["liitsõnad"][puhas_lemma].append(puhas_liitlemma)
         pass
 
-    def tee_ignoreeritavad_vormid(self)->None:
-        """Genereerime ignoreeritavad vormid, pole testinud
-
-        Args:
-            * self.json_io["lemmas_2_ignore"]["lemmad"]]
-
-
-        Return
-            * self.json_io["tabelid"]["ignoreeritavad_vormid"]:[vorm]
-        """
-        if "tabelid" not in self.json_io:
-            self.json_io["tabelid"] = {}
-        if "ignoreeritavad_vormid" not in self.json_io["tabelid"]:
-            self.json_io["tabelid"]["ignoreeritavad_vormid"] = []
-        if "lemmas_2_ignore" not in self.json_io:
-            return
-        ignoreeritavad_vormid = []
-        pbar = tqdm(self.json_io["lemmas_2_ignore"]["lemmad"], disable=(not self.verbose), desc="# tee_ignoreeritavad_vormid")
-        for lemma in pbar:
-            #generator_out = self.tee_päring(self.generator, {"params":{"vmetsjson":["--guess"]}, "content": lemma})
-            generator_out = self.tee_päring(self.generator, 
-                {"params":{"vmetsjson":["--guess"]}, "annotations":{"tokens":[{"features":{"token":lemma}}]}} )
-            # lisa saadud vormid ignoreeritavate vormide loendisse
-            for token in generator_out["annotations"]["tokens"]:
-                if "mrf" in token["features"]:
-                    for mrf in token["features"]["mrf"]:
-                        puhas_vorm = mrf["stem"].replace("_", "").replace("=", "").replace("+", "")
-                        if puhas_vorm not in ignoreeritavad_vormid:
-                            ignoreeritavad_vormid.append((puhas_vorm, 0))                       
-        del self.json_io["lemmas_2_ignore"]["lemmad"]
-        self.json_io["tabelid"]["ignoreeritavad_vormid"] = ignoreeritavad_vormid
-
     def tee_generator(self) -> None:
         """PUBLIC:Morfime indeksis olevad sõned lemmadeks ning geneme täieliku ja korpuse paradigma 
 
@@ -598,11 +566,11 @@ class TEE_JSON:
 
         Returns: 
             Lisame:
-            * self.json_io["generator"][LEMMA]["lemma_kõik_vormid"]:[VORM]
+            * generator = {LEMMA: [{"kaal":int, "vorm":str}]}} 
 
             Terviksõnad ja liitsõna osasõnad kõik koos, neid ei erista siin
-            * self.json_io["tabelid"]["lemma_kõik_vormid"]:[(VORM, 0, LEMMA)] -- lõpptulemuses, lemma kõik vormid, 0:lemma jooksvas sisendkorpuses
-            * self.json_io["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, VORM)] -- lõpptulemuses, ainult jooksvas sisendkorpuses esinenud vormid
+            * self.json_io["tabelid"]["lemma_kõik_vormid"]:[(VORM, KAAL, LEMMA)] -- lõpptulemuses, genetud_vorm, mitu_korda_genetud_vorm_esines, genetud_vormi_lemma
+            * self.json_io["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, KAAL, VORM)] -- lõpptulemuses, korpusevorm, mitu_korda_korpusevorm_esines, korpusevormi_lemma
         """
         if "tabelid" not in self.json_io:
             self.json_io["tabelid"] = {}
@@ -610,16 +578,35 @@ class TEE_JSON:
             self.json_io["tabelid"]["lemma_kõik_vormid"] = []
         if "lemma_korpuse_vormid" not in self.json_io["tabelid"]:
             self.json_io["tabelid"]["lemma_korpuse_vormid"] = []
+        if "generator" not in self.json_io:
+            self.json_io["generator"] = {}
         pbar = tqdm(self.json_io["lemmad"].keys(), desc="# tee_generator: terviklemma vormid ", disable=(not self.verbose))
         for lemma in pbar: # tsükkel üle lemmade 
-            self.lisa_lemma_kõik_vormid(lemma, False)
+            if lemma not in self.json_io["generator"]:
+                self.lisa_lemma_vormid(lemma)
         pbar = tqdm(self.json_io["osalemmad"].keys(), desc="# tee_generator: osalemma vormid ", disable=(not self.verbose))
         for lemma in pbar: # tsükkel üle osalemmade 
-            self.lisa_lemma_kõik_vormid(lemma, True)    
-            
-    def lisa_lemma_kõik_vormid(self, lemma_in:str, is_osalemma:bool)->None:
+            if lemma not in self.json_io["generator"]:
+                self.lisa_lemma_vormid(lemma)    
+        if "tabelid" not in self.json_io:
+            self.json_io["tabelid"] = {}
+        if "lemma_kõik_vormid" not in self.json_io["tabelid"]:
+            self.json_io["tabelid"]["lemma_kõik_vormid"] = []
+        if "lemma_korpuse_vormid" not in self.json_io["tabelid"]:
+            self.json_io["tabelid"]["lemma_korpuse_vormid"] = []
+        for lemma, vormid in self.json_io["generator"].items():
+            for vorm, kaal in self.json_io["generator"][lemma].items():
+                self.json_io["tabelid"]["lemma_kõik_vormid"].append((vorm, kaal, lemma))
+                if kaal > 0:
+                    self.json_io["tabelid"]["lemma_korpuse_vormid"].append((lemma, kaal, vorm))    
+        pass
+
+    def lisa_lemma_vormid(self, lemma_in:str)->None:
         # genereerime ettantud lemmast kõik vormid, "content" ei sobi tühikut sisaldavate sõnede tõttu
-        #res = self.tee_päring(self.generator,{"params":{"vmetsjson":["--guess"]},"content": f'{lemma_in}'})
+        # res = self.tee_päring(self.generator,{"params":{"vmetsjson":["--guess"]},"content": f'{lemma_in}'})
+        # {"generator": {LEMMA: {VORM:KAAL}} 
+        # {"sõnavormid"   :{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
+        # {"osasõnavormid":{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
         res = self.tee_päring(self.generator, 
                 {"params":{"vmetsjson":["--guess"]}, "annotations":{"tokens":[{"features":{"token":lemma_in}}]}} )
         if "generator" not in self.json_io:
@@ -629,34 +616,24 @@ class TEE_JSON:
             # {"annotations":{"tokens":[{"features":{"token":string,"mrf":[{"stem": TÜVI}]}}]}
             lemma = token["features"]["token"]
             if lemma not in self.json_io["generator"]:
-                self.json_io["generator"][lemma] = {"lemma_kõik_vormid": []}
+                self.json_io["generator"][lemma] = {}
             if "mrf" in token["features"]:
                 for mrf in token["features"]["mrf"]:
                     vorm = mrf["stem"].replace('=', '').replace('_', '')
                     if mrf["ending"] != '0':
                         vorm += mrf["ending"]
-                    #vorm = vorm.upper()
-                    if vorm not in self.json_io["generator"][lemma]["lemma_kõik_vormid"]:
-                            self.json_io["generator"][lemma]["lemma_kõik_vormid"].append(vorm)
-                    kirje = (vorm, 0, lemma) # (vorm, genereeritud_korpusesõnest, lemma)
-                    if kirje not in self.json_io["tabelid"]["lemma_kõik_vormid"]:
-                        self.json_io["tabelid"]["lemma_kõik_vormid"].append(kirje)
-
-                    if is_osalemma: # liitsõna osa
-                        # {"osasõnavormid":{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
-                        if vorm in self.json_io["osasõnavormid"]: # selline esines korpuses osasõnena
-                            kirje = (lemma, vorm)             # lisame korpusevormide loendisse
-                            if kirje not in self.json_io["tabelid"]["lemma_korpuse_vormid"]:
-                                self.json_io["tabelid"]["lemma_korpuse_vormid"].append(kirje)
-                    else:
-                        # {"sõnavormid"   :{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
-                        if vorm in self.json_io["sõnavormid"]:  # selline esines korpuses terviksõnena
-                            kirje = (lemma, vorm)           # lisame korpusevormide loendisse
-                            if kirje not in self.json_io["tabelid"]["lemma_korpuse_vormid"]:
-                                self.json_io["tabelid"]["lemma_korpuse_vormid"].append(kirje)                       
+                    if vorm not in self.json_io["generator"][lemma]:
+                        kaal = 0
+                        if vorm in self.json_io["sõnavormid"]:
+                            for _, poslist in self.json_io["sõnavormid"][vorm].items():
+                                kaal += len(poslist)
+                        if vorm in self.json_io["osasõnavormid"]:
+                            for _, poslist in self.json_io["osasõnavormid"][vorm].items():
+                                kaal += len(poslist)
+                        self.json_io["generator"][lemma][vorm]=kaal
         pass
 
-    def tee_kirjavead(self)->None:
+    def tee_kirjavead_olemasolevatest_vormidest(self)->None:
         """PUBLIC:Lisame kirjavead parandamiseks vajaliku tabeli
 
         Args:
@@ -709,34 +686,36 @@ class TEE_JSON:
                 assert kirje not in self.json_io["tabelid"]["kirjavead"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno} | Pole unikaalne {kirje}'
                 self.json_io["tabelid"]["kirjavead"].append(kirje)
 
-    def tee_kirjavead_2(self)->None:
-        '''
-        "kirjavead":[[VIGANE_VORM, VORM, KAAL]],
-        "kirjavead_2": [[typo, lemma, correct_wordform, confidence]]
-        '''
-        if "kirjavead_2" not in self.json_io["tabelid"]:
-            self.json_io["tabelid"]["kirjavead_2"] = []
-        morf_in = {"params":{"vmetajson":["--guess"]}, "annotations":{"tokens":[{"features":{"token": ""}}]}}
-        puhtad_lemmad = []
-        pbar = tqdm(self.json_io["tabelid"]["kirjavead"], disable=(not self.verbose), desc="# tee_kirjavead_2")
-        for vigane_vorm, vorm, kaal in pbar:
-            try:
-                if vorm != morf_in["annotations"]["tokens"][0]["features"]["token"]:
-                    # uus vorm, arvutame puhtad lemmad uuesti
-                    morf_in["annotations"]["tokens"] = [{"features":{"token": vorm}}]
-                    morf_out = self.tee_päring(self.analyser, morf_in)
-                    puhtad_lemmad = []
-                    assert len(morf_out["annotations"]["tokens"]) == 1, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                    for mrf in morf_out["annotations"]["tokens"][0]["features"]["mrf"]:
-                        #if (puhas_lemma := mrf["lemma_ma"].upper().replace('=', '').replace('_', '')) not in puhtad_lemmad:
-                        if (puhas_lemma := mrf["lemma_ma"].replace('=', '').replace('_', '')) not in puhtad_lemmad:
-                            puhtad_lemmad.append(puhas_lemma)
-                for lemma in puhtad_lemmad:
-                    kirje = (vigane_vorm, lemma, vorm, kaal)
-                    assert kirje not in self.json_io["tabelid"]["kirjavead_2"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}| Pole unikaalne {kirje}'  #DB
-                    self.json_io["tabelid"]["kirjavead_2"].append(kirje)
-            except:
-                pass
+    def tee_kirjavead(self)->None:
+        """PUBLIC:Lisame kirjavead parandamiseks vajaliku tabeli
+
+        Args:
+            self.json_io: kasutame:
+            Kõigi sõnavormide loend
+            * self.json_io["tabelid"]["lemma_kõik_vormid"]:[[VORM, KAAL, LEMMA]]
+        Returns:
+            Lisame:
+            * self.json_io {"tabelid":{"kirjavead":[(VIGANE_VORM, VORM)]}}
+        """
+        if "tabelid" not in self.json_io:
+            self.json_io["tabelid"] = {}
+        if "kirjavead" not in self.json_io["tabelid"]:
+            self.json_io["tabelid"]["kirjavead"] = []
+        kv = kirjavigastaja.KIRJAVIGASTAJA(self.verbose, self.analyser)
+        kvead = {} # {VORM:[VIGANE_VORM]}
+        pbar = tqdm(self.json_io["tabelid"]["lemma_kõik_vormid"], disable=(not self.verbose), desc="# kirjavead kõigist genetud sõnavormidest ")
+        for vorm, _, _ in pbar:
+            if any(char.isdigit() for char in vorm) is True:
+                continue # ei tee kirjavigasid numbreid sisaldavatest sõnedest
+            if vorm not in kvead:
+                kvead[vorm] = []
+            kvead[vorm] = kv.gene_potentsiaalsed_kirjavead(vorm)
+        pbar = tqdm(kvead.items(), disable=(not self.verbose), desc="# genetud kirjavead tabeliks ")
+        for vorm, kirjavead in pbar:
+            for kirjaviga in kirjavead:
+                kirje = (kirjaviga, vorm)
+                #if kirje not in self.json_io["tabelid"]["kirjavead"]:
+                self.json_io["tabelid"]["kirjavead"].append(kirje)
 
     def tee_sources_tabeliks(self)->None:
         """
@@ -771,7 +750,6 @@ class TEE_JSON:
                 if self.verbose:
                     sys.stdout.write(f' {k}...')
                 del self.json_io[k]
- 
         if self.verbose:
             sys.stdout.write('\n')
         pass
@@ -782,16 +760,14 @@ class TEE_JSON:
             {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
                 "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
                 "liitsõnad":[(OSALEMMA, LIITLEMMA)],
-                "lemma_kõik_vormid":[(VORM, LEMMA)],
-                "lemma_korpuse_vormid":[(VORM, 0, LEMMA)],
-                "kirjavead":[[VIGANE_VORM, VORM, KAAL]],
-                "kirjavead_2": [[typo, lemma, correct_wordform, confidence]]
+                "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
+                "lemma_korpuse_vormid":[(VORM, KAAL, LEMMA)],
+                "kirjavead":[[VIGANE_VORM, KAAL]],
                 "allikad":[(DOCID, CONTENT)],
-                "ignoreeritavad_vormid":[VORM]
             }
         }
         '''
-        tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid", "kirjavead", "kirjavead_2", "ignoreeritavad_vormid"]
+        tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid", "kirjavead"]
         pbar = tqdm(tabelid,
                 disable=(not self.verbose))
         for tabel in pbar:
@@ -842,9 +818,7 @@ if __name__ == '__main__':
             tj.tee_mõistlike_lemmade_ja_osalemmade_indeks()
             tj.tabelisse_lemmade_indeks()
             tj.tee_generator()
-            tj.tee_ignoreeritavad_vormid()
             tj.tee_kirjavead()
-            tj.tee_kirjavead_2()
             tj.tee_sources_tabeliks()
             tj.kustuta_vahetulemused()
             tj.kordused_tabelitest_välja()
