@@ -3,13 +3,13 @@
 """
 TODO funktsioonide päises olevad kommentaarid õigeks sättida
 
-Lemmade indeksi genemine
-
+Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku andmebaas
+-----------------------------------------------------------------
 $ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18
 $ docker run -p 7008:7008 tilluteenused/vmetsjson:2023.09.21
 $ docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.01
-
-silumiseks:
+-----------------------------------------------------------------
+// code (silumiseks):
     {
         "name": "content_2_tabelid_2_test",
         "type": "python",
@@ -25,21 +25,7 @@ silumiseks:
             "../../rt_web_crawler/results/test.csv"
         ]
     },
-
-    "../../rt_web_crawler/results/state_laws.csv"
-
-   	$(PREF)-state_laws.json : ../../rt_web_crawler/results/state_laws.csv
-		echo venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py --csvpealkirjad $< > $@
-
-	$(PREF)-government_orders.json : ../../rt_web_crawler/results/government_			orders.csv
-		echo venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py --csvpealkirjad $< > $@
-
-	$(PREF)-government_regulations.json : ../../rt_web_crawler/results/government_regulations.csv
-		echo venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py --csvpealkirjad $< > $@
-
-	(PREF)-local_government_acts.json : ../../rt_web_crawler/results/local_government_acts.csv
-		echo venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid_2.py --csvpealkirjad $< > $@ 
-
+// code (laseb kõik pealkirjad läbi) 
     {
         "name": "content_2_tabelid_2",
         "type": "python",
@@ -58,24 +44,24 @@ silumiseks:
             "../../rt_web_crawler/results/local_government_acts.csv" \
         ]
     },
-
+-----------------------------------------------------------------
 Käsurealt (vaikimisi kohalikud konteinerid):
-cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-make -j all
-
-
+$   cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
+$   make clean ; make -j all
+-----------------------------------------------------------------
 JSON sees- ja välispidiseks kasutamiseks:
 
-    Sisse: json_io:
-    {   "lemmas_2_ignore": 
-        {   "lemmas": [string],     # sisse: kasutab tee_ignoreeritavad_vormid(): ingoreeritavad lemmad
-        }
-        "sources":
+    Sisse: 
+    * json (seda pole ammu testinud):
+    {   "sources":
         {   DOCID:                  # sisse (string): dokumendi unikaalne ID 
             {   "content": string   # sisse string2json()/csvpealkrjadest(): "plain text"
             }
         }
     }
+
+    * CSV pealkirjade ja seotud infoga:
+        global_id,document_type,document_title,xml_source
 
     Välja json_io:
     {   "tabelid":
@@ -112,7 +98,7 @@ class TEE_JSON:
         """
         self.verbose = verbose
 
-        self.VERSION="2023.09.20"
+        self.VERSION="2023.09.21"
 
         # https://smart-search.tartunlp.ai/api/tokenizer/process
         self.tokenizer = os.environ.get('TOKENIZER') # vm liidesega veebiteenus sõnestamiseks
@@ -161,14 +147,14 @@ class TEE_JSON:
         """PUBLIC: sisendiks pealkirjad CSV failist
 
         Args:
-            f : CSV faili read
+            f : CSV faili read: global_id,document_type,document_title,xml_source
 
         Returns:
 
             self.json_io (Dict): DICTiks tehtud sisendCSV
 
             {   "sources":
-                {   DOCID: // "pk"+globaalID+liik
+                {   DOCID: // "pk_"+globaalID+liik
                     {   "content": str, // pealkiri
                     }
                 }
