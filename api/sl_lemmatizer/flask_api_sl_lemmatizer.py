@@ -31,10 +31,10 @@ Lähtekoodist pythoni skripti kasutamine
     $ venv/bin/python3 ./flask_api_sl_lemmatizer.py
 1.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"tss":"kinnipeetud\tpidama\tallmaaraudteejaam"}' \
+        --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \
         localhost:7007/api/sl_lemmatizer/json | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"tss":"kinnipeetud\tpidama\tallmaaraudteejaam"}' \
+        --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \
         localhost:7007/api/sl_lemmatizer/tsv   
     $ curl --silent --request POST --header "Content-Type: application/json" \
         localhost:7007/api/sl_lemmatizer/version | jq
@@ -61,10 +61,10 @@ DockerHUBist tõmmatud konteineri kasutamine
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"tss":"kinnipeetud\tpidama\tallmaaraudteejaam"}' \
+        --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \
         https://smart-search.tartunlp.ai/api/sl_lemmatizer/json | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"tss":"kinnipeetud\tpidama\tallmaaraudteejaam"}' \
+        --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \
         https://smart-search.tartunlp.ai/api/sl_lemmatizer/tsv   
     $ curl --silent --request POST --header "Content-Type: application/json" \
         https://smart-search.tartunlp.ai/api/sl_lemmatizer/version | jq
