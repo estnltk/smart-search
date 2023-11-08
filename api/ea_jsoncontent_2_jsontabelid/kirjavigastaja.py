@@ -11,6 +11,7 @@ import sys
 import json
 import requests
 from typing import Dict, List, Tuple
+from inspect import currentframe, getframeinfo
 
 class KIRJAVIGASTAJA:
     """Korrektsetest sõnadest kirjavigaste variantide genereerimine
@@ -66,17 +67,19 @@ class KIRJAVIGASTAJA:
         # morfi_sisend = {"params": {"vmetajson":["--stem"]}, "content": " ".join(potentsiaalsed_kirjavead)}
         # kontent ei sobi, sest sest sõnestaja teeb (vahel) tühikuga sõnesid 
         morfi_sisend = {"params": {"vmetajson":["--stem"]}, "annotations":{"tokens":[]}}
+        morfi_sisend["DB_potentsiaalsed_kirjavead"] = potentsiaalsed_kirjavead
+
         for pkv in potentsiaalsed_kirjavead:
             morfi_sisend["annotations"]["tokens"].append({"features":{"token": pkv}})
         # laseme võimalikud kirjavead ilma oletamiseta morfist läbi 
         try:
             response = requests.post(self.analyser, json=morfi_sisend)
             if not response.ok:
-                raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}, status_code={response.status_code}'})
-            resp_json = response.json()
+                raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}, status_code={response.status_code}, {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'})
         except:
-            raise Exception({"warning":f'Probleemid veebiteenusega {self.analyser}'})
-        
+            morfi_sisend["warning"] = f'Probleemid veebiteenusega {self.analyser}, {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'
+            raise Exception(morfi_sisend)
+        resp_json = response.json()        
         potentsiaalsed_kirjavead = []
         for token in resp_json["annotations"]["tokens"]:
             if "mrf" not in token["features"]:

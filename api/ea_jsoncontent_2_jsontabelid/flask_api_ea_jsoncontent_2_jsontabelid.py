@@ -1,9 +1,18 @@
 #!/usr/bin/python3
 
-'''Flask api, eelarvutab JSON-failid
-
+'''Flask api, (eel)arvutab JSON-failid mis on vajlikud andmebaasi kokkupanemiseks
 ----------------------------------------------
-
+// code (serveri käivitamine silumiseks):
+        {
+            "name": "create_jsontables",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
+            "program": "./flask_api_ea_jsoncontent_2_jsontabelid.py",
+            "env": {},
+            "args": []
+        },
+----------------------------------------------
 Lähtekoodist pythoni skripti kasutamine:
 1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), kasutavate teenuste paikasättimine (1.3) ja pythoni skripti käivitamine(1.4)
 1.1 Lähtekoodi allalaadimine
@@ -14,37 +23,17 @@ Lähtekoodist pythoni skripti kasutamine:
     $ ./create_venv.sh
 1.3 Sätime paika kasutatvad teenused: kasutame veebis olevaid konteinereid (1.3.1) või kasutame kohalikus masinas töötavaid konteinereid (1.3.2)
 1.3.1 Kasutame veebis olevaid konteinereid
-    $ export TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process \
-    $ export GENERATOR=https://smart-search.tartunlp.ai/api/vm/generator/process \
-    $ export ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process  \
-1.3.2 Kasutame kohalikus masinas töötavaid konteinereid        
-    $ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18
-    $ docker run -p 7008:7008 tilluteenused/vmetsjson:2023.09.21
-    $ docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.01
+    $ export TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process ;\
+      export GENERATOR=https://smart-search.tartunlp.ai/api/vm/generator/process ;\
+      export ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process
+1.3.2 Kasutame kohalikus masinas töötavaid konteinereid  (vaikimisi kasutab neid)      
+    $ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18 ;\
+      docker run -p 7008:7008 tilluteenused/vmetsjson:2023.09.23 ;\
+      docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.01
 1.4 Pythoni skripti käivitamine
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py --verbose --indent=4\
-        ../../testkorpused/microcorpus/microcorpus1.json \
-        ../../testkorpused/microcorpus/microcorpus2.json
-
-    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py \
-        --csvpealkirjad ../../rt_web_crawler/results/government_orders.csv \
-        > table_government_orders.json
-
-    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py \
-        --csvpealkirjad ../../rt_web_crawler/results/government_regulations.csv\
-        > table_government_regulations.json
-
-    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py \
-        --csvpealkirjad ../../rt_web_crawler/results/local_government_acts.csv\
-        > table_local_government_acts.json
-        
-    $ ./venv/bin/python3 ./api_ea_jsoncontent_2_jsontabelid.py \
-        --csvpealkirjad ../../rt_web_crawler/results/state_laws.csv\
-        > table_state_laws.json
-
+    $ make -j all
 ----------------------------------------------
-
 Lähtekoodist veebiserveri käivitamine & kasutamine
 2 Lähtekoodi allalaadimine (2.1), virtuaalkeskkonna loomine (2.2), kasutavate teenuste paikasättimine (2.3) veebiteenuse käivitamine pythoni koodist (2.4) ja CURLiga veebiteenuse kasutamise näited (2.5)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
@@ -54,38 +43,34 @@ Lähtekoodist veebiserveri käivitamine & kasutamine
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
     $ ./venv/bin/python3 ./flask_api_ea_jsoncontent_2_jsontabelid.py
 2.5 CURLiga veebiteenuse kasutamise näited
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"sources": {"DOC_1":{"content":"Peaministri kantselei."}}}' \
-        localhost:6602/api/ea_jsoncontent_2_jsontabelid/json | jq
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        localhost:6602/api/ea_jsoncontent_2_jsontabelid/version | jq
+    $ curl --silent --request POST --header "Content-Type: application/text" \
+        localhost:6602/api/create_jsontables/version
+    $ curl --silent --request POST --header "Content-Type: application/text" \
+      --data-binary @../../rt_web_crawler/results/test.csv \
+      localhost:6602/api/create_jsontables/headers  | jq
 ----------------------------------------------
-
 Lähtekoodist tehtud konteineri kasutamine
 3 Lähtekoodi allalaadimine (3.1), konteineri kokkupanemine (3.2), konteineri käivitamine (3.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-    $ docker build -t tilluteenused/smart_search_api_ea_jsoncontent_2_jsontabelid:2023.09.20 . 
+    $ docker build -t tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.09.23 . 
+    # docker push tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.09.23
 2.3 Konteineri käivitamine
     $ docker run -p 6602:6602  \
         --env TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
+        --env GENERATOR='https://smart-search.tartunlp.ai/api/vm/generator/process' \
         --env ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
-        --env GENERATOR='https://smart-search.tartunlp.ai/api/generator/process' \
-        tilluteenused/smart_search_api_ea_jsoncontent_2_jsontabelid:2023.09.20 
+        tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.09.23 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
-
 ----------------------------------------------
-
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_ettearvutaja:2023.09.20 
+    $ docker pull tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.09.23
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
-
 ----------------------------------------------
-
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
@@ -95,8 +80,6 @@ TÜ pilves töötava konteineri kasutamine
         https://smart-search.tartunlp.ai/api/ea_jsoncontent_2_jsontabelid/version | jq
 ----------------------------------------------
 '''
-
-
 import os
 import sys
 import json
@@ -108,29 +91,23 @@ from flask import Flask, request, jsonify, make_response
 from typing import Dict, List, Tuple
 from collections import OrderedDict
 
-import api_ea_jsoncontent_2_jsontabelid
+import api_ea_jsoncontent_2_jsontabelid_2
 
-ettearvutaja = api_ea_jsoncontent_2_jsontabelid.ETTEARVUTAJA(False)
+tj = api_ea_jsoncontent_2_jsontabelid_2.TEE_JSON(False)
 
 app = Flask("api_ea_jsoncontent_2_jsontabelid")
 
-@app.route('/api/ea_jsoncontent_2_jsontabelid/json', methods=['POST'])
-@app.route('/json', methods=['POST'])
-def api_lemmade_ettearvutaja_json():
+@app.route('/api/create_jsontables/headers', methods=['POST'])
+@app.route('/headers', methods=['POST'])
+def create_jsontables_headers():
     """Leia sisendkorpuse sõnede kõikvõimalikud vormid ja nonde hulgast need, mis esinesid korpuses
 
     Args:
 
-        request.json: // SisendJSON, sisaldab korpusetekste
+    * CSV pealkirjade ja seotud infoga:
+        global_id,document_type,document_title,xml_source
 
-        {   "sources":
-            {   DOCID:              // dokumendi ID
-                {   "content": str  // dokumendi "plain text" 
-                                    // dokumendi kohta käiv lisainfo pane siia eraldi eraldi võtmete alla
-                }
-            }
-        }
-
+        
     Kui dokumendiga tuleb kaasa lisainfot, siis tuleb alljärgnevatesse tabelitesse tekitada
     vastavatesse kohtadesse lisaveerud vastava infoga    
 
@@ -146,28 +123,37 @@ def api_lemmade_ettearvutaja_json():
                 "allikad": [(DOCID, CONTENT)]                       # (docid, dokumendi_"plain_text"_mille_suhtes_on_arvutatud_START_ja_END)
             }
         }  
+
+    https://stackoverflow.com/questions/62685107/open-csv-file-in-flask-sent-as-binary-data-with-curl
     """
     try:
-        ettearvutaja.json_io = request.json
-        ettearvutaja.tee_sõnestamine()
-        ettearvutaja.tee_sõnede_ja_osaõnede_indeks()
-        ettearvutaja.tee_generator()
-        ettearvutaja.tee_kirjavead()
-        ettearvutaja.tee_sources_tabeliks()
-        ettearvutaja.kustuta_vahetulemused()
-        return jsonify(ettearvutaja.json_io)
+        csv_data = request.data.decode("utf-8")
+        tj.csvpealkrjadest(csv_data.splitlines())
+        tj.tee_sõnestamine()
+        tj.tee_kõigi_terviksõnede_indeks()
+        tj.tee_mõistlike_tervik_ja_osasõnede_indeks()
+        tj.tabelisse_vormide_indeks()
+        tj.tee_mõistlike_lemmade_ja_osalemmade_indeks()
+        tj.tabelisse_lemmade_indeks()
+        tj.tee_generator()
+        tj.tee_kirjavead()
+        tj.tee_sources_tabeliks()
+        tj.kustuta_vahetulemused()
+        tj.kordused_tabelitest_välja()
+
+        return jsonify(tj.json_io)
     except Exception as e:
         return jsonify(e.args[0])    
 
-@app.route('/api/ea_jsoncontent_2_jsontabelid/version', methods=['GET', 'POST'])
+@app.route('/api/create_jsontables/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['POST'])
-def api_lemmade_ettearvutaja_version():
+def api_create_jsontables_version():
     """Kuvame versiooni ja muud infot
 
     Returns:
         ~flask.Response: Lemmatiseerija versioon
     """
-    json_response = ettearvutaja.version_json()
+    json_response = tj.version_json()
     return jsonify(json_response)
 
 if __name__ == '__main__':

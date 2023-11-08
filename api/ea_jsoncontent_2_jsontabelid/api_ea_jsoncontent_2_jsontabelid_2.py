@@ -98,7 +98,7 @@ class TEE_JSON:
         """
         self.verbose = verbose
 
-        self.VERSION="2023.09.21"
+        self.VERSION="2023.09.23"
 
         # https://smart-search.tartunlp.ai/api/tokenizer/process
         self.tokenizer = os.environ.get('TOKENIZER') # vm liidesega veebiteenus sõnestamiseks
@@ -141,7 +141,7 @@ class TEE_JSON:
         try:
             self.json_io = json.loads(str.replace('\n', ' '))
         except:
-            raise Exception({"warning":"JSON parse error"})
+            raise Exception({"warning":"JSON parse error, {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}"})
 
     def csvpealkrjadest(self, f)->None:
         """PUBLIC: sisendiks pealkirjad CSV failist
@@ -181,10 +181,10 @@ class TEE_JSON:
         try:
             response = requests.post(url, json=json_in)
             if not response.ok:
-                raise Exception({"warning":f'Probleemid veebiteenusega {url}, status_code={response.status_code}'})
+                raise Exception({"warning":f'Probleemid veebiteenusega {url}, status_code={response.status_code}, {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'})
             return response.json()
         except:
-            raise Exception({"warning":f'Probleemid veebiteenusega {url}'})
+            raise Exception({"warning":f'Probleemid veebiteenusega {url}, {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'})
         
 
     def tee_sõnestamine(self)->None:
