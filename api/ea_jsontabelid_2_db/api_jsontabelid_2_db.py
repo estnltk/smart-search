@@ -24,7 +24,7 @@ Code:
 
 Käsurealt:
 $ cd ~/git/smart-search_github/api/ea_jsontabelid_2_db
-$ export PREFIKS=1019-
+$ export PREFIKS=1019- # kasuta sama prefiksit, millega tegid JSON failid
 $ ./create_venv.sh
 $ ./venv/bin/python3 ./api_jsontabelid_2_db.py \
     --verbose --db_name=${PREFIKS}baas.sqlite \
