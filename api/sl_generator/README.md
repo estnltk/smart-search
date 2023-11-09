@@ -17,7 +17,13 @@ tagant tõsta lõpud võõrsõna taha.
 
 ## Väljundi TSV.kuju
 
+Väljundi esimeses read on veerunimed.
 
+Veerud on:
+* location -- sama numbriga read sisaldavad sama sisendsõna (genereerimse aluseks olevat lemmat)
+* input -- genereerime aluseks oleva sõne (soovitatavalt lemma)
+* stem  -- genereerutud sõnavormi tüvi (sellest on tuletatud (osa) vorme)
+* wordform -- genereerutud sõnavorm
 
 ## Kasutusnäited
 
