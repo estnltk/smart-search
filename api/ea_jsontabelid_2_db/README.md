@@ -52,3 +52,7 @@ allikad(
     PRIMARY KEY(docid))
 
 ```
+
+## Kasutusnäited
+
+https://github.com/estnltk/smart-search/blob/main/api/ea_jsontabelid_2_db/api_jsontabelid_2_db.py
