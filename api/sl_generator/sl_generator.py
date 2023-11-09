@@ -26,7 +26,7 @@ proc = subprocess.Popen(['./vmetsjson', '--path=.'],
 
 class GENERATOR4SL:
     def __init__(self):
-        self.VERSION = "2023.11.32"
+        self.VERSION = "2023.11.33"
 
     def generator2list(self, lemmas:List[str], with_apostrophe=False)->List:
         """
