@@ -1,6 +1,6 @@
-# Eesti keele morfoloogilise analüsaatori konteiner [versioon 2023.04.19]
+# Eesti keele morfoloogilise analüsaatori konteiner [versioon 2023.11.20]
 
-[Filosofti eesti keele morfoloogilist analüsaatorit](https://github.com/Filosoft/vabamorf/tree/master/apps/cmdline/vmetajson) sisaldav tarkvara-konteiner
+[Filosofti eesti keele morfoloogilist analüsaatorit](https://github.com/Filosoft/vabamorf/tree/master/apps/cmdline/vmetajson) sisaldav tarkvara-konteiner.
 
 ## Mida sisaldab <a name="Mida_sisaldab"></a>
 
@@ -17,7 +17,7 @@
 Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida (Windows'i/Mac'i käsurida on analoogiline):
 
 ```commandline
-docker pull tilluteenused/vmetajson:2023.04.19
+docker pull tilluteenused/smart_search_api_sl_analyser:2023.11.20
 ```
 
 Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine).
@@ -36,7 +36,7 @@ git clone git@github.com:Filosoft/vabamorf.git vabamorf_github
 
 ```commandline
 mkdir -p ~/git; cd ~/git
-git clone https://github.com/Filosoft/vabamorf.git vabamorf_github
+git clone https://github.com/smart-search.git smart_search_github
 ```
 
 Repositoorium sisaldab kompileeritud [Filosofti morfoloogilist analüsaatorit](https://github.com/Filosoft/vabamorf/blob/master/apps/cmdline/vmetajson/README.md) ja andmefaile:
@@ -50,8 +50,8 @@ vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/
 ### 2. Konteineri kokkupanemine
 
 ```commandline
-cd ~/git/vabamorf_github/docker/flask_vmetajson
-docker build -t tilluteenused/vmetajson:2023.04.19 .
+cd ~/git/smart-search_github/api/sl_analyser
+docker build -t tilluteenused/smart_search_api_sl_analyser:2023.11.20 .
 ```
 
 <!---
@@ -62,7 +62,7 @@ docker push tilluteenused/vmetajson:2023.04.19
 ## Konteineri käivitamine <a name="Konteineri_käivitamine"></a>
 
 ```commandline
-docker run -p 7007:7007 tilluteenused/vmetajson:2023.04.19
+docker run -p 7007:7007 tilluteenused/smart_search_api_sl_analyser:2023.11.20
 ```
 
 Käivitatud konteineri töö lõpetab Ctrl+C selles terminaliaknas, kust konteiner käivitati.
@@ -79,10 +79,23 @@ Sisendiks on tühikuga eraldatud sõnede string.
 ```json
 {
   "content": string, /* Tühikuga eraldatud sõnede loend. Ei võimalda lipu --guesspropnames kasutamist */
-}
+}                    /* Iga tühikuga eraldatud sõne analüüsitakse eraldi */
 ```
 
 ### Variant 2
+
+Sisendiks on tabulatsiooniga eraldatud sõnede string. Leidub
+sõnestajad mis võivad võtta mitu tühikuga eraldatus stringi kokku üheks sõneks (näit telefoni number).
+Et selliseid tühikut sisaldavaid sõnesid saaks morf analüsaatorile analüüsimiseks anda
+on sõnede vaheliseks eraldajaks võetud tabulatsioon ja sõne sees tohib olla tühik(uid).
+
+```json
+{
+  "tss": string, /* Tühikuga eraldatud sõnede loend. Ei võimalda lipu --guesspropnames kasutamist */
+}                * Iga tabulatsiooniga eraldatud sõne analüüsitakse eraldi */
+```
+
+### Variant 3
 
 Sisendiks on lausestatud ja sõnestatud tekst. Selle tegemiseks saab kasutada [lausestamise-sõnestamise konteinerit](https://github.com/Filosoft/vabamorf/tree/master/docker/flask_vmetajson).
 
@@ -149,6 +162,8 @@ Sisendiks on lausestatud ja sõnestatud tekst. Selle tegemiseks saab kasutada [l
                 "mrf" :           /* sisendsõne analüüsivariantide massiiv */
                 [
                     {
+                        "lisamärkideta": LISAMÄRKIDETA_TÜVI_VÕI_LEMMA,
+                        "komponendid": [LIITSÕNA_OSASÕNEDE_MASSIIV], /* kui ei olnud liitsaõna, siis [] */
                         "stem":     TÜVI,     /* --stem lipu korral */
                         "lemma":    LEMMA,    /* --stem lipu puudumise korral */
                         "lemma_ma": LEMMA_MA, /* --stem lipu puudumise korral, verbilemmale on lisatud ```ma```, muudel juhtudel sama mis LEMMA */
@@ -172,10 +187,14 @@ Morf analüüsi tulemuste selgutust vaata programmi [vmetajson](https://github.c
 
 ### Näide 1
 
-Sisendiks on sõnede string.
+Analüüsime tabulatsiooniga eraldatud sõnesid. Väljundisse analüüsitavate 
+sõnede tüved, lõpud jms. Leksikonist puuduvate sõnede võimalikud analüüsid
+oletame sõnakujust lähtuvalt.
 
-```commandline
-curl --silent --request POST --header "Content-Type: application/json" --data '{"content":"Mees peeti kinni. Sarved&Sõrad"}' localhost:7007/process | jq
+```cmdline
+curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"params":{"vmetajson":["--stem", "--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
+        localhost:7007/api/sl_analyser/process | jq
 ```
 
 ```json
@@ -184,28 +203,24 @@ curl --silent --request POST --header "Content-Type: application/json" --data '{
     "tokens": [
       {
         "features": {
-          "complexity": 1,
+          "complexity": 6,
           "mrf": [
             {
-              "ending": "0",
-              "fs": "sg n",
+              "ending": "ga",
+              "fs": "sg kom",
               "kigi": "",
-              "lemma": "mees",
-              "lemma_ma": "mees",
+              "komponendid": [
+                "puna",
+                "mere",
+                "mao"
+              ],
+              "lisamärkideta": "punameremao",
               "pos": "S",
-              "source": "P"
-            },
-            {
-              "ending": "s",
-              "fs": "sg in",
-              "kigi": "",
-              "lemma": "mesi",
-              "lemma_ma": "mesi",
-              "pos": "S",
-              "source": "P"
+              "source": "P",
+              "stem": "puna_mere_mao"
             }
           ],
-          "token": "Mees"
+          "token": "punameremaoga"
         }
       },
       {
@@ -213,31 +228,55 @@ curl --silent --request POST --header "Content-Type: application/json" --data '{
           "complexity": 1,
           "mrf": [
             {
-              "ending": "0",
-              "fs": "adt",
+              "ending": "ga",
+              "fs": "sg kom",
               "kigi": "",
-              "lemma": "peet",
-              "lemma_ma": "peet",
+              "komponendid": [
+                "lambi",
+                "õli"
+              ],
+              "lisamärkideta": "lambiõli",
               "pos": "S",
-              "source": "P"
-            },
+              "source": "P",
+              "stem": "lambi_õli"
+            }
+          ],
+          "token": "lambiõliga"
+        }
+      },
+      {
+        "features": {
+          "complexity": 1,
+          "mrf": [
             {
               "ending": "ti",
               "fs": "ti",
               "kigi": "",
-              "lemma": "pida",
-              "lemma_ma": "pidama",
+              "komponendid": [],
+              "lisamärkideta": "pee",
               "pos": "V",
-              "source": "P"
+              "source": "P",
+              "stem": "pee"
+            },
+            {
+              "ending": "0",
+              "fs": "adt",
+              "kigi": "",
+              "komponendid": [],
+              "lisamärkideta": "peeti",
+              "pos": "S",
+              "source": "P",
+              "stem": "peeti"
             },
             {
               "ending": "0",
               "fs": "sg p",
               "kigi": "",
-              "lemma": "peet",
-              "lemma_ma": "peet",
+              "komponendid": [],
+              "lisamärkideta": "peeti",
               "pos": "S",
-              "source": "P"
+              "source": "P",
+              "stem": "peeti"
             }
           ],
           "token": "peeti"
@@ -245,93 +284,111 @@ curl --silent --request POST --header "Content-Type: application/json" --data '{
       },
       {
         "features": {
-          "complexity": 1,
+          "complexity": 0,
           "mrf": [
             {
               "ending": "0",
-              "fs": "",
+              "fs": "?",
               "kigi": "",
-              "lemma": "kinni",
-              "lemma_ma": "kinni",
-              "pos": "D",
-              "source": "P"
+              "komponendid": [],
+              "lisamärkideta": "a",
+              "pos": "Y",
+              "source": "O",
+              "stem": "a"
             }
           ],
-          "token": "kinni."
-        }
-      },
-      {
-        "features": {
-          "complexity": 4,
-          "token": "Sarved&Sõrad"
+          "token": "_a"
         }
       }
     ]
   },
-  "content": "Mees peeti kinni. Sarved&Sõrad"
+  "params": {
+    "vmetajson": [
+      "--stem",
+      "--guess"
+    ]
+  },
+  "tss": "punameremaoga\tlambiõliga\tpeeti\t_a"
 }
 ```
 
 ### Näide 2
 
-Kasutame sõnestaja konteineri väljundit morf analüsaatori konteineri sisendina. Morf analüüs toimub vaikelippudega.
+Analüüsime tabulatsiooniga eraldatud sõnesid. Väljundisse analüüsitavate 
+sõnede lemmad, lõpud jms. Leksikonist puuduvate sõnede võimalikud analüüsid
+oletame sõnakujust lähtuvalt.
 
-```commandline
-curl --silent --request POST --header "Content-Type: application/json" --data "$(curl --silent --request POST --header "Content-Type: application/json" --data '{"content":"Mees peeti kinni. Sarved&Sõrad"}' localhost:6000/process)" localhost:7007/process | jq
+```cmdline
+curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"params":{"vmetajson":["--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
+        localhost:7007/api/sl_analyser/process | jq
 ```
 
 ```json
 {
   "annotations": {
-    "sentences": [
-      {
-        "end": 17,
-        "features": {
-          "end": 4,
-          "start": 0
-        },
-        "start": 0
-      },
-      {
-        "end": 30,
-        "features": {
-          "end": 7,
-          "start": 4
-        },
-        "start": 18
-      }
-    ],
     "tokens": [
       {
-        "end": 4,
         "features": {
-          "complexity": 1,
+          "complexity": 6,
           "mrf": [
             {
-              "ending": "0",
-              "fs": "sg n",
+              "ending": "ga",
+              "fs": "sg kom",
               "kigi": "",
-              "lemma": "mees",
-              "lemma_ma": "mees",
+              "komponendid": [
+                "puna",
+                "mere",
+                "madu"
+              ],
+              "lemma": "puna_mere_madu",
+              "lemma_ma": "puna_mere_madu",
+              "lisamärkideta": "punameremadu",
               "pos": "S",
               "source": "P"
             },
             {
-              "ending": "s",
-              "fs": "sg in",
+              "ending": "ga",
+              "fs": "sg kom",
               "kigi": "",
-              "lemma": "mesi",
-              "lemma_ma": "mesi",
+              "komponendid": [
+                "puna",
+                "mere",
+                "magu"
+              ],
+              "lemma": "puna_mere_magu",
+              "lemma_ma": "puna_mere_magu",
+              "lisamärkideta": "punameremagu",
               "pos": "S",
               "source": "P"
             }
           ],
-          "token": "Mees"
-        },
-        "start": 0
+          "token": "punameremaoga"
+        }
       },
       {
-        "end": 10,
+        "features": {
+          "complexity": 1,
+          "mrf": [
+            {
+              "ending": "ga",
+              "fs": "sg kom",
+              "kigi": "",
+              "komponendid": [
+                "lambi",
+                "õli"
+              ],
+              "lemma": "lambi_õli",
+              "lemma_ma": "lambi_õli",
+              "lisamärkideta": "lambiõli",
+              "pos": "S",
+              "source": "P"
+            }
+          ],
+          "token": "lambiõliga"
+        }
+      },
+      {
         "features": {
           "complexity": 1,
           "mrf": [
@@ -339,8 +396,10 @@ curl --silent --request POST --header "Content-Type: application/json" --data "$
               "ending": "0",
               "fs": "adt",
               "kigi": "",
+              "komponendid": [],
               "lemma": "peet",
               "lemma_ma": "peet",
+              "lisamärkideta": "peet",
               "pos": "S",
               "source": "P"
             },
@@ -348,8 +407,10 @@ curl --silent --request POST --header "Content-Type: application/json" --data "$
               "ending": "ti",
               "fs": "ti",
               "kigi": "",
+              "komponendid": [],
               "lemma": "pida",
               "lemma_ma": "pidama",
+              "lisamärkideta": "pidama",
               "pos": "V",
               "source": "P"
             },
@@ -357,111 +418,46 @@ curl --silent --request POST --header "Content-Type: application/json" --data "$
               "ending": "0",
               "fs": "sg p",
               "kigi": "",
+              "komponendid": [],
               "lemma": "peet",
               "lemma_ma": "peet",
+              "lisamärkideta": "peet",
               "pos": "S",
               "source": "P"
             }
           ],
           "token": "peeti"
-        },
-        "start": 5
+        }
       },
       {
-        "end": 16,
         "features": {
-          "complexity": 1,
+          "complexity": 0,
           "mrf": [
             {
               "ending": "0",
-              "fs": "",
+              "fs": "?",
               "kigi": "",
-              "lemma": "kinni",
-              "lemma_ma": "kinni",
-              "pos": "D",
-              "source": "P"
+              "komponendid": [],
+              "lemma": "a",
+              "lemma_ma": "a",
+              "lisamärkideta": "a",
+              "pos": "Y",
+              "source": "O"
             }
           ],
-          "token": "kinni"
-        },
-        "start": 11
-      },
-      {
-        "end": 17,
-        "features": {
-          "complexity": 1,
-          "token": "."
-        },
-        "start": 16
-      },
-      {
-        "end": 24,
-        "features": {
-          "complexity": 1,
-          "mrf": [
-            {
-              "ending": "d",
-              "fs": "pl n",
-              "kigi": "",
-              "lemma": "sarv",
-              "lemma_ma": "sarv",
-              "pos": "S",
-              "source": "P"
-            }
-          ],
-          "token": "Sarved"
-        },
-        "start": 18
-      },
-      {
-        "end": 25,
-        "features": {
-          "complexity": 1,
-          "mrf": [
-            {
-              "ending": "0",
-              "fs": "",
-              "kigi": "",
-              "lemma": "&",
-              "lemma_ma": "&",
-              "pos": "J",
-              "source": "P"
-            }
-          ],
-          "token": "&"
-        },
-        "start": 24
-      },
-      {
-        "end": 30,
-        "features": {
-          "complexity": 1,
-          "mrf": [
-            {
-              "ending": "d",
-              "fs": "pl n",
-              "kigi": "",
-              "lemma": "sõrg",
-              "lemma_ma": "sõrg",
-              "pos": "S",
-              "source": "P"
-            }
-          ],
-          "token": "Sõrad"
-        },
-        "start": 25
+          "token": "_a"
+        }
       }
     ]
   },
-  "content": "Mees peeti kinni. Sarved&Sõrad"
+  "params": {
+    "vmetajson": [
+      "--guess"
+    ]
+  },
+  "tss": "punameremaoga\tlambiõliga\tpeeti\t_a"
 }
 ```
-
-## Mida uut
-
-* **_versioon 2023.04.19_** Lisatud päringud:
-  * ```/api/analyser/version``` (päringu ```/version``` sünonüüm)
-  * ```/api/analyser/process``` (päringu ```/process``` sünonüüm)
 
 ## Vaata lisaks
 
