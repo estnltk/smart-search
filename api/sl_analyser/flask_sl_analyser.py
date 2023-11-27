@@ -13,7 +13,7 @@ Lähtekoodist pythoni skripti kasutamine
 1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiteenuse käivitamine pythoni koodist (1.3) ja CURLiga veebiteenuse kasutamise näited (1.4)
 1.1 Lähtekoodi allalaadimine
     $ mkdir -p ~/git/ ; cd ~/git/
-    $ git clone git@github.com:Filosoft/vabamorf.git vabamorf_github
+    $ git clone git@github.com:estnltk/smart-search.git smart_search_github
 1.2 Virtuaalkeskkonna loomine
     $ cd ~/git/smart-search_github/api/sl_analyser
     $ ./create_venv.sh
@@ -45,11 +45,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/sl_analyser
-    $ docker build -t tilluteenused/vmetajson:2023.11.20 .
+    $ docker build -t tilluteenused/smart_search_api_sl_analyser:2023.11.20 .
     # docker login -u tilluteenused
-    # docker push tilluteenused/vmetajson:2023.11.20
+    # docker push tilluteenused/smart_search_api_sl_analyser:2023.11.20
 2.3 Konteineri käivitamine
-    $ docker run -p 7007:7007 tilluteenused/vmetajson:2023.11.20
+    $ docker run -p 7007:7007 tilluteenused/smart_search_api_sl_analyser:2023.11.20
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -67,12 +67,12 @@ TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"content":"Mees peeti kinni. Sarved&Sõrad: telef. +372 345 534."}' \
-        https://smart-search.tartunlp.ai/api/analyser/process | jq
+        https://smart-search.tartunlp.ai/api/sl_analyser/process | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/analyser/version | jq  
+        https://smart-search.tartunlp.ai/api/sl_analyser/version | jq  
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--version"]}}' \
-        https://smart-search.tartunlp.ai/api/analyser/process | jq
+        https://smart-search.tartunlp.ai/api/sl_analyser/process | jq
 
 ----------------------------------------------
 """
