@@ -82,6 +82,9 @@ toimib, nii nagu me eeldame.
 
 [Valikud]
 [Seosed RT weebiliidesega]
+[kas MHz peak saama otsida ]
+[Kas AS peaks saama otsida]
+HIV vs AIDS
 
 **Kuidas ülesannet püstitada:**
 TBA
