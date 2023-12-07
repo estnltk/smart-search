@@ -1,10 +1,10 @@
  #!/usr/bin/env python3
 
 """ 
-TODO
 ----------------------------------------------
 
-Flask veebiserver, pakendab Filosofti morfoloogilise analüsaatori veebiteenuseks
+Flask veebiserver sindsõnede tüvede ja lemmade leidmiseks.
+Kasutab Filosofti morfoloogilist analüsaatorit.
 
 ----------------------------------------------
 Serveri käivtamine code'is, päringud vt 1.4
