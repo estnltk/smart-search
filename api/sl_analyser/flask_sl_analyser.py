@@ -1,11 +1,13 @@
  #!/usr/bin/env python3
 
-VERSION = "2023.11.20"
+VERSION = "2023.11.21"
 
 """ 
 ----------------------------------------------
 
 Flask veebiserver, pakendab Filosofti morfoloogilise analüsaatori veebiteenuseks
+JSON väljundisse lisatud eksplitsiitne liitsõna osasõnadeks tükeldamine.
+Testitud: 2023.12.07
 
 ----------------------------------------------
 
@@ -19,7 +21,7 @@ Lähtekoodist pythoni skripti kasutamine
     $ ./create_venv.sh
 1.3 Veebiserveri käivitamine pythoni koodist
     $ cd ~/git/smart-search_github/api/sl_analyser
-    $ venv/bin/python3 ./flask_vmetajson.py
+    $ venv/bin/python3 ./flask_sl_analyser.py
 1.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--stem", "--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
@@ -45,11 +47,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/sl_analyser
-    $ docker build -t tilluteenused/smart_search_api_sl_analyser:2023.11.20 .
+    $ docker build -t tilluteenused/smart_search_api_sl_analyser:2023.11.21 .
     # docker login -u tilluteenused
-    # docker push tilluteenused/smart_search_api_sl_analyser:2023.11.20
+    # docker push tilluteenused/smart_search_api_sl_analyser:2023.11.21
 2.3 Konteineri käivitamine
-    $ docker run -p 7007:7007 tilluteenused/smart_search_api_sl_analyser:2023.11.20
+    $ docker run -p 7007:7007 tilluteenused/smart_search_api_sl_analyser:2023.11.21
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -57,7 +59,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/vmetajson:2023.11.20 
+    $ docker pull tilluteenused/vmetajson:2023.11.21 
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
@@ -66,13 +68,16 @@ DockerHUBist tõmmatud konteineri kasutamine
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"content":"Mees peeti kinni. Sarved&Sõrad: telef. +372 345 534."}' \
+        --data '{"params":{"vmetajson":["--stem", "--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
         https://smart-search.tartunlp.ai/api/sl_analyser/process | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/sl_analyser/version | jq  
+        --data '{"params":{"vmetajson":["--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
+        https://smart-search.tartunlp.ai/api/sl_analyser/process | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--version"]}}' \
-        https://smart-search.tartunlp.ai/api/sl_analyser/process | jq
+       https://smart-search.tartunlp.ai/api/sl_analyser/process | jq
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+         https://smart-search.tartunlp.ai/api/sl_analyser/version | jq
 
 ----------------------------------------------
 """

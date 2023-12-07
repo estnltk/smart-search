@@ -1,4 +1,4 @@
-# Eesti keele morfoloogilise analüsaatori konteiner [versioon 2023.11.20]
+# Eesti keele morfoloogilise analüsaatori konteiner [tilluteenused/smart_search_api_sl_analyser:2023.11.21]
 
 [Filosofti eesti keele morfoloogilist analüsaatorit](https://github.com/Filosoft/vabamorf/tree/master/apps/cmdline/vmetajson) sisaldav tarkvara-konteiner.
 
@@ -17,7 +17,7 @@
 Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida (Windows'i/Mac'i käsurida on analoogiline):
 
 ```commandline
-docker pull tilluteenused/smart_search_api_sl_analyser:2023.11.20
+docker pull tilluteenused/smart_search_api_sl_analyser:2023.11.21
 ```
 
 Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine).
@@ -51,7 +51,7 @@ vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/
 
 ```commandline
 cd ~/git/smart-search_github/api/sl_analyser
-docker build -t tilluteenused/smart_search_api_sl_analyser:2023.11.20 .
+docker build -t tilluteenused/smart_search_api_sl_analyser:2023.11.21 .
 ```
 
 <!---
@@ -62,7 +62,7 @@ docker push tilluteenused/vmetajson:2023.04.19
 ## Konteineri käivitamine <a name="Konteineri_käivitamine"></a>
 
 ```commandline
-docker run -p 7007:7007 tilluteenused/smart_search_api_sl_analyser:2023.11.20
+docker run -p 7007:7007 tilluteenused/smart_search_api_sl_analyser:2023.11.21
 ```
 
 Käivitatud konteineri töö lõpetab Ctrl+C selles terminaliaknas, kust konteiner käivitati.
@@ -79,20 +79,20 @@ Sisendiks on tühikuga eraldatud sõnede string.
 ```json
 {
   "content": string, /* Tühikuga eraldatud sõnede loend. Ei võimalda lipu --guesspropnames kasutamist */
-}                    /* Iga tühikuga eraldatud sõne analüüsitakse eraldi */
+}                    /* Iga tühikuga eraldatud sõne analüüsitakse eraldi, sõne sees ei saa olla tühik. */
 ```
 
 ### Variant 2
 
-Sisendiks on tabulatsiooniga eraldatud sõnede string. Leidub
-sõnestajad mis võivad võtta mitu tühikuga eraldatus stringi kokku üheks sõneks (näit telefoni number).
+Sisendiks on tabulatsiooniga eraldatud sõnede string.
+Sõnestaja võib võtta mitu tühikuga eraldatus stringi kokku üheks analüüsitavaks sõneks (näit telefoni number).
 Et selliseid tühikut sisaldavaid sõnesid saaks morf analüsaatorile analüüsimiseks anda
 on sõnede vaheliseks eraldajaks võetud tabulatsioon ja sõne sees tohib olla tühik(uid).
 
 ```json
 {
-  "tss": string, /* Tühikuga eraldatud sõnede loend. Ei võimalda lipu --guesspropnames kasutamist */
-}                * Iga tabulatsiooniga eraldatud sõne analüüsitakse eraldi */
+  "tss": string, /* Tabulaatoriga eraldatud sõnede loend. Ei võimalda lipu --guesspropnames kasutamist */
+}                /* Iga tabulatsiooniga eraldatud sõne (mis võib sisaldada tühikut) analüüsitakse eraldi */
 ```
 
 ### Variant 3
@@ -123,7 +123,7 @@ Sisendiks on lausestatud ja sõnestatud tekst. Selle tegemiseks saab kasutada [l
             "end": number,    /* sõne lõpupositsioon  algses tekstis, võib puududa */
             "features":
             {
-                "token": string,  /* sõne */
+                "token": string,  /* sõne, võib sisaldada tühikut */
             }
         }
     ],
@@ -134,6 +134,7 @@ Sisendiks on lausestatud ja sõnestatud tekst. Selle tegemiseks saab kasutada [l
 
 ```json
 {
+    "tss": string,      /* tabulatsiooniaga eraldatud sõned, ainult siis, kui see sisendis ka oli */
     "content": string,  /* algne tekst, ainult siis, kui see sisendis ka oli */
     "annotations":
     {
@@ -162,8 +163,8 @@ Sisendiks on lausestatud ja sõnestatud tekst. Selle tegemiseks saab kasutada [l
                 "mrf" :           /* sisendsõne analüüsivariantide massiiv */
                 [
                     {
-                        "lisamärkideta": LISAMÄRKIDETA_TÜVI_VÕI_LEMMA,
-                        "komponendid": [LIITSÕNA_OSASÕNEDE_MASSIIV], /* kui ei olnud liitsaõna, siis [] */
+                        "lisamärkideta": LISAMÄRKIDETA_TÜVI_VÕI_LEMMA,  /* kui ei sisaldanud lisamärke == "lemma_ma" */
+                        "komponendid": [LIITSÕNA_OSASÕNEDE_MASSIIV],    /* kui ei olnud liitsaõna, siis [] */
                         "stem":     TÜVI,     /* --stem lipu korral */
                         "lemma":    LEMMA,    /* --stem lipu puudumise korral */
                         "lemma_ma": LEMMA_MA, /* --stem lipu puudumise korral, verbilemmale on lisatud ```ma```, muudel juhtudel sama mis LEMMA */
