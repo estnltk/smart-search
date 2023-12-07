@@ -27,7 +27,7 @@ Lähtekoodist pythoni skripti kasutamine
     $ cd ~/git/smart-search_github/api/sl_lemmatizer
     $ ./create_venv.sh
 1.3 Veebiserveri käivitamine pythoni koodist
-    $ cd cd ~/git/smart-search_github/api/sl_lemmatizer
+    $ cd ~/git/smart-search_github/api/sl_lemmatizer
     $ venv/bin/python3 ./flask_api_sl_lemmatizer.py
 1.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
@@ -44,17 +44,17 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/sl_lemmatizer
-    $ docker build -t tilluteenused/smart_search_api_sl_lemmatizer:2023.10.26 .
+    $ docker build -t tilluteenused/smart_search_api_sl_lemmatizer:2023.12.02 .
     # docker login -u tilluteenused
-    # docker push tilluteenused/smart_search_api_sl_lemmatizer:2023.10.26
+    # docker push tilluteenused/smart_search_api_sl_lemmatizer:2023.12.02
 2.3 Konteineri käivitamine
-    $ docker run -p 7007:7007 tilluteenused/smart_search_api_sl_lemmatizer:2023.10.26
+    $ docker run -p 7007:7007 tilluteenused/smart_search_api_sl_lemmatizer:2023.12.02
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_sl_lemmatizer:2023.10.26
+    $ docker pull tilluteenused/smart_search_api_sl_lemmatizer:2023.12.02
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
@@ -136,9 +136,9 @@ def api_sl_lemmatizer_tsv():
         response = make_response("")
     else:
         res_list = sll.lemmatizer2list(request.json["tss"].split("\t"))
-        res_tsv = ""
-        for location, token, lemma, is_sublemma in res_list:
-            res_tsv += f"{location}\t{token}\t{lemma}\t{str(is_sublemma)}\n"
+        res_tsv = "location\ttoken\tstem\tis_component\tweight\tlemmas\n"
+        for location, token, stem,  is_component, weight, lemmas in res_list:
+            res_tsv += f"{location}\t{token}\t{stem}\t{is_component}\t{weight}\t{lemmas}\n"
         response = make_response(res_tsv)
     response.headers["Content-type"] = "text/tsv"
     return response

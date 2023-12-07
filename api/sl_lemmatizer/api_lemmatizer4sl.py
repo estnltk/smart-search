@@ -1,6 +1,6 @@
  #!/usr/bin/env python3
 
-"""Silumiseks
+"""Silumiseks (code)
     {
         "name": "api_sl_lemmatiser_json",
         "type": "python",
@@ -8,7 +8,7 @@
         "cwd": "${workspaceFolder}/api/sl_lemmatizer/",
         "program": "./api_lemmatizer4sl.py",
         "env": {},
-        "args": ["--json={\"tss\":\"kinnipeetud\\tpidama\\tallmaaraudteejaam\"}", "--indent=4"]
+        "args": ["--json={\"tss\":\"hõõguvpunast\\tpeeti\"}", "--indent=4"]
     },
     {
         "name": "api_sl_lemmatiser_tsv",
@@ -17,7 +17,7 @@
         "cwd": "${workspaceFolder}/api/sl_lemmatizer/",
         "program": "./api_lemmatizer4sl.py",
         "env": {},
-        "args": ["--json={\"tss\":\"kinnipeetud\\tpidama\\tallmaaraudteejaam\"}", "--tsv"]
+        "args": ["--json={\"tss\":\"hõõguvpunast\\tpeeti\"}", "--tsv"]
     },
 """
 
@@ -34,7 +34,7 @@ proc = subprocess.Popen(['./vmetajson', '--path=.'],
 
 class LEMMATIZER4SL:
     def __init__(self):
-        self.VERSION = "2023.10.26"
+        self.VERSION = "2023.12.02"
 
     def lemmatizer2json(self, tokens:List[str])->Dict:
         """Lemmatiseerme etteantud sõneloendi
@@ -43,14 +43,16 @@ class LEMMATIZER4SL:
         {"tsv":str} 
 
         Returns:
-            ~flask.Response: Lemmatiseerimise tulemused JSON-kujul
-            {   TOKEN:      // sisendsõne
-                {   LEMMA:  // sisendsõne lemma
-                    [SUBLEMMA], // liitsõna korral osalemmad
+            {   TOKEN:
+                {   STEM:
+                    {   "lemmas":[str], 
+                        "component":bool, 
+                        "weight":real
+                    }
                 }
             }
         """
-        json_mrf = {"params":{"vmetajson":["--guess"]}, "annotations":{"tokens":[]}}
+        json_mrf = {"params":{"vmetajson":["--guess", "--stem"]}, "annotations":{"tokens":[]}}
         for token in tokens:
             json_mrf["annotations"]["tokens"].append({"features":{"token":token}})
 
@@ -63,49 +65,63 @@ class LEMMATIZER4SL:
             TOKEN = anno_tkn["features"]["token"]
             if TOKEN not in res_json:
                 res_json[TOKEN] = {}
-                lemmas = []
-                if "mrf" in anno_tkn["features"]:           
-                    for mrf in anno_tkn["features"]["mrf"]:
-                        lemmas.append(mrf["lemma_ma"].replace('=', ''))
-                    lemmas = list(set(lemmas))
-                    for lemma in lemmas:
-                        LEMMA = lemma.replace('_', '')
-                        if LEMMA not in res_json[TOKEN]:
-                            res_json[TOKEN][LEMMA] = []
-                        sublemmas = lemma.split('_')
-                        len_sublemmas = len(sublemmas)
-                        all_sublemmas   = [sublemmas[i] for i in range(0, len_sublemmas) if len_sublemmas > 1]
-                        all_sublemmas  += [sublemmas[i-1]+sublemmas[i] for i in range(1, len_sublemmas) if len_sublemmas > 2]
-                        all_sublemmas  += [sublemmas[i-2]+sublemmas[i-1]+sublemmas[i] for i in range(2, len_sublemmas) if len_sublemmas > 3]
-                        all_sublemmas  += [sublemmas[i-3]+sublemmas[i-2]+sublemmas[i-1]+sublemmas[i] for i in range(3, len_sublemmas) if len_sublemmas > 4]
-                        # sublemmad morfida
-                        res_json[TOKEN][LEMMA] = all_sublemmas
+            stems = []
+            for mrf in anno_tkn["features"]["mrf"]:
+                stems.append(mrf["stem"])
+            stems = list(set(stems))
+            for stem in stems:
+                res_json[TOKEN][stem.replace("+", '').replace("=", '').replace("_", '')] = {"lemmas":[], "component":False, "weight": 1.0}
+                components = stem.replace("+", '').replace("=", '').split("_")
+                if len(components) <= 1:
+                    continue
+                for component in components:
+                    res_json[TOKEN][component] = {"lemmas":[], "component":True, "weight": 1.0/float(len(components))}
+
+        json_mrf = {"params":{"vmetajson":["--guess"]}, "annotations":{"tokens":[]}}
+        for TOKEN, TOKENINF in res_json.items():
+            for STEM, STEMINF in TOKENINF.items():
+                json_mrf["annotations"]["tokens"].append({"features":{"orig_token":TOKEN , "token":STEM, "weight":STEMINF["weight"], "component":STEMINF["component"] }})
+        proc.stdin.write(f'{json.dumps(json_mrf)}\n')
+        proc.stdin.flush()
+        json_mrf = json.loads(proc.stdout.readline())
+
+        for token in json_mrf["annotations"]["tokens"]:
+            TOKEN = token["features"]["orig_token"]
+            STEM = token["features"]["token"]
+            if "mrf" not in token["features"]:
+                continue
+            lemmas = []
+            for mrf in token["features"]["mrf"]:
+                lemmas.append(mrf["lemma_ma"].replace("+", '').replace("=", '').replace("_", ''))
+            lemmas = list(set(lemmas))
+            res_json[TOKEN][STEM]["lemmas"] += lemmas                 
         return res_json
 
     def lemmatizer2list(self, tokens:List[str])->List:
         res_json = self.lemmatizer2json(tokens)
         """_summary_
-        {   TOKEN:      // sisendsõne
-            {   LEMMA:  // sisendsõne lemma
-                [SUBLEMMA], // liitsõna korral osalemmad
+            {   TOKEN:
+                {   STEM:
+                    {   "lemmas":[str], 
+                        "component":bool, 
+                        "weight":real
+                    }
+                }
             }
-        }
-        ('location', 'input', 'stem', 'wordform')
+        (location, TOKEN, STEM, component, weight, [LEMMAS])
         """
         res_list = []
         for location, (token, tokeninf) in enumerate(res_json.items()):
-            for lemma, sublemmas in tokeninf.items():
-                res_list.append((location, token, lemma, False))
-                for sublemma in sublemmas:
-                    res_list.append((location, token, sublemma, True))
-        res_list = sorted(res_list, key = lambda x: (x[0], x[1], x[2], x[3]))
-        return [("location", "input", "lemma", "is_sublemma")]+res_list
+            for stem, steminf in tokeninf.items():
+                res_list.append((location, token, stem, steminf["component"], steminf["weight"], steminf["lemmas"]))
+        res_list = sorted(res_list, key = lambda x: (x[0], x[1], x[3], x[2], x[4]))
+        return res_list
 
 
 if __name__ == '__main__':
     import argparse
     argparser = argparse.ArgumentParser(allow_abbrev=False)
-    argparser.add_argument('-j', '--json', type=str, help='json input')
+    argparser.add_argument('-j', '--json',   type=str, help='json input')
     argparser.add_argument('-i', '--indent', type=int, default=None, help='indent for json output, None=all in one line')
     argparser.add_argument('-t', '--tsv', action="store_true", help='TSV-like output')
     args = argparser.parse_args()
@@ -117,8 +133,8 @@ if __name__ == '__main__':
         sys.stdout.write('\n')
     else:
         res_list = lemmatizer.lemmatizer2list(json.loads(args.json)["tss"].split("\t"))
-        for location, token, lemma, is_sublemma in res_list:
-            sys.stdout.write(f"{location}\t{token}\t{lemma}\t{str(is_sublemma)}\n")
+        for (location, TOKEN, STEM, component, weight, LEMMAS) in res_list:
+            sys.stdout.write(f"{location}\t{TOKEN}\t{STEM}\t{component}\t{weight}\t{LEMMAS}\n")
 
 
 
