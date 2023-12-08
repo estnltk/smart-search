@@ -78,21 +78,106 @@ toimib, nii nagu me eeldame.
 * Arendaja peaks seda jooksvalt täiendama ning selle koos koodiga üle andma.
 
 
-### I.B. Tekstide indekseerimine
+### I.B. Otsingus leitavate sõnavormide määramine
 
-[Valikud]
-[Seosed RT weebiliidesega]
-[kas MHz peak saama otsida ]
-[Kas AS peaks saama otsida]
-HIV vs AIDS
+Puhastamisest hoolimata võivad tekstid sisaldada sõnesid (tühikutega eraldatud 
+tähekombinatsioone), mida tuleks otsimisel ignoreerida. Otsingus leitavate
+sõnavormide nimistu, määrab suuresti ära kasutajakogemuse. Kui nimekiri on 
+liiga lühike, siis kasutaja tunneb ennast piiratuna ning ei pruugi leida 
+otsitavat teksti isegi siis kui ta kasutab õigeid otsisõnu. Samas ei tohiks 
+nimekirjas olla sõesid, mida kunagi otsimisel ei kasutata või mille kasutamine
+ei ole mõistlik.
+
 
 **Kuidas ülesannet püstitada:**
-TBA
+Antud ülesande lahendamisel tuleb läheneda mitmest küljest. Ühelt poolt oleks 
+mõistlik koguda sõnade algvormide esinemissagedust. Sealjuures on hea vahet 
+teha üldise esinemissageduse ning sõna sisaldavate dokumentide arvu vahel.
+Kuna ühele sõnavormile võib vastata mitu algvormi (lemmat), siis võivad 
+mõlemad numbrid olla murdarvulised. Vastava sagedustabeli moodustamiseks 
+tuleb vastata järgmistele küsimustele:
 
+*  Kas ja milliseid sõna alamosasid saab otsida. Antud kontekstis on kolm 
+   põhimõttelist lahendust. 
+   * Esiteks saab otsida vaid kogu sõnavormi.
+     Näiteks sõna `tuumaohutuse` leitaks  ülesse algvormi otsingu `tuumaohutus` korral.
+   * Teiseks saab otsida suvalisi tähekombinatsioone sõnavormi sees.
+     Enamasti on selline otsing liiga lai. Näiteks sõna `tuumaohutuse` leitaks
+     ülesse algvormi otsingu `tuumaohutus`, `tuum`, `madu`, `agu`, `hutu`, `ohutus` 
+     korral, millest enamusel pole seost antud sõnavormiga.
+   * Kolmandaks saab otsida vaid liitsõna alamosi. Näiteks sõna `tuumaohutuse`
+     leitaks üleks algvormi otsingu `tuumaohutus`, `tuum`, `ohutus` korral.
+   * Tehniliselt saaks otsida ka sõna juure järgi. Näiteks sõna `arvestuslik` 
+     juureks on `arvestus`. Kuid see on liiga keeruline ja seda tüüpi laiendused
+     oleks mõstlik anda otsisüsteemi eraldi otsisõnade laiendussõnastiku abil.
+    
+* Milliseid sõnavorme otsingus täielikult ignoreerida. Siin on valikuid palju.
+  * Võib ignoreerida arve ja kuupäevi. Siis ei saa otsida 20% maksutõusu või
+    01.09.2007. a. kehtima hakkavat korda. Sõltuvalt kontekstist võib see 
+    olla mõistlik kitsendus.
+  * Võib ignoreerida viiteid dokumendiosadele või roomanumbritega määratud 
+    järgarvusid.
+  * Võib ignoreerida initsiaalidega pärisnime initsiaali osa kui alamsõna.
+    Näiteks ei saa leida sõnavormi `A. H. Tammsaare` otsides alamsõna `A. H.`
+
+* Kuidas muuta lühendid ja trükivigadega kirjuatavad sõnad leitavaks.
+  Otsing `Euroopa Liit` võiks leida üles ka sagedase lühendvormi `EL`.
+  Otsing `register` võiks leida ülesse ka dokumendi 
+  `Kaitseministeeriumi valitsemisel oleva riigivara regisrisse ... kord`, 
+  kus sõna `register` on valesti kirjutatud.           
+ 
 **Kuidas tulemust kontrollida:**
-TBA
+Tulemuse kontrollimiseks on vaja fikseerida hulk otsingusõnu ja neile vastavaid tulemusi, 
+mis kataksid kõik esmalt ette kujutatavad põhimõttelised variandid.
+* Tellija peaks fikseerima esialgse näitetulemuste andmestiku. Siin piisab tabelist
+  sõnavorm ja teda katvad otsisõnade algvormid või ka täpsed sõnavormid.
+* Arendaja peaks seda jooksvalt täiendama ning vajadusel kommunikeerima eriliste 
+  sõnavormide nimekirju, mille korral peaks tellija tegema täpsema otsuse. 
 
+**Millised võiksid olla lõpptulemused:** Analüüsi tulemusena peaks tekkima järgmised tabelid
+
+* Lemmade sagedustabel
+
+|Lemma | Osasõna |Esinemiste arv | Dokumentide arv|  
+|:--|:--|:--|---:|--:|
+|kord  | - | 14730| 14452|
+|põhi  | + |  8181| 7831 |
+|määrus| + | 7173 | 7166 |
+|põhimäärus| - |6949|6942|
+
+* Osaliselt täidetud lühendite sõnastik
+
+|Lühend | Täisnimetus|  
+|:--|:--|
+|AIDS | ???
+|EL   | Euroopa Liit
+|ÜRO  | Ühinenud Rahvaste Organisatsioon 
+
+Sõnastik peaks katma kõiki huvitavaid lühendeid, aga selle täisneimetuste veer ei pea olema täidetud.
+Selle täitmine on suuresti tellija teha nagu ka sõnastiku lühendamine või täiendamine.
+ 
+* Osaliselt täidetud kirjavigadega sõnavprmide sõnastik
+
+|Sõnavorm | Korrektne algvorm|  
+|:--|:--|
+|regisri| registri|
+|ööbim  | ???|
+|vereül | ???
+
+Jällegi ei pea sõnastik olema täielik ja korrektne, aga see võiks anda ülevaate milliseid 
+kirjavigadega sõnavorme tektides esineb. Ja kõik sõnad ei pea olema ka kirjvigadega.
+Piisab kui sõnastik on piisavlt lühike ja sisukas, et seda oleks võimalik käsitsi kureerida.
+  
+
+### I.C. Otsingus leitavate algvormide nimistu lühendamine
+
+Kõik otsisõnad pole ü
+  
+  
 **Viited**
+
+### I.B. Tekstide indekseerimine
+
 
 
 ## II. Indeksite kasutamine päringulaiendaja loomiseks
