@@ -1,5 +1,9 @@
 # Andmebaasi kokkupanemiseks vajaliku info leidmine CSV-kujul pealkirjadest või JSON-kujul dokumentidest 
 
+## Kasutamine
+
+Vaata https://github.com/estnltk/smart-search/blob/main/api/ea_jsoncontent_2_jsontabelid/flask_api_ea_jsoncontent_2_jsontabelid.py
+
 ## Tulemus
 
 JSON-kujul informatsioon
@@ -58,7 +62,5 @@ JSON-kujul informatsioon
 Saadud JSON-andmefailid saab omavahel kokkuliita ja SQLITE-andmebaasik teha programmiga:
 https://github.com/estnltk/smart-search/blob/main/api/ea_jsontabelid_2_db/api_jsontabelid_2_db.py
 
-
-Seda, kuidas teha JSON-failid ja need andmebaasiks kokkuliita näitab programm:
+Seda, kuidas teha JSON-failid ja need andmebaasiks kokkuliita demonstreerib programm:
 https://github.com/estnltk/smart-search/blob/main/api/ea_jsoncontent_2_jsontabelid/Makefile
- 

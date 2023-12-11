@@ -9,7 +9,7 @@
             "request": "launch",
             "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
             "program": "./flask_api_ea_jsoncontent_2_jsontabelid.py",
-            "env": {},
+            "env": {}
             "args": []
         },
 ----------------------------------------------
@@ -28,8 +28,8 @@ Lähtekoodist pythoni skripti kasutamine:
       export ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process
 1.3.2 Kasutame kohalikus masinas töötavaid konteinereid  (vaikimisi kasutab neid)      
     $ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18 ;\
-      docker run -p 7008:7008 tilluteenused/vmetsjson:2023.09.23 ;\
-      docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.01
+      docker run -p 7008:7008 tilluteenused/vmetsjson:2023.09.21 ;\
+      docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.03
 1.4 Pythoni skripti käivitamine
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
     $ make -j all
@@ -44,40 +44,55 @@ Lähtekoodist veebiserveri käivitamine & kasutamine
     $ ./venv/bin/python3 ./flask_api_ea_jsoncontent_2_jsontabelid.py
 2.5 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/text" \
-        localhost:6602/api/create_jsontables/version
-    $ curl --silent --request POST --header "Content-Type: application/text" \
-      --data-binary @../../rt_web_crawler/results/test.csv \
+        localhost:6602/api/create_jsontables/version | jq
+    $ curl --silent --request POST --header "Content-Type: application/csv" \
+      --data-binary @test_headers.csv \
       localhost:6602/api/create_jsontables/headers  | jq
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+      --data-binary @test_document.json \
+      localhost:6602/api/create_jsontables/document  | jq
 ----------------------------------------------
 Lähtekoodist tehtud konteineri kasutamine
 3 Lähtekoodi allalaadimine (3.1), konteineri kokkupanemine (3.2), konteineri käivitamine (3.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-    $ docker build -t tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.09.23 . 
-    # docker push tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.09.23
+    $ docker build -t tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.10 . 
+    # docker push tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.10
 2.3 Konteineri käivitamine
     $ docker run -p 6602:6602  \
         --env TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
         --env GENERATOR='https://smart-search.tartunlp.ai/api/vm/generator/process' \
         --env ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
-        tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.09.23 
+        tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.10 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.09.23
+    $ docker pull tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.10
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
+    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid # selles kataloogis on test_headers.csv ja test_document.json
+
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"sources": {"DOC_1":{"content":"Presidendi kantselei."}}}' \
-        https://smart-search.tartunlp.ai/api/ea_jsoncontent_2_jsontabelid/json | jq | less
+        --data-binary @test_headers.csv \
+        https://smart-search.tartunlp.ai/api/create_jsontables/headers | jq | less
+
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/ea_jsoncontent_2_jsontabelid/version | jq
+      --data-binary @test_document.json \
+      https://smart-search.tartunlp.ai/api/create_jsontables/document  | jq | less
+
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+      --data '{"sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
+      https://smart-search.tartunlp.ai/api/create_jsontables/document  | jq
+      
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        https://smart-search.tartunlp.ai/api/create_jsontables/version | jq
+
 ----------------------------------------------
 '''
 import os
@@ -118,7 +133,7 @@ def create_jsontables_headers():
             {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],     # (LEMMA_kõik_vormid, 0:korpusest|1:abisõnastikust, sisendkorpuses_esinenud_sõnavormi_LEMMA)
                 "ignoreeritavad_vormid": [(VORM, 0)],               # tee_ignoreeritavad_vormid(), 0:vorm on genereeritud etteantud lemmast
                 "kirjavead": [(VIGANE_VORM, VORM, KAAL)]            # (kõikvõimalikud_VORMi_kirjavigased_variandid, sisendkorpuses_esinenud_sõnaVORM, kaal_hetkel_alati_0)
-                "lemma_korpuse_vormid": [(LEMMA, VORM)],             # (sisendkorpuses_esinenud_sõnavormi_LEMMA, kõik_LEMMA_vormid_mis_sisendkorpuses_esinesid)
+                "lemma_korpuse_vormid": [(LEMMA, VORM)],            # (sisendkorpuses_esinenud_sõnavormi_LEMMA, kõik_LEMMA_vormid_mis_sisendkorpuses_esinesid)
                 "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)] # (sisendkorpuses_esinenud_sõnaVORM, dokumendi_id, alguspos, lõpupos, True:liitsõna_osa|False:terviksõna)
                 "allikad": [(DOCID, CONTENT)]                       # (docid, dokumendi_"plain_text"_mille_suhtes_on_arvutatud_START_ja_END)
             }
@@ -144,6 +159,53 @@ def create_jsontables_headers():
         return jsonify(tj.json_io)
     except Exception as e:
         return jsonify(e.args[0])    
+
+@app.route('/api/create_jsontables/document', methods=['POST'])
+@app.route('/document', methods=['POST'])
+def create_jsontables_document():
+    """Leia sisendkorpuse sõnede kõikvõimalikud vormid ja nonde hulgast need, mis esinesid korpuses
+
+    Args: 
+
+    * JSON:
+        {"sources":{DOCID:{"content:str}}}
+        
+    Kui dokumendiga tuleb kaasa lisainfot, siis tuleb alljärgnevatesse tabelitesse tekitada
+    vastavatesse kohtadesse lisaveerud vastava infoga    
+
+    Returns:
+        Response: VäljundJSON:
+
+        {   "tabelid":  // lõpptulemus
+            {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],     # (LEMMA_kõik_vormid, 0:korpusest|1:abisõnastikust, sisendkorpuses_esinenud_sõnavormi_LEMMA)
+                "ignoreeritavad_vormid": [(VORM, 0)],               # tee_ignoreeritavad_vormid(), 0:vorm on genereeritud etteantud lemmast
+                "kirjavead": [(VIGANE_VORM, VORM, KAAL)]            # (kõikvõimalikud_VORMi_kirjavigased_variandid, sisendkorpuses_esinenud_sõnaVORM, kaal_hetkel_alati_0)
+                "lemma_korpuse_vormid": [(LEMMA, VORM)],             # (sisendkorpuses_esinenud_sõnavormi_LEMMA, kõik_LEMMA_vormid_mis_sisendkorpuses_esinesid)
+                "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)] # (sisendkorpuses_esinenud_sõnaVORM, dokumendi_id, alguspos, lõpupos, True:liitsõna_osa|False:terviksõna)
+                "allikad": [(DOCID, CONTENT)]                       # (docid, dokumendi_"plain_text"_mille_suhtes_on_arvutatud_START_ja_END)
+            }
+        }  
+
+    https://stackoverflow.com/questions/62685107/open-csv-file-in-flask-sent-as-binary-data-with-curl
+    """
+    try:
+        tj.json_io = request.json
+        tj.tee_sõnestamine()
+        tj.tee_kõigi_terviksõnede_indeks()
+        tj.tee_mõistlike_tervik_ja_osasõnede_indeks()
+        tj.tabelisse_vormide_indeks()
+        tj.tee_mõistlike_lemmade_ja_osalemmade_indeks()
+        tj.tabelisse_lemmade_indeks()
+        tj.tee_generator()
+        tj.tee_kirjavead()
+        tj.tee_sources_tabeliks()
+        tj.kustuta_vahetulemused()
+        tj.kordused_tabelitest_välja()
+
+        return jsonify(tj.json_io)
+    except Exception as e:
+        return jsonify(e.args[0])    
+
 
 @app.route('/api/create_jsontables/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['POST'])
