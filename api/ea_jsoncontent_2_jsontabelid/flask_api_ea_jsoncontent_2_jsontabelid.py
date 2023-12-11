@@ -175,16 +175,16 @@ def create_jsontables_document():
 
     Returns:
         Response: VäljundJSON:
-
-        {   "tabelid":  // lõpptulemus
-            {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],     # (LEMMA_kõik_vormid, 0:korpusest|1:abisõnastikust, sisendkorpuses_esinenud_sõnavormi_LEMMA)
-                "ignoreeritavad_vormid": [(VORM, 0)],               # tee_ignoreeritavad_vormid(), 0:vorm on genereeritud etteantud lemmast
-                "kirjavead": [(VIGANE_VORM, VORM, KAAL)]            # (kõikvõimalikud_VORMi_kirjavigased_variandid, sisendkorpuses_esinenud_sõnaVORM, kaal_hetkel_alati_0)
-                "lemma_korpuse_vormid": [(LEMMA, VORM)],             # (sisendkorpuses_esinenud_sõnavormi_LEMMA, kõik_LEMMA_vormid_mis_sisendkorpuses_esinesid)
-                "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)] # (sisendkorpuses_esinenud_sõnaVORM, dokumendi_id, alguspos, lõpupos, True:liitsõna_osa|False:terviksõna)
-                "allikad": [(DOCID, CONTENT)]                       # (docid, dokumendi_"plain_text"_mille_suhtes_on_arvutatud_START_ja_END)
-            }
-        }  
+    {   "tabelid":
+        {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
+            "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
+            "liitsõnad":[(OSALEMMA, LIITLEMMA)],
+            "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
+            "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
+            "kirjavead":[(VIGANE_VORM, VORM)],
+            "allikad":[(DOCID, CONTENT)],
+        }
+    } 
 
     https://stackoverflow.com/questions/62685107/open-csv-file-in-flask-sent-as-binary-data-with-curl
     """
