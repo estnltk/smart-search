@@ -139,7 +139,7 @@ mis kataksid kõik esmalt ette kujutatavad põhimõttelised variandid.
 * Lemmade sagedustabel
 
 |Lemma | Osasõna |Esinemiste arv | Dokumentide arv|  
-|:--|:--|:--|---:|--:|
+|:--|:--|---:|--:|
 |kord  | - | 14730| 14452|
 |põhi  | + |  8181| 7831 |
 |määrus| + | 7173 | 7166 |
@@ -168,15 +168,16 @@ Jällegi ei pea sõnastik olema täielik ja korrektne, aga see võiks anda ülev
 kirjavigadega sõnavorme tektides esineb. Ja kõik sõnad ei pea olema ka kirjvigadega.
 Piisab kui sõnastik on piisavlt lühike ja sisukas, et seda oleks võimalik käsitsi kureerida.
   
+### I.C. Tekstide indekseerimine
 
-### I.C. Otsingus leitavate algvormide nimistu lühendamine
+
+### I.D. Otsingus leitavate algvormide nimistu lühendamine
 
 Kõik otsisõnad pole ü
   
   
 **Viited**
 
-### I.B. Tekstide indekseerimine
 
 
 
