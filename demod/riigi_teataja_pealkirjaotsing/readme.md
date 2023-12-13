@@ -129,6 +129,7 @@ tuleb vastata järgmistele küsimustele:
 **Kuidas tulemust kontrollida:**
 Tulemuse kontrollimiseks on vaja fikseerida hulk otsingusõnu ja neile vastavaid tulemusi, 
 mis kataksid kõik esmalt ette kujutatavad põhimõttelised variandid.
+
 * Tellija peaks fikseerima esialgse näitetulemuste andmestiku. Siin piisab tabelist
   sõnavorm ja teda katvad otsisõnade algvormid või ka täpsed sõnavormid.
 * Arendaja peaks seda jooksvalt täiendama ning vajadusel kommunikeerima eriliste 
@@ -139,7 +140,7 @@ mis kataksid kõik esmalt ette kujutatavad põhimõttelised variandid.
 * Lemmade sagedustabel
 
 |Lemma | Osasõna |Esinemiste arv | Dokumentide arv|  
-|:--|:--|:--|---:|--:|
+|:--|:--|---:|--:|
 |kord  | - | 14730| 14452|
 |põhi  | + |  8181| 7831 |
 |määrus| + | 7173 | 7166 |
@@ -168,21 +169,63 @@ Jällegi ei pea sõnastik olema täielik ja korrektne, aga see võiks anda ülev
 kirjavigadega sõnavorme tektides esineb. Ja kõik sõnad ei pea olema ka kirjvigadega.
 Piisab kui sõnastik on piisavlt lühike ja sisukas, et seda oleks võimalik käsitsi kureerida.
   
+### I.C. Tekstide indekseerimine
 
-### I.C. Otsingus leitavate algvormide nimistu lühendamine
+Tekstide põhjal tehtud sõnavormide ja lemmade indeksit saab kasutada kahel moel. 
+
+* Esiteks võib seda kasutada Riigi Teataja infosüsteemis oleva otsinguteenuse parandamiseks.
+Sisuliselt tähendaks see, et igast dokumendist moodustatakse lemmade ja osa-lemmade indeksfail 
+ning otsingteenus ei vaata originaaltekste vaid indeksfaile. Tehniliselt oleks see kõige 
+õigem lahendus, aga selle realiseerimise eeldab muutusi infosüsteemis endas ja on seega riskantne.
+
+* Teiseks saab indeksit kasutada päringulaiendaja sisendi moodustamiseks. 
+See võimaldab jätta Riigi Teataja infosüsteemis oleva otsinguteenuse samaks, 
+kuid saavutada paremad otsingutulemused asendandes originaalotsingu mitme eri 
+sõnavormi otsinguga. Antud lahendus on ebaefektiivsem, kuid ei eelda muutusi 
+Riigi Teataja infosüsteemis.
+
+**Kuidas ülesannet püstitada:** 
+Päringute laiendamiseks on tarvis teada kõiki sõnavorme, mis dokumentides esinevad.
+Teiseks oleks vaja teada ka igale sõnavormile vastavat algvormi. Kui on soov otsida 
+pealkirju liitsõna osadesõnade järgi (tuumaohutus → tuum, ohutus), siis on tarvis teada ka,
+millised on iga dokumentides oleva liitsõna alamvormid. 
+
+Vastav indeks võib olla realiseeritud failidena või andmebaasi tabelitena. 
+Täpne tehniline lahenduse valiku võib jätte arendajale. Olulised nüded lahendusel on:
+
+* Indeksi põhjal oleks võimalik leida alamülesande I.B väljunditena oodatavad tabelid: 
+  * lemmade sagedustabel,
+  * osaliselt täidetud lühendite sünastik,
+  * osaliselt täidetud kirjavigadega sõnavormide sõnastik
+  
+* Süsteemi administraator saaks indeksit saaks perioodiliselt uuendada andes ette 
+lisandunnud dokumendid. Seda on vaja päringulaiendaja sisendi täiendamiseks.      
+ 
+**Kuidas tulemust kontrollida:**
+Indeksi loomine on tehniline töö, mille korrektsust eraldi pole mõtet kontrollida.
+Selle korrektsus ilmneb läbi sellest sõltuvate kompomentide korrektsuse. 
+Kindlasti tuleks sealjuures läbi mängida dokumentide lisamise.
+     
+     
+### I.D. Otsingus leitavate algvormide nimistu lühendamine
 
 Kõik otsisõnad pole ü
   
-  
-**Viited**
+**Kuidas ülesannet püstitada:** 
 
-### I.B. Tekstide indekseerimine
+**Kuidas tulemust kontrollida:**
+  
+**Millised võiksid olla lõpptulemused:** 
+  
 
 
 
 ## II. Indeksite kasutamine päringulaiendaja loomiseks
 
 [Milliseid üledsandeid saab lahendada]
+
+
+
 
 TBA
 
