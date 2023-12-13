@@ -1,11 +1,12 @@
 # JSON-andmefailide kokkuliitmine ja SQLITE-andmebaasi tegemine
 
-Seda, kuidas teha JSON-failid ja need andmebaasiks kokkuliita näitab programm:
+Seda, kuidas teha JSON-failid ja need andmebaasiks kokkuliita demonstreerib programm:
 https://github.com/estnltk/smart-search/blob/main/api/ea_jsoncontent_2_jsontabelid/Makefile
 
 ## Tabelid andmebaasis
 
-Andmebaasi ei peal lisama kõiki tabeleid, soovitud tabelid saab anda programmi prameetri kaudu käsurealt
+Andmebaasi ei peal lisama kõiki tabeleid, soovitud tabelid saab anda programmi parameetri kaudu käsurealt.
+Osade tabelite tegemisel kasutatakse teisi juba varem tehtud tabeleid.
 
 ```sgl
 indeks_vormid(

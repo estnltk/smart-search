@@ -50,12 +50,12 @@ from typing import Dict, List, Tuple
 from inspect import currentframe, getframeinfo
 
 class DB:
-    def __init__(self, db_name:str, tables:List, verbose:bool)->None:
+    def __init__(self, append:bool, db_name:str, tables:List, verbose:bool)->None:
         self.verbose = verbose
         self.db_name = db_name
         self.tables = tables
 
-        if os.path.isfile(self.db_name):
+        if append is False and os.path.isfile(self.db_name):
             if self.verbose:
                 sys.stdout.write(f"# kustutame andmebaasi {self.db_name}\n")
             os.remove(self.db_name)
@@ -223,15 +223,16 @@ class DB:
 if __name__ == '__main__':
     import argparse
     argparser = argparse.ArgumentParser(allow_abbrev=False)
-    argparser.add_argument('-v', '--verbose',  action="store_true", help='tulemus CSV vormingus std väljundisse')
+    argparser.add_argument('-v', '--verbose',  action="store_true", help='kuva rohkem infot')
+    argparser.add_argument('-a', '--append',  action="store_true", help='lisa tabelid andmebaasi, ei kustata baasi varasemat sisu')
     argparser.add_argument('-b', '--db_name', type=str, help='väljundandmebaasi nimi')
-    argparser.add_argument('-t', '--tables', type=str, help='kooloniga eraldatul tabelite nimed')
+    argparser.add_argument('-t', '--tables', type=str, help='kooloniga eraldatult tabelite nimed')
     argparser.add_argument('file', type=argparse.FileType('r'), nargs='+')
     args = argparser.parse_args()
 
     try:
         tables = args.tables.split(":")
-        db = DB(args.db_name, tables, args.verbose)
+        db = DB(args.append, args.db_name, tables, args.verbose)
         for f  in args.file:
             db.toimeta(f.name)
     except Exception as e:
