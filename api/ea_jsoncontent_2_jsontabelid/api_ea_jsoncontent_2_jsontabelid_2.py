@@ -5,10 +5,6 @@ TODO funktsioonide päises olevad kommentaarid õigeks sättida
 
 Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku andmebaas
 -----------------------------------------------------------------
-$ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18
-$ docker run -p 7008:7008 tilluteenused/vmetsjson:2023.09.21
-$ docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.01
------------------------------------------------------------------
 // code (silumiseks):
     {
         "name": "content_2_tabelid_2_test",
@@ -16,27 +12,19 @@ $ docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.01
         "request": "launch",
         "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
         "program": "./api_ea_jsoncontent_2_jsontabelid_2.py",
-        "env": {\
-            "GENERATOR": "http://localhost:7008/api/vm/generator/process", \
-            "TOKENIZER": "http://localhost:6000/api/tokenizer/process", \
-            "ANALYSER": "http://localhost:7007/api/analyser/process" \
-        },
+        "env": {},
         "args": ["--verbose", "--csvpealkirjad", \
             "../../rt_web_crawler/results/test.csv"
         ]
     },
 // code (laseb kõik pealkirjad läbi) 
     {
-        "name": "content_2_tabelid_2",
+        "name": "content_2_tabelid_pealkirjad",
         "type": "python",
         "request": "launch",
         "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
         "program": "./api_ea_jsoncontent_2_jsontabelid_2.py",
-        "env": {\
-            "GENERATOR": "http://localhost:7008/api/vm/generator/process", \
-            "TOKENIZER": "http://localhost:6000/api/tokenizer/process", \
-            "ANALYSER": "http://localhost:7007/api/analyser/process" \
-        },
+        "env": {},
         "args": ["--verbose", "--csvpealkirjad", \
             "../../rt_web_crawler/results/state_laws.csv" \
             "../../rt_web_crawler/results/government_orders.csv" \
@@ -83,45 +71,38 @@ import sys
 import json
 import requests
 import inspect
+import subprocess
 from tqdm import tqdm
 from typing import Dict, List, Tuple
 from inspect import currentframe, getframeinfo
 
-import kirjavigastaja
+from estnltk import Text
+from estnltk.taggers import SentenceTokenizer
+
+proc_vmetajson = subprocess.Popen(['./vmetajson', '--path=.'],  
+                            universal_newlines=True, 
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.DEVNULL)
+
+proc_vmetsjson = subprocess.Popen(['./vmetsjson', '--path=.'],  
+                            universal_newlines=True, 
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.DEVNULL)
 
 class TEE_JSON:
-    def __init__(self, verbose:bool)->None:
-        """Initsialiseerime muutujad: versiooninumber,kasutatavate veebiteenuste URLid, jne
+    def __init__(self, verbose:bool, kirjavead:bool)->None:
+        """Initsialiseerime muutujad: versiooninumber, jne
 
         Args:
-            verbose (bool): kuva tööjärjega seotud infot
+            verbose (bool): True: kuva tööjärjega seotud infot
+            kirjavead (bool): True: genereeri kirjavigade tabel
         """
         self.verbose = verbose
+        self.kirjavead = kirjavead
 
-        self.VERSION="2023.09.23"
-
-        # https://smart-search.tartunlp.ai/api/tokenizer/process
-        self.tokenizer = os.environ.get('TOKENIZER') # vm liidesega veebiteenus sõnestamiseks
-        if self.tokenizer is None:
-            self.TOKENIZER_IP=os.environ.get('TOKENIZER_IP') if os.environ.get('TOKENIZER_IP') != None else 'localhost'
-            self.TOKENIZER_PORT=os.environ.get('TOKENIZER_PORT') if os.environ.get('TOKENIZER_PORT') != None else '6000'
-            self.tokenizer = f'http://{self.TOKENIZER_IP}:{self.TOKENIZER_PORT}/api/tokenizer/process'
-
-        # https://smart-search.tartunlp.ai/api/analyser/process
-        self.analyser = os.environ.get('ANALYSER')  # vm liidesega veebiteenus morf analüüsiks
-        if self.analyser is None:
-            self.ANALYSER_IP=os.environ.get('ANALYSER_IP') if os.environ.get('ANALYSER_IP') != None else 'localhost'
-            self.ANALYSER_PORT=os.environ.get('ANALYSER_PORT') if os.environ.get('ANALYSER_PORT') != None else '7007'
-            self.analyser = f'http://{self.ANALYSER_IP}:{self.ANALYSER_PORT}/api/analyser/process'
-
-        # https://smart-search.tartunlp.ai/api/generator/process     # ELG liidesega veebiteenus morf genereerimiseks
-        # https://smart-search.tartunlp.ai/api/wm/generator/process  # vm  liidesega veebiteenus morf genereerimiseks
-        self.generator = os.environ.get('GENERATOR') # vm liidesega veebiteenus morf genemiseks
-        if self.generator is None:
-            self.GENERATOR_IP=os.environ.get('GENERATOR_IP') if os.environ.get('GENERATOR_IP') != None else 'localhost'
-            self.GENERATOR_PORT=os.environ.get('GENERATOR_PORT') if os.environ.get('GENERATOR_PORT') != None else '7008'
-            self.generator = f'http://{self.GENERATOR_IP}:{self.GENERATOR_PORT}/api/vm/generator/process'
-        
+        self.VERSION="2023.12.14"
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
  
     def string2json(self, str:str)->None:
@@ -166,6 +147,7 @@ class TEE_JSON:
             assert len(d)==4, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
             self.json_io["sources"][f'pk_{d[1]}_{d[0]}'] = {"content" : d[2]}
 
+    '''
     def tee_päring(self, url:str, json_in:Dict)->Dict:
         """PRIVATE: Päringu tegemine (sõnestamine, analüüs, genereerimine, ...)
 
@@ -185,7 +167,30 @@ class TEE_JSON:
             return response.json()
         except:
             raise Exception({"warning":f'Probleemid veebiteenusega {url}, {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'})
+    '''
+
+    def run_subprocess(self, proc, json_in:Dict) -> Dict:
+        proc.stdin.write(f'{json.dumps(json_in)}\n')
+        proc.stdin.flush()
+        return json.loads(proc.stdout.readline())
         
+    def estnltk_sentok(self, content: str) -> List:
+        """PRIVATE EstNLTK sõnestaja
+
+        Args:
+            content (str): Sõnestatav tekst
+
+        Returns:
+            List: [{"start":NUMBER,"end":NUMBER,"features":{"token":str}]        
+        """
+        estnltk_text = Text(content)
+        estnltk_text.tag_layer(['words'])
+        SentenceTokenizer().tag(estnltk_text)
+        tokens = []
+        for sentence in estnltk_text.sentences:
+            for word in sentence:
+                tokens.append({"start": word.start, "end": word.end, "features": {"token": word.enclosing_text}})
+        return tokens
 
     def tee_sõnestamine(self)->None:
         """PUBLIC: Sõnestame sisendtekstid
@@ -220,11 +225,12 @@ class TEE_JSON:
         pbar = tqdm(self.json_io["sources"].keys(), 
                 desc=f'# {inspect.currentframe().f_code.co_name}', 
                 disable=(not self.verbose))
+        
         for docid in pbar:
-            self.json_io["sources"][docid] = self.tee_päring(
-                    self.tokenizer, self.json_io["sources"][docid])
-            del self.json_io["sources"][docid]["annotations"]["sentences"]
-
+            if "annotations" not in self.json_io["sources"][docid]:
+                self.json_io["sources"][docid]["annotations"] = {}
+            self.json_io["sources"][docid]["annotations"]["tokens"] = \
+                    self.estnltk_sentok(self.json_io["sources"][docid]["content"])
     
     def tee_kõigi_terviksõnede_indeks(self) -> None:
         """PUBLIC
@@ -292,7 +298,8 @@ class TEE_JSON:
                 disable=(not self.verbose))
         for k, v in pbar:
             morf_in["annotations"] = {"tokens":[{"features":{"token": k}}]}
-            mrf_out = self.tee_päring(self.analyser, morf_in)
+            #mrf_out = self.tee_päring(self.analyser, morf_in)
+            mrf_out = self.run_subprocess(proc_vmetajson, morf_in)
             # kustutame mõtetu sõnaliigiga analüüsivariandid
             mrfs = mrf_out["annotations"]["tokens"][0]["features"]["mrf"]
             mrfs[:] = [m for m in mrfs if self.ignore_pos.find(m["pos"]) < 0]
@@ -302,8 +309,7 @@ class TEE_JSON:
                 vorm = mrf["stem"]
                 if mrf["ending"] != '0':
                     vorm += mrf["ending"]
-                #puhas_vorm = vorm.upper().replace('=', '').replace('_', '')
-                puhas_vorm = vorm.replace('=', '').replace('_', '')
+                puhas_vorm = vorm.replace('+', '').replace('=', '').replace('_', '')
                 if puhas_vorm not in self.json_io["sõnavormid"]:
                     self.json_io["sõnavormid"][puhas_vorm] = {}
                 for docid, poslist in v.items():
@@ -314,8 +320,7 @@ class TEE_JSON:
                             self.json_io["sõnavormid"][puhas_vorm][docid].append(pos)
 
                 # leiame liitsõna osasõnad  
-                #osasõnad = vorm.upper().replace('=', '').split('_')
-                osasõnad = vorm.replace('=', '').split('_')
+                osasõnad = vorm.replace('+', '').replace('=', '').split('_')
                 if len(osasõnad) < 2:
                     continue
                 # lisame 1 komponendilised
@@ -339,7 +344,7 @@ class TEE_JSON:
                 for i in range(3, len(osasõnad)):
                     self.lisa_osasõna(
                         f'{osasõnad[i-3]}{osasõnad[i-2]}{osasõnad[i-1]}{osasõnad[i]}', v)
-        pass
+        pass # DB
 
     def tabelisse_vormide_indeks(self):
         if "tabelid" not in self.json_io:
@@ -367,7 +372,7 @@ class TEE_JSON:
                     if kirje in self.json_io["tabelid"]["indeks_vormid"]:
                         continue
                     self.json_io["tabelid"]["indeks_vormid"].append(kirje)        
-        pass
+        pass # DB
 
     def lisa_osasõna(self, osasõna:str, v:Dict)->None:
         """PRIVATE
@@ -408,13 +413,11 @@ class TEE_JSON:
                 disable=(not self.verbose))
         for k, v in pbar:
             morf_in["annotations"]["tokens"] = [{"features":{"token": k}}]
-            morf_out = self.tee_päring(self.analyser, morf_in)
+            morf_out = self.run_subprocess(proc_vmetajson, morf_in)
             puhtad_lemmad = []
             for mrf in morf_out["annotations"]["tokens"][0]["features"]["mrf"]:
-                #self.tee_liitsõnandus(mrf["lemma_ma"].upper())
-                #if (puhas_lemma := mrf["lemma_ma"].upper().replace('=', '').replace('_', '')) not in puhtad_lemmad:
                 self.tee_liitsõnandus(mrf["lemma_ma"])
-                if (puhas_lemma := mrf["lemma_ma"].replace('=', '').replace('_', '')) not in puhtad_lemmad:
+                if (puhas_lemma := mrf["lemma_ma"].replace('+', '').replace('=', '').replace('_', '')) not in puhtad_lemmad:
                     puhtad_lemmad.append(puhas_lemma)
             if len(puhtad_lemmad) < 1:
                 continue
@@ -446,11 +449,10 @@ class TEE_JSON:
                 disable=(not self.verbose))
         for k, v in pbar:
             morf_in["annotations"]["tokens"] = [{"features":{"token": k}}]
-            morf_out = self.tee_päring(self.analyser, morf_in)
+            morf_out = self.run_subprocess(proc_vmetajson, morf_in)
             puhtad_lemmad = []
             for mrf in morf_out["annotations"]["tokens"][0]["features"]["mrf"]:
-                #if (puhas_lemma := mrf["lemma_ma"].upper().replace('=', '').replace('_', '')) not in puhtad_lemmad:
-                if (puhas_lemma := mrf["lemma_ma"].replace('=', '').replace('_', '')) not in puhtad_lemmad:
+                if (puhas_lemma := mrf["lemma_ma"].replace('+', '').replace('=', '').replace('_', '')) not in puhtad_lemmad:
                     puhtad_lemmad.append(puhas_lemma)
             if len(puhtad_lemmad) < 1:
                 continue
@@ -461,7 +463,7 @@ class TEE_JSON:
                     if docid not in self.json_io["osalemmad"][puhas_lemma]:
                         self.json_io["osalemmad"][puhas_lemma][docid] = []
                     self.json_io["osalemmad"][puhas_lemma][docid] += poslist
-        pass #DB
+        pass # DB
 
     def tabelisse_lemmade_indeks(self):
         if "tabelid" not in self.json_io:
@@ -490,12 +492,12 @@ class TEE_JSON:
                         continue
                     #assert kirje not in self.json_io["tabelid"]["indeks_lemmad"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
                     self.json_io["tabelid"]["indeks_lemmad"].append(kirje)                      
-        pass #DB
+        pass # DB
 
 
     def tee_liitsõnandus(self, lemma_ma:str)->None:
         kombinatsioonid = []
-        osasõnad = lemma_ma.replace('=', '').split('_')
+        osasõnad = lemma_ma.replace('+', '').replace('=', '').split('_')
         if len(osasõnad) < 2:
             return
         # lisame 1 komponendilised
@@ -521,27 +523,25 @@ class TEE_JSON:
                 if osasõna not in kombinatsioonid:
                     kombinatsioonid.append(osasõna)
         # teeme tabeli, kus iga osasõna lemma jaoks on kirjas millistes liitsõnades ta esineb
-        #morf_in = {"params":{"vmetajson":["--guess"]}, "content": " ".join(kombinatsioonid)}
         morf_in = {"params":{"vmetajson":["--guess"]}, "annotations":{"tokens":[]}}
         for k in kombinatsioonid:
             morf_in["annotations"]["tokens"].append({"features":{"token":k}})
-        morf_out = self.tee_päring(self.analyser, morf_in)
+        morf_out = self.run_subprocess(proc_vmetajson, morf_in)
         puhtad_lemmad = []
         for token in morf_out["annotations"]["tokens"]:
             for mrf in token["features"]["mrf"]:
-                #if (puhas_lemma := mrf["lemma_ma"].upper().replace('=', '').replace('_', '')) not in puhtad_lemmad:
-                if (puhas_lemma := mrf["lemma_ma"].replace('=', '').replace('_', '')) not in puhtad_lemmad:
+                if (puhas_lemma := mrf["lemma_ma"].replace('+', '').replace('=', '').replace('_', '')) not in puhtad_lemmad:
                     puhtad_lemmad.append(puhas_lemma)
         # "liitsõnad" :{OSASÕNALEMMA:[LIITSÕNALEMMA]}
         if "liitsõnad" not in self.json_io:
             self.json_io["liitsõnad"] = {}
-        puhas_liitlemma = lemma_ma.replace('=', '').replace('_', '')
+        puhas_liitlemma = lemma_ma.replace('+', '').replace('=', '').replace('_', '')
         for puhas_lemma in puhtad_lemmad:
             if puhas_lemma not in self.json_io["liitsõnad"]:
                 self.json_io["liitsõnad"][puhas_lemma] = []
             if lemma_ma not in self.json_io["liitsõnad"][puhas_lemma]:
                 self.json_io["liitsõnad"][puhas_lemma].append(puhas_liitlemma)
-        pass
+        pass # DB
 
     def tee_generator(self) -> None:
         """PUBLIC:Morfime indeksis olevad sõned lemmadeks ning geneme täieliku ja korpuse paradigma 
@@ -585,7 +585,7 @@ class TEE_JSON:
                 self.json_io["tabelid"]["lemma_kõik_vormid"].append((vorm, kaal, lemma))
                 if kaal > 0:
                     self.json_io["tabelid"]["lemma_korpuse_vormid"].append((lemma, kaal, vorm))    
-        pass
+        pass # DB
 
     def lisa_lemma_vormid(self, lemma_in:str)->None:
         # genereerime ettantud lemmast kõik vormid, "content" ei sobi tühikut sisaldavate sõnede tõttu
@@ -593,8 +593,8 @@ class TEE_JSON:
         # {"generator": {LEMMA: {VORM:KAAL}} 
         # {"sõnavormid"   :{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
         # {"osasõnavormid":{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
-        res = self.tee_päring(self.generator, 
-                {"params":{"vmetsjson":["--guess"]}, "annotations":{"tokens":[{"features":{"token":lemma_in}}]}} )
+        res = self.run_subprocess(proc_vmetsjson, 
+            {"params":{"vmetsjson":["--guess"]}, "annotations":{"tokens":[{"features":{"token":lemma_in}}]}} )
         if "generator" not in self.json_io:
             self.json_io["generator"] = {}
         # tsükkel üle genereeritud vormide
@@ -605,7 +605,7 @@ class TEE_JSON:
                 self.json_io["generator"][lemma] = {}
             if "mrf" in token["features"]:
                 for mrf in token["features"]["mrf"]:
-                    vorm = mrf["stem"].replace('=', '').replace('_', '')
+                    vorm = mrf["stem"].replace('+', '').replace('=', '').replace('_', '')
                     if mrf["ending"] != '0':
                         vorm += mrf["ending"]
                     if vorm not in self.json_io["generator"][lemma]:
@@ -617,60 +617,48 @@ class TEE_JSON:
                             for _, poslist in self.json_io["osasõnavormid"][vorm].items():
                                 kaal += len(poslist)
                         self.json_io["generator"][lemma][vorm]=kaal
-        pass
+        pass # DB
 
-    def tee_kirjavead_olemasolevatest_vormidest(self)->None:
-        """PUBLIC:Lisame kirjavead parandamiseks vajaliku tabeli
+    def gene_potentsiaalsed_kirjavead(self, token:str)->List[str]:
+        """PRIVATE:Genereeri sõnavormist potentsiaalsed kirjavigased vormid
 
         Args:
-            self.json_io: kasutame:
-            * {"sõnavormid"   :{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
-            * {"osasõnavormid":{SÕNAVORM:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
+            token (str): sõnavorm
 
         Returns:
-            Lisame:
-            * self.json_io {"tabelid":{"kirjavead":[[VIGANE_VORM, VORM, KAAL]]}}
+            List[str]: need genereeritud kirjavead, mida morf ilma oletamiseta ära ei tunna 
         """
-        kv = kirjavigastaja.KIRJAVIGASTAJA(self.verbose, self.analyser)
-        # kaal_ja_vead = {SÕNAVORM:{"kaal":int, "vead": [str]}}
-        sõnavormi_kaal_ja_vead = {}
-        # liht- ja liitsõnadest
-        pbar = tqdm(self.json_io["sõnavormid"].items(), disable=(not self.verbose), desc="# kirjavead sõnavormidest ")
-        for sõnavorm, doclist in pbar:
-            if any(char.isdigit() for char in sõnavorm) is True:
-                continue # ei tee kirjavigasid numbrit sisaldavatest sõnedest
-            kaal = 0
-            for poslist in doclist.values():
-                kaal += len(poslist)
-            assert sõnavorm not in sõnavormi_kaal_ja_vead, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-            sõnavormi_kaal_ja_vead[sõnavorm] = {
-                "vead": kv.gene_potentsiaalsed_kirjavead(sõnavorm),
-                "kaal": kaal}
-        # liitsõna osasõnadest
-        pbar = tqdm(self.json_io["osasõnavormid"].items(), disable=(not self.verbose), desc="# kirjavead osasõnavormidest ")
-        for sõnavorm, doclist in pbar:
-            if any(char.isdigit() for char in sõnavorm) is True:
-                continue # ei tee kirjavigasid numbrit sisaldavatest sõnedest
-            kaal = 0
-            for poslist in doclist.values():
-                kaal += len(poslist)
-            if sõnavorm not in sõnavormi_kaal_ja_vead:
-                sõnavormi_kaal_ja_vead[sõnavorm] = {
-                    "vead": kv.gene_potentsiaalsed_kirjavead(sõnavorm),
-                    "kaal": kaal}
-            else:
-                sõnavormi_kaal_ja_vead[sõnavorm]["kaal"] += kaal # lisame liitsõna osasõnade kaalu juurde
-        # teeme lõppkujul tabeli
-        if "tabelid" not in self.json_io:
-            self.json_io["tabelid"] = {}
-        if "kirjavead" not in self.json_io["tabelid"]:
-            self.json_io["tabelid"]["kirjavead"] = []
-        pbar = tqdm(sõnavormi_kaal_ja_vead.items(), disable=(not self.verbose), desc="# kirjavead tabeliks ")
-        for sõnavorm, kaal_ja_vead in pbar:
-            for vigane_vorm in kaal_ja_vead["vead"]:
-                kirje = (vigane_vorm, sõnavorm, kaal_ja_vead["kaal"])
-                assert kirje not in self.json_io["tabelid"]["kirjavead"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno} | Pole unikaalne {kirje}'
-                self.json_io["tabelid"]["kirjavead"].append(kirje)
+        potentsiaalsed_kirjavead = []
+        for i in range(len(token)):
+            if len(token) > 3: # peab olema vähemalt 3 tähte
+                # 2 tähte vahetuses: tigu -> itgu, tgiu, tiug
+                if i > 0 and token[i] != token[i-1]: # kahte ühesugust tähte ei vaheta
+                    t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]
+                    if t not in potentsiaalsed_kirjavead:
+                        potentsiaalsed_kirjavead.append(t) 
+                # 1 täht läheb topelt
+                t = token[:i]+token[i]+token[i]+token[i+1:]
+                if t not in potentsiaalsed_kirjavead:
+                    potentsiaalsed_kirjavead.append(t) 
+                # 1 täht kaob ära
+                t = token[:i]+token[i+1:]
+                if t not in potentsiaalsed_kirjavead:
+                        potentsiaalsed_kirjavead.append(t) 
+                # g b d k p t-> k p t g b d
+                if (n := "gbdkpt".find(token[i])) > -1:
+                    t = token[:i]+"kptgbd"[n]+token[i+1:]                   
+                    if t not in potentsiaalsed_kirjavead:
+                        potentsiaalsed_kirjavead.append(t)
+        if len(potentsiaalsed_kirjavead) == 0:
+            return []
+        morf_in = {"params": {"vmetajson":["--stem"]}, "annotations":{"tokens":[]}}
+        for pkv in potentsiaalsed_kirjavead:
+            morf_in["annotations"]["tokens"].append({"features":{"token": pkv}})
+        morf_out = self.run_subprocess(proc_vmetajson, morf_in)
+        for token in morf_out["annotations"]["tokens"]:
+            if "mrf" not in token["features"]:
+                potentsiaalsed_kirjavead.append(token["features"]["token"])
+        return list(set(potentsiaalsed_kirjavead))
 
     def tee_kirjavead(self)->None:
         """PUBLIC:Lisame kirjavead parandamiseks vajaliku tabeli
@@ -683,11 +671,13 @@ class TEE_JSON:
             Lisame:
             * self.json_io {"tabelid":{"kirjavead":[(VIGANE_VORM, VORM)]}}
         """
+        if self.kirjavead is False:
+            return
+        
         if "tabelid" not in self.json_io:
             self.json_io["tabelid"] = {}
         if "kirjavead" not in self.json_io["tabelid"]:
             self.json_io["tabelid"]["kirjavead"] = []
-        kv = kirjavigastaja.KIRJAVIGASTAJA(self.verbose, self.analyser)
         kvead = {} # {VORM:[VIGANE_VORM]}
         pbar = tqdm(self.json_io["tabelid"]["lemma_kõik_vormid"], disable=(not self.verbose), desc="# kirjavead kõigist genetud sõnavormidest ")
         for vorm, _, _ in pbar:
@@ -695,13 +685,14 @@ class TEE_JSON:
                 continue # ei tee kirjavigasid numbreid sisaldavatest sõnedest
             if vorm not in kvead:
                 kvead[vorm] = []
-            kvead[vorm] = kv.gene_potentsiaalsed_kirjavead(vorm)
+            kvead[vorm] = self.gene_potentsiaalsed_kirjavead(vorm)
         pbar = tqdm(kvead.items(), disable=(not self.verbose), desc="# genetud kirjavead tabeliks ")
         for vorm, kirjavead in pbar:
             for kirjaviga in kirjavead:
                 kirje = (kirjaviga, vorm)
                 #if kirje not in self.json_io["tabelid"]["kirjavead"]:
                 self.json_io["tabelid"]["kirjavead"].append(kirje)
+        pass # DB
 
     def tee_sources_tabeliks(self)->None:
         """
@@ -718,12 +709,13 @@ class TEE_JSON:
             self.json_io["tabelid"] = {}
         if "allikad" not in self.json_io["tabelid"]:
             self.json_io["tabelid"]["allikad"] = []
-        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose))
+        pbar = tqdm(self.json_io["sources"].keys(), disable=(not self.verbose), desc="# tee_sources_tabeliks")
         for docid in pbar:
-            pbar.set_description(f"# tee_sources_tabeliks: {docid}")
+            #pbar.set_description(f"# tee_sources_tabeliks: {docid}")
             self.json_io["tabelid"]["allikad"].append((docid, self.json_io["sources"][docid]["content"]))
             #del self.json_io["sources"][docid]["content"]
-            pbar.set_description(f"# tee_sources_tabeliks")
+            #pbar.set_description(f"# tee_sources_tabeliks")
+        pass # DB
 
     def kustuta_vahetulemused(self)->None:
 
@@ -738,7 +730,7 @@ class TEE_JSON:
                 del self.json_io[k]
         if self.verbose:
             sys.stdout.write('\n')
-        pass
+        pass # DB
 
     def kordused_tabelitest_välja(self):
         '''
@@ -753,12 +745,16 @@ class TEE_JSON:
             }
         }
         '''
-        tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid", "kirjavead"]
+        if self.kirjavead is True:
+            tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid", "kirjavead"]
+        else:
+            tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid"]
         pbar = tqdm(tabelid,
                 disable=(not self.verbose))
         for tabel in pbar:
             pbar.set_description(f'# {inspect.currentframe().f_code.co_name} : {tabel}')
             self.json_io["tabelid"][tabel] = list(set(self.json_io["tabelid"][tabel]))
+        pass # DB
 
     def kuva_tabelid(self, indent)-> None:
         """PUBLIC:Lõpptulemus JSON kujul std väljundisse
@@ -775,20 +771,21 @@ class TEE_JSON:
         Returns:
             Dict: versiooninfo ja URLid
         """
-        return  {"ettearvutaja.version": self.VERSION, "tokenizer": self.tokenizer, "analyser": self.analyser,  "generator:": self.generator}
+        return  {"ettearvutaja.version": self.VERSION }
 
 
 if __name__ == '__main__':
     import argparse
     argparser = argparse.ArgumentParser(allow_abbrev=False)
     argparser.add_argument('-p', '--csvpealkirjad',  action="store_true", help='sisendfaili formaat')
+    argparser.add_argument('-k', '--kirjavead',  action="store_true", help='genereeri kirjavead')
     argparser.add_argument('-v', '--verbose',  action="store_true", help='kuva rohkem infot tööjärje kohta')
     argparser.add_argument('-i', '--indent', type=int, default=None, help='indent for json output, None=all in one line')
     argparser.add_argument('file', type=argparse.FileType('r'), nargs='+')
     args = argparser.parse_args()
 
     try:
-        tj = TEE_JSON(args.verbose)
+        tj = TEE_JSON(args.verbose, args.kirjavead)
 
         for f  in args.file:
             if tj.verbose:

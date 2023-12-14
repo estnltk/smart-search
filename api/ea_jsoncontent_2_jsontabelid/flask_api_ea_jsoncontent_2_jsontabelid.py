@@ -14,7 +14,7 @@
         },
 ----------------------------------------------
 Lähtekoodist pythoni skripti kasutamine:
-1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), kasutavate teenuste paikasättimine (1.3) ja pythoni skripti käivitamine(1.4)
+1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2) ja käivitamine(1.3)
 1.1 Lähtekoodi allalaadimine
     $ mkdir -p ~/git/ ; cd ~/git/
     $ git clone git@github.com:estnltk/smart-search.git smart_search_github
@@ -22,27 +22,18 @@ Lähtekoodist pythoni skripti kasutamine:
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
     $ ./create_venv.sh
 1.3 Sätime paika kasutatvad teenused: kasutame veebis olevaid konteinereid (1.3.1) või kasutame kohalikus masinas töötavaid konteinereid (1.3.2)
-1.3.1 Kasutame veebis olevaid konteinereid
-    $ export TOKENIZER=https://smart-search.tartunlp.ai/api/tokenizer/process ;\
-      export GENERATOR=https://smart-search.tartunlp.ai/api/vm/generator/process ;\
-      export ANALYSER=https://smart-search.tartunlp.ai/api/analyser/process
-1.3.2 Kasutame kohalikus masinas töötavaid konteinereid  (vaikimisi kasutab neid)      
-    $ docker run -p 6000:6000 tilluteenused/estnltk_sentok:2023.04.18 ;\
-      docker run -p 7008:7008 tilluteenused/vmetsjson:2023.09.21 ;\
-      docker run -p 7007:7007 tilluteenused/vmetajson:2023.06.03
-1.4 Pythoni skripti käivitamine
+1.3 Pythoni skripti käivitamine
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
     $ make -j all
 ----------------------------------------------
 Lähtekoodist veebiserveri käivitamine & kasutamine
-2 Lähtekoodi allalaadimine (2.1), virtuaalkeskkonna loomine (2.2), kasutavate teenuste paikasättimine (2.3) veebiteenuse käivitamine pythoni koodist (2.4) ja CURLiga veebiteenuse kasutamise näited (2.5)
+2 Lähtekoodi allalaadimine (2.1), virtuaalkeskkonna loomine (2.2), veebiteenuse käivitamine pythoni koodist (2.3) ja CURLiga veebiteenuse kasutamise näited (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Virtuaalkeskkonna loomine: järgi punkti 1.2
-2.3 Sätime paika kasutatvad teenused: järgi punkti 1.3
-2.4 Veebiteenuse käivitamine pythoni koodist
+2.3 Veebiteenuse käivitamine pythoni koodist
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
     $ ./venv/bin/python3 ./flask_api_ea_jsoncontent_2_jsontabelid.py
-2.5 CURLiga veebiteenuse kasutamise näited
+2.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/text" \
         localhost:6602/api/create_jsontables/version | jq
     $ curl --silent --request POST --header "Content-Type: application/csv" \
@@ -57,20 +48,19 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-    $ docker build -t tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.10 . 
-    # docker push tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.10
+    $ docker build -t tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.14 . 
+    # docker push tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.14
 2.3 Konteineri käivitamine
     $ docker run -p 6602:6602  \
-        --env TOKENIZER='https://smart-search.tartunlp.ai/api/tokenizer/process' \
-        --env GENERATOR='https://smart-search.tartunlp.ai/api/vm/generator/process' \
-        --env ANALYSER='https://smart-search.tartunlp.ai/api/analyser/process' \
-        tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.10 
+        --env SMART_SEARCH_MAX_CONTENT_LENGTH='10000000000' \
+        --env SMART_SEARCH_GENE_TYPOS='true' \
+        tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.14 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.10
+    $ docker pull tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.14
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
@@ -102,18 +92,50 @@ import requests
 import subprocess
 import json
 import argparse
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, abort
+from functools import wraps
 from typing import Dict, List, Tuple
 from collections import OrderedDict
 
 import api_ea_jsoncontent_2_jsontabelid_2
 
-tj = api_ea_jsoncontent_2_jsontabelid_2.TEE_JSON(False)
+VERSION="2023.12.14"
+
+try:
+    SMART_SEARCH_GENE_TYPOS=(os.environ.get('SMART_SEARCH_GENE_TYPOS').upper()=="TRUE")
+except:
+    SMART_SEARCH_GENE_TYPOS = False # vaikimisi ei genereeri kirjavigasid
+tj = api_ea_jsoncontent_2_jsontabelid_2.TEE_JSON(verbose=False, kirjavead=SMART_SEARCH_GENE_TYPOS)
 
 app = Flask("api_ea_jsoncontent_2_jsontabelid")
 
+# JSONsisendi max suuruse piiramine {{
+try:
+    SMART_SEARCH_MAX_CONTENT_LENGTH=int(os.environ.get('SMART_SEARCH_MAX_CONTENT_LENGTH'))
+except:
+    SMART_SEARCH_MAX_CONTENT_LENGTH = 10 * 1000000000 # 10 GB 
+
+def limit_content_length(max_length):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            cl = request.content_length
+            if cl is not None and cl > max_length:
+                abort(413)
+            return f(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@app.errorhandler(413) # Liiga mahukas päring
+def request_entity_too_large(error):
+    #return 'File Too Large', 413
+    return jsonify({"error":"Request Entity Too Large"})
+
+# }} JSONsisendi max suuruse piiramine 
+
 @app.route('/api/create_jsontables/headers', methods=['POST'])
 @app.route('/headers', methods=['POST'])
+@limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
 def create_jsontables_headers():
     """Leia sisendkorpuse sõnede kõikvõimalikud vormid ja nonde hulgast need, mis esinesid korpuses
 
@@ -162,6 +184,7 @@ def create_jsontables_headers():
 
 @app.route('/api/create_jsontables/document', methods=['POST'])
 @app.route('/document', methods=['POST'])
+@limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
 def create_jsontables_document():
     """Leia sisendkorpuse sõnede kõikvõimalikud vormid ja nonde hulgast need, mis esinesid korpuses
 
@@ -216,6 +239,8 @@ def api_create_jsontables_version():
         ~flask.Response: Lemmatiseerija versioon
     """
     json_response = tj.version_json()
+    json_response["SMART_SEARCH_MAX_CONTENT_LENGTH"] = SMART_SEARCH_MAX_CONTENT_LENGTH
+    json_response["genereeri_kirjavead"] = tj.kirjavead
     return jsonify(json_response)
 
 if __name__ == '__main__':

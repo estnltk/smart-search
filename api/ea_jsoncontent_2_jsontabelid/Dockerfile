@@ -22,6 +22,8 @@ RUN python3 -m venv ./venv
 RUN ./venv/bin/python3 -m pip install --upgrade pip
 RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt 
 
+RUN ./venv/bin/python3 -m nltk.downloader punkt
+
 # copy current task related skripts
 COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_ea_jsoncontent_2_jsontabelid.py api_ea_jsoncontent_2_jsontabelid_2.py kirjavigastaja.py ./
 RUN chmod +x *.sh *.py
