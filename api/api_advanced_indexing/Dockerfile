@@ -2,6 +2,7 @@ FROM ubuntu
 
 # install C++ json-library for vmetajson and other stuff
 RUN apt-get update && apt-get install -y \
+    libjsoncpp-dev \
     tini \
     python3 \
     python3-pip \
@@ -25,8 +26,10 @@ RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt
 RUN ./venv/bin/python3 -m nltk.downloader punkt
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_ea_jsoncontent_2_jsontabelid.py api_ea_jsoncontent_2_jsontabelid_2.py kirjavigastaja.py ./
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_advanced_indexing.py api_advanced_indexing.py ./
+COPY --chown=mere_mortal:mere_mortal vmetajson vmetsjson et.dct ./
 RUN chmod +x *.sh *.py
+RUN chmod +x vmetajson vmetsjson
 # parameters for gunicorn
 ENV WORKERS=1
 ENV TIMEOUT=30

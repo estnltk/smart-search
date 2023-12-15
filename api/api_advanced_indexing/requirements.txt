@@ -2,4 +2,5 @@ gunicorn
 Flask
 requests
 tqdm
-
+#nltk
+estnltk

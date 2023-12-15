@@ -10,8 +10,8 @@ Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku and
         "name": "content_2_tabelid_2_test",
         "type": "python",
         "request": "launch",
-        "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
-        "program": "./api_ea_jsoncontent_2_jsontabelid_2.py",
+        "cwd": "${workspaceFolder}/api/api_advanced_indexing/",
+        "program": "./api_advanced_indexing.py",
         "env": {},
         "args": ["--verbose", "--csvpealkirjad", \
             "../../rt_web_crawler/results/test.csv"
@@ -22,8 +22,8 @@ Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku and
         "name": "content_2_tabelid_pealkirjad",
         "type": "python",
         "request": "launch",
-        "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
-        "program": "./api_ea_jsoncontent_2_jsontabelid_2.py",
+        "cwd": "${workspaceFolder}/api/api_advanced_indexing/",
+        "program": "./api_advanced_indexing.py",
         "env": {},
         "args": ["--verbose", "--csvpealkirjad", \
             "../../rt_web_crawler/results/state_laws.csv" \
@@ -33,9 +33,14 @@ Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku and
         ]
     },
 -----------------------------------------------------------------
-Käsurealt (vaikimisi kohalikud konteinerid):
+Käsurealt (töötleme mitu sisendfaili paralleelselt):
 $   cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
 $   make clean ; make -j all
+
+Käsurealt (töötleme ühte sisendfaili korraga):
+$ venv/bin/python3 ./api_advanced_indexing.py --verbose --csvpealkirjad test_headers.csv > test_headers_indexes.json
+$ venv/bin/python3 ./api_advanced_indexing.py --verbose test_document.json > test_document_indexes.json
+
 -----------------------------------------------------------------
 JSON sees- ja välispidiseks kasutamiseks:
 
@@ -91,6 +96,7 @@ proc_vmetsjson = subprocess.Popen(['./vmetsjson', '--path=.'],
                             stdout=subprocess.PIPE,
                             stderr=subprocess.DEVNULL)
 
+
 class TEE_JSON:
     def __init__(self, verbose:bool, kirjavead:bool)->None:
         """Initsialiseerime muutujad: versiooninumber, jne
@@ -104,11 +110,16 @@ class TEE_JSON:
 
         self.VERSION="2023.12.14"
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
- 
-    def string2json(self, str:str)->None:
+
+    def verbose_prints(self, message:str) -> None:
+        if self.verbose:
+            sys.stderr.write(f'# {message}\n')
+
+    def string2json(self, fname:str, str:str)->None:
         """PUBLIC: String sisendJSONiga DICTiks
 
         Args:
+            fname : sisendfaili nimi
             str (str): String sisendJSONiga
 
         Raises:
@@ -119,15 +130,17 @@ class TEE_JSON:
 
             * self.json_io["sources"][DOCID]["content"] : str
         """
+        self.verbose_prints(f'JSON sisendfail: {fname}')
         try:
             self.json_io = json.loads(str.replace('\n', ' '))
         except:
             raise Exception({"warning":"JSON parse error, {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}"})
 
-    def csvpealkrjadest(self, f)->None:
+    def csvpealkrjadest(self, fname, f)->None:
         """PUBLIC: sisendiks pealkirjad CSV failist
 
         Args:
+            fname : sisendfaili nimi
             f : CSV faili read: global_id,document_type,document_title,xml_source
 
         Returns:
@@ -141,6 +154,7 @@ class TEE_JSON:
                 }
             }
         """
+        self.verbose_prints(f'CSV sisendfail: {fname}')
         data = list(csv.reader(f, delimiter=","))
         self.json_io = {"sources": {}}
         for d in data[1:]:
@@ -658,7 +672,7 @@ class TEE_JSON:
         for token in morf_out["annotations"]["tokens"]:
             if "mrf" not in token["features"]:
                 potentsiaalsed_kirjavead.append(token["features"]["token"])
-        return list(set(potentsiaalsed_kirjavead))
+        return potentsiaalsed_kirjavead
 
     def tee_kirjavead(self)->None:
         """PUBLIC:Lisame kirjavead parandamiseks vajaliku tabeli
@@ -692,6 +706,7 @@ class TEE_JSON:
                 kirje = (kirjaviga, vorm)
                 #if kirje not in self.json_io["tabelid"]["kirjavead"]:
                 self.json_io["tabelid"]["kirjavead"].append(kirje)
+        self.json_io["tabelid"]["kirjavead"] = list(set(self.json_io["tabelid"]["kirjavead"]))
         pass # DB
 
     def tee_sources_tabeliks(self)->None:
@@ -719,17 +734,19 @@ class TEE_JSON:
 
     def kustuta_vahetulemused(self)->None:
 
-        if self.verbose:
-            sys.stdout.write('# kustutame:')
+        #if self.verbose:
+        #    sys.stdout.write('# kustutame:')
 
         # kustutame kõik peale tabelite
-        for k in list(self.json_io.keys()):
+        pbar = tqdm(self.json_io.keys(), disable=(not self.verbose), desc="# kustutame vahetulemused")
+        for k in list(pbar):
             if k != "tabelid":
-                if self.verbose:
-                    sys.stdout.write(f' {k}...')
+                #if self.verbose:
+                #    sys.stdout.write(f' {k}...')
+                #logging.info(f'# Kustatame Vahetulemuse: {k}')
                 del self.json_io[k]
-        if self.verbose:
-            sys.stdout.write('\n')
+        #if self.verbose:
+        #    sys.stdout.write('\n')
         pass # DB
 
     def kordused_tabelitest_välja(self):
@@ -749,10 +766,9 @@ class TEE_JSON:
             tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid", "kirjavead"]
         else:
             tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid"]
-        pbar = tqdm(tabelid,
-                disable=(not self.verbose))
+        pbar = tqdm(tabelid, disable=(not self.verbose), desc="# kustutame tabelitest kordused")
         for tabel in pbar:
-            pbar.set_description(f'# {inspect.currentframe().f_code.co_name} : {tabel}')
+            #pbar.set_description(f'# {inspect.currentframe().f_code.co_name} : {tabel}')
             self.json_io["tabelid"][tabel] = list(set(self.json_io["tabelid"][tabel]))
         pass # DB
 
@@ -788,12 +804,10 @@ if __name__ == '__main__':
         tj = TEE_JSON(args.verbose, args.kirjavead)
 
         for f  in args.file:
-            if tj.verbose:
-                sys.stdout.write(f'\n# sisendfail: {f.name}\n')
             if args.csvpealkirjad:
-                tj.csvpealkrjadest(f.readlines())
+                tj.csvpealkrjadest(f.name, f.readlines())
             else:
-                tj.string2json(f.read())
+                tj.string2json(f.name, f.read())
             tj.tee_sõnestamine()
             tj.tee_kõigi_terviksõnede_indeks()
             tj.tee_mõistlike_tervik_ja_osasõnede_indeks()

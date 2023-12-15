@@ -4,11 +4,11 @@
 ----------------------------------------------
 // code (serveri käivitamine silumiseks):
         {
-            "name": "create_jsontables",
+            "name": "flask_advanced_indexing",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/api/ea_jsoncontent_2_jsontabelid/",
-            "program": "./flask_api_ea_jsoncontent_2_jsontabelid.py",
+            "cwd": "${workspaceFolder}/api/api_advanced_indexing/",
+            "program": "./flask_api_advanced_indexing.py",
             "env": {}
             "args": []
         },
@@ -19,69 +19,71 @@ Lähtekoodist pythoni skripti kasutamine:
     $ mkdir -p ~/git/ ; cd ~/git/
     $ git clone git@github.com:estnltk/smart-search.git smart_search_github
 1.2 Virtuaalkeskkonna loomine
-    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
+    $ cd ~/git/smart-search_github/api/api_advanced_indexing
     $ ./create_venv.sh
 1.3 Sätime paika kasutatvad teenused: kasutame veebis olevaid konteinereid (1.3.1) või kasutame kohalikus masinas töötavaid konteinereid (1.3.2)
-1.3 Pythoni skripti käivitamine
-    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-    $ make -j all
+1.3 Pythoni skripti käivitamine: vaata api_advanced_indexing.py
 ----------------------------------------------
 Lähtekoodist veebiserveri käivitamine & kasutamine
 2 Lähtekoodi allalaadimine (2.1), virtuaalkeskkonna loomine (2.2), veebiteenuse käivitamine pythoni koodist (2.3) ja CURLiga veebiteenuse kasutamise näited (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Virtuaalkeskkonna loomine: järgi punkti 1.2
 2.3 Veebiteenuse käivitamine pythoni koodist
-    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-    $ ./venv/bin/python3 ./flask_api_ea_jsoncontent_2_jsontabelid.py
+2.3.1 Vaikeseadetaga
+    $ cd ~/git/smart-search_github/api/api_advanced_indexing
+    $ ./venv/bin/python3 ./flask_api_advanced_indexing.py
+2.3.2 Etteantud parameetriga
+    $ SMART_SEARCH_GENE_TYPOS=true SMART_SEARCH_MAX_CONTENT_LENGTH='5000000' \
+        venv/bin/python3 ./flask_api_advanced_indexing.py
 2.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/text" \
-        localhost:6602/api/create_jsontables/version | jq
+        localhost:6602/api/advanced_indexing/version | jq
     $ curl --silent --request POST --header "Content-Type: application/csv" \
       --data-binary @test_headers.csv \
-      localhost:6602/api/create_jsontables/headers  | jq
+      localhost:6602/api/advanced_indexing/headers  | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
       --data-binary @test_document.json \
-      localhost:6602/api/create_jsontables/document  | jq
+      localhost:6602/api/advanced_indexing/document  | jq
 ----------------------------------------------
 Lähtekoodist tehtud konteineri kasutamine
 3 Lähtekoodi allalaadimine (3.1), konteineri kokkupanemine (3.2), konteineri käivitamine (3.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
-    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-    $ docker build -t tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.14 . 
-    # docker push tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.14
+    $ cd ~/git/smart-search_github/api/api_advanced_indexing
+    $ docker build -t tilluteenused/smart_search_api_advanced_indexing:2023.12.14 . 
+    # docker push tilluteenused/smart_search_api_advanced_indexing:2023.12.14 
 2.3 Konteineri käivitamine
     $ docker run -p 6602:6602  \
-        --env SMART_SEARCH_MAX_CONTENT_LENGTH='10000000000' \
+        --env SMART_SEARCH_MAX_CONTENT_LENGTH='500000000' \
         --env SMART_SEARCH_GENE_TYPOS='true' \
-        tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.14 
+       tilluteenused/smart_search_api_advanced_indexing:2023.12.14 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_ea_content_2_jsontabelid:2023.12.14
+    $ docker pull tilluteenused/smart_search_api_advanced_indexing:2023.12.14 
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
-    $ cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid # selles kataloogis on test_headers.csv ja test_document.json
+    $ cd ~/git/smart-search_github/api/api_advanced_indexing # selles kataloogis on test_headers.csv ja test_document.json
 
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data-binary @test_headers.csv \
-        https://smart-search.tartunlp.ai/api/create_jsontables/headers | jq | less
+        https://smart-search.tartunlp.ai/api/advanced_indexing/headers | jq | less
 
     $ curl --silent --request POST --header "Content-Type: application/json" \
       --data-binary @test_document.json \
-      https://smart-search.tartunlp.ai/api/create_jsontables/document  | jq | less
+      https://smart-search.tartunlp.ai/api/advanced_indexing/document  | jq | less
 
     $ curl --silent --request POST --header "Content-Type: application/json" \
       --data '{"sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
-      https://smart-search.tartunlp.ai/api/create_jsontables/document  | jq
+      https://smart-search.tartunlp.ai/api/advanced_indexing/document  | jq
       
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/create_jsontables/version | jq
+        https://smart-search.tartunlp.ai/api/advanced_indexing/version | jq
 
 ----------------------------------------------
 '''
@@ -97,7 +99,7 @@ from functools import wraps
 from typing import Dict, List, Tuple
 from collections import OrderedDict
 
-import api_ea_jsoncontent_2_jsontabelid_2
+import api_advanced_indexing
 
 VERSION="2023.12.14"
 
@@ -105,7 +107,7 @@ try:
     SMART_SEARCH_GENE_TYPOS=(os.environ.get('SMART_SEARCH_GENE_TYPOS').upper()=="TRUE")
 except:
     SMART_SEARCH_GENE_TYPOS = False # vaikimisi ei genereeri kirjavigasid
-tj = api_ea_jsoncontent_2_jsontabelid_2.TEE_JSON(verbose=False, kirjavead=SMART_SEARCH_GENE_TYPOS)
+tj = api_advanced_indexing.TEE_JSON(verbose=False, kirjavead=SMART_SEARCH_GENE_TYPOS)
 
 app = Flask("api_ea_jsoncontent_2_jsontabelid")
 
@@ -133,10 +135,10 @@ def request_entity_too_large(error):
 
 # }} JSONsisendi max suuruse piiramine 
 
-@app.route('/api/create_jsontables/headers', methods=['POST'])
+@app.route('/api/advanced_indexing/headers', methods=['POST'])
 @app.route('/headers', methods=['POST'])
 @limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
-def create_jsontables_headers():
+def api_advanced_indexing_headers():
     """Leia sisendkorpuse sõnede kõikvõimalikud vormid ja nonde hulgast need, mis esinesid korpuses
 
     Args:
@@ -154,7 +156,8 @@ def create_jsontables_headers():
         {   "tabelid":  // lõpptulemus
             {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],     # (LEMMA_kõik_vormid, 0:korpusest|1:abisõnastikust, sisendkorpuses_esinenud_sõnavormi_LEMMA)
                 "ignoreeritavad_vormid": [(VORM, 0)],               # tee_ignoreeritavad_vormid(), 0:vorm on genereeritud etteantud lemmast
-                "kirjavead": [(VIGANE_VORM, VORM, KAAL)]            # (kõikvõimalikud_VORMi_kirjavigased_variandid, sisendkorpuses_esinenud_sõnaVORM, kaal_hetkel_alati_0)
+                "kirjavead": [(VIGANE_VORM, VORM, KAAL)]            # (kõikvõimalikud_VORMi_kirjavigased_variandid, sisendkorpuses_esinenud_sõnaVORM, kaal_hetkel_alati_1.0)
+                                                                    # kirjavigade tabel tehakse ainult siis kui keskkonnamuutuja SMART_SEARCH_GENE_TYPOS=true
                 "lemma_korpuse_vormid": [(LEMMA, VORM)],            # (sisendkorpuses_esinenud_sõnavormi_LEMMA, kõik_LEMMA_vormid_mis_sisendkorpuses_esinesid)
                 "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)] # (sisendkorpuses_esinenud_sõnaVORM, dokumendi_id, alguspos, lõpupos, True:liitsõna_osa|False:terviksõna)
                 "allikad": [(DOCID, CONTENT)]                       # (docid, dokumendi_"plain_text"_mille_suhtes_on_arvutatud_START_ja_END)
@@ -165,7 +168,7 @@ def create_jsontables_headers():
     """
     try:
         csv_data = request.data.decode("utf-8")
-        tj.csvpealkrjadest(csv_data.splitlines())
+        tj.csvpealkrjadest('veebipäringust', csv_data.splitlines())
         tj.tee_sõnestamine()
         tj.tee_kõigi_terviksõnede_indeks()
         tj.tee_mõistlike_tervik_ja_osasõnede_indeks()
@@ -182,10 +185,10 @@ def create_jsontables_headers():
     except Exception as e:
         return jsonify(e.args[0])    
 
-@app.route('/api/create_jsontables/document', methods=['POST'])
+@app.route('/api/advanced_indexing/document', methods=['POST'])
 @app.route('/document', methods=['POST'])
 @limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
-def create_jsontables_document():
+def api_advanced_indexing_document():
     """Leia sisendkorpuse sõnede kõikvõimalikud vormid ja nonde hulgast need, mis esinesid korpuses
 
     Args: 
@@ -230,17 +233,19 @@ def create_jsontables_document():
         return jsonify(e.args[0])    
 
 
-@app.route('/api/create_jsontables/version', methods=['GET', 'POST'])
+@app.route('/api/advanced_indexing/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['POST'])
-def api_create_jsontables_version():
+def api_advanced_indexing_version():
     """Kuvame versiooni ja muud infot
 
     Returns:
         ~flask.Response: Lemmatiseerija versioon
     """
     json_response = tj.version_json()
+    json_response["FLASk-liidese versioon"] = VERSION
     json_response["SMART_SEARCH_MAX_CONTENT_LENGTH"] = SMART_SEARCH_MAX_CONTENT_LENGTH
     json_response["genereeri_kirjavead"] = tj.kirjavead
+
     return jsonify(json_response)
 
 if __name__ == '__main__':
