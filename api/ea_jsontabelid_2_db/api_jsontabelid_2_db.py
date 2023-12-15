@@ -73,7 +73,7 @@ class DB:
                 docid TEXT NOT NULL,          -- dokumendi id
                 start INT,                    -- vormi alguspositsioon tekstis
                 end INT,                      -- vormi lõpupositsioon tekstis
-                liitsona_osa,                 -- 0: pole liitsõna osa; 1: on liitsõna osa
+                liitsona_osa INT,             -- 0: pole liitsõna osa; 1: on liitsõna osa
                 PRIMARY KEY(vorm, docid, start, end)
                 )
         ''')
@@ -84,7 +84,7 @@ class DB:
                 docid TEXT NOT NULL,          -- dokumendi id
                 start INT,                    -- lemmale vastava vormi alguspositsioon tekstis
                 end INT,                      -- lemmale vastava vormi lõpupositsioon tekstis
-                liitsona_osa,                 -- 0: pole liitsõna osa; 1: on liitsõna osa
+                liitsona_osa INT,             -- 0: pole liitsõna osa; 1: on liitsõna osa
                 PRIMARY KEY(lemma, docid, start, end)
                 )
         ''')
