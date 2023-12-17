@@ -116,6 +116,7 @@ class DB:
         self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS kirjavead(
             vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
             vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
+            kaal REAL,                  -- kaal vahemikus [0.0,1.0]
             PRIMARY KEY(vigane_vorm, vorm)
         )''')
 
