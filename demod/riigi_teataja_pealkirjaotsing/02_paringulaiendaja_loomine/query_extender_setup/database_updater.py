@@ -19,7 +19,7 @@ class DatabaseUpdater:
         self.db_name = db_name
         self.tables = tables
 
-        if os.path.isfile(self.db_name):
+        if not append and os.path.isfile(self.db_name):
             logging.debug(f"Kustutame andmebaasi {self.db_name}")
             os.remove(self.db_name)
 

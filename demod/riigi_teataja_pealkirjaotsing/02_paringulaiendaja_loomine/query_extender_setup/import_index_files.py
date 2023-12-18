@@ -10,7 +10,7 @@ def print_help(prog: str):
     print(
         """
         Skript indeksfailide importimiseks päringulaiendaja andmebaasi.
-        Kasutus: {prog} --conf_file CONF_FAIL [--append]
+        Kasutus: {prog} --conf_file CONF_FAIL [--append] [--verbose]
 
         Konfiguratsiooni fail CONF_FAIL on ini fail, mis määrab ära:
         - andmebaasi faili asukoha ning uuendatavad tabelid
@@ -19,6 +19,8 @@ def print_help(prog: str):
 
         Kui --append lipp on seatud, siis uuendab olemasolevat andmebaasifaili.
         Muidu kustutab andmebaasifaili ja teeb uue puhta impordi.
+        
+        Kui --verbose lipp on seatud, siis näitab progressi ja logiteateid.
         
         Detailsemad juhendid on skriptide koodi kõrval olevas README.md failis.
         """.format(prog=prog)
@@ -33,6 +35,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('-h', '--help', action="store_true")
     arg_parser.add_argument('-c', '--conf_file', type=str)
     arg_parser.add_argument('-a', '--append', action="store_true")
+    arg_parser.add_argument('-v', '--verbose', action="store_true")
 
     args = arg_parser.parse_args()
 
@@ -42,6 +45,9 @@ if __name__ == '__main__':
 
     try:
         config = read_config(args.conf_file)
+        config['append'] |= args.append
+        config['verbose'] |= args.verbose
+
     except ValueError as e:
         print(f"Viga konfiguratsioonifaili {args.conf_file} parsimisel")
         print(e)
@@ -50,7 +56,7 @@ if __name__ == '__main__':
     log_level = logging.DEBUG if config['verbose'] else logging.WARNING
     logging.basicConfig(format='%(message)s', level=log_level)
 
-    db = DatabaseUpdater(config['db_file'], config['db_tables'], config['verbose'])
+    db = DatabaseUpdater(config['db_file'], config['db_tables'], verbose=config['verbose'], append=args.append)
 
     if not os.path.exists(config['input_dir']):
         print(f"Viga! Sisendkataloog {config['input_dir']} puudub")
