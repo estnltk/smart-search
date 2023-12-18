@@ -45,11 +45,11 @@ $(PREF)kirjavead.json : $(PREF)kirjavead.txt
 #-----
 
 $(PREF)koond.sqlite : $(PREF)kirjavead.json $(PREF)state_laws.json $(PREF)government_orders.json $(PREF)government_regulations.json $(PREF)local_government_acts.json
-	../../scripts/script_query_extender_setup/venv/bin/python3 ../../scripts/script_query_extender_setup api_advanced_indexing.py \ 
+	../../scripts/script_query_extender_setup/venv/bin/python3 ../../scripts/script_query_extender_setup/query_extender_setup.py \
 		--db_name=$(PREF)koond.sqlite \
 	    --tables=lemma_kõik_vormid:lemma_korpuse_vormid:indeks_vormid:indeks_lemmad:liitsõnad:allikad \
 		$(PREF)state_laws.json $(PREF)government_orders.json $(PREF)government_regulations.json $(PREF)local_government_acts.json
-	../../scripts/script_query_extender_setup/venv/bin/python3 ../../scripts/script_query_extender_setup api_advanced_indexing.py \
+	../../scripts/script_query_extender_setup/venv/bin/python3 ../../scripts/script_query_extender_setup/query_extender_setup.py \
 		--verbose \
 		--append \
 		--db_name=$(PREF)koond.sqlite \
