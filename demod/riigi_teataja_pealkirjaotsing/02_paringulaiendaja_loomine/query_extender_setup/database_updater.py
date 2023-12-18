@@ -1,12 +1,11 @@
 import os
-import sys
 import json
 import sqlite3
 import logging
 
 from tqdm import tqdm
-from typing import Dict, List, Tuple
-from inspect import currentframe, getframeinfo
+from typing import List, Union
+
 
 class DatabaseUpdater:
     """
@@ -15,7 +14,7 @@ class DatabaseUpdater:
     Muidu täiendab olemasolevaid tabeleid.
     """
 
-    def __init__(self, db_name:str, tables:List, verbose:bool, append:bool = False)->None:
+    def __init__(self, db_name: str, tables: List[str], verbose: bool, append: bool = False) -> None:
         self.verbose = verbose
         self.db_name = db_name
         self.tables = tables
@@ -26,41 +25,41 @@ class DatabaseUpdater:
 
         logging.debug(f"Teeme/avame andmebaasi {self.db_name}")
 
-        # loome/avame andmebaasi
-        self.con_baas = sqlite3.connect(self.db_name)
-        self.cur_baas = self.con_baas.cursor()
+        # Loome/avame andmebaasi
+        self.con_base = sqlite3.connect(self.db_name)
+        self.cur_base = self.con_base.cursor()
 
         # "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)]
-        self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS indeks_vormid(
+        self.cur_base.execute('''CREATE TABLE IF NOT EXISTS indeks_vormid(
                 vorm  TEXT NOT NULL,          -- (jooksvas) dokumendis esinenud sõnavorm
                 docid TEXT NOT NULL,          -- dokumendi id
                 start INT,                    -- vormi alguspositsioon tekstis
                 end INT,                      -- vormi lõpupositsioon tekstis
-                liitsona_osa,                 -- 0: pole liitsõna osa; 1: on liitsõna osa
+                liitsona_osa INT,             -- 0: pole liitsõna osa; 1: on liitsõna osa
                 PRIMARY KEY(vorm, docid, start, end)
                 )
         ''')
 
         # "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)]
-        self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS indeks_lemmad(
+        self.cur_base.execute('''CREATE TABLE IF NOT EXISTS indeks_lemmad(
                 lemma  TEXT NOT NULL,         -- (jooksvas) dokumendis esinenud sõna lemma
                 docid TEXT NOT NULL,          -- dokumendi id
                 start INT,                    -- lemmale vastava vormi alguspositsioon tekstis
                 end INT,                      -- lemmale vastava vormi lõpupositsioon tekstis
-                liitsona_osa,                 -- 0: pole liitsõna osa; 1: on liitsõna osa
+                liitsona_osa INT,             -- 0: pole liitsõna osa; 1: on liitsõna osa
                 PRIMARY KEY(lemma, docid, start, end)
                 )
         ''')
 
         # "liitsõnad":[(OSALEMMA, LIITLEMMA)]
-        self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS liitsõnad(
+        self.cur_base.execute('''CREATE TABLE IF NOT EXISTS liitsõnad(
             osalemma TEXT NOT NULL,     -- liitsõna osasõna lemma
             liitlemma TEXT NOT NULL,    -- liitsõna osasõna lemmat sisaldav liitsõna lemma
             PRIMARY KEY(osalemma, liitlemma)
         )''')
 
         # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
-        self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS lemma_kõik_vormid(
+        self.cur_base.execute('''CREATE TABLE IF NOT EXISTS lemma_kõik_vormid(
             vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
             kaal INT NOT NULL,          -- suurem number on sagedasem
             lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
@@ -68,7 +67,7 @@ class DatabaseUpdater:
         )''')
 
         # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)]
-        self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS lemma_korpuse_vormid(
+        self.cur_base.execute('''CREATE TABLE IF NOT EXISTS lemma_korpuse_vormid(
             lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
             kaal INT NOT NULL,          -- suurem number on sagedasem
             vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
@@ -76,103 +75,102 @@ class DatabaseUpdater:
         )''')
 
         # {"tabelid":{ "kirjavead":[[VIGANE_VORM, VORM, KAAL]] }
-        self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS kirjavead(
+        self.cur_base.execute('''CREATE TABLE IF NOT EXISTS kirjavead(
             vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
             vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
             PRIMARY KEY(vigane_vorm, vorm)
         )''')
 
-
         # ["tabelid"]["allikad"]:[(DOCID, CONTENT)]
-        self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS allikad(
+        self.cur_base.execute('''CREATE TABLE IF NOT EXISTS allikad(
                 docid TEXT NOT NULL,        -- dokumendi id
                 content TEXT NOT NULL,      -- dokumendi text
                 PRIMARY KEY(docid)
                 )
         ''')
 
-        self.json_in = {}
-
-    def __del__(self)->None:
-        if self.con_baas is not None:
-            self.con_baas.close()
+    def __del__(self) -> None:
+        if self.con_base is not None:
+            self.con_base.close()
             logging.debug(f"Suletud andmebaas {self.db_name}")
 
-    def toimeta(self, file:str)->None:
-        with open(file) as f:
-            for line in f:
-                self.json_in = self.string2json(line)
-                self.täienda_tabelid(file)
-
-    def täienda_tabelid(self, file:str)->None:
-        """Kanna self.json_in'ist info andmbeaaaside tabelitesse
+    def import_index_file(self, index_file: str) -> None:
         """
-        for table in self.tables:
-            pass #DB
-            if table == "lemma_kõik_vormid":
-                # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
-                pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {file} : {table} :', disable=(not self.verbose))
-                for vorm, kaal, lemma in pbar:
-                    res = self.cur_baas.execute(f"SELECT vorm, kaal, lemma FROM {table} WHERE vorm='{vorm}' and lemma='{lemma}'")
-                    if len(res_fetchall:=res.fetchall()) > 0:
-                        #selline juba oli, liidame kokku
-                        assert len(res_fetchall) == 1, \
-                            f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                        uus_kaal = 0
-                        if kaal > 0: # muutub raskemaks
-                            for ret_vorm, ret_kaal, ret_lemma in res_fetchall:
-                                assert vorm==ret_vorm and lemma==ret_lemma, \
-                                    f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                                uus_kaal = kaal + ret_kaal
-                                self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}' WHERE vorm='{vorm}' and lemma='{lemma}'")
-                    else:
-                        # polnud, lisame uue
-                        rec = (vorm, kaal, lemma)
-                        self.cur_baas.execute(f"INSERT INTO {table} VALUES {rec}")
-            elif table == "lemma_korpuse_vormid":
-                # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)]
-                pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {file} : {table} :', disable=(not self.verbose))
-                for lemma, kaal, vorm in pbar:
-                    res = self.cur_baas.execute(f"SELECT lemma, kaal, vorm FROM {table} WHERE lemma='{lemma}' and vorm='{vorm}'")
-                    if len(res_fetchall:=res.fetchall()) > 0:
-                        #selline juba oli, liidame kokku
-                        assert len(res_fetchall) == 1, \
-                            f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                        uus_kaal = 0
-                        if kaal > 0: # muutub raskemaks
-                            for ret_lemma, ret_kaal, ret_vorm in res_fetchall:
-                                assert vorm==ret_vorm and lemma==ret_lemma, \
-                                    f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                                uus_kaal = kaal + ret_kaal
-                                self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}' WHERE lemma='{lemma}' and vorm='{vorm}'")
-                    else:
-                        # polnud, lisame uue
-                        rec = (lemma, kaal, vorm)
-                        self.cur_baas.execute(f"INSERT INTO {table} VALUES {rec}")
+        Kannab indeksfaili sisu SQLight andmebaasi tabelitesse.
+        Indeksfail iga rida peab olema valiidne JSON-objekt kujul:
+        {"tabelid": {<table_name>: [[<table_row>], ..., <table_row>]}}.
+        Täpsem formaadi kirjeldus on antud advanced_indexing veebiteenuse koodis.
+
+        Vea korral jääb andmebaas mittekooskõlalisse seisu ja visatakse ValueError erindi.
+        TODO: Vea korral võiks kogu faili lisamise tagasi rullida.
+        """
+
+        with open(index_file) as f:
+            try:
+                for line in f:
+                    json_record = json.loads(line.replace('\n', ' '))
+                    for table in self.tables:
+                        content = tqdm(json_record["tabelid"][table], desc=f'# {table: <25}',
+                                       disable=(not self.verbose))
+                        # Mingil põhjusel on kaks tabelit eri järjekorras olevate veergudega
+                        # TODO: Ühildada tabeli veergude järjekord
+                        if table == "lemma_kõik_vormid":
+                            self.import_wordform_lemma_table(table, content)
+                        elif table == "lemma_korpuse_vormid":
+                            self.import_lemma_wordform_table(table, content)
+                        else:
+                            self.import_standard_table(table, content)
+                    self.con_base.commit()
+            except Exception:
+                raise ValueError(f'Faili {index_file} lisamine ebaõnnestus. Andmebaas on mittekooskõlaline')
+
+    def import_wordform_lemma_table(self, table_name: str, row_list: Union[list, tqdm]):
+        """
+        Ootab sisendiks tabelit kujul [(VORM, KAAL, LEMMA)].
+        Ootamatuste korral viskab ValueError erindi ja jätab konkreetse rea lisamata.
+        """
+        for vorm, kaal, lemma in row_list:
+            result = self.cur_base.execute(f"SELECT kaal FROM {table_name} WHERE vorm='{vorm}' and lemma='{lemma}'")
+            result = result.fetchall()
+
+            if len(result) == 0:
+                # polnud, lisame uue
+                rec = (vorm, kaal, lemma)
+                self.cur_base.execute(f"INSERT INTO {table_name} VALUES {rec}")
+            elif len(result) == 1:
+                # selline juba oli, liidame kokku
+                kaal += result[0][0]
+                self.cur_base.execute(f"UPDATE {table_name} SET kaal='{kaal}' WHERE vorm='{vorm}' and lemma='{lemma}'")
             else:
-                pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {file} : {table} :', disable=(not self.verbose))
-                for rec in pbar:
-                    try:
-                        self.cur_baas.execute(f"INSERT INTO {table} VALUES {tuple(rec)}")
-                    except Exception as e:
-                        # assert False, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                        continue # selline juba oli, ignoreerime kordusi
-            self.con_baas.commit()
+                raise ValueError(f"Viga tabelis {table_name}: mitu rida vorm='{vorm}' and lemma='{lemma}'")
 
-    def string2json(self, str:str)->Dict:
-        """PRIVATE:String sisendJSONiga DICTiks
-
-        Args:
-            str (str): String sisendJSONiga
-
-        Raises:
-            Exception: Exception({"warning":"JSON parse error"})
-
-        Returns:
-            Dict: DICTiks tehtud sisendJSON
+    def import_lemma_wordform_table(self, table_name: str, row_list: Union[list, tqdm]):
         """
-        json_in = {}
-        try:
-            return json.loads(str.replace('\n', ' '))
-        except:
-            raise Exception({"warning":"JSON parse error"})
+        Ootab sisendiks tabelit kujul [(LEMMA, KAAL, VORM)].
+        Ootamatuste korral viskab ValueError erindi ja jätab konkreetse rea lisamata.
+        """
+        for lemma, kaal, vorm in row_list:
+            result = self.cur_base.execute(f"SELECT kaal FROM {table_name} WHERE vorm='{vorm}' and lemma='{lemma}'")
+            result = result.fetchall()
+
+            if len(result) == 0:
+                # polnud, lisame uue
+                rec = (lemma, kaal, vorm)
+                self.cur_base.execute(f"INSERT INTO {table_name} VALUES {rec}")
+            elif len(result) == 1:
+                # selline juba oli, liidame kokku
+                kaal += result[0][0]
+                self.cur_base.execute(f"UPDATE {table_name} SET kaal='{kaal}' WHERE vorm='{vorm}' and lemma='{lemma}'")
+            else:
+                raise ValueError(f"Viga tabelis {table_name}: mitu rida vorm='{vorm}' and lemma='{lemma}'")
+
+    def import_standard_table(self, table_name: str, row_list: Union[list, tqdm]):
+        """
+        Ootab sisendiks õige veergude arvuga tabelit. Kuid ei kontrolli selle õigsust.
+        Kui tabelis on juba vastav rida, siis seda enam ei lisa ega uuenda.
+        """
+        for rec in row_list:
+            try:
+                self.cur_base.execute(f"INSERT INTO {table_name} VALUES {tuple(rec)}")
+            except sqlite3.IntegrityError:
+                pass
