@@ -10,10 +10,19 @@ curl --silent --request POST --header "Content-Type: application/json" --data JS
 
 Näited:
 
+```cmdline
+curl --silent --request POST --header "Content-Type: application/json" \
+  https://smart-search.tartunlp.ai/api/analyser/version | jq
+```
+
+
+
 * Morf analüüs koos üldkeelesõnastikust puuduvate sõnade oletamisega
 
 ```cmdline
-curl --silent --request POST --header "Content-Type: application/json" --data "{\"params\": {\"vmetajson\": [\"--guess\"]}, \"content\":\"asendusteenistuslane teenistuslane teenistus asendusteenistus\"}" https://smart-search.tartunlp.ai/api/analyser/process | jq
+curl --silent --request POST --header "Content-Type: application/json" \
+  --data "{\"params\": {\"vmetajson\": [\"--guess\"]}, \"content\":\"asendusteenistuslane teenistuslane teenistus asendusteenistus\"}" \
+  https://smart-search.tartunlp.ai/api/analyser/process | jq
 ```
 
 ```json
@@ -79,6 +88,7 @@ curl --silent --request POST --header "Content-Type: application/json" --data "{
               "ending": "0",
               "fs": "sg n",
               "kigi": "",
+              "tüvi"
               "lemma": "asendus_teenistus",
               "lemma_ma": "asendus_teenistus",
               "pos": "S",

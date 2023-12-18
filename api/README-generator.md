@@ -15,5 +15,24 @@ curl --silent --request POST --header "Content-Type: application/json" --data JS
 Päringu näide
 
 ```cmdline
-curl --silent --request POST --header "Content-Type: application/json" --data '{"type": "text", "content": "Terre ÜRO saadik."}' https://smart-search.tartunlp.ai/api/generator/process | jq
+curl --silent --request POST --header "Content-Type: application/json" \
+    --data '{"type": "text", "content": "Terre ÜRO saadik."}' \
+    https://smart-search.tartunlp.ai/api/generator/process | jq
+```
+
+```cmdline
+curl --silent --request POST --header "Content-Type: application/json" \
+    https://smart-search.tartunlp.ai/api/vm/generator/version | jq  
+
+curl --silent --request POST --header "Content-Type: application/json" \
+    --data '{"params":{"vmetsjson":["--version"]}, "content":"tere"}' \
+    https://smart-search.tartunlp.ai/api/vm/generator/process | jq
+
+curl --silent --request POST --header "Content-Type: application/json" \
+    --data '{"params":{"vmetsjson":["--classic"]}, "content":"tere terre"}' \
+    https://smart-search.tartunlp.ai/api/vm/generator/process | jq
+    
+curl --silent --request POST --header "Content-Type: application/json" \
+    --data '{"params":{"vmetsjson":["--classic", "--guess"]}, "content":"tere terre"}' \
+    https://smart-search.tartunlp.ai/api/vm/generator/process | jq
 ```
