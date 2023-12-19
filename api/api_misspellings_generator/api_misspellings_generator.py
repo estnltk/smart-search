@@ -3,6 +3,10 @@
 """
 Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku andmebaas
 -----------------------------------------------------------------
+Mida uut
+2023.12.20 Kirjavigasid genereeritakse sõnedele, kus 2 või enam tähte (varem oli 4+)
+
+-----------------------------------------------------------------
 // code (silumiseks):
     {
         "name": "api_misspellings_generator",
@@ -47,7 +51,7 @@ class KIRJAVIGUR:
         self.wordforms = []
         self.json_out = {"tabelid":{"kirjavead":[]}}
         self.verbose = verbose
-        self.VERSION="2023.12.14"
+        self.VERSION="2023.12.20"
 
     def verbose_prints(self, message:str) -> None:
         """PRIVATE: Kirjutad teade stderr'i

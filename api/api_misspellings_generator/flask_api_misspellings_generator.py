@@ -48,19 +48,19 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/api_misspellings_generator
-    $ docker build -t tilluteenused/smart_search_api_misspellings_generator:2023.12.14 . 
+    $ docker build -t tilluteenused/smart_search_api_misspellings_generator:2023.12.20 . 
     # docker login -u tilluteenused
-    # docker push tilluteenused/smart_search_api_misspellings_generator:2023.12.14 
+    # docker push tilluteenused/smart_search_api_misspellings_generator:2023.12.20 
 2.3 Konteineri käivitamine
     $ docker run -p 6603:6603  \
         --env SMART_SEARCH_MAX_CONTENT_LENGTH='500000000' \
-       tilluteenused/smart_search_api_misspellings_generator:2023.12.14 
+       tilluteenused/smart_search_api_misspellings_generator:2023.12.20 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_misspellings_generator:2023.12.14 
+    $ docker pull tilluteenused/smart_search_api_misspellings_generator:2023.12.20 
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
@@ -89,9 +89,9 @@ from collections import OrderedDict
 
 import api_misspellings_generator
 
-VERSION="2023.12.14"
+VERSION="2023.12.20"
 
-kv = api_misspellings_generator.KIRJAVIGUR(verbose=False)docker passnbnvbcnvbcn
+kv = api_misspellings_generator.KIRJAVIGUR(verbose=False)
 
 app = Flask("flask_api_misspellings_generator")
 
