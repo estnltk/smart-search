@@ -2,8 +2,14 @@
 
 """
 TODO funktsioonide päises olevad kommentaarid õigeks sättida
+----------------------------------------------------------------
 
 Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku andmebaas
+
+----------------------------------------------------------------
+Mida uut:
+2023-12-19 Tabelites "lemma_korpuse_vormid" ja "lemma_kõik_vormid" veergude järjekord samaks: [(LEMMA, KAAL, VORM)]
+2023-12-20 Kirjavigastame sõnesid alates 2st tähest
 -----------------------------------------------------------------
 // code (silumiseks):
     {
@@ -61,9 +67,9 @@ JSON sees- ja välispidiseks kasutamiseks:
         {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
             "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
             "liitsõnad":[(OSALEMMA, LIITLEMMA)],
-            "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
+            "lemma_kõik_vormid":[(LEMMA, KAAL, VORM)],
             "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
-            "kirjavead":[(VIGANE_VORM, VORM)],
+            "kirjavead":[(VIGANE_VORM, VORM, KAAL)],
             "allikad":[(DOCID, CONTENT)],
         }
     }
@@ -108,7 +114,7 @@ class TEE_JSON:
         self.verbose = verbose
         self.kirjavead = kirjavead
 
-        self.VERSION="2023.12.14"
+        self.VERSION="2023.12.20"
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 
     def verbose_prints(self, message:str) -> None:
@@ -569,7 +575,7 @@ class TEE_JSON:
             * generator = {LEMMA: [{"kaal":int, "vorm":str}]}} 
 
             Terviksõnad ja liitsõna osasõnad kõik koos, neid ei erista siin
-            * self.json_io["tabelid"]["lemma_kõik_vormid"]:[(VORM, KAAL, LEMMA)] -- lõpptulemuses, genetud_vorm, mitu_korda_genetud_vorm_esines, genetud_vormi_lemma
+            * self.json_io["tabelid"]["lemma_kõik_vormid"]:[(LEMMA, KAAL, VORM)] -- lõpptulemuses, genetud_vorm, mitu_korda_genetud_vorm_esines, genetud_vormi_lemma
             * self.json_io["tabelid"]["lemma_korpuse_vormid"]:[(LEMMA, KAAL, VORM)] -- lõpptulemuses, korpusevorm, mitu_korda_korpusevorm_esines, korpusevormi_lemma
         """
         if "tabelid" not in self.json_io:
@@ -596,7 +602,7 @@ class TEE_JSON:
             self.json_io["tabelid"]["lemma_korpuse_vormid"] = []
         for lemma, vormid in self.json_io["generator"].items():
             for vorm, kaal in self.json_io["generator"][lemma].items():
-                self.json_io["tabelid"]["lemma_kõik_vormid"].append((vorm, kaal, lemma))
+                self.json_io["tabelid"]["lemma_kõik_vormid"].append((lemma, kaal, vorm))
                 if kaal > 0:
                     self.json_io["tabelid"]["lemma_korpuse_vormid"].append((lemma, kaal, vorm))    
         pass # DB
@@ -644,7 +650,7 @@ class TEE_JSON:
         """
         potentsiaalsed_kirjavead = []
         for i in range(len(token)):
-            if len(token) > 3: # peab olema vähemalt 3 tähte
+            if len(token) > 1: # peab olema vähemalt 3 tähte
                 # 2 tähte vahetuses: tigu -> itgu, tgiu, tiug
                 if i > 0 and token[i] != token[i-1]: # kahte ühesugust tähte ei vaheta
                     t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]
@@ -703,7 +709,7 @@ class TEE_JSON:
         pbar = tqdm(kvead.items(), disable=(not self.verbose), desc="# genetud kirjavead tabeliks ")
         for vorm, kirjavead in pbar:
             for kirjaviga in kirjavead:
-                kirje = (kirjaviga, vorm)
+                kirje = (kirjaviga, vorm, 1.0)
                 #if kirje not in self.json_io["tabelid"]["kirjavead"]:
                 self.json_io["tabelid"]["kirjavead"].append(kirje)
         self.json_io["tabelid"]["kirjavead"] = list(set(self.json_io["tabelid"]["kirjavead"]))
@@ -750,18 +756,6 @@ class TEE_JSON:
         pass # DB
 
     def kordused_tabelitest_välja(self):
-        '''
-        {   "tabelid":
-            {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
-                "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
-                "liitsõnad":[(OSALEMMA, LIITLEMMA)],
-                "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
-                "lemma_korpuse_vormid":[(VORM, KAAL, LEMMA)],
-                "kirjavead":[[VIGANE_VORM, KAAL]],
-                "allikad":[(DOCID, CONTENT)],
-            }
-        }
-        '''
         if self.kirjavead is True:
             tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid", "kirjavead"]
         else:

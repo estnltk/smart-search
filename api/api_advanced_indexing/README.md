@@ -2,7 +2,9 @@
 
 ## Kasutamine
 
-Vaata https://github.com/estnltk/smart-search/blob/main/api/ea_jsoncontent_2_jsontabelid/flask_api_ea_jsoncontent_2_jsontabelid.py
+Vaata:
+* https://github.com/estnltk/smart-search/blob/main/api/api_advanced_indexing/flask_api_advanced_indexing.py
+* https://github.com/estnltk/smart-search/blob/main/api/api_advanced_indexing/api_advanced_indexing.py
 
 ## Tulemus
 
@@ -32,14 +34,14 @@ JSON-kujul informatsioon
             )
         ],
         "lemma_kõik_vormid":
-        [   (   VORM,           // LEMMAst genereeritud sõnaVORM, genereeritud on LEMMA kõikvõimalikud VORMid
+        [   (   LEMMA,          // LEMMAst genereeritud sõnaVORM, genereeritud on LEMMA kõikvõimalikud VORMid
                 KAAL,           // suurem kaaluga _sõnavorme_ on tekstis rohkem, KAAL==0 kui ei esine tekstis
-                LEMMA           // algvorm
+                VORM            // algvorm
             )
         ],
         "lemma_korpuse_vormid":
         [   (   LEMMA,          // LEMMA
-                KAAL,           // suurem kaaluga _sõnavorme_ on tekstis rohkem, KAAL!=0
+                KAAL,           // suurem kaaluga _sõnavorme_ on tekstis rohkem, KAAL>0
                 VORM            // LEMMA need vormid, mis tekstis esinesid
             )
         ],
@@ -57,10 +59,12 @@ JSON-kujul informatsioon
 }
 ```
 
+## Mida uut
+
+* 2023.12.19 Tabelites "lemma_korpuse_vormid" ja "lemma_kõik_vormid" veergude järjekord samaks: [(LEMMA, KAAL, VORM)]
+
 ## Mida edasi
 
-Saadud JSON-andmefailid saab omavahel kokkuliita ja SQLITE-andmebaasik teha programmiga:
-https://github.com/estnltk/smart-search/blob/main/api/ea_jsontabelid_2_db/api_jsontabelid_2_db.py
+* [Kirjavigade genereerimine](https://github.com/estnltk/smart-search/tree/main/api/api_misspellings_generator)
+* [Saadud JSON-andmefailid saab SQLITE-andmebaasi lisamine](https://github.com/estnltk/smart-search/tree/main/scripts/script_query_extender_setup)
 
-Seda, kuidas teha JSON-failid ja need andmebaasiks kokkuliita demonstreerib programm:
-https://github.com/estnltk/smart-search/blob/main/api/ea_jsoncontent_2_jsontabelid/Makefile

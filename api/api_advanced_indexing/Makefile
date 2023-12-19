@@ -1,4 +1,4 @@
-PREF=1218-
+PREF=1219-
 
 all: $(PREF)koond.sqlite
 

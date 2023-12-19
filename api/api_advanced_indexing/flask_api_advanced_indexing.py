@@ -50,19 +50,20 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/api_advanced_indexing
-    $ docker build -t tilluteenused/smart_search_api_advanced_indexing:2023.12.14 . 
-    # docker push tilluteenused/smart_search_api_advanced_indexing:2023.12.14 
+    $ docker build -t tilluteenused/smart_search_api_advanced_indexing:2023.12.20 . 
+    # docker login -u tilluteenused
+    # docker push tilluteenused/smart_search_api_advanced_indexing:2023.12.20 
 2.3 Konteineri käivitamine
     $ docker run -p 6602:6602  \
         --env SMART_SEARCH_MAX_CONTENT_LENGTH='500000000' \
         --env SMART_SEARCH_GENE_TYPOS='true' \
-       tilluteenused/smart_search_api_advanced_indexing:2023.12.14 
+       tilluteenused/smart_search_api_advanced_indexing:2023.12.20 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_advanced_indexing:2023.12.14 
+    $ docker pull tilluteenused/smart_search_api_advanced_indexing:2023.12.20 
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
@@ -101,7 +102,7 @@ from collections import OrderedDict
 
 import api_advanced_indexing
 
-VERSION="2023.12.14"
+VERSION="2023.12.20"
 
 try:
     SMART_SEARCH_GENE_TYPOS=(os.environ.get('SMART_SEARCH_GENE_TYPOS').upper()=="TRUE")
@@ -153,16 +154,14 @@ def api_advanced_indexing_headers():
     Returns:
         Response: VäljundJSON:
 
-        {   "tabelid":  // lõpptulemus
-            {   "lemma_kõik_vormid": [(VORM, PARITOLU, LEMMA)],     # (LEMMA_kõik_vormid, 0:korpusest|1:abisõnastikust, sisendkorpuses_esinenud_sõnavormi_LEMMA)
-                "ignoreeritavad_vormid": [(VORM, 0)],               # tee_ignoreeritavad_vormid(), 0:vorm on genereeritud etteantud lemmast
-                "kirjavead": [(VIGANE_VORM, VORM, KAAL)]            # (kõikvõimalikud_VORMi_kirjavigased_variandid, sisendkorpuses_esinenud_sõnaVORM, kaal_hetkel_alati_1.0)
-                                                                    # kirjavigade tabel tehakse ainult siis kui keskkonnamuutuja SMART_SEARCH_GENE_TYPOS=true
-                "lemma_korpuse_vormid": [(LEMMA, VORM)],            # (sisendkorpuses_esinenud_sõnavormi_LEMMA, kõik_LEMMA_vormid_mis_sisendkorpuses_esinesid)
-                "indeks": [(VORM, DOCID, START, END, LIITSÕNA_OSA)] # (sisendkorpuses_esinenud_sõnaVORM, dokumendi_id, alguspos, lõpupos, True:liitsõna_osa|False:terviksõna)
-                "allikad": [(DOCID, CONTENT)]                       # (docid, dokumendi_"plain_text"_mille_suhtes_on_arvutatud_START_ja_END)
-            }
-        }  
+        {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
+            "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
+            "liitsõnad":[(OSALEMMA, LIITLEMMA)],
+            "lemma_kõik_vormid":[(LEMMA, KAAL, VORM)],
+            "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
+            "kirjavead":[(VIGANE_VORM, VORM)],              # kirjavigade tabel tehakse ainult siis kui keskkonnamuutuja SMART_SEARCH_GENE_TYPOS=true
+            "allikad":[(DOCID, CONTENT)],
+        }
 
     https://stackoverflow.com/questions/62685107/open-csv-file-in-flask-sent-as-binary-data-with-curl
     """
@@ -195,22 +194,17 @@ def api_advanced_indexing_document():
 
     * JSON:
         {"sources":{DOCID:{"content:str}}}
-        
-    Kui dokumendiga tuleb kaasa lisainfot, siis tuleb alljärgnevatesse tabelitesse tekitada
-    vastavatesse kohtadesse lisaveerud vastava infoga    
 
     Returns:
         Response: VäljundJSON:
-    {   "tabelid":
         {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
             "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
             "liitsõnad":[(OSALEMMA, LIITLEMMA)],
-            "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
+            "lemma_kõik_vormid":[(LEMMA, KAAL, VORM)],
             "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
-            "kirjavead":[(VIGANE_VORM, VORM)],
+            "kirjavead":[(VIGANE_VORM, VORM)],              # kirjavigade tabel tehakse ainult siis kui keskkonnamuutuja SMART_SEARCH_GENE_TYPOS=true
             "allikad":[(DOCID, CONTENT)],
         }
-    } 
 
     https://stackoverflow.com/questions/62685107/open-csv-file-in-flask-sent-as-binary-data-with-curl
     """
