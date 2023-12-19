@@ -66,6 +66,7 @@ if __name__ == '__main__':
         table = 'kirjavead'
         content = tqdm(response["tabelid"][table], desc=f'# {table: <25}', disable=(not db.verbose))
         db.import_standard_table(table_name=table, row_list=content)
+        db.con_base.commit()
     except Exception as e:
         print('Viga kirjavigade impordil andmebaasi')
         print(e)

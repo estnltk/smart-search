@@ -78,6 +78,7 @@ class DatabaseUpdater:
         self.cur_base.execute('''CREATE TABLE IF NOT EXISTS kirjavead(
             vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
             vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
+            kaal REAL,                  -- kaal vahemikus [0.0,1.0]
             PRIMARY KEY(vigane_vorm, vorm)
         )''')
 
@@ -128,6 +129,7 @@ class DatabaseUpdater:
         """
         Ootab sisendiks tabelit kujul [(VORM, KAAL, LEMMA)].
         Ootamatuste korral viskab ValueError erindi ja jätab konkreetse rea lisamata.
+        Transaktsiooni ei kommitita, seda tuleb eraldi teha.
         """
         for vorm, kaal, lemma in row_list:
             result = self.cur_base.execute(f"SELECT kaal FROM {table_name} WHERE vorm='{vorm}' and lemma='{lemma}'")
@@ -148,6 +150,7 @@ class DatabaseUpdater:
         """
         Ootab sisendiks tabelit kujul [(LEMMA, KAAL, VORM)].
         Ootamatuste korral viskab ValueError erindi ja jätab konkreetse rea lisamata.
+        Transaktsiooni ei kommitita, seda tuleb eraldi teha.
         """
         for lemma, kaal, vorm in row_list:
             result = self.cur_base.execute(f"SELECT kaal FROM {table_name} WHERE vorm='{vorm}' and lemma='{lemma}'")
@@ -168,6 +171,7 @@ class DatabaseUpdater:
         """
         Ootab sisendiks õige veergude arvuga tabelit. Kuid ei kontrolli selle õigsust.
         Kui tabelis on juba vastav rida, siis seda enam ei lisa ega uuenda.
+        Transaktsiooni ei kommitita, seda tuleb eraldi teha.
         """
         for rec in row_list:
             try:
@@ -186,4 +190,4 @@ class DatabaseUpdater:
             FROM lemma_korpuse_vormid 
             WHERE vorm not in (SELECT DISTINCT vorm FROM kirjavead)
             """)
-        return list(row[0] for row in  result.fetchall())
+        return list(row[0] for row in result.fetchall())
