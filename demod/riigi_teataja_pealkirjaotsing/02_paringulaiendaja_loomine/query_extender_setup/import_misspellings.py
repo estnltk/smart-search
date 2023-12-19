@@ -1,10 +1,9 @@
-import os
 import sys
-import glob
 import argparse
 import logging
+import requests
 
-
+from tqdm.auto import tqdm
 from read_config import read_config
 from database_updater import DatabaseUpdater
 
@@ -12,17 +11,14 @@ from database_updater import DatabaseUpdater
 def print_help(prog: str):
     print(
         """
-        Skript indeksfailide importimiseks päringulaiendaja andmebaasi.
-        Kasutus: {prog} --conf_file CONF_FAIL [--append] [--verbose]
+        Skript kirjavigadega sõnavormide importimiseks päringulaiendaja andmebaasi.
+        Kasutus: {prog} --conf_file CONF_FAIL [--verbose]
 
         Konfiguratsiooni fail CONF_FAIL on ini fail, mis määrab ära:
         - andmebaasi faili asukoha ning uuendatavad tabelid
         - imporditavate indeksfailide kataloogi
-        - impordi tüübi
+        - kirjavigasid genereeriva veebiteenuse aadress
 
-        Kui --append lipp on seatud, siis uuendab olemasolevat andmebaasifaili.
-        Muidu kustutab andmebaasifaili ja teeb uue puhta impordi.
-        
         Kui --verbose lipp on seatud, siis näitab progressi ja logiteateid.
         
         Detailsemad juhendid on skriptide koodi kõrval olevas README.md failis.
@@ -35,7 +31,6 @@ if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser(allow_abbrev=False, add_help=False)
     arg_parser.add_argument('-h', '--help', action="store_true")
     arg_parser.add_argument('-c', '--conf_file', type=str)
-    arg_parser.add_argument('-a', '--append', action="store_true")
     arg_parser.add_argument('-v', '--verbose', action="store_true")
 
     args = arg_parser.parse_args()
@@ -46,7 +41,7 @@ if __name__ == '__main__':
 
     try:
         config = read_config(args.conf_file)
-        config['append'] |= args.append
+        config['append'] = True
         config['verbose'] |= args.verbose
 
     except ValueError as e:
@@ -59,10 +54,21 @@ if __name__ == '__main__':
 
     db = DatabaseUpdater(config['db_file'], config['db_tables'], verbose=config['verbose'], append=config['append'])
 
-    if not os.path.exists(config['input_dir']):
-        print(f"Viga! Sisendkataloog {config['input_dir']} puudub")
+    logging.info('Teeme päringu kirjavigade genereerimisteenusele')
+    ANALYZER_QUERY =  "https://smart-search.tartunlp.ai/api/misspellings_generator/process"
+    HEADERS = {"Content-Type": "application/json; charset=utf-8"}
+    response = requests.post(ANALYZER_QUERY, data='\n'.join(db.wordforms_without_misspellings), headers=HEADERS)
+    assert response.ok, "Webservice failed"
+    response = response.json()
+
+    logging.info('Lisame saadud kirjavigade tabeli andmebaasi')
+    try:
+        table = 'kirjavead'
+        content = tqdm(response["tabelid"][table], desc=f'# {table: <25}', disable=(not db.verbose))
+        db.import_standard_table(table_name=table, row_list=content)
+    except Exception as e:
+        print('Viga kirjavigade impordil andmebaasi')
+        print(e)
         sys.exit(-1)
 
-    for file in glob.glob(f"{config['input_dir']}*.json"):
-        logging.info(file)
-        db.import_index_file(file)
+    logging.info('Andmete import edukalt lõpetatud')

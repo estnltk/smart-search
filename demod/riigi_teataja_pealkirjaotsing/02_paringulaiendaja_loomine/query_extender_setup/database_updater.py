@@ -174,3 +174,16 @@ class DatabaseUpdater:
                 self.cur_base.execute(f"INSERT INTO {table_name} VALUES {tuple(rec)}")
             except sqlite3.IntegrityError:
                 pass
+
+    @property
+    def wordforms_without_misspellings(self) -> List[str]:
+        """
+        Annab välja sõnavormid millele pole veel kirjavigadega vorme leitud.
+        """
+        result = self.cur_base.execute(
+            """
+            SELECT vorm 
+            FROM lemma_korpuse_vormid 
+            WHERE vorm not in (SELECT DISTINCT vorm FROM kirjavead)
+            """)
+        return list(row[0] for row in  result.fetchall())
