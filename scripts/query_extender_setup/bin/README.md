@@ -130,6 +130,8 @@ See tabel sisaldab kõiki tekste. Eelmise tabeli infot kombineerides, saab päri
 
 ### Lahenduse skoop
 
+[TODO pane see teise demorakenduse dokumentatsiooni]
+
 Antud lahendus on loodud demonstreerimaks, et dokumentide indekseerimisteenus on piisav otsinguteenuse loomiseks.
 Praktikas pole antud lahendus otseselt rakendatav:
 
