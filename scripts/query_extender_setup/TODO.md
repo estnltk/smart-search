@@ -4,7 +4,7 @@ TODO:
 * Lisada import_stopword_list.py
 * Lisada conf orsinguteenuse enda jaoks
 * Lisad script find_misspelligs_conflicts
-
+* Korrasta venv-i conf
 
 Probleemid
 * Lühend --> Otsisõna (EL --> Euroopa Liit)
