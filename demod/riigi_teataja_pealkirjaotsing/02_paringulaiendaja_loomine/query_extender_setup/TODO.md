@@ -2,6 +2,8 @@ TODO:
 * Täiendada readme.md
 * Parandada import_misspellings.py
 * Lisada import_stopword_list.py
+* Lisada conf orsinguteenuse enda jaoks
+* Lisad script find_misspelligs_conflicts
 
 
 Probleemid

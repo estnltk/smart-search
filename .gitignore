@@ -3,6 +3,7 @@
 **/tmp/
 **/.DS_Store
 **/.ipynb_checkpoints/
+**/.idea/
 
 # Specific paths
 rt_web_crawler/results/xml_sources/state_laws/*.xml
