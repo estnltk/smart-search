@@ -61,6 +61,7 @@ if __name__ == '__main__':
 
     logging.info(f"Teeme päringu kirjavigade genereerimisteenusele {config['misspellings_generator']}")
 
+    # TODO: Löö tükkideks muidu võib tekkida liiga pikk nimekiri
     HEADERS = {"Content-Type": "application/json; charset=utf-8"}
     try:
         response = requests.post(

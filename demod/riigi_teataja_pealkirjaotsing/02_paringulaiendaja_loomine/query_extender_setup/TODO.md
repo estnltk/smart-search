@@ -1,3 +1,9 @@
+TODO:
+* Täiendada readme.md
+* Parandada import_misspellings.py
+* Lisada import_stopword_list.py
+
+
 Probleemid
 * Lühend --> Otsisõna (EL --> Euroopa Liit)
   Seda saab teha nii Lühend --> Otsisõna eeldusel, et otsisõna indekseeritakse ära.

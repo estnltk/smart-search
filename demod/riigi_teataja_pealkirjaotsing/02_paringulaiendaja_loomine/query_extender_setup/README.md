@@ -1,4 +1,4 @@
-# Päringulaiendaja sisendandmebaasi loomine ja täiendamine
+# Päringulaiendaja seadistamine ja selle täiendamine
 
 ## I. Käsurea programmid ja nende kasutamine
 
@@ -79,7 +79,7 @@ ignoreeritavad_vormid
 (
 	ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus
 	paritolu INT NOT NULL,            -- 0:korpusest tuletatud, 1:etteantud vorm                       
-   PRIMARY KEY(ignoreeritav_vorm)
+	PRIMARY KEY(ignoreeritav_vorm)
 )
 ```
 
