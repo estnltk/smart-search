@@ -49,15 +49,21 @@ if __name__ == '__main__':
         print(e)
         sys.exit(-1)
 
+    if config['misspellings_generator'] is None:
+        print(f"Viga: Konfiguratsioonifailis {args.conf_file} pole määratud kirjavigade genereerimise"
+              " veebiteenus 'misspellings_generator'")
+        sys.exit(-1)
+
     log_level = logging.DEBUG if config['verbose'] else logging.WARNING
     logging.basicConfig(format='%(message)s', level=log_level)
 
     db = DatabaseUpdater(config['db_file'], config['db_tables'], verbose=config['verbose'], append=config['append'])
 
     logging.info('Teeme päringu kirjavigade genereerimisteenusele')
-    ANALYZER_QUERY =  "https://smart-search.tartunlp.ai/api/misspellings_generator/process"
+
     HEADERS = {"Content-Type": "application/json; charset=utf-8"}
-    response = requests.post(ANALYZER_QUERY, data='\n'.join(db.wordforms_without_misspellings), headers=HEADERS)
+    response = requests.post(
+        config['misspellings_generator'], data='\n'.join(db.wordforms_without_misspellings), headers=HEADERS)
     assert response.ok, "Webservice failed"
     response = response.json()
 

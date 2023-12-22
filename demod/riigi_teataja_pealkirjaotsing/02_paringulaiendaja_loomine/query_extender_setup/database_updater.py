@@ -125,6 +125,27 @@ class DatabaseUpdater:
             except Exception:
                 raise ValueError(f'Faili {index_file} lisamine ebaõnnestus. Andmebaas on mittekooskõlaline')
 
+    def import_source_file(self, csv_file: str, id_col: str, text_col: str) -> None:
+        """
+        Kannab csv-failis oleva algteksti koos identifikaatoriga SQLight andmebaasi tabelitesse.
+        Csv-failis peavad olema vastavad veerud
+
+        Vea korral jääb andmebaas mittekooskõlalisse seisu ja visatakse ValueError erindi.
+        TODO: Vea korral võiks kogu faili lisamise tagasi rullida.
+        """
+
+        from pandas import read_csv
+        table = read_csv(csv_file)
+        if id_col not in table.columns:
+            raise ValueError(f"Failis {csv_file} puudub veerg {id_col}")
+        if text_col not in table.columns:
+            raise ValueError(f"Failis {csv_file} puudub veerg {text_col}")
+
+        table_name = 'allikad'
+        for _, (text_id, text) in table[[id_col, text_col]].iterrows():
+            self.cur_base.execute(f"INSERT INTO {table_name} VALUES {(text_id, text)}")
+        self.con_base.commit()
+
     def import_wordform_lemma_table(self, table_name: str, row_list: Union[list, tqdm]):
         """
         Ootab sisendiks tabelit kujul [(VORM, KAAL, LEMMA)].

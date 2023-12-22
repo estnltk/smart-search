@@ -59,10 +59,10 @@ if __name__ == '__main__':
 
     db = DatabaseUpdater(config['db_file'], config['db_tables'], verbose=config['verbose'], append=config['append'])
 
-    if not os.path.exists(config['input_dir']):
-        print(f"Viga! Sisendkataloog {config['input_dir']} puudub")
+    if not os.path.exists(config['index_dir']):
+        print(f"Viga! Sisendkataloog {config['index_dir']} puudub")
         sys.exit(-1)
 
-    for file in glob.glob(f"{config['input_dir']}*.json"):
+    for file in glob.glob(f"{config['index_dir']}*.json"):
         logging.info(file)
         db.import_index_file(file)
