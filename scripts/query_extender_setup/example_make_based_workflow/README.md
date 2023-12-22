@@ -1,5 +1,7 @@
 # Töövoo seadistamine ja käivitamine
 
+<mis see töövoog teeb>
+
 ## Seadistamine
 Töövoo seadistamiseks tuleb failis `Makefile` määrata ära kataloogid
 ```sh
