@@ -59,14 +59,21 @@ if __name__ == '__main__':
 
     db = DatabaseUpdater(config['db_file'], config['db_tables'], verbose=config['verbose'], append=config['append'])
 
-    logging.info('Teeme päringu kirjavigade genereerimisteenusele')
+    logging.info(f"Teeme päringu kirjavigade genereerimisteenusele {config['misspellings_generator']}")
 
     HEADERS = {"Content-Type": "application/json; charset=utf-8"}
-    response = requests.post(
-        config['misspellings_generator'], data='\n'.join(db.wordforms_without_misspellings), headers=HEADERS)
-    assert response.ok, "Webservice failed"
-    response = response.json()
+    try:
+        response = requests.post(
+            config['misspellings_generator'], data='\n'.join(db.wordforms_without_misspellings), headers=HEADERS)
+    except Exception as e:
+        logging.error(f'Viga veebiteenusega')
+        logging.error(e)
+        sys.exit(-1)
+    if not response.ok:
+        logging.error(f'Viga veebiteenusega. Vastus puudub.')
+        sys.exit(-1)
 
+    response = response.json()
     logging.info('Lisame saadud kirjavigade tabeli andmebaasi')
     try:
         table = 'kirjavead'
