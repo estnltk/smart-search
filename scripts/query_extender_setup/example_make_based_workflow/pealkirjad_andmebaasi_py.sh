@@ -68,7 +68,7 @@ teeme_andmebaasi()
     popd >& /dev/null
 }
 
-#teeme_json_tabelid
-#teeme_sonavormide_loendi
-#teeme_kirjavigade_tabeli
+teeme_json_tabelid
+teeme_sonavormide_loendi
+teeme_kirjavigade_tabeli
 teeme_andmebaasi
