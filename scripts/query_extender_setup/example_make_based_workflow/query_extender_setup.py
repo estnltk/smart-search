@@ -5,19 +5,17 @@ Kasutamine:
 Code:
 
     {
-        "name": "api_lisa_andmebaasidesse_1",
+        "name": "query_extender_setup",
         "type": "python",
         "request": "launch",
-        "cwd": "${workspaceFolder}/api/ea_jsontabelid_2_db/",
-        "program": "./api_jsontabelid_2_db.py",
+        "cwd": "${workspaceFolder}/scripts/query_extender_setup/example_make_based_workflow",
+        "program": "./query_extender_setup.py",
         "args": [\
             "--verbose", \
             "--db_name=test-tmp.sqlite", \
-            "--tables=lemma_kõik_vormid:lemma_korpuse_vormid:indeks_vormid:indeks_lemmad:liitsõnad:kirjavead:allikad", \
-            "../ea_jsoncontent_2_jsontabelid/1024-government_orders.json",
-            "../ea_jsoncontent_2_jsontabelid/1024-government_regulations.json",  \
-            "../ea_jsoncontent_2_jsontabelid/1024-local_government_acts.json",
-            "../ea_jsoncontent_2_jsontabelid/1024-state_laws.json",
+            "--tables=lemma_kõik_vormid:lemma_korpuse_vormid:indeks_vormid:indeks_lemmad:liitsõnad:allikad", \
+            "/home/tarmo/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_orders.csv.json",
+            "/home/tarmo/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_regulations.csv.json",  \
             ],
         "env": {}
     }
@@ -96,20 +94,20 @@ class DB:
             PRIMARY KEY(osalemma, liitlemma)
         )''')
 
-        # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
+        # "lemma_kõik_vormid":[(LEMMA, KAAL, VORM)],
         self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS lemma_kõik_vormid( 
-            vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
-            kaal INT NOT NULL,          -- suurem number on sagedasem
             lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
-            PRIMARY KEY(vorm, lemma)
+            kaal INT NOT NULL,          -- suurem number on sagedasem
+            vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
+            PRIMARY KEY(lemma, vorm)
         )''')
         
         # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)]
         self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS lemma_korpuse_vormid(
             lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
-            kaal INT NOT NULL,          -- suurem number on sagedasem
+            kaal INT NOT NULL,          -- suurem number on sagedasem            
             vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
-            PRIMARY KEY(lemma, vorm)
+            PRIMARY KEY(vorm, lemma)
         )''')
 
         # {"tabelid":{ "kirjavead":[[VIGANE_VORM, VORM, KAAL]] }
@@ -140,7 +138,7 @@ class DB:
                 print(f"# Suletud andmebaas {self.db_name}")  
                      
     def toimeta(self, file:str)->None:
-        print("-----")
+        print("# -----")
         with open(file) as f:
             for line in f:
                 self.json_in = self.string2json(line)
@@ -154,43 +152,39 @@ class DB:
             if table == "lemma_kõik_vormid":
                 # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
                 pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {file} : {table} :', disable=(not self.verbose))
-                for vorm, kaal, lemma in pbar:
-                    res = self.cur_baas.execute(f"SELECT vorm, kaal, lemma FROM {table} WHERE vorm='{vorm}' and lemma='{lemma}'")
-                    if len(res_fetchall:=res.fetchall()) > 0:
-                        #selline juba oli, liidame kokku
-                        assert len(res_fetchall) == 1, \
-                            f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                        uus_kaal = 0
-                        if kaal > 0: # muutub raskemaks
-                            for ret_vorm, ret_kaal, ret_lemma in res_fetchall:
-                                assert vorm==ret_vorm and lemma==ret_lemma, \
-                                    f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                                uus_kaal = kaal + ret_kaal
-                                self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}' WHERE vorm='{vorm}' and lemma='{lemma}'")
-                    else:
-                        # polnud, lisame uue
-                        rec = (vorm, kaal, lemma)
+                for lemma, kaal, vorm in pbar:
+                    res = self.cur_baas.execute(f"SELECT lemma, kaal, vorm FROM {table} WHERE lemma='{lemma}' and vorm='{vorm}'")
+                    if len(res_fetchall:=res.fetchall()) == 0:
+                        # sellist kirjet polnud, lisame uue
+                        rec = (lemma, kaal, vorm)
                         self.cur_baas.execute(f"INSERT INTO {table} VALUES {rec}")
+                    elif len(res_fetchall) == 1:
+                        #selline kirje oli, liidame kaalud kokku, vajadusel uuendame kaalu
+                        vana_kaal = res_fetchall[0][1]
+                        uus_kaal = vana_kaal + kaal
+                        if vana_kaal != uus_kaal: # kaal muutus, uuendame kaalu
+                            self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}'  WHERE lemma='{lemma}' and vorm='{vorm}'")
+                    else:
+                        # midagi väga valesti sest PRIMARY KEY(vorm, lemma)
+                        raise ValueError(f"Viga tabelis {table}: mitu rida vorm='{vorm}' and lemma='{lemma}'")
             elif table == "lemma_korpuse_vormid":
                 # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)]
                 pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {file} : {table} :', disable=(not self.verbose))
                 for lemma, kaal, vorm in pbar:
                     res = self.cur_baas.execute(f"SELECT lemma, kaal, vorm FROM {table} WHERE lemma='{lemma}' and vorm='{vorm}'")
-                    if len(res_fetchall:=res.fetchall()) > 0:
-                        #selline juba oli, liidame kokku
-                        assert len(res_fetchall) == 1, \
-                            f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                        uus_kaal = 0
-                        if kaal > 0: # muutub raskemaks
-                            for ret_lemma, ret_kaal, ret_vorm in res_fetchall:
-                                assert vorm==ret_vorm and lemma==ret_lemma, \
-                                    f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
-                                uus_kaal = kaal + ret_kaal
-                                self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}' WHERE lemma='{lemma}' and vorm='{vorm}'")
-                    else:
-                        # polnud, lisame uue
+                    if len(res_fetchall:=res.fetchall()) == 0:
+                        # sellist kirjet polnud, lisame uue
                         rec = (lemma, kaal, vorm)
                         self.cur_baas.execute(f"INSERT INTO {table} VALUES {rec}")
+                    elif len(res_fetchall) == 1:
+                        #selline kirje oli, liidame kaalud kokku, vajadusel uuendame kaalu
+                        vana_kaal = res_fetchall[0][1]
+                        uus_kaal = vana_kaal + kaal
+                        if vana_kaal != uus_kaal: # kaal muutus, uuendame kaalu
+                            self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}' WHERE lemma='{lemma}' and vorm='{vorm}'")
+                    else:
+                        # midagi väga valesti sest PRIMARY KEY(vorm, lemma)
+                        raise ValueError(f"Viga tabelis {table}: mitu rida vorm='{vorm}' and lemma='{lemma}'")
             else:
                 pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {file} : {table} :', disable=(not self.verbose))
                 for rec in pbar:
