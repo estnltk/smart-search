@@ -30,7 +30,7 @@ teeme_sonavormide_loendi()
         echo ${f/.csv.json/.kv-txt}
     done
     echo ''
-    echo -n ${DIR_HEADINGS}/*.kv-txt' -> '
+    echo -n '#' ${DIR_HEADINGS}/*.kv-txt' -> '
     cat ${DIR_HEADINGS}/*.kv-txt \
     | sort \
     | uniq \
