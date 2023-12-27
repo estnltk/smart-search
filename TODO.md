@@ -19,9 +19,9 @@
   sobiva päringu
   * ```ea_paring_sl``` Selle funktsionaalsuse lisame programmi ```ea_paring```
   ja selle kataloogi kustutame ära
-  ```sl_analyser``` selle projekti jaoks kohandatud morf analüüsi programm (curl/python)
-  ```sl_generator``` selle projekti jaoks kohandatud morf genereerimise programm (curl/puthon)
-  ```sl_lemmatizer``` selle projekti jaoks kohandatud morf lemmatiseerimise programm (curl/python)
+  * ```sl_analyser``` selle projekti jaoks kohandatud morf analüüsi programm (curl/python)
+  * ```sl_generator``` selle projekti jaoks kohandatud morf genereerimise programm (curl/puthon)
+  * ```sl_lemmatizer``` selle projekti jaoks kohandatud morf lemmatiseerimise programm (curl/python)
   * legacy -- TV kustutame ära?
     * ```indekseerija_lemmad``` algne sisendtekstidest JSON kujul lemmade indeksi tegemine.
     See funktsionaalsus on integreeritud ```api_advanced_indexing``` programmi.
@@ -61,9 +61,6 @@ Kuhu need oleks õige paigutada? Ülejäänu kustu?
 TV kustutame ära?
 
 * ```tests``` TV kustutame ära?
-
-* ```wp``` sealt alt ```ea_paring_otsing``` läks ```veebilehtede``` alla.
-Kustutame ära.
 
 * ```lemmatiseerija``` Kustutame ära, see funktsionaalsus selle projekti jaoks
 kohandatud kujul sisaldub ```sl_lemmatizer``` programmis.
