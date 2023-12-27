@@ -73,3 +73,4 @@ kohandatud kujul sisaldub ```sl_lemmatizer``` programmis.
 * Pealkirjad uuesti läbilasta ja uus andmebaas lisada ```ea_paring_sl``` ja
 demoveebilehe ```ea_paring_otsing``` konteineritesse.
 * README.md failid ülevaadata ja TODO.md failid kustu.
+* Andmebaasi kokkupanija SL versiooni setup täpsustada.
