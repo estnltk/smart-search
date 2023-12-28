@@ -13,21 +13,22 @@ Code:
         "args": [\
             "--verbose", \
             "--db_name=test-tmp.sqlite", \
-            "--tables=lemma_kõik_vormid:lemma_korpuse_vormid:indeks_vormid:indeks_lemmad:liitsõnad:allikad", \
-            "/home/tarmo/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_orders.csv.json",
-            "/home/tarmo/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_regulations.csv.json",  \
+            "--tables=indeks_vormid:indeks_lemmad:liitsõnad:lemma_kõik_vormid:lemma_korpuse_vormid:allikad", \
+            "../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_orders.csv.json", \
+            "../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_regulations.csv.json", \
+            "../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/local_government_acts.csv.json", \
+            "../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/state_laws.csv.json", \
             ],
         "env": {}
     }
 
 Käsurealt:
-$ cd ~/git/smart-search_github/api/ea_jsontabelid_2_db
-$ export PREFIKS=1019- # kasuta sama prefiksit, millega tegid JSON failid
+$ cd ~/git/smart-search_github/scripts/query_extender_setup/example_make_based_workflow 
 $ ./create_venv.sh
-$ ./venv/bin/python3 ./api_jsontabelid_2_db.py \
-    --verbose --db_name=${PREFIKS}baas.sqlite \
-    --tables=indeks_vormid:indeks_lemmad:liitsõnad:lemma_kõik_vormid:lemma_korpuse_vormid:kirjavead:kirjavead_2:allikad:ignoreeritavad_vormid \
-    ../ea_jsoncontent_2_jsontabelid/${PREFIKS}*.json 
+$ ./venv/bin/python3 ./query_extender_setup.py \
+    --verbose --db_name=test-tmp.sqlite \
+    --tables=indeks_vormid:indeks_lemmad:liitsõnad:lemma_kõik_vormid:lemma_korpuse_vormid:allikad \
+    ../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/*.csv.json 
 
 SisendJson:
         {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
@@ -64,6 +65,13 @@ class DB:
         # loome/avame andmebaasi
         self.con_baas = sqlite3.connect(self.db_name)
         self.cur_baas = self.con_baas.cursor()
+
+        # "ignoreeritavad_vormid":[ignoreeritav_vorm]
+        self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS ignoreeritavad_vormid(
+                ignoreeritav_vorm  TEXT NOT NULL, -- päringus ignoreerime neid sõnavorme
+                PRIMARY KEY(ignoreeritav_vorm)
+                )
+        ''')       
 
         # "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)]
         self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS indeks_vormid(
