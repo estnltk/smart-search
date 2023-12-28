@@ -1,0 +1,4 @@
+*.json
+*.kv-txt
+sonavormid.txt
+*.sqlite
