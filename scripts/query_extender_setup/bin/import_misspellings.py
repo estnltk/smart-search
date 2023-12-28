@@ -1,4 +1,5 @@
 import sys
+import math
 import argparse
 import logging
 import requests
@@ -61,29 +62,41 @@ if __name__ == '__main__':
 
     logging.info(f"Teeme päringu kirjavigade genereerimisteenusele {config['misspellings_generator']}")
 
-    # TODO: Löö tükkideks muidu võib tekkida liiga pikk nimekiri
+    # Make fixed size block queries to be safe
+    BLOCK_SIZE = 1000
+    unprocessed_lemmas = db.wordforms_without_misspellings
+    block_count = math.floor(len(unprocessed_lemmas)/BLOCK_SIZE)
     HEADERS = {"Content-Type": "application/json; charset=utf-8"}
-    try:
-        response = requests.post(
-            config['misspellings_generator'], data='\n'.join(db.wordforms_without_misspellings), headers=HEADERS)
-    except Exception as e:
-        logging.error(f'Viga veebiteenusega')
-        logging.error(e)
-        sys.exit(-1)
-    if not response.ok:
-        logging.error(f'Viga veebiteenusega. Vastus puudub.')
-        sys.exit(-1)
+    logging.getLogger('urllib3').setLevel(logging.CRITICAL)
+    for i in tqdm(range(block_count + 1), total=block_count):
+        try:
+            response = requests.post(
+                config['misspellings_generator'],
+                data='\n'.join(unprocessed_lemmas[BLOCK_SIZE * i: BLOCK_SIZE * (i + 1)]),
+                headers=HEADERS)
+        except Exception as e:
+            logging.error(f'Viga veebiteenusega')
+            logging.error(e)
+            sys.exit(-1)
+        if not response.ok:
+            logging.error(f'Viga veebiteenusega. Vastus puudub.')
+            sys.exit(-1)
 
-    response = response.json()
-    logging.info('Lisame saadud kirjavigade tabeli andmebaasi')
-    try:
-        table = 'kirjavead'
-        content = tqdm(response["tabelid"][table], desc=f'# {table: <25}', disable=(not db.verbose))
-        db.import_standard_table(table_name=table, row_list=content)
-        db.con_base.commit()
-    except Exception as e:
-        print('Viga kirjavigade impordil andmebaasi')
-        print(e)
-        sys.exit(-1)
+        response = response.json()
+
+        # Sometimes the service fails in mystical way. Let us ignore it
+        if not isinstance(response, dict):
+            logging.error('Viga veebiteenusega. Vastus on ebakorrektne aga jätkame siiski importi.')
+            logging.error('Jooksuta skripti veelkord äkki läheb õnneks ja vigu ei ilmne.')
+            continue
+
+        try:
+            table = 'kirjavead'
+            db.import_standard_table(table_name=table, row_list=response["tabelid"][table])
+            db.con_base.commit()
+        except Exception as e:
+            print('Viga kirjavigade impordil andmebaasi')
+            print(e)
+            sys.exit(-1)
 
     logging.info('Andmete import edukalt lõpetatud')

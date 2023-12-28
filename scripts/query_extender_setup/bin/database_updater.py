@@ -207,7 +207,7 @@ class DatabaseUpdater:
         """
         result = self.cur_base.execute(
             """
-            SELECT vorm 
+            SELECT DISTINCT vorm 
             FROM lemma_korpuse_vormid 
             WHERE vorm not in (SELECT DISTINCT vorm FROM kirjavead)
             """)
