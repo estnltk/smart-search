@@ -3,11 +3,12 @@
 """
 Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku andmebaas
 -----------------------------------------------------------------
-Mida uut
-2023.12.20 Kirjavigasid genereeritakse sõnedele, kus 2 või enam tähte (varem oli 4+)
-
+Mida uut:
+2023/12/20 Kirjavigasid genereeritakse sõnedele, kus 2 või enam tähte (varem oli 4+)
+2023/12/21 Tuunitud min sõnepikkusi eri liiki kirjavigade jaoks
+           Parandatud genreeritud kirjavigade hulgast potentsiaalsete kirjavigade eemaldamist
 -----------------------------------------------------------------
-// code (silumiseks):
+code (silumiseks):
     {
         "name": "api_misspellings_generator",
         "type": "python",
@@ -17,12 +18,9 @@ Mida uut
         "env": {},
         "args": ["--verbose", "test.txt"]
     },
-
 -----------------------------------------------------------------
-käsurealt:
-
+Käsurealt:
 $ venv/bin/python3 ./api_misspellings_generator.py --verbose test.txt > test.json
-
 """
 
 import csv
@@ -51,7 +49,7 @@ class KIRJAVIGUR:
         self.wordforms = []
         self.json_out = {"tabelid":{"kirjavead":[]}}
         self.verbose = verbose
-        self.VERSION="2023.12.20"
+        self.VERSION="2023.12.21"
 
     def verbose_prints(self, message:str) -> None:
         """PRIVATE: Kirjutad teade stderr'i
@@ -78,7 +76,7 @@ class KIRJAVIGUR:
         """
         potentsiaalsed_kirjavead = []
         for i in range(len(token)):
-            if len(token) > 1: # peab olema vähemalt 3 tähte
+            if len(token) > 2: # peab olema 3+ tähte
                 # 2 tähte vahetuses: tigu -> itgu, tgiu, tiug
                 if i > 0 and token[i] != token[i-1]: # kahte ühesugust tähte ei vaheta
                     t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]
@@ -88,10 +86,11 @@ class KIRJAVIGUR:
                 t = token[:i]+token[i]+token[i]+token[i+1:]
                 if t not in potentsiaalsed_kirjavead:
                     potentsiaalsed_kirjavead.append(t) 
-                # 1 täht kaob ära
-                t = token[:i]+token[i+1:]
-                if t not in potentsiaalsed_kirjavead:
-                        potentsiaalsed_kirjavead.append(t) 
+                # 1 täht kaob ära: peab olema 4+ tähte
+                if i > 3: # 
+                    t = token[:i]+token[i+1:]
+                    if t not in potentsiaalsed_kirjavead:
+                            potentsiaalsed_kirjavead.append(t) 
                 # g b d k p t-> k p t g b d
                 if (n := "gbdkpt".find(token[i])) > -1:
                     t = token[:i]+"kptgbd"[n]+token[i+1:]                   
@@ -103,10 +102,11 @@ class KIRJAVIGUR:
         for pkv in potentsiaalsed_kirjavead:
             morf_in["annotations"]["tokens"].append({"features":{"token": pkv}})
         morf_out = self.run_subprocess(proc_vmetajson, morf_in)
+        pigem_kirjavead = []
         for token in morf_out["annotations"]["tokens"]:
             if "mrf" not in token["features"]:
-                potentsiaalsed_kirjavead.append(token["features"]["token"])
-        return list(set(potentsiaalsed_kirjavead))
+                pigem_kirjavead.append(token["features"]["token"])
+        return list(set(pigem_kirjavead))
 
     def tee_kirjavead(self)->None:
         """PUBLIC:Lisame kirjavead parandamiseks vajaliku tabeli
@@ -131,9 +131,6 @@ class KIRJAVIGUR:
  
     def kuva_tabelid(self, indent)-> None:
         """PUBLIC:Lõpptulemus JSON kujul std väljundisse
-
-        Std väljundisse:    
-            *TODO
         """
         json.dump(self.json_out, sys.stdout, indent=indent, ensure_ascii=False)
         sys.stdout.write('\n')

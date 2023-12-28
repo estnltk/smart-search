@@ -2,6 +2,10 @@
 
 '''Flask api, (eel)arvutab JSON-failid mis on vajlikud andmebaasi kokkupanemiseks
 ----------------------------------------------
+Mida uut:
+2023-12-27  sõnede eraldajaks on '\n' (tühik ei eralda enam sõnesid)
+            SMART_SEARCH_MAX_CONTENT_LENGTH vaikimisi 600000
+----------------------------------------------
 // code (serveri käivitamine silumiseks):
         {
             "name": "flask_api_misspellings_generator",
@@ -34,12 +38,12 @@ Lähtekoodist veebiserveri käivitamine & kasutamine
     $ cd ~/git/smart-search_github/api/api_misspellings_generator
     $ ./venv/bin/python3 ./flask_api_misspellings_generator.py
 2.3.2 Etteantud parameetriga
-    $ SMART_SEARCH_MAX_CONTENT_LENGTH='5000000' \
+    $ SMART_SEARCH_MAX_CONTENT_LENGTH='500000' \
         venv/bin/python3 ./flask_api_misspellings_generator.py
 2.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/text" \
         localhost:6603/api/misspellings_generator/version | jq
-    $ curl --silent --request POST --header "Content-Type: application/csv" \
+    $ curl --silent --request POST --header "Content-Type: application/text" \
       --data-binary @test.txt \
       localhost:6603/api/misspellings_generator/process  | jq
 ----------------------------------------------
@@ -48,29 +52,29 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/api_misspellings_generator
-    $ docker build -t tilluteenused/smart_search_api_misspellings_generator:2023.12.20 . 
+    $ docker build -t tilluteenused/smart_search_api_misspellings_generator:2023.12.27 . 
     # docker login -u tilluteenused
-    # docker push tilluteenused/smart_search_api_misspellings_generator:2023.12.20 
+    # docker push tilluteenused/smart_search_api_misspellings_generator:2023.12.27 
 2.3 Konteineri käivitamine
     $ docker run -p 6603:6603  \
-        --env SMART_SEARCH_MAX_CONTENT_LENGTH='500000000' \
-       tilluteenused/smart_search_api_misspellings_generator:2023.12.20 
+        --env SMART_SEARCH_MAX_CONTENT_LENGTH='500000' \
+       tilluteenused/smart_search_api_misspellings_generator:2023.12.27 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_misspellings_generator:2023.12.20 
+    $ docker pull tilluteenused/smart_search_api_misspellings_generator:2023.12.27 
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
     $ cd ~/git/smart-search_github/api/api_misspellings_generator # selles kataloogis on test.txt
-    $ curl --silent --request POST --header "Content-Type: application/json" \
+    $ curl --silent --request POST --header "Content-Type: application/text" \
         --data-binary @test.txt \
         https://smart-search.tartunlp.ai/api/misspellings_generator/process | jq | less
-    $ curl --silent --request POST --header "Content-Type: application/json" \
+    $ curl --silent --request POST --header "Content-Type: application/text" \
         https://smart-search.tartunlp.ai/api/misspellings_generator/version | jq
 
 ----------------------------------------------
@@ -89,7 +93,7 @@ from collections import OrderedDict
 
 import api_misspellings_generator
 
-VERSION="2023.12.20"
+VERSION="2023.12.27"
 
 kv = api_misspellings_generator.KIRJAVIGUR(verbose=False)
 
@@ -99,7 +103,7 @@ app = Flask("flask_api_misspellings_generator")
 try:
     SMART_SEARCH_MAX_CONTENT_LENGTH=int(os.environ.get('SMART_SEARCH_MAX_CONTENT_LENGTH'))
 except:
-    SMART_SEARCH_MAX_CONTENT_LENGTH = 10 * 1000000000 # 10 GB 
+    SMART_SEARCH_MAX_CONTENT_LENGTH = 6 * 100000 # 6 GB 
 
 def limit_content_length(max_length):
     def decorator(f):
@@ -125,12 +129,12 @@ def request_entity_too_large(error):
 def api_amisspellings_generator_process():
     try:
         kv.json_out = {"tabelid":{"kirjavead":[]}}
-        data = request.data.decode("utf-8")
-        kv.wordforms = [wordform.strip() for wordform in data.split()]
+        data = request.data.decode("utf-8").strip()
+        kv.wordforms = [wordform.strip() for wordform in data.split('\n')]
         kv.tee_kirjavead()
         return jsonify(kv.json_out)
     except Exception as e:
-        return jsonify(e.args[0])    
+        return jsonify({"warning": list(e.args)})    
 
 @app.route('/api/misspellings_generator/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['POST'])
