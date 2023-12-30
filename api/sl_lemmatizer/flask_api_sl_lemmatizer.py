@@ -145,7 +145,7 @@ def api_sl_lemmatizer_tsv():
 
 if __name__ == '__main__':
     import argparse
-    default_port=7007
+    default_port=7009
     argparser = argparse.ArgumentParser(allow_abbrev=False)
     argparser.add_argument('-d', '--debug',  action="store_true", help='debug flag for flask')
     args = argparser.parse_args()

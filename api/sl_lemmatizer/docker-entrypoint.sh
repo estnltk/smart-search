@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec /usr/bin/tini -- venv/bin/gunicorn --bind=0.0.0.0:7007 "--workers=$WORKERS" "--timeout=$TIMEOUT" "--worker-class=$WORKER_CLASS" --worker-tmp-dir=/dev/shm "$@" flask_api_sl_lemmatizer:app
+exec /usr/bin/tini -- venv/bin/gunicorn --bind=0.0.0.0:7009 "--workers=$WORKERS" "--timeout=$TIMEOUT" "--worker-class=$WORKER_CLASS" --worker-tmp-dir=/dev/shm "$@" flask_api_sl_lemmatizer:app
