@@ -1,0 +1,18 @@
+# cd ~/git/smart-search_github/scripts/query_extender_setup/example_make_based_workflow
+# docker-compose up -d
+# docker-compose down
+
+services:
+  advanced_indexing:
+    image: tilluteenused/smart_search_api_advanced_indexing:2023.12.27 
+    ports:
+      - 6602:6602
+    environment:
+      - SMART_SEARCH_MAX_CONTENT_LENGTH=5000000
+  misspellings_generator:
+    image: tilluteenused/smart_search_api_misspellings_generator:2023.12.27
+    ports:
+      - 6603:6603
+    environment:
+      - SMART_SEARCH_MAX_CONTENT_LENGTH=5000000
+
