@@ -7,6 +7,7 @@ DIR_QUERYEXT=~/git/smart-search_github/scripts/query_extender_setup/example_make
 
 teeme_json_tabelid()
 {
+    # .csv -> .csv.json
     echo '#' $FUNCNAME '--------------------'
     pushd ${DIR_INDEXING} >& /dev/null
     for f in ${DIR_HEADINGS}/*.csv
@@ -18,14 +19,17 @@ teeme_json_tabelid()
 
 teeme_sonavormide_loendi()
 {
+    # .csv.json -> .kv-txt -> sonavormid.txt
     echo '#' $FUNCNAME '--------------------'
     for f in ${DIR_HEADINGS}/*.csv.json
     do
         echo -n '# ' ${f}' -> '
         cat ${f} \
         | gron \
-        | grep 'json.tabelid.indeks_vormid\[[0-9]*\]\[0\]' \
+        | grep 'lemma_kõik_vormid\[[0-9]*\]\[2\]' \
         | sed 's/^.* = "\(.*\)";/\1/g' \
+        | sort \
+        | grep -v '^[0-9.,%]*$' \
         > ${f/.csv.json/.kv-txt}
         echo ${f/.csv.json/.kv-txt}
     done
@@ -40,6 +44,7 @@ teeme_sonavormide_loendi()
 
 teeme_kirjavigade_tabeli()
 {
+    # sonavormid.txt -> kirjavead.kv.json
     echo '#' $FUNCNAME '--------------------'
     pushd ${DIR_MISPGEN} >& /dev/null
     ./venv/bin/python3 ./api_misspellings_generator.py \
@@ -51,6 +56,7 @@ teeme_kirjavigade_tabeli()
 
 teeme_andmebaasi()
 {
+    # .csv.json, kirjavead.kv.json -> .sqlite
     echo '#' $FUNCNAME '--------------------'
     pushd ${DIR_QUERY_EXTENDER} >& /dev/null
     ./venv/bin/python3 ./query_extender_setup.py \
@@ -68,7 +74,7 @@ teeme_andmebaasi()
     popd >& /dev/null
 }
 
-teeme_json_tabelid
+#teeme_json_tabelid
 teeme_sonavormide_loendi
 teeme_kirjavigade_tabeli
 teeme_andmebaasi

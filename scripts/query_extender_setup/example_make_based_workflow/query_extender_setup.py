@@ -38,8 +38,9 @@ SisendJson:
             "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
             "kirjavead":[(VIGANE_VORM, VORM)],
             "allikad":[(DOCID, CONTENT)],
-        }
- '''
+        }               
+'''
+
 import os
 import sys
 import json
@@ -151,6 +152,8 @@ class DB:
             for line in f:
                 self.json_in = self.string2json(line)
                 self.täienda_tabelid(file)
+        #INSERT INTO ignoreeritavad_vormid
+        #VALUES ("ignotestsõne") 
  
     def täienda_tabelid(self, file:str)->None:
         """Kanna self.json_in'ist info andmbeaaaside tabelitesse
