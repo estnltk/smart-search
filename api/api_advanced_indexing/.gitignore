@@ -2,7 +2,10 @@ venv/
 __pycache__/
 *.json
 *.sqlite
+test/
 1024/
 1212/
 1217/
 1218/
+1219/
+1227/

@@ -1,10 +1,14 @@
-PREF=1219-
+PREF=1227-
 
 all: $(PREF)koond.sqlite
 
 json: $(PREF)state_laws.json $(PREF)government_orders.json $(PREF)government_regulations.json $(PREF)local_government_acts.json
 
 kv-txt: $(PREF)state_laws.kv-txt $(PREF)government_orders.kv-txt $(PREF)government_regulations.kv-txt $(PREF)local_government_acts.kv-txt
+
+kirjavead_txt: $(PREF)kirjavead.txt
+
+kirjavead_json : $(PREF)kirjavead.json
 
 #----
 

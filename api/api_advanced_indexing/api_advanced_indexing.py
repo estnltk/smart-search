@@ -10,6 +10,8 @@ Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku and
 Mida uut:
 2023-12-19 Tabelites "lemma_korpuse_vormid" ja "lemma_kõik_vormid" veergude järjekord samaks: [(LEMMA, KAAL, VORM)]
 2023-12-20 Kirjavigastame sõnesid alates 2st tähest
+2023-12-21 Kirjavigastajat kohendatud
+2023-12-27 Pisimuutused kommentaarides jms
 -----------------------------------------------------------------
 // code (silumiseks):
     {
@@ -47,6 +49,11 @@ Käsurealt (töötleme ühte sisendfaili korraga):
 $ venv/bin/python3 ./api_advanced_indexing.py --verbose --csvpealkirjad test_headers.csv > test_headers_indexes.json
 $ venv/bin/python3 ./api_advanced_indexing.py --verbose test_document.json > test_document_indexes.json
 
+Pealkirjad (demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/*.csv):
+* demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/government_orders.csv
+* demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/government_regulations.csv
+* demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/local_government_acts.csv
+* demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/state_laws.csv
 -----------------------------------------------------------------
 JSON sees- ja välispidiseks kasutamiseks:
 
@@ -114,7 +121,7 @@ class TEE_JSON:
         self.verbose = verbose
         self.kirjavead = kirjavead
 
-        self.VERSION="2023.12.20"
+        self.VERSION="2023.12.27"
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 
     def verbose_prints(self, message:str) -> None:
@@ -650,7 +657,7 @@ class TEE_JSON:
         """
         potentsiaalsed_kirjavead = []
         for i in range(len(token)):
-            if len(token) > 1: # peab olema vähemalt 3 tähte
+            if len(token) > 2: # peab olema 3+ tähte
                 # 2 tähte vahetuses: tigu -> itgu, tgiu, tiug
                 if i > 0 and token[i] != token[i-1]: # kahte ühesugust tähte ei vaheta
                     t = token[0:i-1]+token[i]+token[i-1]+token[i+1:]
@@ -660,10 +667,11 @@ class TEE_JSON:
                 t = token[:i]+token[i]+token[i]+token[i+1:]
                 if t not in potentsiaalsed_kirjavead:
                     potentsiaalsed_kirjavead.append(t) 
-                # 1 täht kaob ära
-                t = token[:i]+token[i+1:]
-                if t not in potentsiaalsed_kirjavead:
-                        potentsiaalsed_kirjavead.append(t) 
+                # 1 täht kaob ära: peab olema 4+ tähte
+                if i > 3: # 
+                    t = token[:i]+token[i+1:]
+                    if t not in potentsiaalsed_kirjavead:
+                            potentsiaalsed_kirjavead.append(t) 
                 # g b d k p t-> k p t g b d
                 if (n := "gbdkpt".find(token[i])) > -1:
                     t = token[:i]+"kptgbd"[n]+token[i+1:]                   
@@ -675,10 +683,11 @@ class TEE_JSON:
         for pkv in potentsiaalsed_kirjavead:
             morf_in["annotations"]["tokens"].append({"features":{"token": pkv}})
         morf_out = self.run_subprocess(proc_vmetajson, morf_in)
+        pigem_kirjavead = []
         for token in morf_out["annotations"]["tokens"]:
             if "mrf" not in token["features"]:
-                potentsiaalsed_kirjavead.append(token["features"]["token"])
-        return potentsiaalsed_kirjavead
+                pigem_kirjavead.append(token["features"]["token"])
+        return list(set(pigem_kirjavead))
 
     def tee_kirjavead(self)->None:
         """PUBLIC:Lisame kirjavead parandamiseks vajaliku tabeli
