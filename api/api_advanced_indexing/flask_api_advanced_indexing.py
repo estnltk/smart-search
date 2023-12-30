@@ -39,10 +39,10 @@ Lähtekoodist veebiserveri käivitamine & kasutamine
     $ curl --silent --request POST --header "Content-Type: application/text" \
         localhost:6602/api/advanced_indexing/version | jq
     $ curl --silent --request POST --header "Content-Type: application/csv" \
-      --data-binary @test_headers.csv \
+      --data-binary @test/test_headers.csv \
       localhost:6602/api/advanced_indexing/headers  | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
-      --data-binary @test_document.json \
+      --data-binary @test/test_document.json \
       localhost:6602/api/advanced_indexing/document  | jq
 ----------------------------------------------
 Lähtekoodist tehtud konteineri kasutamine
