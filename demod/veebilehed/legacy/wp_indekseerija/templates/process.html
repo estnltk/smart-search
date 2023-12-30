@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+  <html lang="et">
+    <head>
+      <meta charset="UTF-8">
+      <title>Indeksi koostamine</title>
+    </head>
+    <body>
+      <h1>Indeksi koostamine</h1>
+      <form method="POST" action="" enctype="multipart/form-data">
+        <input type="file" name="file"><br><br>
+      
+      Indeksis:
+        <input checked type="radio" name="indekseerija", value="indekseerija-lemmad"> lemmad     </input>
+        <input         type="radio" name="indekseerija", value="indekseerija-soned">  sõnavormid </input><br>   
+
+      Väljundformaat:
+        <input checked type="radio" name="formaat", value="json"> JSON </input>
+        <input         type="radio" name="formaat", value="csv" > CSV  </input><br><br>
+                  
+        <input type="submit" value="Indekseeri"><br>
+      </form>
+        <hr>
+        {% autoescape false %}
+        {{ query_result }}
+        {% endautoescape %}
+        <hr>  
+        <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_indekseerija/README.md">Kasutusjuhend</a>
+    </body>
+  </html>

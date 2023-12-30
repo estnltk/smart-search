@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="et">
+    <head>
+        <meta charset="UTF-8">
+        <title>Spelleri demo</title>
+    </head>
+    <body>
+        <form method='POST' enctype='multipart/form-data'>
+            Väljundformaat:
+                <input         type="radio" name="formaat", value="json"> JSON    </input>
+                <input checked type="radio" name="formaat", value="text"> tekst </input><br>
+            <input name="message" type="text"><input type="submit" value="Kontrolli ja soovita" ><br>
+        </form>
+    <br>
+    {% autoescape false %}
+        {{ content}}
+    {% endautoescape %}
+    <hr>  
+    <a href="https://github.com/estnltk/smart-search/blob/main/wp/wp_speller/README.md">Kasutusjuhend</a>
+    </body>
+</html>        
