@@ -1,4 +1,0 @@
-venv/
-*.sqlite
-__pycache__/
-sl_generator
