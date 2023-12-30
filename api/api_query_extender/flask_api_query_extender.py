@@ -14,7 +14,8 @@ Lähtekoodist pythoni skripti kasutamine
     $ ./create_venv.sh
 1.3 Veebiserveri käivitamine pythoni koodist
     $ cd  ~/git/smart-search_github/api/api_query_extender
-    $ SMART_SEARCH_QE_DBASE="../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite" \
+    $ cp ../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite .
+    $ SMART_SEARCH_QE_DBASE="./koond.sqlite" \
         venv/bin/python3 ./flask_api_query_extender.py
 1.4 CURLiga veebiteenuse kasutamise näited
 
@@ -47,8 +48,8 @@ Lähtekoodist tehtud konteineri kasutamine
     $ cd ~/git/smart-search_github/api/api_query_extender
     $ docker build -t tilluteenused/smart_search_api_query_extender:2023.12.27 . 
 2.3 Konteineri käivitamine
-    $ docker run -p 6602:6602  \
-        --env  SMART_SEARCH_QE_DBASE='../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite' \
+    $ docker run -p 6604:6604 \
+        --env  SMART_SEARCH_QE_DBASE='./koond.sqlite' \
         tilluteenused/smart_search_api_query_extender:2023.12.27 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 

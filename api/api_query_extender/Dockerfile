@@ -23,7 +23,7 @@ RUN ./venv/bin/python3 -m pip install --upgrade pip
 RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt 
 
 # copy current task related skripts 
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_query_extender.py docker-entrypoint.sh koond.sqlite ./
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_query_extender.py api_query_extender.py docker-entrypoint.sh koond.sqlite ./
 RUN chmod +x *.sh *py
 # parameters for gunicorn
 ENV WORKERS=1
