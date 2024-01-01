@@ -1,0 +1,23 @@
+# cd ~/git/smart-search_github/demod/veebilehed/ea_paring_otsing
+# MY_IP=$(hostname -I | sed 's/ .*$//g') docker-compose up -d && docker-compose ps
+# docker-compose down && docker-compose ps
+
+services:
+  advanced_indexing:
+    image: tilluteenused/smart_search_api_query_extender:2023.12.28
+    ports:
+      - 6604:6604
+    environment:
+      - SMART_SEARCH_MAX_CONTENT_LENGTH=5000000
+      - SMART_SEARCH_QE_DBASE=./smart_search.sqlite
+
+  paring_otsing:
+    image: tilluteenused/smart_search_wp_ea_paring_otsing:2023.12.29
+    ports:
+      - 6605:6605
+    environment:
+      - DB_INDEX=./smart_search.sqlite
+      - SMART_SEARCH_API_QE=http://${MY_IP}:6604/api/query_extender/process
+    depends_on:
+      - advanced_indexing
+

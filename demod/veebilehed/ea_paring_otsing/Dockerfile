@@ -23,7 +23,8 @@ RUN ./venv/bin/python3 -m pip install --upgrade pip
 RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt 
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_wp_ea_paring_otsing.py api_ea_paring_otsing.py index.sqlite ./
+#COPY --chown=mere_mortal:mere_mortal smart_search.sqlite ./
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_wp_ea_paring_otsing.py api_ea_paring_otsing.py smart_search.sqlite ./
 ADD --chown=mere_mortal:mere_mortal templates/ ./templates/
 RUN chmod +x *.sh *.py
 # parameters for gunicorn

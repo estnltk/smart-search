@@ -15,11 +15,11 @@ class SEARCH_DB:
         Raises:
             Exception: Kui andmebaasi avamine ebaõnnestus
         """
-        self.VERSION="2023.10.02"                   # otsimootori versioon
+        self.VERSION="2023.12.30"                   # otsimootori versioon
 
         self.db_index = os.environ.get('DB_INDEX')  # otsime andmebaasi nime keskkonnamootujast
         if self.db_index is None:                   # kui seal polnud...
-            self.db_index = './index.sqlite'            # ...võtame vaikimisi
+            self.db_index = './koond.sqlite'        # ...võtame vaikimisi
 
         # avame andmebaasi ainult lugemiseks
 
@@ -33,11 +33,11 @@ class SEARCH_DB:
             
         self.cur_index = self.con_index.cursor()
 
-        self.ea_paring = os.environ.get('EA_PARING')
+        self.ea_paring = os.environ.get('SMART_SEARCH_API_QE')
         if self.ea_paring is None:
-            self.EA_PARING_IP=os.environ.get('EA_PARING_IP') if os.environ.get('EA_PARING_IP') != None else 'localhost'
-            self.EA_PARING_PORT=os.environ.get('EA_PARING_PORT') if os.environ.get('EA_PARING_PORT') != None else '6602'
-            self.ea_paring = f'http://{self.EA_PARING_IP}:{self.EA_PARING_PORT}/api/ea_paring/json'
+            self.EA_PARING_IP=os.environ.get('SMART_SEARCH_API_QE_IP') if os.environ.get('SMART_SEARCH_API_QE_IP') != None else 'localhost'
+            self.EA_PARING_PORT=os.environ.get('SMART_SEARCH_API_QE_PORT') if os.environ.get('SMART_SEARCH_API_QE_PORT') != None else '6604'
+            self.ea_paring = f'http://{self.EA_PARING_IP}:{self.EA_PARING_PORT}/api/query_extender/process'
 
     def __del__(self)->None:
         """Sulgeme avatud andmebaasid
@@ -111,14 +111,14 @@ class SEARCH_DB:
 
         res_exec = self.cur_index.execute(f'''
             SELECT
-                indeks.docid,
-                indeks.start,
-                indeks.end,                
+                indeks_vormid.docid,
+                indeks_vormid.start,
+                indeks_vormid.end,                
                 lemma_korpuse_vormid.vorm,
                 lemma_korpuse_vormid.lemma,
-                indeks.liitsona_osa
+                indeks_vormid.liitsona_osa
             FROM lemma_korpuse_vormid
-            INNER JOIN indeks ON lemma_korpuse_vormid.vorm = indeks.vorm
+            INNER JOIN indeks_vormid ON lemma_korpuse_vormid.vorm = indeks_vormid.vorm
             WHERE {where_tingimus}''')
         res_list = res_exec.fetchall()
         #           0      1      2    3     4      5             
@@ -198,4 +198,11 @@ class SEARCH_DB:
                 self.content += f'{source_content[prev_end:]}<hr>'
         self.content = self.content.replace('\n', '<br>')
 
-    
+    def version_json(self) -> Dict:
+        try:
+            res_fetchall = []
+            res = self.cur_index.execute('SELECT version FROM version')
+            db_version = res.fetchall()[0]
+        except:
+            db_version = "not present"
+        return {"api_version": self.VERSION, "SMART_SEARCH_API_QE": self.ea_paring, "DBASE_VERSION": db_version}
