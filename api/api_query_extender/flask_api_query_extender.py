@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
 '''Flask api, päringustring päringut esitavaks JSONiks
-
-----------------------------------------------
+Mida uut:
+2023-12-28
+* kohendatud "suggestion" ja "not_indexed" käsitlust
+---------------------------------
 
 Lähtekoodist pythoni skripti kasutamine
 1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiteenuse käivitamine pythoni koodist (1.3) ja CURLiga veebiteenuse kasutamise näited (1.4)
@@ -30,8 +32,8 @@ Lähtekoodist pythoni skripti kasutamine
         localhost:6604/api/query_extender/tsv
         
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
-        localhost:6604/api/query_extender/json | jq
+        --data "{\"content\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
+        localhost:6604/api/query_extender/process | jq
         
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data "{\"tss\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
@@ -46,11 +48,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/api_query_extender
-    $ docker build -t tilluteenused/smart_search_api_query_extender:2023.12.27 . 
+    $ docker build -t tilluteenused/smart_search_api_query_extender:2023.12.28 . 
 2.3 Konteineri käivitamine
     $ docker run -p 6604:6604 \
         --env  SMART_SEARCH_QE_DBASE='./koond.sqlite' \
-        tilluteenused/smart_search_api_query_extender:2023.12.27 
+        tilluteenused/smart_search_api_query_extender:2023.12.28 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -58,7 +60,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_query_extender:2023.12.27
+    $ docker pull tilluteenused/smart_search_api_query_extender:2023.12.28
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
@@ -81,7 +83,7 @@ from typing import Dict, List, Tuple
 from functools import wraps
 import api_query_extender
 
-VERSION='2023.12.27'
+VERSION='2023.12.28'
 
 paring_soned = api_query_extender.Q_EXTENDER(None, csthread=False)
 
@@ -116,6 +118,16 @@ def request_entity_too_large(error):
 @app.route('/process', methods=['POST'])
 @limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
 def api_ea_paring_process():
+    '''
+    response_json
+    {   "content": CONTENT",
+        "params": {"otsi_liitsõnadest": "false" } # optional, default: true 
+        "annotations": {"query": [[LEMMA]],  
+            "ignore": [IGNORE_WORDWORM],
+            "not indexed": [NOT_INDEXED_LEMMA],
+            "typos": {TYPO: {"suggestions":[SUGGESTION]}}},
+    }
+    '''
     try:
         paring_soned.response_json = request.json
         paring_soned.paring_json()

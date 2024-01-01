@@ -78,7 +78,7 @@ Code:
             "args": [\
                 "--dbase=../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite", \
                 "--tsv", \
-                "--json={\"tss\":\"ignotestsõne\\tlai\\tpresidendi\\tja\\tpresitendiga\"}"],
+                "--json={\"tss\":\"ignotestsõne\\tlaix\\tpresidendi\\tja\\tpresitendiga\"}"],
         },
     
 Käsurealt:
@@ -178,7 +178,6 @@ class Q_EXTENDER:
         
         self.response_json["annotations"] = {"query":[], "typos": {}, "ignore":[], "not indexed": []}
         for sone in paring:
-
             # vaatame kas jooksev päringusõne on ignoreeritavate loendis
             res = self.cur_dbase.execute(f'''
                 SELECT ignoreeritav_vorm FROM ignoreeritavad_vormid 
@@ -187,26 +186,9 @@ class Q_EXTENDER:
             if len(res_fetchall:=res.fetchall()) > 0:
                 # seda päringusõne ignoreerime
                 self.response_json["annotations"]["ignore"].append(res_fetchall[0][0])
-                continue
+                continue # kui on ignereeritav, siis teisi tabeleid ei vaata
 
-            # vaatame kas leiame jooksvale päringusõnele vastava korpuselemma
-            res = self.cur_dbase.execute(f'''
-                SELECT vorm, lemma FROM lemma_kõik_vormid 
-                WHERE vorm = "{sone}"
-                ''')
-            if len(res_fetchall:=res.fetchall()) > 0:
-                vormid = []
-                for res in res_fetchall:
-                    vormid.append(res[1])
-                self.response_json["annotations"]["query"].append(vormid)
-                continue # leidsime päringusõne lemma korpusest
-            
             # vaatame kas jooksev päringusesõne on kirjavigade loendis
-            #res = self.cur_dbase.execute(f'''
-            #    SELECT vigane_vorm, vorm, kaal FROM kirjavead 
-            #    WHERE vigane_vorm = "{sone}"
-            #    ''')
-            #                    lemma_korpuse_vormid.lemma,   
             res = self.cur_dbase.execute(f"""
                 SELECT 
                     kirjavead.vigane_vorm,
@@ -219,10 +201,25 @@ class Q_EXTENDER:
                 self.response_json["annotations"]["typos"][sone] =  {"suggestions":[]}
                 for typo in res_fetchall:
                     self.response_json["annotations"]["typos"][sone]["suggestions"].append(typo[1])
-                continue # kirjaviga
+                # kirjaviga
 
-            # mingi täielik kamarajura
-            self.response_json["annotations"]["not indexed"].append(sone)
+            # vaatame kas leiame jooksvale päringusõnele vastava korpuselemma
+            res = self.cur_dbase.execute(f'''
+                SELECT vorm, lemma FROM lemma_kõik_vormid 
+                WHERE vorm = "{sone}"
+                ''')
+            if len(res_fetchall:=res.fetchall()) > 0:
+                vormid = []
+                for res in res_fetchall:
+                    vormid.append(res[1])
+                self.response_json["annotations"]["query"].append(vormid)
+                korpuselemma_või_kirjaviga = True
+                # leidsime päringusõne lemma korpusest, kontrollime veel kirjavigasust
+                # kui kirjavigade loendis olev sõne esines päriselt korpuses
+                # siis on võimalik, et ta päriselt ei olegi kirjaviga            
+            else:
+                # ei leidnud indeksist
+                self.response_json["annotations"]["not indexed"].append(sone)
 
     def paring_tsv(self) -> None:
         """
@@ -252,30 +249,12 @@ class Q_EXTENDER:
                 WHERE ignoreeritav_vorm = "{sone}"
                 ''')
             res_fetchall=res.fetchall()
-            for input in res_fetchall:
+            if len(res_fetchall) > 0:
+                assert len(res_fetchall)==1 and res_fetchall[0][0]==sone
                 self.response_table.append((location, sone, sone, "ignore", -1, sone))
                 self.append_2_json(sone, sone, "ignore", -1, sone)
                 continue
             
-            # leiame päringusõne korpuses esinenud vormid
-            # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
-            # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
-            res_fetchall = []
-            res = self.cur_dbase.execute(f"""
-                SELECT 
-                    lemma_kõik_vormid.vorm, 
-                    lemma_korpuse_vormid.lemma,         
-                    lemma_korpuse_vormid.kaal,
-                    lemma_korpuse_vormid.vorm         
-                FROM lemma_kõik_vormid
-                INNER JOIN lemma_korpuse_vormid ON lemma_kõik_vormid.lemma = lemma_korpuse_vormid.lemma 
-                WHERE lemma_kõik_vormid.vorm = '{sone}'
-            """)
-            res_fetchall=res.fetchall()
-            for input, lemma, confidence, wordform in res_fetchall:
-                self.response_table.append((location, input, lemma, "word", confidence, wordform))
-                self.append_2_json(input, lemma, "word", confidence, wordform)
-
             # vaatame kirjavigade loendit
             # "kirjavead":[(VIGANE_VORM, VORM)]
             # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
@@ -297,6 +276,28 @@ class Q_EXTENDER:
                 self.response_table.append((location, input, lemma, "suggestion",  confidence, wordform))
                 self.append_2_json(input, lemma, "suggestion", confidence, wordform)
 
+            # leiame päringusõne korpuses esinenud vormid
+            # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
+            # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
+            res_fetchall = []
+            res = self.cur_dbase.execute(f"""
+                SELECT 
+                    lemma_kõik_vormid.vorm, 
+                    lemma_korpuse_vormid.lemma,         
+                    lemma_korpuse_vormid.kaal,
+                    lemma_korpuse_vormid.vorm         
+                FROM lemma_kõik_vormid
+                INNER JOIN lemma_korpuse_vormid ON lemma_kõik_vormid.lemma = lemma_korpuse_vormid.lemma 
+                WHERE lemma_kõik_vormid.vorm = '{sone}'
+            """)
+            res_fetchall=res.fetchall()
+            if len(res_fetchall) > 0:
+                for input, lemma, confidence, wordform in res_fetchall:
+                    self.response_table.append((location, input, lemma, "word", confidence, wordform))
+                    self.append_2_json(input, lemma, "word", confidence, wordform)
+            else:
+                self.response_table.append((location, sone, sone, "not_indexed",  -1, sone))
+                self.append_2_json(sone, sone, "not_indexed", -1, sone)
             # Liitsõnandus
             # "lemma_kõik_vormid":[(VORM, 0, LEMMA)]
             # "liitsõnad":[(OSALEMMA, LIITLEMMA)]
