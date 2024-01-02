@@ -72,11 +72,11 @@ TÜ pilves töötava konteineri kasutamine
     $ cd ~/git/smart-search_github/api/api_advanced_indexing # selles kataloogis on test_headers.csv ja test_document.json
 
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data-binary @test_headers.csv \
+        --data-binary @test/test_headers.csv \
         https://smart-search.tartunlp.ai/api/advanced_indexing/headers | jq | less
 
     $ curl --silent --request POST --header "Content-Type: application/json" \
-      --data-binary @test_document.json \
+      --data-binary @test/test_document.json \
       https://smart-search.tartunlp.ai/api/advanced_indexing/document  | jq | less
 
     $ curl --silent --request POST --header "Content-Type: application/json" \
