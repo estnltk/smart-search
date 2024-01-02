@@ -1,0 +1,12 @@
+# cd ~/git/smart-search_github/api/api_query_extender
+# docker-compose up -d && docker-compose ps
+# docker-compose down && docker-compose ps
+
+services:
+  advanced_indexing:
+    image: tilluteenused/smart_search_api_query_extender:2023.12.29
+    ports:
+      - 6604:6604
+    environment:
+      - SMART_SEARCH_MAX_CONTENT_LENGTH=5000000
+      - SMART_SEARCH_QE_DBASE=./smart_search.sqlite

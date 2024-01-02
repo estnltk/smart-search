@@ -2,8 +2,10 @@
 
 '''Flask api, päringustring päringut esitavaks JSONiks
 Mida uut:
-2023-12-28
+2023-12-28 flask_api_query_extender.py
 * kohendatud "suggestion" ja "not_indexed" käsitlust
+2023-12-29 tilluteenused/smart_search_api_query_extender
+* andmebaasi lisatud DBASE_VERSION ja (test)tabel "ignoreeritavad_vormid"
 ---------------------------------
 
 Lähtekoodist pythoni skripti kasutamine
@@ -41,6 +43,7 @@ Lähtekoodist pythoni skripti kasutamine
         
     $ curl --silent --request POST --header "Content-Type: application/json" \
         localhost:6604/api/query_extender/version | jq
+
 ----------------------------------------------
 
 Lähtekoodist tehtud konteineri kasutamine
@@ -48,11 +51,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/api_query_extender
-    $ docker build -t tilluteenused/smart_search_api_query_extender:2023.12.28 . 
+    $ docker build -t tilluteenused/smart_search_api_query_extender:2023.12.29 . 
 2.3 Konteineri käivitamine
     $ docker run -p 6604:6604 \
         --env  SMART_SEARCH_QE_DBASE='./smart_search.sqlite' \
-        tilluteenused/smart_search_api_query_extender:2023.12.28 
+        tilluteenused/smart_search_api_query_extender:2023.12.29 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -60,7 +63,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_query_extender:2023.12.28
+    $ docker pull tilluteenused/smart_search_api_query_extender:2023.12.29
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
@@ -68,11 +71,28 @@ DockerHUBist tõmmatud konteineri kasutamine
 
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
+
+    $ curl --silent --request POST \
+        --header "Content-Type: application/json" \
+        --data "{\"tss\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
+        https://smart-search.tartunlp.ai/api/query_extender/tsv
+        
+    $ curl --silent --request POST \
+        --header "Content-Type: application/json" \
+        --data "{\"tss\":\"presitendi\\tpresidendiga\"}" \
+        https://smart-search.tartunlp.ai/api/query_extender/tsv
+        
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data "{\"content\":\"presitendi ja polekorpuses kantseleis\"}" \
-        https://smart-search.tartunlp.ai/api/ea_paring/json
+        --data "{\"content\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
+        https://smart-search.tartunlp.ai/api/query_extender/process | jq
+        
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/ea_paring/version | jq
+        --data "{\"tss\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
+        https://smart-search.tartunlp.ai/api/query_extender/json | jq
+        
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        https://smart-search.tartunlp.ai/api/query_extender/version | jq     
+
 ----------------------------------------------
 
 '''
