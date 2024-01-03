@@ -24,7 +24,7 @@ RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt
 
 # copy current task related skripts
 COPY --chown=mere_mortal:mere_mortal smart_search.sqlite ./
-COPY --chown=mere_mortal:mere_mortal stlspellerjson et.dct
+COPY --chown=mere_mortal:mere_mortal stlspellerjson et.dct ./
 COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_query_extender.py api_query_extender.py docker-entrypoint.sh ./
 RUN chmod +x *.sh *py stlspellerjson
 # parameters for gunicorn
