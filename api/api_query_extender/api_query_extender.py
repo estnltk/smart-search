@@ -131,7 +131,7 @@ Käsurealt:
     $ ./venv/bin/python3 ./api_query_extender.py  \
         --tsv \
         --dbase=../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite \
-        --json="{\"tss\":\"presitendiga\\tpresidemdiga\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" 
+        --json="{\"tss\":\"presitendiga\\tpresidemdigas\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" 
 
     $ ./venv/bin/python3 ./api_query_extender.py  \
         --tsv \
@@ -153,7 +153,7 @@ proc_stlspellerjson = subprocess.Popen(['./stlspellerjson', '--path=.'],
                             stderr=subprocess.DEVNULL)
 
 class Q_EXTENDER:
-    def __init__(self, dbase:Union[str,None], csthread=True):
+    def __init__(self, dbase:str, csthread=True):
         """Initsialiseerime versioonumbri, avame andmebaasi
 
         Args:
@@ -173,7 +173,7 @@ class Q_EXTENDER:
         self.con_dbase = None
         self.dbase = dbase
 
-        if self.dbase == None:
+        if self.dbase == "":
             self.dbase = os.environ.get('SMART_SEARCH_QE_DBASE') # veebiteenus sõnestamiseks
 
         self.con_dbase = sqlite3.connect(self.dbase, check_same_thread=csthread)

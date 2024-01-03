@@ -2,6 +2,7 @@ FROM ubuntu
 
 # install C++ json-library for vmetajson and other stuff
 RUN apt-get update && apt-get install -y \
+    libjsoncpp-dev \
     tini \
     python3 \
     python3-pip \

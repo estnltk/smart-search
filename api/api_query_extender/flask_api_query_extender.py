@@ -6,8 +6,10 @@ Mida uut:
 * kohendatud "suggestion" ja "not_indexed" käsitlust
 2023-12-29 konteiner
 * andmebaasi lisatud DBASE_VERSION ja (test)tabel "ignoreeritavad_vormid"
-2024-01-03
+2024-01-03 konteiner
 * konteinerisse lisatud stlspellerjson ja et.dct
+2024-01-04 konteiner
+* konteinerisse lisatud uues versioon stlspellerjson programmist
 
 ---------------------------------
 
@@ -33,7 +35,7 @@ Lähtekoodist pythoni skripti kasutamine
         
     $ curl --silent --request POST \
         --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presitendi\\tpresidendiga\"}" \
+        --data "{\"tss\":\"presitendigas\"}" \
         localhost:6604/api/query_extender/tsv
         
     $ curl --silent --request POST --header "Content-Type: application/json" \
@@ -41,7 +43,7 @@ Lähtekoodist pythoni skripti kasutamine
         localhost:6604/api/query_extender/process | jq
         
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
+        --data "{\"tss\":\"presidemdiga\\tpresitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
         localhost:6604/api/query_extender/json | jq
         
     $ curl --silent --request POST --header "Content-Type: application/json" \
@@ -54,11 +56,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/api_query_extender
-    $ docker build -t tilluteenused/smart_search_api_query_extender:2024.01.03 . 
+    $ docker build -t tilluteenused/smart_search_api_query_extender:2024.01.04 . 
 2.3 Konteineri käivitamine
     $ docker run -p 6604:6604 \
         --env  SMART_SEARCH_QE_DBASE='./smart_search.sqlite' \
-        tilluteenused/smart_search_api_query_extender:2024.01.03 
+        tilluteenused/smart_search_api_query_extender:2024.01.04 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -66,7 +68,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_query_extender:2024.01.03
+    $ docker pull tilluteenused/smart_search_api_query_extender:2024.01.04
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
@@ -82,7 +84,7 @@ TÜ pilves töötava konteineri kasutamine
         
     $ curl --silent --request POST \
         --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presitendi\\tpresidendiga\"}" \
+        --data "{\"tss\":\"presitendiga\\tpresitendiga\\tpresidendiga\"}" \
         https://smart-search.tartunlp.ai/api/query_extender/tsv
         
     $ curl --silent --request POST --header "Content-Type: application/json" \
@@ -94,8 +96,7 @@ TÜ pilves töötava konteineri kasutamine
         https://smart-search.tartunlp.ai/api/query_extender/json | jq
         
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/query_extender/version | jq     
-
+        https://smart-search.tartunlp.ai/api/query_extender/version | jq
 ----------------------------------------------
 
 '''
@@ -106,10 +107,10 @@ from typing import Dict, List, Tuple
 from functools import wraps
 import api_query_extender
 
-VERSION_CONTAINER='2024.01.03'
-VERSION_FLASK_SHELL='2024.01.03'
+VERSION_CONTAINER='2024.01.04'
+VERSION_FLASK_SHELL='2024.01.04'
 
-paring_soned = api_query_extender.Q_EXTENDER(None, csthread=False)
+paring_soned = api_query_extender.Q_EXTENDER("", csthread=False)
 
 app = Flask("api_query_extender")
 
