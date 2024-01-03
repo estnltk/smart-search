@@ -4,8 +4,11 @@
 Mida uut:
 2023-12-28 flask_api_query_extender.py
 * kohendatud "suggestion" ja "not_indexed" käsitlust
-2023-12-29 tilluteenused/smart_search_api_query_extender
+2023-12-29 konteiner
 * andmebaasi lisatud DBASE_VERSION ja (test)tabel "ignoreeritavad_vormid"
+2024-01-03
+* konteinerisse lisatud stlspellerjson ja et.dct
+
 ---------------------------------
 
 Lähtekoodist pythoni skripti kasutamine
@@ -51,11 +54,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/api_query_extender
-    $ docker build -t tilluteenused/smart_search_api_query_extender:2023.12.29 . 
+    $ docker build -t tilluteenused/smart_search_api_query_extender:2024.01.03 . 
 2.3 Konteineri käivitamine
     $ docker run -p 6604:6604 \
         --env  SMART_SEARCH_QE_DBASE='./smart_search.sqlite' \
-        tilluteenused/smart_search_api_query_extender:2023.12.29 
+        tilluteenused/smart_search_api_query_extender:2024.01.03 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -63,7 +66,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_query_extender:2023.12.29
+    $ docker pull tilluteenused/smart_search_api_query_extender:2024.01.03
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
@@ -96,14 +99,15 @@ TÜ pilves töötava konteineri kasutamine
 ----------------------------------------------
 
 '''
-
+import os
 import argparse
 from flask import Flask, request, jsonify, make_response, abort
 from typing import Dict, List, Tuple
 from functools import wraps
 import api_query_extender
 
-VERSION='2023.12.28'
+VERSION_CONTAINER='2024.01.03'
+VERSION_FLASK_SHELL='2024.01.03'
 
 paring_soned = api_query_extender.Q_EXTENDER(None, csthread=False)
 
@@ -142,7 +146,8 @@ def api_ea_paring_process():
     response_json
     {   "content": CONTENT",
         "params": {"otsi_liitsõnadest": "false" } # optional, default: true 
-        "annotations": {"query": [[LEMMA]],  
+        "annotations": 
+           {"query": [[LEMMA]],  
             "ignore": [IGNORE_WORDWORM],
             "not indexed": [NOT_INDEXED_LEMMA],
             "typos": {TYPO: {"suggestions":[SUGGESTION]}}},
@@ -150,7 +155,7 @@ def api_ea_paring_process():
     '''
     try:
         paring_soned.response_json = request.json
-        paring_soned.paring_json()
+        paring_soned.paring_process()
         return jsonify(paring_soned.response_json)
     except Exception as e:
         return jsonify(list(e.args))    
@@ -161,7 +166,7 @@ def api_ea_paring_process():
 def api_ea_paring_json_json():
     try:
         paring_soned.response_json = request.json
-        paring_soned.paring_tsv()
+        paring_soned.paring_jsontsv()
         return jsonify(paring_soned.response_json)
     except Exception as e:
         return jsonify(list(e.args))    
@@ -172,7 +177,7 @@ def api_ea_paring_json_json():
 def api_ea_paring_tsv():
     try:
         paring_soned.response_json = request.json
-        paring_soned.paring_tsv()
+        paring_soned.paring_jsontsv()
         res_str = ''
         for rec in paring_soned.response_table:
             res_str += f'{rec[0]}\t{rec[1]}\t{rec[2]}\t{rec[3]}\t{rec[4]}\t{rec[5]}\n'
@@ -191,7 +196,8 @@ def api_ea_paring_version():
         ~flask.Response: Versiooni-info
     """
     version_json = paring_soned.version_json()
-    version_json["container_version"] = VERSION
+    version_json["VERSION_CONTAINER"] = VERSION_CONTAINER
+    version_json["VERSION_FLASK_SHELL"] = VERSION_FLASK_SHELL
     version_json["SMART_SEARCH_MAX_CONTENT_LENGTH"] = SMART_SEARCH_MAX_CONTENT_LENGTH
     return jsonify(version_json)
 

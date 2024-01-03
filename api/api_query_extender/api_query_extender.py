@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 
 """
+Mida uut:
+2024.01.03
+* Kasutame vabomorfi spellerit kui kirjaviga ei leitud ettegenereeritud kirjavigade tabelis
+
+---------------------------------------
 Sisse:
     Amdmebaas 3 tabeliga
 
@@ -10,6 +15,12 @@ Sisse:
             lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
             PRIMARY KEY(vorm, lemma)
 
+    * lemma_kõik_vormid( 
+            lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
+            kaal INT NOT NULL,          -- suurem number on sagedasem
+            vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
+            PRIMARY KEY(lemma, vorm))
+
     * kirjavead(
                 vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
                 vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
@@ -17,15 +28,39 @@ Sisse:
                 PRIMARY KEY(vigane_vorm, vorm)
 
     * ignoreeritavad_vormid(
-                ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus
-                paritolu INT NOT NULL,            -- 0:korpusest tuletatud, 1:etteantud vorm                       
+                ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus                       
                 PRIMARY KEY(ignoreeritav_vorm)
+
+    * liitsõnad( 
+            osalemma TEXT NOT NULL,     -- liitsõna osasõna lemma
+            liitlemma TEXT NOT NULL,    -- liitsõna osasõna lemmat sisaldav liitsõna lemma
+            PRIMARY KEY(osalemma, liitlemma))
 
     json_io (Dict): 
         {   "content": str // päringustring
         }
 
-Returns:
+Returns (üks alljärgnevatest):
+    SL väljund TSV kujul: # TSV kujul JSON kuju
+        (location, input, lemma, type, confidence, wordform)
+        location    järjekorranr 0, 1, 2, ...
+        input       päringusõne
+        lemma       lemma 
+        type        suggestion|speller_suggestion|word|compound|ignore
+        confidence  mitu korda esines
+        wordform    sõnavorm
+
+    SL väljund JSON kujul # JSON kujul TSV kuju 
+    {   INPUT:
+        {   LEMMA:
+            {   WORDFORM:
+                {   "type": suggestion|speller_suggestion|word|compound|ignore,
+                    "confidence": int
+                }
+            }
+        }
+    }
+
     Dict:
     {   "content": str // päringustring,
         "annotatsions":
@@ -87,7 +122,7 @@ Käsurealt:
     $ ./venv/bin/python3 ./api_query_extender.py  \
         --tsv \
         --dbase=../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite \
-        --json="{\"content\":\"pidi laia ignotestsõne presidendi ja ning\"}" | jq
+        --json="{\"content\":\"presidemdiga pidi laia ignotestsõne presidendi ja ning\"}" | jq
 
     $ SMART_SEARCH_QE_DBASE="../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite" \
         ./venv/bin/python3 ./api_query_extender.py  \
@@ -96,7 +131,7 @@ Käsurealt:
     $ ./venv/bin/python3 ./api_query_extender.py  \
         --tsv \
         --dbase=../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite \
-        --json="{\"tss\":\"presidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" 
+        --json="{\"tss\":\"presitendiga\\tpresidemdiga\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" 
 
     $ ./venv/bin/python3 ./api_query_extender.py  \
         --tsv \
@@ -109,6 +144,13 @@ import sys
 import json
 import sqlite3
 from typing import Dict, List, Union
+import subprocess
+
+proc_stlspellerjson = subprocess.Popen(['./stlspellerjson', '--path=.'],  
+                            universal_newlines=True, 
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.DEVNULL)
 
 class Q_EXTENDER:
     def __init__(self, dbase:Union[str,None], csthread=True):
@@ -126,7 +168,7 @@ class Q_EXTENDER:
         """
         # https://stackoverflow.com/questions/48218065/objects-created-in-a-thread-can-only-be-used-in-that-same-thread
         # kui me midagi andmebaasi ei kirjuta, ei tohiks csthread=False asju pekki keerata
-        self.VERSION="2023.12.27"
+        self.VERSION="2024.01.03"
         self.response_json = {}
         self.con_dbase = None
         self.dbase = dbase
@@ -142,6 +184,15 @@ class Q_EXTENDER:
         """
         if self.con_dbase is not None:
             self.con_dbase.close()
+
+    def run_subprocess(self, proc, json_in:Dict) -> Dict:
+        try:
+            proc.stdin.write(f'{json.dumps(json_in)}\n')
+            proc.stdin.flush()
+            json_out = json.loads(proc.stdout.readline())
+        except Exception as e: 
+            raise            
+        return json_out
 
     def string2json(self, str:str)->None:
         """JSONis sisendstring "päris" JSONiks
@@ -160,7 +211,7 @@ class Q_EXTENDER:
         except:
             raise Exception({"error": "JSON parse error"})
         
-    def paring_json(self) -> None:
+    def paring_process(self) -> None:
         """Päringusõnedest päringu koostamine
 
         Args:
@@ -175,7 +226,6 @@ class Q_EXTENDER:
         """
         paring = self.response_json["content"].split() # ei kasuta sõnestamist, näit "Sarved&Sõrad" tüüpi asjad lähevad pekki
 
-        
         self.response_json["annotations"] = {"query":[], "typos": {}, "ignore":[], "not indexed": []}
         for sone in paring:
             # vaatame kas jooksev päringusõne on ignoreeritavate loendis
@@ -188,7 +238,23 @@ class Q_EXTENDER:
                 self.response_json["annotations"]["ignore"].append(res_fetchall[0][0])
                 continue # kui on ignereeritav, siis teisi tabeleid ei vaata
 
-            # vaatame kas jooksev päringusesõne on kirjavigade loendis
+            # vaatame kas leiame jooksvale päringusõnele vastava korpuselemma
+            res = self.cur_dbase.execute(f'''
+                SELECT vorm, lemma FROM lemma_kõik_vormid 
+                WHERE vorm = "{sone}"
+                ''')
+            if len(res_fetchall:=res.fetchall()) > 0:
+                vormid = []
+                for res in res_fetchall:
+                    vormid.append(res[1])
+                self.response_json["annotations"]["query"].append(vormid)
+                korpuselemma_või_kirjaviga = True
+                continue # kui misiganes kujul leidsime korpusest, kirjavigasid ei vaata
+           
+            # ei leidnud indeksist
+            self.response_json["annotations"]["not indexed"].append(sone)
+
+            # vaatame kas jooksev päringusesõne on ettearvutatud kirjavigade loendis
             res = self.cur_dbase.execute(f"""
                 SELECT 
                     kirjavead.vigane_vorm,
@@ -201,47 +267,76 @@ class Q_EXTENDER:
                 self.response_json["annotations"]["typos"][sone] =  {"suggestions":[]}
                 for typo in res_fetchall:
                     self.response_json["annotations"]["typos"][sone]["suggestions"].append(typo[1])
-                # kirjaviga
+                continue # oli ettearvutatud kirjavigade hulgas, piirdume sellega
 
-            # vaatame kas leiame jooksvale päringusõnele vastava korpuselemma
-            res = self.cur_dbase.execute(f'''
-                SELECT vorm, lemma FROM lemma_kõik_vormid 
-                WHERE vorm = "{sone}"
-                ''')
-            if len(res_fetchall:=res.fetchall()) > 0:
-                vormid = []
-                for res in res_fetchall:
-                    vormid.append(res[1])
-                self.response_json["annotations"]["query"].append(vormid)
-                korpuselemma_või_kirjaviga = True
-                # leidsime päringusõne lemma korpusest, kontrollime veel kirjavigasust
-                # kui kirjavigade loendis olev sõne esines päriselt korpuses
-                # siis on võimalik, et ta päriselt ei olegi kirjaviga            
-            else:
-                # ei leidnud indeksist
-                self.response_json["annotations"]["not indexed"].append(sone)
-
-    def paring_tsv(self) -> None:
+            # polnud ettearvutatud kirjavigade hulgas, küsime "päris" spellerilt
+            # sisse: {"annotations":{"tokens":[{"features":{"token": string}}]}}
+            '''
+            {   "annotations":
+                {   "tokens":
+                    [   {   "features":
+                            {   "token": string,  /* kontrollitav sõne */
+                                "suggestions":["sooovitus1",...] /* võimaliku kirjavea korral soovitavad parandatud variandid */
+                            }
+                        }
+                    ]
+                }
+            }
+            '''
+            speller_json_out = self.run_subprocess(proc_stlspellerjson, {"annotations":{"tokens":[{"features":{"token": sone}}]}})
+            for token in speller_json_out["annotations"]["tokens"]:
+                if "suggestions" in token["features"]:
+                    for suggestion in token["features"]["suggestions"]:
+                        res_fetchall = []
+                        res = self.cur_dbase.execute(f"""
+                            SELECT lemma                       
+                            FROM lemma_kõik_vormid
+                            WHERE vorm='{suggestion}'
+                        """)
+                        if len(res_fetchall:=res.fetchall()) > 0:
+                            self.response_json["annotations"]["typos"][sone] =  {"suggestions":[]}
+                            for lemma in res_fetchall:
+                                self.response_json["annotations"]["typos"][sone]["suggestions"].append(lemma[0])
+                            
+    def paring_jsontsv(self) -> None:
         """
         {   "tss": str, // Tab Separated Strings (tokens)
             "params":{"otsi_liitsõnadest":bool} // optional
         }
 
+        Teeb tsv ja json kujul väljundi
+        tsv: 
         (location, input, lemma, type, confidence, wordform)
             location    järjekorranr 0, 1, 2, ...
             input       päringusõne
             lemma       lemma 
-            type        suggestion|word|compound|ignore
+            type        suggestion|speller_suggestion|word|compound|ignore
             confidence  mitu korda esines
             wordform    sõnavorm
-        """ 
+
+        json
+        {   INPUT:
+            {   LEMMA:
+                {   WORDFORM:
+                    {   "type": suggestion|speller_suggestion|word|compound|ignore,
+                        "confidence": int
+                    }
+                }
+            }
+        }    
+        """
+        oli_liitsõnas = False
+        oli_indeksis = False 
+        
         otsi_liitsõnadest = True
         if "params" in self.response_json and "otsi_liitsõnadest" in self.response_json ["params"]:
             otsi_liitsõnadest = self.response_json["params"]["otsi_liitsõnadest"].upper() == "TRUE"
+
         self.response_table = []
         self.response_table.append(("location", "input", "lemma", "type", "confidence", "wordform")) # veerunimed
         paring = self.response_json["tss"].split('\t') # ei kasuta sõnestamist, näit "Sarved&Sõrad" tüüpi asjad lähevad pekkiven
         self.json_out = [("location", "input", "lemma", "type", "confidence", "wordform")]
+
         for location, sone in enumerate(paring):
             # vaatame kas jooksev päringusõne on ignoreeritavate loendis
             res = self.cur_dbase.execute(f'''
@@ -253,51 +348,8 @@ class Q_EXTENDER:
                 assert len(res_fetchall)==1 and res_fetchall[0][0]==sone
                 self.response_table.append((location, sone, sone, "ignore", -1, sone))
                 self.append_2_json(sone, sone, "ignore", -1, sone)
-                continue
+                continue # kui oli ignoreeritav, siis rohkem selle sõnega ei tegele
             
-            # vaatame kirjavigade loendit
-            # "kirjavead":[(VIGANE_VORM, VORM)]
-            # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
-            # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
-            res_fetchall = []
-            res = self.cur_dbase.execute(f"""
-                SELECT
-                    kirjavead.vigane_vorm,
-                    lemma_korpuse_vormid.lemma,         
-                    lemma_korpuse_vormid.kaal,
-                    lemma_korpuse_vormid.vorm                                                                              
-                FROM kirjavead
-                INNER JOIN lemma_kõik_vormid ON kirjavead.vorm=lemma_kõik_vormid.vorm
-                INNER JOIN lemma_korpuse_vormid ON lemma_kõik_vormid.lemma = lemma_korpuse_vormid.lemma 
-                WHERE vigane_vorm='{sone}'
-            """)
-            res_fetchall=res.fetchall()
-            for input, lemma, confidence, wordform in res_fetchall:
-                self.response_table.append((location, input, lemma, "suggestion",  confidence, wordform))
-                self.append_2_json(input, lemma, "suggestion", confidence, wordform)
-
-            # leiame päringusõne korpuses esinenud vormid
-            # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
-            # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
-            res_fetchall = []
-            res = self.cur_dbase.execute(f"""
-                SELECT 
-                    lemma_kõik_vormid.vorm, 
-                    lemma_korpuse_vormid.lemma,         
-                    lemma_korpuse_vormid.kaal,
-                    lemma_korpuse_vormid.vorm         
-                FROM lemma_kõik_vormid
-                INNER JOIN lemma_korpuse_vormid ON lemma_kõik_vormid.lemma = lemma_korpuse_vormid.lemma 
-                WHERE lemma_kõik_vormid.vorm = '{sone}'
-            """)
-            res_fetchall=res.fetchall()
-            if len(res_fetchall) > 0:
-                for input, lemma, confidence, wordform in res_fetchall:
-                    self.response_table.append((location, input, lemma, "word", confidence, wordform))
-                    self.append_2_json(input, lemma, "word", confidence, wordform)
-            else:
-                self.response_table.append((location, sone, sone, "not_indexed",  -1, sone))
-                self.append_2_json(sone, sone, "not_indexed", -1, sone)
             # Liitsõnandus
             # "lemma_kõik_vormid":[(VORM, 0, LEMMA)]
             # "liitsõnad":[(OSALEMMA, LIITLEMMA)]
@@ -316,9 +368,92 @@ class Q_EXTENDER:
                     WHERE lemma_kõik_vormid.vorm='{sone}'
                 """)
                 res_fetchall = res.fetchall()
-            for input, lemma, confidence, wordform in res_fetchall:
-                self.response_table.append((location, input, lemma, "compound",  confidence, wordform))
-                self.append_2_json(input, lemma, "suggestion", confidence, wordform)  
+                if len(res_fetchall) > 0:
+                    oli_liitsõnas = True
+                    for input, lemma, confidence, wordform in res_fetchall:
+                        self.response_table.append((location, input, lemma, "compound",  confidence, wordform))
+                        self.append_2_json(input, lemma, "compound", confidence, wordform)  
+
+            # leiame päringusõne korpuses esinenud vormid
+            # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
+            # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
+            res_fetchall = []
+            res = self.cur_dbase.execute(f"""
+                SELECT 
+                    lemma_kõik_vormid.vorm, 
+                    lemma_korpuse_vormid.lemma,         
+                    lemma_korpuse_vormid.kaal,
+                    lemma_korpuse_vormid.vorm         
+                FROM lemma_kõik_vormid
+                INNER JOIN lemma_korpuse_vormid ON lemma_kõik_vormid.lemma = lemma_korpuse_vormid.lemma 
+                WHERE lemma_kõik_vormid.vorm = '{sone}'
+            """)
+            res_fetchall=res.fetchall()
+            if len(res_fetchall) > 0:
+                oli_indeksis = True
+                for input, lemma, confidence, wordform in res_fetchall:
+                    self.response_table.append((location, input, lemma, "word", confidence, wordform))
+                    self.append_2_json(input, lemma, "word", confidence, wordform)
+            if oli_liitsõnas is True or oli_indeksis is True:
+                continue # kui terviksõnena või liitsõna osana oli indeksid ära kirjavigasid vaata
+
+            self.response_table.append((location, sone, sone, "not_indexed",  -1, sone))
+            self.append_2_json(sone, sone, "not_indexed", -1, sone)
+
+            # vaatame kirjavigade loendit
+            # "kirjavead":[(VIGANE_VORM, VORM)]
+            # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
+            # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
+            res_fetchall = []
+            res = self.cur_dbase.execute(f"""
+                SELECT
+                    kirjavead.vigane_vorm,
+                    lemma_korpuse_vormid.lemma,         
+                    lemma_korpuse_vormid.kaal,
+                    lemma_korpuse_vormid.vorm                                                                              
+                FROM kirjavead
+                INNER JOIN lemma_kõik_vormid ON kirjavead.vorm = lemma_kõik_vormid.vorm
+                INNER JOIN lemma_korpuse_vormid ON lemma_kõik_vormid.lemma = lemma_korpuse_vormid.lemma 
+                WHERE vigane_vorm='{sone}'
+            """)
+            res_fetchall=res.fetchall()
+            if len(res_fetchall) > 0:
+                for input, lemma, confidence, wordform in res_fetchall:
+                    self.response_table.append((location, input, lemma, "suggestion",  confidence, wordform))
+                    self.append_2_json(input, lemma, "suggestion", confidence, wordform)
+            else:
+                # polnud ettearvutatud kirjavigade hulgas, küsime "päris" spellerilt
+                # sisse: {"annotations":{"tokens":[{"features":{"token": string}}]}}
+                '''
+                {   "annotations":
+                    {   "tokens":
+                        [   {   "features":
+                                {   "token": string,  /* kontrollitav sõne */
+                                    "suggestions":["sooovitus1",...] /* võimaliku kirjavea korral soovitavad parandatud variandid */
+                                }
+                            }
+                        ]
+                    }
+                }
+                '''
+                speller_json_out = self.run_subprocess(proc_stlspellerjson, {"annotations":{"tokens":[{"features":{"token": sone}}]}})
+                for token in speller_json_out["annotations"]["tokens"]:
+                    if "suggestions" in token["features"]:
+                        for suggestion in token["features"]["suggestions"]:
+                            res_fetchall = []
+                            res = self.cur_dbase.execute(f"""
+                                SELECT 
+                                    lemma_korpuse_vormid.lemma,
+                                    lemma_korpuse_vormid.kaal,
+                                    lemma_korpuse_vormid.vorm                                               
+                                FROM lemma_kõik_vormid
+                                INNER JOIN lemma_korpuse_vormid ON lemma_kõik_vormid.lemma = lemma_korpuse_vormid.lemma
+                                WHERE lemma_kõik_vormid.vorm ='{suggestion}'
+                            """)
+                            res_fetchall=res.fetchall()
+                            for lemma, confidence, wordform in res_fetchall:
+                                self.response_table.append((location, sone, lemma, "speller_suggestion",  confidence, wordform))
+                                self.append_2_json(sone, lemma, "speller_suggestion", confidence, wordform)
         pass #DB
 
     def append_2_json(self, input, lemma, type, confidence, wordform):
@@ -341,7 +476,7 @@ class Q_EXTENDER:
             db_version = res.fetchall()[0]
         except:
             db_version = "not present"
-        return {"api_version": self.VERSION, "SMART_SEARCH_QE_DBASE": self.dbase, "DBASE_VERSION": db_version}
+        return {"VERSION_API": self.VERSION, "SMART_SEARCH_QE_DBASE": self.dbase, "DBASE_VERSION": db_version}
         
 if __name__ == '__main__':
     import argparse
@@ -357,10 +492,10 @@ if __name__ == '__main__':
     if args.json is not None:
         prng.string2json(args.json)
         if "content" in prng.response_json:
-            prng.paring_json()
+            prng.paring_process()
             json.dump(prng.response_json, sys.stdout, indent=args.indent, ensure_ascii=False)
         elif "tss" in prng.response_json:
-            prng.paring_tsv()
+            prng.paring_jsontsv()
             if args.tsv is True:
                 for rec in prng.response_table:
                     print(f'{rec[0]}\t{rec[1]}\t{rec[2]}\t{rec[3]}\t{rec[4]}\t{rec[5]}')
