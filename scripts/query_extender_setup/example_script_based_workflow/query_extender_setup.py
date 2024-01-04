@@ -127,7 +127,6 @@ class DB:
             PRIMARY KEY(vigane_vorm, vorm)
         )''')
 
-
         # ["tabelid"]["allikad"]:[(DOCID, CONTENT)]
         self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS allikad(
                 docid TEXT NOT NULL,        -- dokumendi id
@@ -135,6 +134,20 @@ class DB:
                 PRIMARY KEY(docid)
                 )
         ''')  
+
+        # ["tabelid"]["ignoreeritavad_vormid"]:[IGNOREERITAV_VORM]
+        self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS ignoreeritavad_vormid(
+                ignoreeritav_vorm TEXT NOT NULL,   -- ignoreeritav vorm
+                PRIMARY KEY(ignoreeritav_vorm)
+                )
+        ''')      
+
+        # ["tabelid"]["version"]:[verion]
+        #self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS version(
+        #        version TEXT NOT NULL,   -- viimati täiendatud tabeleid:aasta.kuu.päev 
+        #        PRIMARY KEY(version)
+        #        )
+        #''')      
 
         self.json_in = {}
         if self.verbose:
@@ -152,8 +165,6 @@ class DB:
             for line in f:
                 self.json_in = self.string2json(line)
                 self.täienda_tabelid(file)
-        #INSERT INTO ignoreeritavad_vormid
-        #VALUES ("ignotestsõne") 
  
     def täienda_tabelid(self, file:str)->None:
         """Kanna self.json_in'ist info andmbeaaaside tabelitesse
@@ -200,7 +211,10 @@ class DB:
                 pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {file} : {table} :', disable=(not self.verbose))
                 for rec in pbar:
                     try:
-                        self.cur_baas.execute(f"INSERT INTO {table} VALUES {tuple(rec)}")
+                        if type(rec) is str:
+                            self.cur_baas.execute(f"INSERT INTO {table} VALUES ('{rec}')")
+                        else:
+                            self.cur_baas.execute(f"INSERT INTO {table} VALUES {tuple(rec)}")
                     except Exception as e:
                         # assert False, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
                         continue # selline juba oli, ignoreerime kordusi

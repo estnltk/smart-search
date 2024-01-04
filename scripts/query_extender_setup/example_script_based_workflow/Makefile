@@ -2,6 +2,7 @@ PREF=20240101-
 PREF_HEADINGS=../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts
 PREF_ADVIDX=../../../api/api_advanced_indexing/
 PREF_MISPGEN=../../../api/api_misspellings_generator/
+DIR_IGNOWFORMS=./
 
 all: $(PREF)koond.sqlite
 
@@ -58,6 +59,12 @@ $(PREF)koond.sqlite : $(PREF)kirjavead.json $(PREF)state_laws.json $(PREF)govern
 		--db_name=$(PREF)koond.sqlite \
 	    --tables=kirjavead \
 		$(PREF)kirjavead.json
+	../../scripts/script_query_extender_setup/venv/bin/python3 ../../scripts/script_query_extender_setup/query_extender_setup.py \
+		--verbose \
+		--append \
+		--db_name=$(PREF)koond.sqlite \
+	    --tables=ignoreeritavad_vormid \
+		$(DIR_IGNOWFORMS)ignoreeritavad_vormid.json
 		
 #----
 

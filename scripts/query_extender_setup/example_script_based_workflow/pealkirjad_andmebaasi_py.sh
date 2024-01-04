@@ -4,6 +4,7 @@ DIR_HEADINGS=~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsi
 DIR_INDEXING=~/git/smart-search_github/api/api_advanced_indexing
 DIR_MISPGEN=~/git/smart-search_github/api/api_misspellings_generator
 DIR_QUERYEXT=~/git/smart-search_github/scripts/query_extender_setup/example_make_based_workflow
+DIR_IGNOWFORMS=.
 
 teeme_json_tabelid()
 {
@@ -59,6 +60,7 @@ teeme_andmebaasi()
     # .csv.json, kirjavead.kv.json -> .sqlite
     echo '#' $FUNCNAME '--------------------'
     pushd ${DIR_QUERY_EXTENDER} >& /dev/null
+
     ./venv/bin/python3 ./query_extender_setup.py \
         --verbose \
         --db_name=${DIR_HEADINGS}/koond.sqlite \
@@ -71,10 +73,21 @@ teeme_andmebaasi()
         --db_name=${DIR_HEADINGS}/koond.sqlite \
         --tables=kirjavead \
         ${DIR_HEADINGS}/kirjavead.kv.json
+        
+    ./venv/bin/python3 ./query_extender_setup.py \
+        --verbose \
+        --append \
+        --db_name=${DIR_HEADINGS}/koond.sqlite \
+        --tables=ignoreeritavad_vormid \
+        ${DIR_IGNOWFORMS}/ignoreeritavad_vormid.json
+
     popd >& /dev/null
 }
 
 #teeme_json_tabelid
-teeme_sonavormide_loendi
-teeme_kirjavigade_tabeli
+#teeme_sonavormide_loendi
+#teeme_kirjavigade_tabeli
 teeme_andmebaasi
+
+exit
+
