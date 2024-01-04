@@ -1,11 +1,7 @@
-# POOLELI
-
-PREF=1218-
-PREF_HEADINGS=../../rt_web_crawler/results/
-PREF_ADVIDX=../../api/api_advanced_indexing/
-PREF_MISPGEN=../../api/api_misspellings_generator/
-
-docker-compose up -d
+PREF=20240101-
+PREF_HEADINGS=../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts
+PREF_ADVIDX=../../../api/api_advanced_indexing/
+PREF_MISPGEN=../../../api/api_misspellings_generator/
 
 all: $(PREF)koond.sqlite
 
@@ -29,24 +25,24 @@ $(PREF)local_government_acts.json : $(PREF_HEADINGS)local_government_acts.csv
 
 #----
 
-$(PREF)state_laws.kv-txt : $(PREF)state_laws.json
-	cat $< | gron | grep 'json.tabelid.indeks_vormid\[[0-9]*\]\[0\]' | sed 's/^.* = "\(.*\)";/\1/g' > $@
+$(PREF)state_laws.sv-txt : $(PREF)state_laws.json
+	cat $< | gron | grep 'lemma_kõik_vormid\[[0-9]*\]\[2\]' | sed 's/^.* = "\(.*\)";/\1/g' | sort | grep -v '^[0-9.,%]*$' > $@
 
-$(PREF)government_orders.kv-txt : $(PREF)government_orders.json
-	cat $< | gron | grep 'json.tabelid.indeks_vormid\[[0-9]*\]\[0\]' | sed 's/^.* = "\(.*\)";/\1/g' > $@
+$(PREF)government_orders.sv-txt : $(PREF)government_orders.json
+	cat $< | gron | grep 'lemma_kõik_vormid\[[0-9]*\]\[2\]' | sed 's/^.* = "\(.*\)";/\1/g' | sort | grep -v '^[0-9.,%]*$' > $@
 
-$(PREF)government_regulations.kv-txt : $(PREF)government_regulations.json
-	cat $< | gron | grep 'json.tabelid.indeks_vormid\[[0-9]*\]\[0\]' | sed 's/^.* = "\(.*\)";/\1/g' > $@
+$(PREF)government_regulations.sv-txt : $(PREF)government_regulations.json
+	cat $< | gron | grep 'lemma_kõik_vormid\[[0-9]*\]\[2\]' | sed 's/^.* = "\(.*\)";/\1/g' | sort | grep -v '^[0-9.,%]*$' > $@
 
-$(PREF)local_government_acts.kv-txt : $(PREF)local_government_acts.json
-	cat $< | gron | grep 'json.tabelid.indeks_vormid\[[0-9]*\]\[0\]' | sed 's/^.* = "\(.*\)";/\1/g' > $@
+$(PREF)local_government_acts.sv-txt : $(PREF)local_government_acts.json
+	cat $< | gron | grep 'lemma_kõik_vormid\[[0-9]*\]\[2\]' | sed 's/^.* = "\(.*\)";/\1/g' | sort | grep -v '^[0-9.,%]*$' > $@
 
 #-----
 
-$(PREF)kirjavead.txt : $(PREF)state_laws.kv-txt $(PREF)government_orders.kv-txt $(PREF)government_regulations.kv-txt $(PREF)local_government_acts.kv-txt
+$(PREF)sonavormid.txt : $(PREF)state_laws.sv-txt $(PREF)government_orders.sv-txt $(PREF)government_regulations.sv-txt $(PREF)local_government_acts.sv-txt
 	cat $^ | sort | uniq > $@
 
-$(PREF)kirjavead.json : $(PREF)kirjavead.txt
+$(PREF)kirjavead.json : $(PREF)sonavormid.txt
 	$(PREF_MISPGEN)venv/bin/python3 $(PREF_MISPGEN)api_misspellings_generator.py  $< > $@
 
 #-----
@@ -67,7 +63,7 @@ $(PREF)koond.sqlite : $(PREF)kirjavead.json $(PREF)state_laws.json $(PREF)govern
 
 clean:
 	-rm $(PREF)*.json
-	-rm $(PREF)*.kv-txt
-	-rm $(PREF)kirjavead.txt
+	-rm $(PREF)*.sv-txt
+	-rm $(PREF)sonavormid.txt
 	-rm $(PREF)kirjavead.json
 	-rm $(PREF)koond.sqlite

@@ -1,20 +1,40 @@
-# Töövoo seadistamine ja käivitamine
+# CSV-kujul pealkirjafailidest päringulaiendaja ja otsimootori tööks vajaliku andmebaasi tegemine
 
-<mis see töövoog teeb>
+## Eeldused
 
-## Seadistamine
-Töövoo seadistamiseks tuleb failis `Makefile` määrata ära kataloogid
-```sh
-PREF=1218-
-PREF_HEADINGS=../../rt_web_crawler/results/
-PREF_ADVIDX=../../api/api_advanced_indexing/
-PREF_MISPGEN=../../api/api_misspellings_generator/
+Operatsioonisüsteem Ubuntu 22.04 LTS (või muu kompileeritud C++ programmide mõttes ühilduv operatsioonisüsteem).
+
+Tarkvara on GITHUBist allalaaditud
+
+```cmdline
+mkdir -p ~/git/ ; cd ~/git/
+git clone git@github.com:estnltk/smart-search.git smart_search_github
 ```
 
-TBA
+Kui tarkvara on tõmmatud teise kataloogi või CVS-kujul pealkirjafailid on teises kataloogis tuleb skriptis kirjutada õiged rajad järgmistesse keskkonnamuutujatesse:
+
+* ```DIR_HEADINGS``` CSV kujul pealkirjafailide asukoht
+* ```DIR_INDEXING``` skripti ```api_advanced_indexing.py``` asukoht
+* ```DIR_MISPGEN```  skripti ```api_misspellings_generator.py``` asukoht
+* ```DIR_QUERYEXT``` skripti ```query_extender_setup.py``` asukoht
+
+Luua pythoni skriptide tööks vajalikud virtuaalkeskkonnad (täita pythoni skriptide lähetkoodi sisaldavates kataloogides ```./create_venv.sh``` käsk).
+Vaata lähemalt:
+* [Pythoni skripti kasutamine: api_advanced_indexing.py](https://github.com/estnltk/smart-search/blob/main/api/api_advanced_indexing/flask_api_advanced_indexing.py)
+* [Pythoni skripti kasutamine: api_misspellings_generator.py](https://github.com/estnltk/smart-search/blob/main/api/api_misspellings_generator/flask_api_misspellings_generator.py)
+* [Pythoni skripti kasutamine: query_extender_setup.py](https://github.com/estnltk/smart-search/blob/main/scripts/query_extender_setup/example_script_based_workflow/query_extender_setup.py)
+
+
+Töötleb kõik kataloogis ```~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts``` olevad pealkirjafailid
 
 ## Käivitamine
 
-TBA
+```cmdline
+~/git/smart-search_github/scripts/query_extender_setup/example_script_based_workflow 
+./pealkirjad_andmebaasi_py.sh
+```
 
+## Tulemus
+
+Kataloogi ```~/git/smart-search_github/scripts/query_extender_setup/example_script_based_workflow``` luuakse SQLITE-andmebaas ```koond.sqlite```
 
