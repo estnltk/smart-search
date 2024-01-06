@@ -26,13 +26,13 @@ class LocalTokenSplitter(Retagger):
     conf_param = ['split_patterns']
 
     def __init__(self,
-                 split_patterns: List[Tuple[re.Pattern, Callable[[str, re.regex.Match], int]]],
+                 split_rules: List[Tuple[re.Pattern, Callable[[str, re.regex.Match], int]]],
                  output_layer: str = 'tokens'):
         """Initializes LocalTokenSplitter.
 
         Parameters
         ----------
-        split_patterns: List[re.Pattern]
+        split_rules: List[re.Pattern]
             A list of precompiled regular expression Patterns together
             with function that determines the split point.
             If match occurs but split_point == -1 then the match is
@@ -52,11 +52,11 @@ class LocalTokenSplitter(Retagger):
         self.output_attributes = ()
 
         # Assert that all patterns are in the valid format
-        if not isinstance(split_patterns, list):
+        if not isinstance(split_rules, list):
             raise TypeError('(!) patterns should be a list of compiled regular expressions.')
 
         # TODO: Add more detailed checks or define SplitRules class
-        self.split_patterns = copy(split_patterns)
+        self.split_patterns = copy(split_rules)
 
     def _change_layer(self, text: Text, layers: MutableMapping[str, Layer], status: dict):
         """Rewrites the tokens layer by splitting its tokens into
