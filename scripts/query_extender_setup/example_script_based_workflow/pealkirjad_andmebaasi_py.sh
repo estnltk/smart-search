@@ -1,10 +1,12 @@
 #!/bin/bash
+ 
+# cd  ~/git/smart-search_github/scripts/query_extender_setup/example_script_based_workflow
 
 DIR_HEADINGS=~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts
 DIR_INDEXING=~/git/smart-search_github/api/api_advanced_indexing
 DIR_MISPGEN=~/git/smart-search_github/api/api_misspellings_generator
 DIR_QUERYEXT=~/git/smart-search_github/scripts/query_extender_setup/example_make_based_workflow
-DIR_IGNOWFORMS=.
+DIR_IGNOWFORMS=~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/01_dokumentide_indekseerimine/inputs
 
 teeme_json_tabelid()
 {
@@ -79,7 +81,7 @@ teeme_andmebaasi()
         --append \
         --db_name=${DIR_HEADINGS}/koond.sqlite \
         --tables=ignoreeritavad_vormid \
-        ${DIR_IGNOWFORMS}/ignoreeritavad_vormid.json
+        ${DIR_IGNOWFORMS}/ignore.json
 
     popd >& /dev/null
 }
@@ -88,6 +90,4 @@ teeme_andmebaasi()
 #teeme_sonavormide_loendi
 #teeme_kirjavigade_tabeli
 teeme_andmebaasi
-
-exit
 

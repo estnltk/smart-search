@@ -1,7 +1,7 @@
-PREF=20240101-
-PREF_HEADINGS=../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts
-PREF_ADVIDX=../../../api/api_advanced_indexing/
-PREF_MISPGEN=../../../api/api_misspellings_generator/
+PREF=20240105-
+PREF_HEADINGS=~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/
+PREF_ADVIDX=~/git/smart-search_github/api/api_advanced_indexing/
+PREF_MISPGEN=~/git/smart-search_github/api/api_misspellings_generator/
 DIR_IGNOWFORMS=./
 
 all: $(PREF)koond.sqlite
@@ -13,6 +13,7 @@ kv-txt: $(PREF)state_laws.kv-txt $(PREF)government_orders.kv-txt $(PREF)governme
 #----
 
 $(PREF)state_laws.json : $(PREF_HEADINGS)state_laws.csv
+	pushd ${DIR_INDEXING} >& /dev/null
 	$(PREF_ADVIDX)venv/bin/python3 $(PREF_ADVIDX)api_advanced_indexing.py --csvpealkirjad $< > $@
 
 $(PREF)government_orders.json : $(PREF_HEADINGS)government_orders.csv

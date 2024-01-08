@@ -3,7 +3,20 @@
 '''
 Kasutamine:
 Code:
-
+    {
+        "name": "query_extender_setup_t1",
+        "type": "python",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/scripts/query_extender_setup/example_make_based_workflow",
+        "program": "./query_extender_setup.py",
+        "args": [\
+            "--verbose", \
+            "--db_name=test-tmp.sqlite", \
+            "--tables=indeks_vormid", \
+            "../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_orders.csv.json", \
+            ],
+        "env": {}
+    }
     {
         "name": "query_extender_setup",
         "type": "python",
@@ -30,6 +43,12 @@ $ ./venv/bin/python3 ./query_extender_setup.py \
     --tables=indeks_vormid:indeks_lemmad:liitsõnad:lemma_kõik_vormid:lemma_korpuse_vormid:allikad \
     ../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/*.csv.json 
 
+$ ./venv/bin/python3 ./query_extender_setup.py \
+    --verbose --db_name=test-tmp.sqlite \
+    --tables=indeks_vormid:indeks_lemmad:liitsõnad:lemma_kõik_vormid:lemma_korpuse_vormid:allikad \
+    ../../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_orders.csv.json
+
+
 SisendJson:
         {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
             "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
@@ -48,6 +67,7 @@ import sqlite3
 from tqdm import tqdm
 from typing import Dict, List, Tuple
 from inspect import currentframe, getframeinfo
+from datetime import datetime
 
 class DB:
     def __init__(self, append:bool, db_name:str, tables:List, verbose:bool)->None:
@@ -142,12 +162,15 @@ class DB:
                 )
         ''')      
 
-        # ["tabelid"]["version"]:[verion]
-        #self.cur_baas.execute('''CREATE TABLE IF NOT EXISTS version(
-        #        version TEXT NOT NULL,   -- viimati täiendatud tabeleid:aasta.kuu.päev 
-        #        PRIMARY KEY(version)
-        #        )
-        #''')      
+        #
+        self.cur_baas.execute("""CREATE TABLE IF NOT EXISTS uuendatud(
+                uuendamise_aeg TEXT NOT NULL,   -- viimati täiendatud tabeleid:aasta.kuu.päev
+                tabelid TEXT NOT NULL,          -- uuendatavate tabelite loend
+                PRIMARY KEY(uuendamise_aeg, tabelid)
+                )
+        """)
+        rec = (datetime.now().strftime('%Y.%m.%d %H:%M'), ':'.join(self.tables))
+        self.cur_baas.execute(f"INSERT INTO uuendatud VALUES {rec}")
 
         self.json_in = {}
         if self.verbose:
