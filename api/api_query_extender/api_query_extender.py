@@ -127,6 +127,16 @@ Käsurealt:
     $ cd ~/git/smart-search_github/api/api_query_extender
 
     $ ./venv/bin/python3 ./api_query_extender.py  \
+        --check \
+        --dbase=../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite \
+        --json="{\"tss\":\"Strasbourg\\tpresidendi\\tpresident\"}" | jq
+
+    $ ./venv/bin/python3 ./api_query_extender.py  \
+        --tsv \
+        --dbase=../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite \
+        --json="{\"tss\":\"Strasbourg\\tpresidendi\\tpresident\"}"  | jq
+
+    $ ./venv/bin/python3 ./api_query_extender.py  \
         --tsv \
         --dbase=../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite \
         --json="{\"content\":\"presidemdiga pidi laia ignotestsõne presidendi ja ning\"}" | jq
@@ -504,8 +514,8 @@ class Q_EXTENDER:
         """
         try:
             res_fetchall = []
-            res = self.cur_dbase.execute('SELECT version FROM version')
-            db_version = res.fetchall()[0]
+            res = self.cur_dbase.execute('SELECT * FROM uuendatud')
+            db_version = res.fetchall()
         except:
             db_version = "not present"
         return {"VERSION_API": self.VERSION, "SMART_SEARCH_QE_DBASE": self.dbase, "DBASE_VERSION": db_version}
