@@ -134,7 +134,7 @@ Käsurealt:
     $ ./venv/bin/python3 ./api_query_extender.py  \
         --tsv \
         --dbase=../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite \
-        --json="{\"tss\":\"Strasbourg\\tpresidendi\\tpresident\"}"  | jq
+        --json="{\"tss\":\"Strasbourg\\tpresitendiga\\tpresidemdigas\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" 
 
     $ ./venv/bin/python3 ./api_query_extender.py  \
         --tsv \
