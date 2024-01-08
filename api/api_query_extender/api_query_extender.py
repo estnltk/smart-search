@@ -4,37 +4,44 @@
 Mida uut:
 2024.01.03
 * Kasutame vabomorfi spellerit kui kirjaviga ei leitud ettegenereeritud kirjavigade tabelis
+2024.01.04
+* Lisatud in_indeks_vormid()
 
 ---------------------------------------
 Sisse:
     Amdmebaas 3 tabeliga
 
     * lemma_kõik_vormid(
-            vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
-            paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevast sõnavormist; 1-vorm on lemma sünonüüm
-            lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
-            PRIMARY KEY(vorm, lemma)
+        vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
+        paritolu INT NOT NULL,      -- 0-lemma on leitud jooksvas dokumendis olevast sõnavormist; 1-vorm on lemma sünonüüm
+        lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
+        PRIMARY KEY(vorm, lemma)
 
     * lemma_kõik_vormid( 
-            lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
-            kaal INT NOT NULL,          -- suurem number on sagedasem
-            vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
-            PRIMARY KEY(lemma, vorm))
+        lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
+        kaal INT NOT NULL,          -- suurem number on sagedasem
+        vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
+        PRIMARY KEY(lemma, vorm))
 
     * kirjavead(
-                vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
-                vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
-                kaal INT,                   -- sagedasemad vms võiksid olla suurema kaaluga
-                PRIMARY KEY(vigane_vorm, vorm)
+        vigane_vorm TEXT NOT NULL,  -- sõnavormi vigane versioon
+        vorm TEXT NOT NULL,         -- korpuses esinenud sõnavorm
+        kaal INT,                   -- sagedasemad vms võiksid olla suurema kaaluga
+        PRIMARY KEY(vigane_vorm, vorm)
 
     * ignoreeritavad_vormid(
-                ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus                       
-                PRIMARY KEY(ignoreeritav_vorm)
+        ignoreeritav_vorm TEXT NOT NULL,  -- sellist sõnavormi ignoreerime päringus                       
+        PRIMARY KEY(ignoreeritav_vorm)
 
     * liitsõnad( 
-            osalemma TEXT NOT NULL,     -- liitsõna osasõna lemma
-            liitlemma TEXT NOT NULL,    -- liitsõna osasõna lemmat sisaldav liitsõna lemma
-            PRIMARY KEY(osalemma, liitlemma))
+        osalemma TEXT NOT NULL,     -- liitsõna osasõna lemma
+        liitlemma TEXT NOT NULL,    -- liitsõna osasõna lemmat sisaldav liitsõna lemma
+        PRIMARY KEY(osalemma, liitlemma))
+
+    * version(
+        version TEXT NOT NULL,      -- andmebaasi muudetud AAAA.KK.PP
+        PRIMARY KEY(version)
+    )
 
     json_io (Dict): 
         {   "content": str // päringustring
@@ -211,6 +218,28 @@ class Q_EXTENDER:
         except:
             raise Exception({"error": "JSON parse error"})
         
+    def in_indeks_vormid(self)->None:
+        """Millised etteantud sõnavormidest on sõnavormide indeksis
+
+        Args:
+            tokens_in (List[str]): Kontrollitavad sõnavormid
+
+        Returns:
+        """
+        if "tss" not in self.response_json:
+            return
+        tokens_in = self.response_json["tss"].split('\t')
+        self.response_json["vormide_indeksis"] = []
+        for token in tokens_in:
+            # vaatame kas leiame jooksva sõnavormi indeksist
+            res_fetchall=[]
+            res = self.cur_dbase.execute(f'''
+                SELECT vorm, docid, start FROM indeks_vormid 
+                WHERE vorm = "{token}"
+                ''')
+            res_fetchall=res.fetchall()
+            self.response_json["vormide_indeksis"].append((token, len(res_fetchall)))
+
     def paring_process(self) -> None:
         """Päringusõnedest päringu koostamine
 
@@ -229,6 +258,7 @@ class Q_EXTENDER:
         self.response_json["annotations"] = {"query":[], "typos": {}, "ignore":[], "not indexed": []}
         for sone in paring:
             # vaatame kas jooksev päringusõne on ignoreeritavate loendis
+            res_fetchall = []
             res = self.cur_dbase.execute(f'''
                 SELECT ignoreeritav_vorm FROM ignoreeritavad_vormid 
                 WHERE ignoreeritav_vorm = "{sone}"
@@ -239,6 +269,7 @@ class Q_EXTENDER:
                 continue # kui on ignereeritav, siis teisi tabeleid ei vaata
 
             # vaatame kas leiame jooksvale päringusõnele vastava korpuselemma
+            res_fetchall = []
             res = self.cur_dbase.execute(f'''
                 SELECT vorm, lemma FROM lemma_kõik_vormid 
                 WHERE vorm = "{sone}"
@@ -255,6 +286,7 @@ class Q_EXTENDER:
             self.response_json["annotations"]["not indexed"].append(sone)
 
             # vaatame kas jooksev päringusesõne on ettearvutatud kirjavigade loendis
+            res_fetchall = []
             res = self.cur_dbase.execute(f"""
                 SELECT 
                     kirjavead.vigane_vorm,
@@ -485,7 +517,8 @@ if __name__ == '__main__':
     argparser.add_argument('-b', '--dbase', type=str, help='database')
     argparser.add_argument('-j', '--json', type=str, help='json input')
     argparser.add_argument('-i', '--indent', type=int, default=None, help='indent for JSON output, None=all in one line')
-    argparser.add_argument('-c', '--tsv',  action="store_true", help='CSV output')
+    argparser.add_argument('-c', '--tsv',  action="store_true", help='TSV output')
+    argparser.add_argument('-e', '--check',  action="store_true", default=False, help='check wordlist')
     args = argparser.parse_args()
 
     prng = Q_EXTENDER(args.dbase)
@@ -495,12 +528,16 @@ if __name__ == '__main__':
             prng.paring_process()
             json.dump(prng.response_json, sys.stdout, indent=args.indent, ensure_ascii=False)
         elif "tss" in prng.response_json:
-            prng.paring_jsontsv()
-            if args.tsv is True:
-                for rec in prng.response_table:
-                    print(f'{rec[0]}\t{rec[1]}\t{rec[2]}\t{rec[3]}\t{rec[4]}\t{rec[5]}')
-            else:
+            if args.check is True:
+                indeksis = prng.in_indeks_vormid()
                 json.dump(prng.response_json, sys.stdout, indent=args.indent, ensure_ascii=False)
+            else:
+                prng.paring_jsontsv()
+                if args.tsv is True:
+                    for rec in prng.response_table:
+                        print(f'{rec[0]}\t{rec[1]}\t{rec[2]}\t{rec[3]}\t{rec[4]}\t{rec[5]}')
+                else:
+                    json.dump(prng.response_json, sys.stdout, indent=args.indent, ensure_ascii=False)
         sys.stdout.write('\n')
         
     #json.dump(prng.version_json(), sys.stdout, indent=args.indent, ensure_ascii=False)

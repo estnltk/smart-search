@@ -12,17 +12,18 @@ Mida uut:
 2023-12-20 Kirjavigastame sõnesid alates 2st tähest
 2023-12-21 Kirjavigastajat kohendatud
 2023-12-27 Pisimuutused kommentaarides jms
+2024-01-03 Muudetud ülakomaga sõnede lisamine sõnavormide indeksisse
 -----------------------------------------------------------------
 // code (silumiseks):
     {
-        "name": "content_2_tabelid_2_test",
+        "name": "advanced_indexing_strasbourg",
         "type": "python",
         "request": "launch",
         "cwd": "${workspaceFolder}/api/api_advanced_indexing/",
         "program": "./api_advanced_indexing.py",
         "env": {},
         "args": ["--verbose", "--csvpealkirjad", \
-            "../../rt_web_crawler/results/test.csv"
+            "../tests/strabourg.csv"
         ]
     },
 // code (laseb kõik pealkirjad läbi) 
@@ -121,7 +122,7 @@ class TEE_JSON:
         self.verbose = verbose
         self.kirjavead = kirjavead
 
-        self.VERSION="2023.12.27"
+        self.VERSION="2024.01.03"
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 
     def verbose_prints(self, message:str) -> None:
@@ -333,9 +334,12 @@ class TEE_JSON:
             if len(mrfs) < 1:
                 continue
             for mrf in mrfs:
-                vorm = mrf["stem"]
-                if mrf["ending"] != '0':
-                    vorm += mrf["ending"]
+                if ("'" in k) or ("’" in k):
+                    vorm = k
+                else:
+                    vorm = mrf["stem"]
+                    if mrf["ending"] != '0':
+                        vorm += mrf["ending"]
                 puhas_vorm = vorm.replace('+', '').replace('=', '').replace('_', '')
                 if puhas_vorm not in self.json_io["sõnavormid"]:
                     self.json_io["sõnavormid"][puhas_vorm] = {}

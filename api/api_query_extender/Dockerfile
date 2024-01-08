@@ -1,5 +1,8 @@
 FROM ubuntu
 
+# Mida uut:
+# 2024.01.05 uuendatud smart_search.sqlite
+
 # install C++ json-library for vmetajson and other stuff
 RUN apt-get update && apt-get install -y \
     libjsoncpp-dev \
