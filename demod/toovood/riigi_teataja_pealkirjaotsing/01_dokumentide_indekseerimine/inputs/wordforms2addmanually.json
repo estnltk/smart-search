@@ -1,0 +1,14 @@
+{   "lemma+stem": 
+    [   {   "lemma": "Strasbourg", "stem": "Strasbourg", "endings": "endings4strasbourg"}
+    ],
+    "endings":
+    {   "endings4strasbourg":
+        [    "0",  "iga",  "iks",  "il",  "ile",  "ilt",  "ina",  "ini",  "is",  "i",  "ist",  "ita",  "e",
+             "'", "'iga", "'iks", "'il", "'ile", "'ilt", "'ina", "'ini", "'is", "'i", "'ist", "'ita", "'e",
+                  "-iga", "-iks", "-il", "-ile", "-ilt", "-ina", "-ini", "-is", "-i", "-ist", "-ita", "-e"
+        ]
+    }
+}
+
+
+ 
