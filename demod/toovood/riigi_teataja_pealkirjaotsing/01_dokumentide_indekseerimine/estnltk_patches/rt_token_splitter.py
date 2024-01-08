@@ -24,8 +24,10 @@ class RTTokenSplitter(LocalTokenSplitter):
             return match.start() if MorphAnalyzedToken(text[0:match.start()]).is_word else -1
 
         split_rules = [
-            # Separate unexpected symbols
+            # Separate unexpected symbols from the start
             (re.compile("^(\.-|ˮ|’\))"), lambda x, y: 1),
+            # Separate unexpected symbols from the end
+            (re.compile("ˮ$"), lambda x, y: y.start()),
             # Chop off sub- and superscripts symbols
             (re.compile(f'({superscript_symbols}|{subscript_symbols})+$'), split_if_prefix_is_word_or_number),
             # Chop off trailing numbers that act as superscripts symbols
