@@ -2,11 +2,13 @@
  
 # cd  ~/git/smart-search_github/scripts/query_extender_setup/example_script_based_workflow
 
-DIR_HEADINGS=~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts
-DIR_INDEXING=~/git/smart-search_github/api/api_advanced_indexing
-DIR_MISPGEN=~/git/smart-search_github/api/api_misspellings_generator
-DIR_QUERYEXT=~/git/smart-search_github/scripts/query_extender_setup/example_make_based_workflow
-DIR_IGNOWFORMS=~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/01_dokumentide_indekseerimine/inputs
+DIR_PREF=~/git/smart-search_github
+DIR_HEADINGS=${DIR_PREF}/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts
+DIR_INDEXING=${DIR_PREF}/api/api_advanced_indexing
+DIR_MISPGEN=${DIR_PREF}/api/api_misspellings_generator
+DIR_QUERYEXT=${DIR_PREF}/scripts/query_extender_setup/example_make_based_workflow
+DIR_IGNOWFORMS=${DIR_PREF}/demod/toovood/riigi_teataja_pealkirjaotsing/01_dokumentide_indekseerimine/inputs
+DIR_WFORMS2ADD=${DIR_PREF}/demod/toovood/riigi_teataja_pealkirjaotsing/01_dokumentide_indekseerimine/inputs
 
 teeme_json_tabelid()
 {
@@ -82,6 +84,17 @@ teeme_andmebaasi()
         --db_name=${DIR_HEADINGS}/koond.sqlite \
         --tables=ignoreeritavad_vormid \
         ${DIR_IGNOWFORMS}/ignore.json
+
+    ./venv/bin/python3 ./semi_automatic_word_form_generator.py \
+        --jsonfile=${DIR_WFORMS2ADD}wordforms2addmanually.json \
+        --db_name=${DIR_HEADINGS}/koond.sqlite
+        > ${DIR_HEADINGS}/lisavormide_tabelid.json
+
+    ./venv/bin/python3 ./query_extender_setup.py \
+        --verbose \
+        --db_name=${DIR_HEADINGS}/koond.sqlite \
+        --tables=lemma_kõik_vormid:lemma_korpuse_vormid \
+        ${DIR_HEADINGS}/lisavormide_tabelid.json    
 
     popd >& /dev/null
 }
