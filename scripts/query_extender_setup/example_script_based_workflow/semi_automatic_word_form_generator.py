@@ -31,7 +31,7 @@ def tee_tabelid(verbose:bool, json_in:Dict, db_name:str)->Dict:
             json_out["tabelid"]["lemma_kõik_vormid"].append((lemma, kaal, vorm))
             if kaal > 0:
                 json_out["tabelid"]["lemma_korpuse_vormid"].append((lemma, kaal, vorm))
-                
+
     con_baas.close()
     if verbose is True:
         print(f"# Suletud andmebaas {db_name}") 
@@ -56,6 +56,7 @@ if __name__ == '__main__':
             except Exception as e:
                 raise
         json_out = tee_tabelid(args.verbose, json_in, args.db_name)
+        #sys.stdout.write(json.dumps(json_out, indent=args.indent, ensure_ascii=False))
         json.dump(json_out, sys.stdout, indent=args.indent, ensure_ascii=False)
     except Exception as e:
         print("\n\n", e, file=sys.stderr)

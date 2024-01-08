@@ -70,13 +70,6 @@ teeme_andmebaasi()
         --db_name=${DIR_HEADINGS}/koond.sqlite \
         --tables=lemma_kõik_vormid:lemma_korpuse_vormid:indeks_vormid:indeks_lemmad:liitsõnad:allikad \
         ${DIR_HEADINGS}/*.csv.json
-
-    ./venv/bin/python3 ./query_extender_setup.py \
-        --verbose \
-        --append \
-        --db_name=${DIR_HEADINGS}/koond.sqlite \
-        --tables=kirjavead \
-        ${DIR_HEADINGS}/kirjavead.kv.json
         
     ./venv/bin/python3 ./query_extender_setup.py \
         --verbose \
@@ -86,15 +79,23 @@ teeme_andmebaasi()
         ${DIR_IGNOWFORMS}/ignore.json
 
     ./venv/bin/python3 ./semi_automatic_word_form_generator.py \
-        --jsonfile=${DIR_WFORMS2ADD}wordforms2addmanually.json \
-        --db_name=${DIR_HEADINGS}/koond.sqlite
+        --jsonfile=${DIR_WFORMS2ADD}/wordforms2addmanually.json \
+        --db_name=${DIR_HEADINGS}/koond.sqlite \
         > ${DIR_HEADINGS}/lisavormide_tabelid.json
 
     ./venv/bin/python3 ./query_extender_setup.py \
         --verbose \
+        --append \
         --db_name=${DIR_HEADINGS}/koond.sqlite \
         --tables=lemma_kõik_vormid:lemma_korpuse_vormid \
         ${DIR_HEADINGS}/lisavormide_tabelid.json    
+
+    ./venv/bin/python3 ./query_extender_setup.py \
+        --verbose \
+        --append \
+        --db_name=${DIR_HEADINGS}/koond.sqlite \
+        --tables=kirjavead \
+        ${DIR_HEADINGS}/kirjavead.kv.json
 
     popd >& /dev/null
 }

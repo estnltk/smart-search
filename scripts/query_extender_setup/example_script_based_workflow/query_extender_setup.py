@@ -193,12 +193,12 @@ class DB:
         """Kanna self.json_in'ist info andmbeaaaside tabelitesse
         """
         for table in self.tables:
-            pass #DB
             if table == "lemma_kõik_vormid":
                 # "lemma_kõik_vormid":[(VORM, KAAL, LEMMA)],
                 pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {file} : {table} :', disable=(not self.verbose))
                 for lemma, kaal, vorm in pbar:
-                    res = self.cur_baas.execute(f"SELECT lemma, kaal, vorm FROM {table} WHERE lemma='{lemma}' and vorm='{vorm}'")
+                    query_vorm = vorm.replace("'", "''")
+                    res = self.cur_baas.execute(f"SELECT lemma, kaal, vorm FROM {table} WHERE lemma='{lemma}' and vorm='{query_vorm}'")
                     if len(res_fetchall:=res.fetchall()) == 0:
                         # sellist kirjet polnud, lisame uue
                         rec = (lemma, kaal, vorm)
@@ -208,7 +208,7 @@ class DB:
                         vana_kaal = res_fetchall[0][1]
                         uus_kaal = vana_kaal + kaal
                         if vana_kaal != uus_kaal: # kaal muutus, uuendame kaalu
-                            self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}'  WHERE lemma='{lemma}' and vorm='{vorm}'")
+                            self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}'  WHERE lemma='{lemma}' and vorm='{query_vorm}'")
                     else:
                         # midagi väga valesti sest PRIMARY KEY(vorm, lemma)
                         raise ValueError(f"Viga tabelis {table}: mitu rida vorm='{vorm}' and lemma='{lemma}'")
@@ -216,7 +216,8 @@ class DB:
                 # "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)]
                 pbar = tqdm(self.json_in["tabelid"][table], desc=f'# {file} : {table} :', disable=(not self.verbose))
                 for lemma, kaal, vorm in pbar:
-                    res = self.cur_baas.execute(f"SELECT lemma, kaal, vorm FROM {table} WHERE lemma='{lemma}' and vorm='{vorm}'")
+                    query_vorm = vorm.replace("'", "''")
+                    res = self.cur_baas.execute(f"SELECT lemma, kaal, vorm FROM {table} WHERE lemma='{lemma}' and vorm='{query_vorm}'")
                     if len(res_fetchall:=res.fetchall()) == 0:
                         # sellist kirjet polnud, lisame uue
                         rec = (lemma, kaal, vorm)
@@ -226,7 +227,7 @@ class DB:
                         vana_kaal = res_fetchall[0][1]
                         uus_kaal = vana_kaal + kaal
                         if vana_kaal != uus_kaal: # kaal muutus, uuendame kaalu
-                            self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}' WHERE lemma='{lemma}' and vorm='{vorm}'")
+                            self.cur_baas.execute(f"UPDATE {table} SET kaal='{uus_kaal}' WHERE lemma='{lemma}' and vorm='{query_vorm}'")
                     else:
                         # midagi väga valesti sest PRIMARY KEY(vorm, lemma)
                         raise ValueError(f"Viga tabelis {table}: mitu rida vorm='{vorm}' and lemma='{lemma}'")
@@ -237,7 +238,7 @@ class DB:
                         if type(rec) is str:
                             self.cur_baas.execute(f"INSERT INTO {table} VALUES ('{rec}')")
                         else:
-                            self.cur_baas.execute(f"INSERT INTO {table} VALUES {tuple(rec)}")
+                            self.cur_baas.execute(f'INSERT INTO {table} VALUES {tuple(rec)}')
                     except Exception as e:
                         # assert False, f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
                         continue # selline juba oli, ignoreerime kordusi
