@@ -19,7 +19,7 @@ class SEARCH_DB:
 
         self.db_index = os.environ.get('DB_INDEX')  # otsime andmebaasi nime keskkonnamootujast
         if self.db_index is None:                   # kui seal polnud...
-            self.db_index = './koond.sqlite'        # ...võtame vaikimisi
+            self.db_index = './smart_search.sqlite'        # ...võtame vaikimisi
 
         # avame andmebaasi ainult lugemiseks
 
@@ -28,8 +28,7 @@ class SEARCH_DB:
                                             uri=True, check_same_thread=False)
         except:
             self.con_index = None
-            raise Exception({"error": 
-                            f'Andmebaasi {self.db_index} avamine ebaõnnestus'})
+            raise Exception({"error": f'Andmebaasi {self.db_index} avamine ebaõnnestus'})
             
         self.cur_index = self.con_index.cursor()
 

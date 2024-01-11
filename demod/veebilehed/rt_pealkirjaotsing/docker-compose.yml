@@ -4,15 +4,15 @@
 
 services:
   advanced_indexing:
-    image: tilluteenused/smart_search_api_query_extender:2023.12.29
+    image: tilluteenused/smart_search_api_query_extender:2024.01.11
     ports:
       - 6604:6604
     environment:
       - SMART_SEARCH_MAX_CONTENT_LENGTH=5000000
       - SMART_SEARCH_QE_DBASE=./smart_search.sqlite
 
-  paring_otsing:
-    image: tilluteenused/smart_search_wp_ea_paring_otsing:2023.12.29
+  rt_pealkirjaotsing:
+    image: tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.12
     ports:
       - 6605:6605
     environment:

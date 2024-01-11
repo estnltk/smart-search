@@ -16,6 +16,9 @@ RUN addgroup --gid 1001 "mere_mortal" \
 USER mere_mortal:mere_mortal
 WORKDIR /home4mere_mortal
 
+# copy database
+COPY --chown=mere_mortal:mere_mortal smart_search.sqlite ./
+
 # copy in the requirements file, create a Python virtual environment and install dependencies
 COPY --chown=mere_mortal:mere_mortal requirements.txt ./
 RUN python3 -m venv ./venv 
@@ -24,7 +27,7 @@ RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt
 
 # copy current task related skripts
 #COPY --chown=mere_mortal:mere_mortal smart_search.sqlite ./
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_wp_ea_paring_otsing.py api_ea_paring_otsing.py smart_search.sqlite ./
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_wp_ea_paring_otsing.py api_ea_paring_otsing.py ./
 ADD --chown=mere_mortal:mere_mortal templates/ ./templates/
 RUN chmod +x *.sh *.py
 # parameters for gunicorn

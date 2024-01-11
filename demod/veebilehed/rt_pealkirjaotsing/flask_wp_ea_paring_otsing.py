@@ -28,13 +28,13 @@ Lähtekoodist pythoni skripti kasutamine
 1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2) veebiserveri käivitamine pythoni koodist (1.3) ja brauseriga veebilehe poole pöördumine (1.4)
 1.1 Lähtekoodi allalaadimine
     $ mkdir ~/git ; cd ~/git/
-    $ git clone git@github.com:estnltk/smart-search.git
+    $ git clone git@github.com:estnltk/smart-search.git smart_search_github
 1.2 Virtuaalkeskkonna loomine
-    $ cd ~/git/smart-search_github/demod/veebilehed/ea_paring_otsing
+    $ cd ~/git/smart_search_github/demod/veebilehed/rt_pealkirjaotsing
     $ ./create_venv.sh
 1.3 Veebiserveri käivitamine pythoni koodist (päringulaiendaja kohalikus konteineris)
     $ cd ~/git/smart-search_github/demod/veebilehed/ea_paring_otsing
-    $ DB_INDEX=./index.sqlite \
+    $ DB_INDEX=./smart_search.sqlite \
       EA_PARING=http://localhost:6604/api/query_extender/process \
       ./venv/bin/python3 ./flask_wp_ea_paring_otsing.py
 1.4 Brauseriga veebilehe poole pöördumine
@@ -47,8 +47,8 @@ Lähtekoodist tehtud konteineri kasutamine
 2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteinerite käivitamine (2.3), konteinerite peatamine (2.4) ja brauseriga veebilehe poole pöördumine (2.5)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
-    $ cd ~/git/smart-search_github/demod/veebilehed/ea_paring_otsing
-    $ docker build -t tilluteenused/smart_search_wp_ea_paring_otsing:2023.12.29 .
+    $ cd ~/git/smart_search_github/demod/veebilehed/rt_pealkirjaotsing
+    $ docker build -t tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.12 .
 2.3 Konteinerite käivitamine kohaikus arvutis
     $ cd ~/git/smart-search_github/demod/veebilehed/ea_paring_otsing
     $ MY_IP=$(hostname -I | sed 's/ .*$//g') docker-compose up -d && docker-compose ps
@@ -62,7 +62,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteinerite käivitamine (3.2), konteinerite peatamine (3.4) ja brauseriga veebilehe poole pöördumine (3.5)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_wp_ea_paring_otsing:2023.12.29
+    $ docker pull tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.12
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 Konteinerite peatamine: järgi punkti 2.4
 3.4 Brauseriga veebilehe poole pöördumine: järgi punkti 1.4
@@ -86,14 +86,14 @@ import api_ea_paring_otsing
 
 class ENVIRONMENT:
     def __init__(self):
-        self.VERSION="2023.12.31"
+        self.VERSION="2024.01.11"
 
 
 eapo = api_ea_paring_otsing.SEARCH_DB()                     # otsingumootor
 environment = ENVIRONMENT()                                 # keskkonnamuutujatest võetud inf 
 app = Flask(__name__)                                       # Fläski äpp
 
-@app.route('/wp/ea_paring_otsing/version', methods=['GET', 'POST'])
+@app.route('/rt_pealkirjaotsing/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
 def api_verioon():
     """Versiooniinfo kuvamines
@@ -104,7 +104,7 @@ def api_verioon():
     return jsonify(version_json)  
 
 
-@app.route(f'/wp/ea_paring_otsing/process', methods=['GET', 'POST'])
+@app.route(f'/rt_pealkirjaotsing/process', methods=['GET', 'POST'])
 @app.route('/process', methods=['GET', 'POST'])
 def process():
     """Veebileht päringu sisestamiseks ja päringutulemuste kuvamiseks
