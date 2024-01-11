@@ -5,7 +5,7 @@
         "name": "api_sl_lemmatiser_json",
         "type": "python",
         "request": "launch",
-        "cwd": "${workspaceFolder}/api/sl_lemmatizer/",
+        "cwd": "${workspaceFolder}/api/lemmatizer/",
         "program": "./api_lemmatizer4sl.py",
         "env": {},
         "args": ["--json={\"tss\":\"hõõguvpunast\\tpeeti\"}", "--indent=4"]
@@ -14,7 +14,7 @@
         "name": "api_sl_lemmatiser_tsv",
         "type": "python",
         "request": "launch",
-        "cwd": "${workspaceFolder}/api/sl_lemmatizer/",
+        "cwd": "${workspaceFolder}/api/lemmatizer/",
         "program": "./api_lemmatizer4sl.py",
         "env": {},
         "args": ["--json={\"tss\":\"hõõguvpunast\\tpeeti\"}", "--tsv"]
@@ -52,10 +52,10 @@ class LEMMATIZER4SL:
                 }
             }
         """
+        assert proc.stdin is not None and proc.stdout is not None
         json_mrf = {"params":{"vmetajson":["--guess", "--stem"]}, "annotations":{"tokens":[]}}
         for token in tokens:
             json_mrf["annotations"]["tokens"].append({"features":{"token":token}})
-
         proc.stdin.write(f'{json.dumps(json_mrf)}\n')
         proc.stdin.flush()
         json_mrf = json.loads(proc.stdout.readline())

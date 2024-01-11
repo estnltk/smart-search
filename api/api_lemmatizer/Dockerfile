@@ -24,7 +24,7 @@ RUN ./venv/bin/python3 -m pip install --upgrade pip
 RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt 
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_sl_lemmatizer.py api_lemmatizer4sl.py vmetajson et.dct ./
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_lemmatizer.py api_lemmatizer4ss.py vmetajson et.dct ./
 RUN chmod +x *.sh *.py vmetajson
 
 # parameters for gunicorn
