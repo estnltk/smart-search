@@ -95,11 +95,6 @@ TÜ pilves töötava konteineri kasutamine
 
     $ curl --silent --request POST \
         --header "Content-Type: application/json" \
-        --data "{\"tss\":\"Strasbourg\\tpresitendiga\\tpresidemdigas\\tpresidendiga\" \
-        https://smart-search.tartunlp.ai/api/query_extender/tsv
-        
-    $ curl --silent --request POST \
-        --header "Content-Type: application/json" \
         --data "{\"tss\":\"presitendiga\\tpresitendiga\\tpresidendiga\"}" \
         https://smart-search.tartunlp.ai/api/query_extender/tsv
         
