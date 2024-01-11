@@ -23,7 +23,9 @@ Dokumendid on pakitud JSON-formaati:
         {   "content": string   # dokument, JSON-string
         }
     }
-    "params": {"tables":[TABEL]}    # väljundisse minevate tabelite loend:
+    "params": {"tables":[TABEL]}    # väljundisse minevate tabelite loend
+                                    # vaikimisi: "indeks_vormid", "indeks_lemmad", "liitsõnad"
+                                    # Võib-olla misiganes almhulk alljärgnevatest:
                                     # "indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid",
                                     # "kirjavead", "allikad"
 }
