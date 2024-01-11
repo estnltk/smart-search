@@ -73,6 +73,23 @@ TÜ pilves töötava konteineri kasutamine
         https://smart-search.tartunlp.ai/api/generator/version
 
 ----------------------------------------------
+DockerHubis oleva konteineri lisamine oma KUBERNETESesse
+
+kubectl create deployment smart-search-api-generator \
+  --image=tilluteenused/smart_search_api_generator:2024.01.11
+
+kubectl expose deployment smart-search-api-generator \
+    --type=ClusterIP --port=80 --target-port=7008
+
+kubectl edit ingress smart-search-api-ingress
+
+- backend:
+    service:
+    name: smart-search-api-generator
+    port:
+        number: 80
+path: /api/generator/?(.*)
+pathType: Prefix
 """
 
 import subprocess
