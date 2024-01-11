@@ -39,6 +39,7 @@ try:
     SMART_SEARCH_GENE_TYPOS=(os.environ.get('SMART_SEARCH_GENE_TYPOS').upper()=="TRUE")
 except:
     SMART_SEARCH_GENE_TYPOS = False # vaikimisi ei genereeri kirjavigasid
+    
 tj = api_advanced_indexing.TEE_JSON(verbose=False, kirjavead=SMART_SEARCH_GENE_TYPOS, tabelid=[])
 
 app = Flask("api_ea_jsoncontent_2_jsontabelid")
@@ -113,7 +114,7 @@ def api_advanced_indexing_headers():
 
         return jsonify(tj.json_io)
     except Exception as e:
-        return jsonify(e.args[0])    
+        return jsonify({"warning": str(e)})    
 
 @app.route('/api/advanced_indexing/json', methods=['POST'])
 @app.route('/json', methods=['POST'])
@@ -140,6 +141,8 @@ def api_advanced_indexing_document():
     https://stackoverflow.com/questions/62685107/open-csv-file-in-flask-sent-as-binary-data-with-curl
     """
     try:
+        if request.json is None:
+            return jsonify({"warning": "the request does not contain valid JSON"})
         tj.json_io = request.json
         tj.tee_sõnestamine()
         tj.tee_kõigi_terviksõnede_indeks()
@@ -155,7 +158,7 @@ def api_advanced_indexing_document():
 
         return jsonify(tj.json_io)
     except Exception as e:
-        return jsonify(e.args[0])    
+        return jsonify({"warning": str(e)})    
 
 
 @app.route('/api/advanced_indexing/version', methods=['GET', 'POST'])
