@@ -34,7 +34,7 @@ proc = subprocess.Popen(['./vmetajson', '--path=.'],
 
 class LEMMATIZER4SL:
     def __init__(self):
-        self.VERSION = "2023.12.02"
+        self.VERSION = "2024.01.10"
 
     def lemmatizer2json(self, tokens:List[str])->Dict:
         """Lemmatiseerme etteantud sõneloendi

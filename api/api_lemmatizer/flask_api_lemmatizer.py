@@ -36,10 +36,6 @@ Lähtekoodist pythoni skripti kasutamine
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \
         localhost:7009/api/lemmatizer/tsv
-    
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \
-        localhost:7009/api/lemmatizer/tsv   
     $ curl --silent --request POST --header "Content-Type: application/json" \
         localhost:7009/api/lemmatizer/version | jq
 ----------------------------------------------
@@ -75,6 +71,8 @@ from flask import Flask, request, jsonify, make_response
 
 import api_lemmatizer4ss
 
+VERSION="2024.01.10"
+
 app = Flask("api_lemmatizer")
 sll = api_lemmatizer4ss.LEMMATIZER4SL()
 
@@ -86,8 +84,7 @@ def api_lemmatizer_version():
     Returns:
         ~flask.Response: JSONkujul versioonistring
     """
-    print("sdfhsfh")
-    return jsonify({"version":sll.VERSION}, "tere": "talv")
+    return jsonify({"api_version":sll.VERSION, "flask_liidese_versiooon":  VERSION})
 
 @app.route('/api/lemmatizer/tsv', methods=['POST'])
 @app.route('/tsv', methods=['POST'])
