@@ -4,7 +4,7 @@
 
 services:
   advanced_indexing:
-    image: tilluteenused/smart_search_api_advanced_indexing:2023.12.27 
+    image: tilluteenused/smart_search_api_advanced_indexing:2024.01.10
     ports:
       - 6602:6602
     environment:
