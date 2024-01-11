@@ -21,9 +21,9 @@ Lähtekoodist pythoni skripti kasutamine:
 1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2) ja käivitamine(1.3)
 1.1 Lähtekoodi allalaadimine
     $ mkdir -p ~/git/ ; cd ~/git/
-    $ git clone git@github.com:estnltk/smart-search.git smart_search_github
+    $ git clone git@github.com:estnltk/smart-search.git sqmart_search_github
 1.2 Virtuaalkeskkonna loomine
-    $ cd ~/git/smart-search_github/api/api_misspellings_generator
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator
     $ ./create_venv.sh
 1.3 Sätime paika kasutatvad teenused: kasutame veebis olevaid konteinereid (1.3.1) või kasutame kohalikus masinas töötavaid konteinereid (1.3.2)
 1.3 Pythoni skripti käivitamine:
@@ -35,7 +35,7 @@ Lähtekoodist veebiserveri käivitamine & kasutamine
 2.2 Virtuaalkeskkonna loomine: järgi punkti 1.2
 2.3 Veebiteenuse käivitamine pythoni koodist
 2.3.1 Vaikeseadetaga
-    $ cd ~/git/smart-search_github/api/api_misspellings_generator
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator
     $ ./venv/bin/python3 ./flask_api_misspellings_generator.py
 2.3.2 Etteantud parameetriga
     $ SMART_SEARCH_MAX_CONTENT_LENGTH='500000' \
@@ -51,7 +51,7 @@ Lähtekoodist tehtud konteineri kasutamine
 3 Lähtekoodi allalaadimine (3.1), konteineri kokkupanemine (3.2), konteineri käivitamine (3.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
-    $ cd ~/git/smart-search_github/api/api_misspellings_generator
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator
     $ docker build -t tilluteenused/smart_search_api_misspellings_generator:2023.12.27 . 
     # docker login -u tilluteenused
     # docker push tilluteenused/smart_search_api_misspellings_generator:2023.12.27 
@@ -70,7 +70,7 @@ DockerHUBist tõmmatud konteineri kasutamine
 ----------------------------------------------
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
-    $ cd ~/git/smart-search_github/api/api_misspellings_generator # selles kataloogis on test.txt
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator # selles kataloogis on test.txt
     $ curl --silent --request POST --header "Content-Type: application/text" \
         --data-binary @test.txt \
         https://smart-search.tartunlp.ai/api/misspellings_generator/process | jq | less
