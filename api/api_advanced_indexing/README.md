@@ -23,6 +23,9 @@ Dokumendid on pakitud JSON-formaati:
         {   "content": string   # dokument, JSON-string
         }
     }
+    "params": {"tables":[TABEL]}    # väljundisse minevate tabelite loend:
+                                    # "indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid",
+                                    # "kirjavead", "allikad"
 }
 ```
 
@@ -208,22 +211,10 @@ curl --silent --request POST --header "Content-Type: application/json" \
     --data '{"sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
     https://smart-search.tartunlp.ai/api/advanced_indexing/json  | gron
 
-
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data-binary @test/test_headers.csv \
-        https://smart-search.tartunlp.ai/api/advanced_indexing/headers | jq | less
-
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-      --data-binary @test/test_document.json \
-      https://smart-search.tartunlp.ai/api/advanced_indexing/document  | jq | less
-
-    $ curl --silent --request POST --header "Content-Type: application/json" \
+curl --silent --request POST --header "Content-Type: application/json" \
       --data '{"sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
-      https://smart-search.tartunlp.ai/api/advanced_indexing/document  | jq
+      https://smart-search.tartunlp.ai/api/advanced_indexing/json  | jq
       
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/advanced_indexing/version | jq
-
 ```
 
 ### 5 DockerHubis oleva konteineri lisamine oma KUBERNETESesse
