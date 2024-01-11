@@ -49,6 +49,7 @@ Lähtekoodist tehtud konteineri kasutamine
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart_search_github/demod/veebilehed/rt_pealkirjaotsing
     $ docker build -t tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.12 .
+    # docker bush tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.12 
 2.3 Konteinerite käivitamine kohaikus arvutis
     $ cd ~/git/smart-search_github/demod/veebilehed/ea_paring_otsing
     $ MY_IP=$(hostname -I | sed 's/ .*$//g') docker-compose up -d && docker-compose ps
