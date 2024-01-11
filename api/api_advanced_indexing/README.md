@@ -139,6 +139,10 @@ curl --silent --request POST --header "Content-Type: application/json" \
 curl --silent --request POST --header "Content-Type: application/json" \
     --data '{"sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
     localhost:6602/api/advanced_indexing/json  | gron
+
+curl --silent --request POST --header "Content-Type: application/json" \
+    --data '{"params":{"tables":["liitsõnad"]}, "sources":{"testdoc_1":{"content":"allmaaraudtee"}}}' \     
+    https://smart-search.tartunlp.ai/api/advanced_indexing/json  | gron
 ```
 
 ### 3 Lähtekoodist tehtud konteineri kasutamine
@@ -216,6 +220,10 @@ curl --silent --request POST --header "Content-Type: application/json" \
 curl --silent --request POST --header "Content-Type: application/json" \
       --data '{"sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
       https://smart-search.tartunlp.ai/api/advanced_indexing/json  | jq
+
+curl --silent --request POST --header "Content-Type: application/json" \
+    --data-binary @test/test_document.json \
+    https://smart-search.tartunlp.ai/api/advanced_indexing/json  | gron
       
 ```
 

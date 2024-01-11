@@ -1,25 +1,22 @@
  #!/usr/bin/python3
 
 """
-TODO funktsioonide päises olevad kommentaarid õigeks sättida
+TODO kontrolli funktsioonide päises olevate kommentaarida ajakohasust
 ----------------------------------------------------------------
 
 Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku andmebaas
 
 ----------------------------------------------------------------
 Mida uut:
+2023-12-19 Tabelites "lemma_korpuse_vormid" ja "lemma_kõik_vormid" veergude järjekord samaks: [(LEMMA, KAAL, VORM)]
+2023-12-21 Kirjavigastajat kohendatud
+2023-12-27 Pisimuutused kommentaarides jms
+2024-01-03 Muudetud ülakomaga sõnede lisamine sõnavormide indeksisse
 2024-01-09:
 * initi-le parameeter tables
 * käsurea lipp --tables=TABLE[:TABLE]
 * JSON sisendi korral saab anda "params":{"tables:"[TABEL]}
 ----------------------------------------------------------------
-Mida uut:
-2023-12-19 Tabelites "lemma_korpuse_vormid" ja "lemma_kõik_vormid" veergude järjekord samaks: [(LEMMA, KAAL, VORM)]
-2023-12-20 Kirjavigastame sõnesid alates 2st tähest
-2023-12-21 Kirjavigastajat kohendatud
-2023-12-27 Pisimuutused kommentaarides jms
-2024-01-03 Muudetud ülakomaga sõnede lisamine sõnavormide indeksisse
------------------------------------------------------------------
 // code (silumiseks):
     {
         "name": "advanced_indexing_kokkulepe",
@@ -47,49 +44,6 @@ Mida uut:
             "../../rt_web_crawler/results/local_government_acts.csv" \
         ]
     },
------------------------------------------------------------------
-Käsurealt (töötleme mitu sisendfaili paralleelselt):
-$   cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
-$   make clean ; make -j all
-
-Käsurealt (töötleme ühte sisendfaili korraga):
-$ venv/bin/python3 ./api_advanced_indexing.py --verbose --csv_input test_headers.csv > test_headers_indexes.json
-$ venv/bin/python3 ./api_advanced_indexing.py --verbose test_document.json > test_document_indexes.json
-$ venv/bin/python3 ./api_advanced_indexing.py --verbose --csv_input \
-    --tables=indeks_vormid:indeks_lemmad:liitsõnad:lemma_kõik_vormid:lemma_korpuse_vormid:allikad \
-    test/kokkuleppega.csv | gron | less 
-
-Pealkirjad (demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/*.csv):
-* demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_orders.csv
-* demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_regulations.csv
-* demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/local_government_acts.csv
-* demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/state_laws.csv
------------------------------------------------------------------
-JSON sees- ja välispidiseks kasutamiseks:
-
-    Sisse: 
-    * json (seda pole ammu testinud):
-    {   "sources":
-        {   DOCID:                  # sisse (string): dokumendi unikaalne ID 
-            {   "content": string   # sisse string2json()/csvpealkrjadest(): "plain text"
-            }
-        }
-    }
-
-    * CSV pealkirjade ja seotud infoga:
-        global_id,document_type,document,xml_source
-
-    Välja json_io:
-    {   "tabelid":
-        {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
-            "indeks_lemmad":[(LEMMA, DOCID, START, END, KAAL, LIITSÕNA_OSA)],
-            "liitsõnad":[(OSALEMMA, LIITLEMMA)],
-            "lemma_kõik_vormid":[(LEMMA, KAAL, VORM)],
-            "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
-            "kirjavead":[(VIGANE_VORM, VORM, KAAL)],
-            "allikad":[(DOCID, CONTENT)],
-        }
-    }
 
 """
 
