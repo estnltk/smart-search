@@ -49,9 +49,9 @@ Parameetri abil saab määrata, mida tabelites kuvatakse
 ```
 
 
-## 1 Kasutamine
+## Kasutamine
 
-### Lähtekoodist pythoni skripti kasutamine
+### 1 Lähtekoodist pythoni skripti kasutamine
 
 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2) ja käivitamine(1.3)
 
