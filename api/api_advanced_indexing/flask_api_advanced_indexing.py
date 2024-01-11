@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 
 '''Flask api, (eel)arvutab JSON-failid mis on vajlikud andmebaasi kokkupanemiseks
+Mida uut:
+2024-01-09
+    * /api/advanced_indexing/json
+    * /api/advanced_indexing/csv_input
+
 ----------------------------------------------
 // code (serveri käivitamine silumiseks):
         {
@@ -38,32 +43,43 @@ Lähtekoodist veebiserveri käivitamine & kasutamine
 2.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/text" \
         localhost:6602/api/advanced_indexing/version | jq
+
     $ curl --silent --request POST --header "Content-Type: application/csv" \
       --data-binary @test/test_headers.csv \
-      localhost:6602/api/advanced_indexing/headers  | jq
+      localhost:6602/api/advanced_indexing/csv_input  | jq
+
     $ curl --silent --request POST --header "Content-Type: application/json" \
       --data-binary @test/test_document.json \
-      localhost:6602/api/advanced_indexing/document  | jq
+      localhost:6602/api/advanced_indexing/json  | jq
+
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+      --data '{"params":{"tables":["indeks_lemmad"]}, "sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
+      localhost:6602/api/advanced_indexing/json  | gron
+
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+      --data '{"sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
+      localhost:6602/api/advanced_indexing/json  | gron
+
 ----------------------------------------------
 Lähtekoodist tehtud konteineri kasutamine
 3 Lähtekoodi allalaadimine (3.1), konteineri kokkupanemine (3.2), konteineri käivitamine (3.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart-search_github/api/api_advanced_indexing
-    $ docker build -t tilluteenused/smart_search_api_advanced_indexing:2023.12.27 . 
+    $ docker build -t tilluteenused/smart_search_api_advanced_indexing:2024.01.10 . 
     # docker login -u tilluteenused
-    # docker push tilluteenused/smart_search_api_advanced_indexing:2023.12.27 
+    # docker push tilluteenused/smart_search_api_advanced_indexing:2024.01.10 
 2.3 Konteineri käivitamine
     $ docker run -p 6602:6602  \
         --env SMART_SEARCH_MAX_CONTENT_LENGTH='500000000' \
         --env SMART_SEARCH_GENE_TYPOS='true' \
-       tilluteenused/smart_search_api_advanced_indexing:2023.12.27 
+       tilluteenused/smart_search_api_advanced_indexing:2024.01.10 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_advanced_indexing:2023.12.27 
+    $ docker pull tilluteenused/smart_search_api_advanced_indexing:2024.01.10 
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 ----------------------------------------------
@@ -73,18 +89,26 @@ TÜ pilves töötava konteineri kasutamine
 
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data-binary @test/test_headers.csv \
-        https://smart-search.tartunlp.ai/api/advanced_indexing/headers | jq | less
+        https://smart-search.tartunlp.ai/api/advanced_indexing/csv_input | jq | less
 
     $ curl --silent --request POST --header "Content-Type: application/json" \
       --data-binary @test/test_document.json \
-      https://smart-search.tartunlp.ai/api/advanced_indexing/document  | jq | less
+      https://smart-search.tartunlp.ai/api/advanced_indexing/json  | jq | less
 
     $ curl --silent --request POST --header "Content-Type: application/json" \
-      --data '{"sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
-      https://smart-search.tartunlp.ai/api/advanced_indexing/document  | jq
+      --data '{"params":{"tables":["indeks_lemmad"]}, "sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
+      https://smart-search.tartunlp.ai/api/advanced_indexing/json  | jq
       
     $ curl --silent --request POST --header "Content-Type: application/json" \
         https://smart-search.tartunlp.ai/api/advanced_indexing/version | jq
+
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+      --data '{"params":{"tables":["indeks_lemmad"]}, "sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
+      https://smart-search.tartunlp.ai/api/advanced_indexing/json | gron
+
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+      --data '{"sources":{"testdoc_1":{"content":"Presidendi kantselei."}, "testdoc_2":{"content":"Raudteetranspordiga raudteejaamas."}}}' \
+      https://smart-search.tartunlp.ai/api/advanced_indexing/json | gron
 
 ----------------------------------------------
 '''
@@ -102,13 +126,13 @@ from collections import OrderedDict
 
 import api_advanced_indexing
 
-VERSION="2023.12.27"
+VERSION="2024.01.10"
 
 try:
     SMART_SEARCH_GENE_TYPOS=(os.environ.get('SMART_SEARCH_GENE_TYPOS').upper()=="TRUE")
 except:
     SMART_SEARCH_GENE_TYPOS = False # vaikimisi ei genereeri kirjavigasid
-tj = api_advanced_indexing.TEE_JSON(verbose=False, kirjavead=SMART_SEARCH_GENE_TYPOS)
+tj = api_advanced_indexing.TEE_JSON(verbose=False, kirjavead=SMART_SEARCH_GENE_TYPOS, tabelid=[])
 
 app = Flask("api_ea_jsoncontent_2_jsontabelid")
 
@@ -136,8 +160,8 @@ def request_entity_too_large(error):
 
 # }} JSONsisendi max suuruse piiramine 
 
-@app.route('/api/advanced_indexing/headers', methods=['POST'])
-@app.route('/headers', methods=['POST'])
+@app.route('/api/advanced_indexing/csv_input', methods=['POST'])
+@app.route('/csv_input', methods=['POST'])
 @limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
 def api_advanced_indexing_headers():
     """Leia sisendkorpuse sõnede kõikvõimalikud vormid ja nonde hulgast need, mis esinesid korpuses
@@ -184,8 +208,8 @@ def api_advanced_indexing_headers():
     except Exception as e:
         return jsonify(e.args[0])    
 
-@app.route('/api/advanced_indexing/document', methods=['POST'])
-@app.route('/document', methods=['POST'])
+@app.route('/api/advanced_indexing/json', methods=['POST'])
+@app.route('/json', methods=['POST'])
 @limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
 def api_advanced_indexing_document():
     """Leia sisendkorpuse sõnede kõikvõimalikud vormid ja nonde hulgast need, mis esinesid korpuses

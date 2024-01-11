@@ -8,6 +8,12 @@ Teeb teksitfailidest JSON-kuju, millest järgmise programmiga pannakse kokku and
 
 ----------------------------------------------------------------
 Mida uut:
+2024-01-09:
+* initi-le parameeter tables
+* käsurea lipp --tables=TABLE[:TABLE]
+* JSON sisendi korral saab anda "params":{"tables:"[TABEL]}
+----------------------------------------------------------------
+Mida uut:
 2023-12-19 Tabelites "lemma_korpuse_vormid" ja "lemma_kõik_vormid" veergude järjekord samaks: [(LEMMA, KAAL, VORM)]
 2023-12-20 Kirjavigastame sõnesid alates 2st tähest
 2023-12-21 Kirjavigastajat kohendatud
@@ -16,14 +22,14 @@ Mida uut:
 -----------------------------------------------------------------
 // code (silumiseks):
     {
-        "name": "advanced_indexing_strasbourg",
+        "name": "advanced_indexing_kokkulepe",
         "type": "python",
         "request": "launch",
         "cwd": "${workspaceFolder}/api/api_advanced_indexing/",
         "program": "./api_advanced_indexing.py",
         "env": {},
         "args": ["--verbose", "--csvpealkirjad", \
-            "../tests/strabourg.csv"
+            "../tests/kokkuleppega.csv"
         ]
     },
 // code (laseb kõik pealkirjad läbi) 
@@ -47,14 +53,17 @@ $   cd ~/git/smart-search_github/api/ea_jsoncontent_2_jsontabelid
 $   make clean ; make -j all
 
 Käsurealt (töötleme ühte sisendfaili korraga):
-$ venv/bin/python3 ./api_advanced_indexing.py --verbose --csvpealkirjad test_headers.csv > test_headers_indexes.json
+$ venv/bin/python3 ./api_advanced_indexing.py --verbose --csv_input test_headers.csv > test_headers_indexes.json
 $ venv/bin/python3 ./api_advanced_indexing.py --verbose test_document.json > test_document_indexes.json
+$ venv/bin/python3 ./api_advanced_indexing.py --verbose --csv_input \
+    --tables=indeks_vormid:indeks_lemmad:liitsõnad:lemma_kõik_vormid:lemma_korpuse_vormid:allikad \
+    test/kokkuleppega.csv | gron | less 
 
-Pealkirjad (demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/*.csv):
-* demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/government_orders.csv
-* demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/government_regulations.csv
-* demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/local_government_acts.csv
-* demod/toovood/riigi_teataja_pealkirjaotsing/results/cleaned_texts/state_laws.csv
+Pealkirjad (demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/*.csv):
+* demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_orders.csv
+* demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/government_regulations.csv
+* demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/local_government_acts.csv
+* demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/state_laws.csv
 -----------------------------------------------------------------
 JSON sees- ja välispidiseks kasutamiseks:
 
@@ -68,12 +77,12 @@ JSON sees- ja välispidiseks kasutamiseks:
     }
 
     * CSV pealkirjade ja seotud infoga:
-        global_id,document_type,document_title,xml_source
+        global_id,document_type,document,xml_source
 
     Välja json_io:
     {   "tabelid":
         {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
-            "indeks_lemmad":[(LEMMA, DOCID, START, END, LIITSÕNA_OSA)],
+            "indeks_lemmad":[(LEMMA, DOCID, START, END, KAAL, LIITSÕNA_OSA)],
             "liitsõnad":[(OSALEMMA, LIITLEMMA)],
             "lemma_kõik_vormid":[(LEMMA, KAAL, VORM)],
             "lemma_korpuse_vormid":[(LEMMA, KAAL, VORM)],
@@ -112,7 +121,7 @@ proc_vmetsjson = subprocess.Popen(['./vmetsjson', '--path=.'],
 
 
 class TEE_JSON:
-    def __init__(self, verbose:bool, kirjavead:bool)->None:
+    def __init__(self, verbose:bool, kirjavead:bool, tabelid:List[str])->None:
         """Initsialiseerime muutujad: versiooninumber, jne
 
         Args:
@@ -121,8 +130,9 @@ class TEE_JSON:
         """
         self.verbose = verbose
         self.kirjavead = kirjavead
+        self.tabelid = tabelid
 
-        self.VERSION="2024.01.03"
+        self.VERSION="2024.01.10"
         self.ignore_pos = "PZJ" # ignoreerime lemmasid, mille sõnaliik on: Z=kirjavahemärk, J=sidesõna, P=asesõna
 
     def verbose_prints(self, message:str) -> None:
@@ -429,8 +439,8 @@ class TEE_JSON:
         Välja:
         self.json_io:
 
-        {"lemmad"   :{LEMMA:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
-        {"osalemmad":{LEMMA:{DOCID:[{"start":NUMBER,"end":NUMBER}]}}}
+        {"lemmad"   :{LEMMA:{DOCID:[{"start":NUMBER,"end":NUMBER, "kaal":real}]}}}
+        {"osalemmad":{LEMMA:{DOCID:[{"start":NUMBER,"end":NUMBER, "kaal":real}]}}}
         {"liitsõnad" :{OSASÕNALEMMA:[LIITSÕNALEMMA]}}
 
         {"tabelid":{"liitsõnad":[(OSALEMMA,LIITLEMMA)]}}
@@ -452,13 +462,16 @@ class TEE_JSON:
                     puhtad_lemmad.append(puhas_lemma)
             if len(puhtad_lemmad) < 1:
                 continue
+            kaal = 1.0 / len(puhtad_lemmad)
             for puhas_lemma in puhtad_lemmad:
                 if puhas_lemma not in self.json_io["lemmad"]: # sellist lemmat veel polnud
                     self.json_io["lemmad"][puhas_lemma] = {}
                 for docid, poslist in v.items():
                     if docid not in self.json_io["lemmad"][puhas_lemma]:
                         self.json_io["lemmad"][puhas_lemma][docid] = []
-                    self.json_io["lemmad"][puhas_lemma][docid] += poslist
+                    #self.json_io["lemmad"][puhas_lemma][docid] += poslist
+                    for pos in poslist:
+                        self.json_io["lemmad"][puhas_lemma][docid].append({"start":pos["start"], "end":pos["end"], "kaal":kaal})
 
         if "tabelid" not in self.json_io:
             self.json_io["tabelid"] = {}
@@ -487,16 +500,22 @@ class TEE_JSON:
                     puhtad_lemmad.append(puhas_lemma)
             if len(puhtad_lemmad) < 1:
                 continue
+            kaal = 1.0 / len(puhtad_lemmad)
             for puhas_lemma in puhtad_lemmad:
                 if puhas_lemma not in self.json_io["osalemmad"]: # sellist lemmat veel polnud
                     self.json_io["osalemmad"][puhas_lemma] = {}
                 for docid, poslist in v.items():
                     if docid not in self.json_io["osalemmad"][puhas_lemma]:
                         self.json_io["osalemmad"][puhas_lemma][docid] = []
-                    self.json_io["osalemmad"][puhas_lemma][docid] += poslist
+                    #self.json_io["osalemmad"][puhas_lemma][docid] += poslist
+                    for pos in poslist:
+                        self.json_io["osalemmad"][puhas_lemma][docid].append({"start":pos["start"], "end":pos["end"], "kaal":kaal})  
         pass # DB
 
     def tabelisse_lemmade_indeks(self):
+        '''
+        "indeks_lemmad":[(LEMMA, DOCID, START, END, KAAL, LIITSÕNA_OSA)]
+        '''
         if "tabelid" not in self.json_io:
             self.json_io["tabelid"] = {}
         if "indeks_lemmad" not in self.json_io["tabelid"]:
@@ -507,7 +526,7 @@ class TEE_JSON:
         for lemma, docids in pbar:
             for docid, poslist in docids.items():
                 for pos in poslist:
-                    kirje = (lemma, docid, pos["start"], pos["end"], False)
+                    kirje = (lemma, docid, pos["start"], pos["end"], pos["kaal"], False)
                     if kirje in self.json_io["tabelid"]["indeks_lemmad"]: #DB
                         continue
                     #assert kirje not in self.json_io["tabelid"]["indeks_lemmad"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
@@ -518,7 +537,7 @@ class TEE_JSON:
         for lemma, docids in pbar:
             for docid, poslist in docids.items():
                 for pos in poslist:
-                    kirje = (lemma, docid, pos["start"], pos["end"], True)
+                    kirje = (lemma, docid, pos["start"], pos["end"], pos["kaal"], True)
                     if kirje in self.json_io["tabelid"]["indeks_lemmad"]:
                         continue
                     #assert kirje not in self.json_io["tabelid"]["indeks_lemmad"], f'assert {getframeinfo(currentframe()).filename}:{getframeinfo(currentframe()).lineno}'  #DB
@@ -755,35 +774,36 @@ class TEE_JSON:
 
         #if self.verbose:
         #    sys.stdout.write('# kustutame:')
-
-        # kustutame kõik peale tabelite
+        
+        # mis tabeleid kuvame tulemuses
+        if len(self.tabelid) == 0:
+            if "params" in self.json_io and "tables" in self.json_io["params"]:
+                tbl = self.json_io["params"]["tables"]
+            else:
+                tbl = ["lemma_kõik_vormid", "lemma_korpuse_vormid", "liitsõnad"]
+        else:
+            tbl = self.tabelid   
+        # kustutame vahetulemused
         pbar = tqdm(self.json_io.keys(), disable=(not self.verbose), desc="# kustutame vahetulemused")
         for k in list(pbar):
             if k != "tabelid":
-                #if self.verbose:
-                #    sys.stdout.write(f' {k}...')
-                #logging.info(f'# Kustatame Vahetulemuse: {k}')
                 del self.json_io[k]
-        #if self.verbose:
-        #    sys.stdout.write('\n')
+
+        # kustutame "liigsed" tabelid (vaikimisi jätame "lemma_kõik_vormid", "lemma_korpuse_vormid", "liitsõnad")
+        pbar = tqdm(self.json_io["tabelid"].keys(), disable=(not self.verbose), desc="# kustutame liigsed tabelid")
+        for t in list(pbar):
+            if t not in tbl:
+                del self.json_io["tabelid"][t]        
         pass # DB
 
     def kordused_tabelitest_välja(self):
-        if self.kirjavead is True:
-            tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid", "kirjavead"]
-        else:
-            tabelid = ["indeks_vormid", "indeks_lemmad", "liitsõnad", "lemma_kõik_vormid", "lemma_korpuse_vormid"]
-        pbar = tqdm(tabelid, disable=(not self.verbose), desc="# kustutame tabelitest kordused")
-        for tabel in pbar:
-            #pbar.set_description(f'# {inspect.currentframe().f_code.co_name} : {tabel}')
+        pbar = tqdm(self.json_io["tabelid"].keys(), disable=(not self.verbose), desc="# kustutame tabelitest kordused")
+        for tabel in list(pbar):
             self.json_io["tabelid"][tabel] = list(set(self.json_io["tabelid"][tabel]))
         pass # DB
 
     def kuva_tabelid(self, indent)-> None:
-        """PUBLIC:Lõpptulemus JSON kujul std väljundisse
-
-        Std väljundisse:    
-            *TODO
+        """
         """
         json.dump(self.json_io, sys.stdout, indent=indent, ensure_ascii=False)
         sys.stdout.write('\n')
@@ -800,7 +820,8 @@ class TEE_JSON:
 if __name__ == '__main__':
     import argparse
     argparser = argparse.ArgumentParser(allow_abbrev=False)
-    argparser.add_argument('-p', '--csvpealkirjad',  action="store_true", help='sisendfaili formaat')
+    argparser.add_argument('-p', '--csv_input',  action="store_true", help='sisendfaili formaat')
+    argparser.add_argument('-t', '--tables', type=str, help='kooloniga eraldatult tabelite nimed')
     argparser.add_argument('-k', '--kirjavead',  action="store_true", help='genereeri kirjavead')
     argparser.add_argument('-v', '--verbose',  action="store_true", help='kuva rohkem infot tööjärje kohta')
     argparser.add_argument('-i', '--indent', type=int, default=None, help='indent for json output, None=all in one line')
@@ -808,10 +829,10 @@ if __name__ == '__main__':
     args = argparser.parse_args()
 
     try:
-        tj = TEE_JSON(args.verbose, args.kirjavead)
+        tj = TEE_JSON(args.verbose, args.kirjavead, [] if  args.tables is None else args.tables.split(':'))
 
         for f  in args.file:
-            if args.csvpealkirjad:
+            if args.csv_input:
                 tj.csvpealkrjadest(f.name, f.readlines())
             else:
                 tj.string2json(f.name, f.read())
