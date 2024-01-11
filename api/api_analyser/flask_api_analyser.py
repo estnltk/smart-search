@@ -1,83 +1,109 @@
  #!/usr/bin/env python3
 
-VERSION = "2023.11.21"
+VERSION = "2024.01.11"
 
 """ 
 ----------------------------------------------
 
 Flask veebiserver, pakendab Filosofti morfoloogilise analüsaatori veebiteenuseks
 JSON väljundisse lisatud eksplitsiitne liitsõna osasõnadeks tükeldamine.
-Testitud: 2023.12.07
 
-----------------------------------------------
+Mida uut:
 
-Lähtekoodist pythoni skripti kasutamine
-1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiteenuse käivitamine pythoni koodist (1.3) ja CURLiga veebiteenuse kasutamise näited (1.4)
+
+1 Veebiserveri käivitamine pythoni koodist
 1.1 Lähtekoodi allalaadimine
     $ mkdir -p ~/git/ ; cd ~/git/
-    $ git clone git@github.com:estnltk/smart-search.git smart_search_github
+    $ git clone git@github.com:estnltk/smart_search.git smart_search_github
 1.2 Virtuaalkeskkonna loomine
-    $ cd ~/git/smart-search_github/api/sl_analyser
+    $ cd ~/git/smart_search_github/api/api_analyser
     $ ./create_venv.sh
 1.3 Veebiserveri käivitamine pythoni koodist
-    $ cd ~/git/smart-search_github/api/sl_analyser
-    $ venv/bin/python3 ./flask_sl_analyser.py
+    $ cd ~/git/smart_search_github/api/api_analyser
+    $ venv/bin/python3 ./flask_api_analyser.py
 1.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--stem", "--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
-        localhost:7007/api/sl_analyser/process | jq
+        localhost:7007/api/analyser/process | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
-        localhost:7007/api/sl_analyser/process | jq
+        localhost:7007/api/analyser/process | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--version"]}}' \
-        localhost:7007/api/sl_analyser/process | jq
+        localhost:7007/api/analyser/process | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--version"]}}' \
         localhost:7007/process | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        localhost:7007/api/sl_analyser/version | jq
+        localhost:7007/api/analyser/version | jq
     $ curl --silent --request POST --header "Content-Type: application/json" \
         localhost:7007/version | jq
 
 ----------------------------------------------
 
-Lähtekoodist tehtud konteineri kasutamine
+2 Lähtekoodist tehtud konteineri kasutamine
 2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
-    $ cd ~/git/smart-search_github/api/sl_analyser
-    $ docker build -t tilluteenused/smart_search_api_sl_analyser:2023.11.21 .
+    $ cd ~/git/smart_search_github/api/api_analyser
+    $ docker build -t tilluteenused/smart_search_api_analyser:2024.01.11 .
     # docker login -u tilluteenused
-    # docker push tilluteenused/smart_search_api_sl_analyser:2023.11.21
+    # docker push tilluteenused/smart_search_api_analyser:2024.01.11
 2.3 Konteineri käivitamine
-    $ docker run -p 7007:7007 tilluteenused/smart_search_api_sl_analyser:2023.11.21
+    $ docker run -p 7007:7007 tilluteenused/smart_search_api_analyser:2024.01.11
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
 
-DockerHUBist tõmmatud konteineri kasutamine
+3 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/vmetajson:2023.11.21 
+    $ docker pull tilluteenused/smart_search_api_analyser:2024.01.11
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
 
-TÜ pilves töötava konteineri kasutamine
-4 CURLiga veebiteenuse kasutamise näited
+4 TÜ KUBERNETESes töötava konteineri kasutamine
+4.1 CURLiga veebiteenuse kasutamise näited
+
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--stem", "--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
-        https://smart-search.tartunlp.ai/api/sl_analyser/process | jq
+        https://smart-search.tartunlp.ai/api/analyser/process | jq
+
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
-        https://smart-search.tartunlp.ai/api/sl_analyser/process | jq
+        https://smart-search.tartunlp.ai/api/analyser/process | jq
+
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--version"]}}' \
-       https://smart-search.tartunlp.ai/api/sl_analyser/process | jq
+       https://smart-search.tartunlp.ai/api/analyser/process | jq
+
     $ curl --silent --request POST --header "Content-Type: application/json" \
-         https://smart-search.tartunlp.ai/api/sl_analyser/version | jq
+         https://smart-search.tartunlp.ai/api/analyser/version | jq
+
+----------------------------------------------
+4 DockerHUBis oleva konteineri lisamine KUBERNETESesse
+
+4.1 Tekitame vaikeväärtustega deployment-i
+
+$ kubectl create deployment smart-search-api-analyser \
+  --image=tilluteenused/smart_search_api_advanced_indexing:2024.01.10
+
+4.2 Tekitame vaikeväärtustega service'i
+
+$ kubectl expose deployment smart-search-api-analyser \
+    --type=ClusterIP --port=80 --target-port=7007
+
+4.3 Lisame ingress-i konfiguratsioonifaili
+
+- backend:
+    service:
+    name: smart-search-api-analyser
+    port:
+        number: 80
+path: /api/analyser/?(.*)
+pathType: Prefix
 
 ----------------------------------------------
 """
@@ -95,7 +121,7 @@ proc = subprocess.Popen(['./vmetajson', '--path=.'],
 
 app = Flask("vmetajson")
 
-@app.route('/api/sl_analyser/version', methods=['GET', 'POST'])
+@app.route('/api/analyser/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
 def api_analyser_version():
     """Tagastame veebiliidese versiooni
@@ -105,14 +131,16 @@ def api_analyser_version():
     """
     return jsonify({"version":VERSION})
 
-@app.route('/api/sl_analyser/process', methods=['POST'])
+@app.route('/api/analyser/process', methods=['POST'])
 @app.route('/process', methods=['POST'])
-def morf():
+def api_analyser_process():
     """Morf analüüsime JSONiga antud sõnesid ja kuvame tulemust JSONkujul
 
     Returns:
         ~flask.Response: Morf analüüsi tulemused
     """
+    if request.json is None:
+        return jsonify({"warning": "the request does not contain valid JSON"})
     if "tss" in request.json:
         tokens = request.json["tss"].split('\t')
         if "annotations" not in request.json:
@@ -120,7 +148,8 @@ def morf():
         if "tokens" not in request.json["annotations"]:
             request.json["annotations"]["tokens"] = []
         for token in tokens:
-            request.json["annotations"]["tokens"].append({"features": {"token": token}})    
+            request.json["annotations"]["tokens"].append({"features": {"token": token}})
+    assert proc.stdin is not None and proc.stdout is not None
     proc.stdin.write(f'{json.dumps(request.json)}\n')
     proc.stdin.flush()
     mrf_out = json.loads(proc.stdout.readline())
