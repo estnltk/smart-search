@@ -200,8 +200,8 @@ class SEARCH_DB:
     def version_json(self) -> Dict:
         try:
             res_fetchall = []
-            res = self.cur_index.execute('SELECT version FROM version')
-            db_version = res.fetchall()[0]
+            res = self.cur_index.execute('SELECT * FROM uuendatud')
+            db_version = res.fetchall()
         except:
             db_version = "not present"
         return {"api_version": self.VERSION, "SMART_SEARCH_API_QE": self.ea_paring, "DBASE_VERSION": db_version}

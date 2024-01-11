@@ -38,8 +38,8 @@ Lähtekoodist pythoni skripti kasutamine
       EA_PARING=http://localhost:6604/api/query_extender/process \
       ./venv/bin/python3 ./flask_wp_ea_paring_otsing.py
 1.4 Brauseriga veebilehe poole pöördumine
-    $ google-chrome http://localhost:6605/wp/ea_paring_otsing/process &
-    $ google-chrome http://localhost:6605/wp/ea_paring_otsing/version &
+    $ google-chrome http://localhost:6605/rt_pealkirjaotsing/process &
+    $ google-chrome http://localhost:6605/rt_pealkirjaotsing/version &
 
 ----------------------------------------------
 
