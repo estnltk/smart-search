@@ -145,18 +145,18 @@ curl --silent --request POST --header "Content-Type: application/json" \
 
 Lähtekoodi allalaadimine (3.1), konteineri kokkupanemine (3.2), konteineri käivitamine (3.3) ja CURLiga veebiteenuse kasutamise näited  (2.4).
 
-#### 2.1 Lähtekoodi allalaadimine
+#### 3.1 Lähtekoodi allalaadimine
 
 Järgi punkti 1.1
 
-#### 2.2 Konteineri kokkupanemine
+#### 3.2 Konteineri kokkupanemine
 
 ```bash
 cd ~/git/smart-search_github/api/api_advanced_indexing \
     && docker build -t tilluteenused/smart_search_api_advanced_indexing:2024.01.10 . 
 ```
 
-#### 2.3 Konteineri käivitamine
+#### 3.3 Konteineri käivitamine
 
 ```bash
 docker run -p 6602:6602  \
@@ -165,29 +165,29 @@ docker run -p 6602:6602  \
         tilluteenused/smart_search_api_advanced_indexing:2024.01.10
 ```
 
-#### 2.4 CURLi abil veebiteenuse kasutamise näited
+#### 3.4 CURLi abil veebiteenuse kasutamise näited
 
 Järgi punkti 1.4
 
-### DockerHUBist tõmmatud konteineri kasutamine
+### 4 DockerHUBist tõmmatud konteineri kasutamine
 
-DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
+DockerHUBist koneineri tõmbamine (4.1), konteineri käivitamine (4.2) ja CURLiga veebiteenuse kasutamise näited (4.3)
 
-#### 3.1 DockerHUBist konteineri tõmbamine
+#### 4.1 DockerHUBist konteineri tõmbamine
 
 ```bash
 docker pull tilluteenused/smart_search_api_advanced_indexing:2024.01.10
 ```
 
-#### 3.2 Konteineri käivitamine
+#### 4.2 Konteineri käivitamine
 
-Järgi punkti 2.3
+Järgi punkti 3.3
 
-#### 3.3 CURLiga veebiteenuse kasutamise näited
+#### 4.3 CURLiga veebiteenuse kasutamise näited
 
 Järgi punkti 1.4
 
-### 4 TÜ KUBERNETESes töötava konteineri kasutamine
+### 5 TÜ KUBERNETESes töötava konteineri kasutamine
 
 CURLi abil veebiteenuse kasutamise näited
 
@@ -219,7 +219,7 @@ curl --silent --request POST --header "Content-Type: application/json" \
       
 ```
 
-### 5 DockerHubis oleva konteineri lisamine oma KUBERNETESesse
+### 6 DockerHubis oleva konteineri lisamine oma KUBERNETESesse
 
 Vaikeväärtustega ```deployment```-konfiguratsioonifaili loomine
 
