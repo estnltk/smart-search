@@ -25,10 +25,10 @@ Lähtekoodist pythoni skripti kasutamine
     $ mkdir -p ~/git/ ; cd ~/git/
     $ git clone git@github.com:estnltk/smart-search.git smart_search_github
 1.2 Virtuaalkeskkonna loomine
-    $ cd ~/git/smart-search_github/api/api_query_extender
+    $ cd ~/git/smart_search_github/api/api_query_extender
     $ ./create_venv.sh
 1.3 Veebiserveri käivitamine pythoni koodist
-    $ cd  ~/git/smart-search_github/api/api_query_extender
+    $ cd  ~/git/smart_search_github/api/api_query_extender
     $ cp ../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite ./smart_search.sqlite
     $ SMART_SEARCH_QE_DBASE="./smart_search.sqlite" \
         venv/bin/python3 ./flask_api_query_extender.py
@@ -65,13 +65,13 @@ Lähtekoodist tehtud konteineri kasutamine
 2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
-    $ cd ~/git/smart-search_github/api/api_query_extender
+    $ cd ~/git/smart_search_github/api/api_query_extender
     $ cp ../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite ./smart_search.sqlite
-    $ docker build -t tilluteenused/smart_search_api_query_extender:2024.01.06 . 
+    $ docker build -t tilluteenused/smart_search_api_query_extender:2024.01.11 . 
 2.3 Konteineri käivitamine
     $ docker run -p 6604:6604 \
         --env  SMART_SEARCH_QE_DBASE='./smart_search.sqlite' \
-        tilluteenused/smart_search_api_query_extender:2024.01.06
+        tilluteenused/smart_search_api_query_extender:2024.01.11
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -79,7 +79,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_query_extender:2024.01.06
+    $ docker pull tilluteenused/smart_search_api_query_extender:2024.01.11
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
@@ -127,7 +127,7 @@ from typing import Dict, List, Tuple
 from functools import wraps
 import api_query_extender
 
-VERSION_CONTAINER='2024.01.06'
+VERSION_CONTAINER='2024.01.11'
 VERSION_FLASK_SHELL='2024.01.05'
 
 paring_soned = api_query_extender.Q_EXTENDER("", csthread=False)

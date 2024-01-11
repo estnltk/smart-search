@@ -43,11 +43,11 @@ Lähtekoodist tehtud konteineri kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
     $ cd ~/git/smart_search_github/api/api_generator
-    $ docker build -t tilluteenused/smart_search_api_generator.2024.01.11 .
+    $ docker build -t tilluteenused/smart_search_api_generator:2024.01.11 .
     # docker login -u tilluteenused
-    # docker push tilluteenused/smart_search_api_generator.2024.01.11 
+    # docker push tilluteenused/smart_search_api_generator:2024.01.11 
 2.3 Konteineri käivitamine
-    $ docker run -p 7008:7008 tilluteenused/smart_search_api_generator.2024.01.11 
+    $ docker run -p 7008:7008 tilluteenused/smart_search_api_generator:2024.01.11 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
