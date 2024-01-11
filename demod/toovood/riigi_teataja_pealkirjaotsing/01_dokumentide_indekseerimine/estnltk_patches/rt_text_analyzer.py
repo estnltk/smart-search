@@ -24,12 +24,14 @@ class RTTextAnalyzer:
     """
     Dedicated analysis pipeline for Riigi Teataja texts.
     Resolves some tokenization quirks that EstNLTK does not do by default.
+    By default propernames is set to False.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.token_splitter = RTTokenSplitter()
         self.white_space_string = re.compile('^(\s|[\u200e\ufeff])+$')
-        self.morph_analyzer = VabamorfAnalyzer()
+        kwargs['propername'] = kwargs.get('propername', False)
+        self.morph_analyzer = VabamorfAnalyzer(**kwargs)
         self.post_morph_analyzer = PostMorphAnalysisTagger()
 
     def __call__(self, text: Text) -> Text:
