@@ -42,7 +42,8 @@ class GENERATOR4SL:
         json_mrf = {"params":{"vmetsjson":["--guess"]}, "annotations":{"tokens":[]}}
         for lemma in lemmas:
             json_mrf["annotations"]["tokens"].append({"features":{"token":lemma}})
-
+            
+        assert proc.stdin is not None and proc.stdout is not None
         proc.stdin.write(f'{json.dumps(json_mrf)}\n')
         proc.stdin.flush()
         json_gen = json.loads(proc.stdout.readline())

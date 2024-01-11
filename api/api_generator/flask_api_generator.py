@@ -7,11 +7,11 @@ smartsearch projektile kohendatud versioon.
 ----------------------------------------------
 Silumiseks (serveri käivtamine code'is, päringud vt 1.4):
     {
-        "name": "flask_sl_generator.py",
+        "name": "flask_api_generator.py",
         "type": "python",
         "request": "launch",
-        "cwd": "${workspaceFolder}/api/sl_generator/",
-        "program": "./flask_sl_generator.py",
+        "cwd": "${workspaceFolder}/api/api_generator/",
+        "program": "./flask_api_generator.py",
         "env": {},
         "args": []
     },
@@ -20,13 +20,13 @@ Lähtekoodist pythoni skripti kasutamine
 1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiteenuse käivitamine pythoni koodist (1.3) ja CURLiga veebiteenuse kasutamise näited (1.4)
 1.1 Lähtekoodi allalaadimine
     $ mkdir -p ~/git/ ; cd ~/git/
-    $ git clone https://github.com/estnltk/smart-search.git smart-search_github
+    $ git clone https://github.com/estnltk/smart-search.git smart_search_github
 1.2 Virtuaalkeskkonna loomine
-    $ cd ~/git/smart-search_github/api/sl_generator
+    $ cd ~/git/smart_search_github/api/api_generator
     $ ./create_venv.sh
 1.3 Veebiserveri käivitamine pythoni koodist
-    $ cd ~/git/smart-search_github/api/sl_generator
-    $ venv/bin/python3 flask_sl_generator.py
+    $ cd ~/git/smart_search_github/api/sl_generator
+    $ venv/bin/python3 flask_api_generator.py
 1.4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"tss":"tere\tpidama"}' \
@@ -42,12 +42,12 @@ Lähtekoodist tehtud konteineri kasutamine
 2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Konteineri kokkupanemine
-    $ cd ~/git/smart-search_github/api/sl_generator
-    $ docker build -t tilluteenused/smart_search_api_sl_generator.2023.11.33 .
+    $ cd ~/git/smart_search_github/api/api_generator
+    $ docker build -t tilluteenused/smart_search_api_generator.2024.01.11 .
     # docker login -u tilluteenused
-    # docker push tilluteenused/smart_search_api_sl_generator.2023.11.33
+    # docker push tilluteenused/smart_search_api_generator.2024.01.11 
 2.3 Konteineri käivitamine
-    $ docker run -p 7008:7008 tilluteenused/smart_search_api_sl_generator.2023.11.33
+    $ docker run -p 7008:7008 tilluteenused/smart_search_api_generator.2024.01.11 
 2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
 ----------------------------------------------
@@ -55,7 +55,7 @@ Lähtekoodist tehtud konteineri kasutamine
 DockerHUBist tõmmatud konteineri kasutamine
 3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_sl_generator.2023.11.33
+    $ docker pull tilluteenused/smart_search_api_generator.2024.01.11 
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
 
@@ -65,12 +65,12 @@ TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"tss":"tere\ttalv"}' \
-        https://smart-search.tartunlp.ai/api/sl_generator/tss
+        https://smart-search.tartunlp.ai/api/generator/tss
     $ curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":["with_apostrophe"], "tss":"Strassbourg"}' \
-        https://smart-search.tartunlp.ai/api/sl_generator/tss
+        https://smart-search.tartunlp.ai/api/generator/tss
     $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/sl_generator/version
+        https://smart-search.tartunlp.ai/api/generator/version
 
 ----------------------------------------------
 """
@@ -80,10 +80,10 @@ import json
 import argparse
 from flask import Flask, request, jsonify, make_response
 
-import sl_generator
+import api_generator
 
-app = Flask("sl_generator")
-slg = sl_generator.GENERATOR4SL()
+app = Flask("api_generator")
+slg = api_generator.GENERATOR4SL()
 
 @app.route('/api/sl_generator/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['GET', 'POST'])
@@ -103,6 +103,8 @@ def api_sl_generator_process_tsv():
     Returns:
         ~flask.Response: Morf sünteesi tulemused
     """
+    if request.json is None:
+            return jsonify({"warning": "the request does not contain valid JSON"})
     with_apostrophe = False
     if "params" in request.json:
         if "with_apostrophe" in request.json["params"]:

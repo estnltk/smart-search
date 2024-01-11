@@ -24,7 +24,7 @@ RUN ./venv/bin/python3 -m pip install --upgrade pip
 RUN ./venv/bin/pip3 --no-cache-dir install -r ./requirements.txt 
 
 # copy current task related skripts
-COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_sl_generator.py sl_generator.py vmetsjson et.dct ./
+COPY --chown=mere_mortal:mere_mortal docker-entrypoint.sh flask_api_generator.py api_generator.py vmetsjson et.dct ./
 RUN chmod +x *.sh *.py vmetsjson
 
 ENV WORKERS=1
