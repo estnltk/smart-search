@@ -72,8 +72,8 @@ DockerHUBist tõmmatud konteineri kasutamine
 
 TÜ pilves töötava konteineri kasutamine
 4 Brauseriga veebilehe poole pöördumine
-    $ google-chrome https://smart-search.tartunlp.ai/wp/ea_paring_otsing/process &
-    $ google-chrome https://smart-search.tartunlp.ai/wp/ea_paring_otsing/version &
+    $ google-chrome https://smart-search.tartunlp.ai/rt_pealkirjaotsing/process &
+    $ google-chrome https://smart-search.tartunlp.ai/rt_pealkirjaotsing/version &
 
 ----------------------------------------------
 '''

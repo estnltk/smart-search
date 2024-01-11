@@ -60,7 +60,14 @@ DockerHUBist tõmmatud konteineri kasutamine
 ----------------------------------------------
 TÜ pilves töötava konteineri kasutamine
 4 CURLiga veebiteenuse kasutamise näited
-
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \
+         https://smart-search.tartunlp.ai/api/lemmatizer/json | jq
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+        --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \
+         https://smart-search.tartunlp.ai/api/lemmatizer/tsv
+    $ curl --silent --request POST --header "Content-Type: application/json" \
+         https://smart-search.tartunlp.ai/api/lemmatizer/version | jq
 """
 
 import sys
