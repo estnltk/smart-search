@@ -1,14 +1,16 @@
 from estnltk import Text
 from estnltk import Layer
 from estnltk import Span
+from estnltk import Annotation
 from estnltk import EnvelopingBaseSpan
 from estnltk.taggers import VabamorfAnalyzer
 
 from typing import List
+from typing import Union
 
 
 VM_ANALYZER = VabamorfAnalyzer(propername=False)
-
+DASH_SYMBOLS = '-−‒'
 
 def get_lemma(word: str, ignore_pos: List[str] = ()) -> List[str]:
     """
@@ -31,7 +33,7 @@ def get_lemma(word: str, ignore_pos: List[str] = ()) -> List[str]:
     return list(result)
 
 
-def extract_spans_of_sub_wordforms(word, ignore_pos: List[str] = (), combine: bool = True):
+def extract_spans_of_sub_wordforms(word: Span, annotation: Annotation = None, ignore_pos: List[str] = (), combine: bool = True):
     """
     Extracts all possible decompositions of a word into its sub-words.
     Returns an empty list if the word is not a compound word.
@@ -41,6 +43,40 @@ def extract_spans_of_sub_wordforms(word, ignore_pos: List[str] = (), combine: bo
     bigrams, trigrams and tetragrams.
     """
     spans = set()
+    # Specific analysis
+    if annotation is not None:
+        if annotation['partofspeech'] in ignore_pos or len(annotation['root_tokens']) <= 1:
+            return spans
+
+        split_points = [0] * (len(annotation['root_tokens']) + 1)
+        for i, sub_word in enumerate(annotation['root_tokens'][:-1]):
+            split_points[i + 1] = len(sub_word) + split_points[i]
+        split_points[-1] = len(word.text)
+
+        for i in range(1, len(split_points)):
+            spans.add((split_points[i - 1], split_points[i]))
+
+        if not combine or len(split_points) <= 3:
+            return spans
+
+        for i in range(2, len(split_points)):
+            spans.add((split_points[i-2], split_points[i]))
+
+        if len(split_points) <= 4:
+            return spans
+
+        for i in range(3, len(split_points)):
+            spans.add((split_points[i-3], split_points[i]))
+
+        if len(split_points) <= 5:
+            return spans
+
+        for i in range(4, len(split_points)):
+            spans.add((split_points[i-3], split_points[i]))
+
+        return spans
+
+    # Standard case
     for annotation in word.annotations:
         if annotation['partofspeech'] in ignore_pos:
             continue
@@ -61,13 +97,13 @@ def extract_spans_of_sub_wordforms(word, ignore_pos: List[str] = (), combine: bo
         for i in range(2, len(split_points)):
             spans.add((split_points[i-2], split_points[i]))
 
-        if not combine or len(split_points) <= 4:
+        if len(split_points) <= 4:
             continue
 
         for i in range(3, len(split_points)):
             spans.add((split_points[i-3], split_points[i]))
 
-        if not combine or len(split_points) <= 5:
+        if len(split_points) <= 5:
             continue
 
         for i in range(4, len(split_points)):
@@ -108,15 +144,37 @@ def extract_wordform_index(text_id: str, text: Text, ignore_pos: List[str] = Non
     result = []
     ignore_pos = ignore_pos or ['Z', 'J']
     for token in text['morph_analysis']:
-        if set(token['partofspeech']).issubset(ignore_pos):
+        if len(token.text) == 0:
             continue
-        result.append([token.text.lower(), text_id, token.start, token.end, True])
 
-        subwords = set()
-        for word_split in extract_sub_wordforms(token, ignore_pos):
-            subwords.update(word_split)
+        wordforms = set()
+        subwords = dict()
+        for annotation in token.annotations:
+            if annotation['partofspeech'] in ignore_pos:
+                continue
 
-        result.extend([[word, text_id, token.start, token.end, False] for word in subwords])
+            # We lower the case when the root is in lowercase
+            # This does not happen only for pos tags H and Y
+            token_text = token.text.lower() if annotation['partofspeech'] not in ['H','Y'] else token.text
+
+            # Erase trailing dashes like nalja- ja pullimees
+            if token_text[-1] in DASH_SYMBOLS and len(token_text) > 1:
+                token_text = token_text[:-1]
+
+            wordforms.add(token_text)
+
+            # Siim says that for very rare occasions the analysis of subwords fails, since the first compound changes
+            # for a lemma,  but it does not crash the code.
+            # TODO: Consult Tarmo about this
+            for span in extract_spans_of_sub_wordforms(
+                    token, annotation=annotation, ignore_pos=ignore_pos, combine=True):
+                if span not in subwords:
+                    subwords[span] = set()
+                subwords[span].add(token_text[span[0]:span[1]])
+
+        # Add all lines for the token simultaneously
+        result.extend([word, text_id, token.start, token.end, False] for word in wordforms)
+        result.extend([[word, text_id, token.start, token.end, True] for words in subwords.values() for word in words])
 
     return result
 
