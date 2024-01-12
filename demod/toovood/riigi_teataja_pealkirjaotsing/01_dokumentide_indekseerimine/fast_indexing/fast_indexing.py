@@ -31,6 +31,51 @@ def get_lemma(word: str, ignore_pos: List[str] = ()) -> List[str]:
     return list(result)
 
 
+def extract_spans_of_sub_wordforms(word, ignore_pos: List[str] = (), combine: bool = True):
+    """
+    Extracts all possible decompositions of a word into its sub-words.
+    Returns an empty list if the word is not a compound word.
+    If the decomposition is ambiguous returns all variants.
+    All analyses with part-of-speech tags in ignore_pos list are omitted.
+    If the combine flag is set then sequentual subwords are combined into
+    bigrams, trigrams and tetragrams.
+    """
+    spans = set()
+    for annotation in word.annotations:
+        if annotation['partofspeech'] in ignore_pos:
+            continue
+        if len(annotation['root_tokens']) <= 1:
+            continue
+
+        split_points = [0] * (len(annotation['root_tokens']) + 1)
+        for i, sub_word in enumerate(annotation['root_tokens'][:-1]):
+            split_points[i + 1] = len(sub_word) + split_points[i]
+        split_points[-1] = len(word.text)
+
+        for i in range(1, len(split_points)):
+            spans.add((split_points[i - 1], split_points[i]))
+
+        if not combine or len(split_points) <= 3:
+            continue
+
+        for i in range(2, len(split_points)):
+            spans.add((split_points[i-2], split_points[i]))
+
+        if not combine or len(split_points) <= 4:
+            continue
+
+        for i in range(3, len(split_points)):
+            spans.add((split_points[i-3], split_points[i]))
+
+        if not combine or len(split_points) <= 5:
+            continue
+
+        for i in range(4, len(split_points)):
+            spans.add((split_points[i-3], split_points[i]))
+
+    return spans
+
+
 def extract_sub_wordforms(word: Span, ignore_pos: List[str] = ()):
     """
     Extracts all possible decompositions of a word into its sub-words.
@@ -46,6 +91,7 @@ def extract_sub_wordforms(word: Span, ignore_pos: List[str] = ()):
             continue
 
         split_point = sum(list(map(len, annotation['root_tokens']))[:-1])
+        ##? respect letters
         result.append(tuple(map(lambda x: x.lower(), [*annotation['root_tokens'][:-1], word.text[split_point:]])))
     return list(set(result))
 
@@ -106,7 +152,7 @@ def extract_lemma_index(text_id: str, text: Text, ignore_pos: List[str] = None):
         word_splits = extract_sub_wordforms(token, ignore_pos)
         if len(word_splits) == 0:
             continue
-
+        # TODO: liitsõnade genereerimine word_split --> compounds--> get_lemma
         # Analyse all possible lemmas of the sub-words
         weights = dict()
         prob = 1/len(word_splits)
