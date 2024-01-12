@@ -3,23 +3,24 @@
 ## Sisendi JSON-kuju
 
 ```json
-{   "tss":string, // Tabulatsiooniga eraldatud sõned sünteesimiseks, soovitatavalt lemmad
-    "params":["with_apostrophe"] // võib puududa, genereerib lisaks vormid kus käändelõpp on eraldatud ülakoma ja miinusmärgiga. 
+{   "tss":string,                // Tabulatsiooniga eraldatud sõned sünteesimiseks, soovitatavalt lemmad
+    "params":["with_apostrophe"] // Võib puududa, genereerib lisaks vormid kus käändelõpp on eraldatud ülakoma ja miinusmärgiga. 
+                                 // Lähtub sõne eestipärasest häälduskujust, Seega võõrsõnade korral võib genereerida täiesti valed vormis-lõpud. 
 }
-
 ```
 
 UTF8 kooditabelis on suur hulk erinevaid ülakomasid ja sidekriipse, kogu seda mitmekesisust siin ei arvestata.
 See millised lõpud käivad ülakoma taha sõltub hääldusest, mitte kirjapildist.
-Sünteesiprogramm ei tea hääldusest midagi, seega on suur võimalus.
-Võõrsõnade puhul soovitus genereerida sarnaselt hääldatava eesti sõna vormid ja selle
-tagant tõsta lõpud võõrsõna taha. 
+Sünteesiprogramm ei tea võõrsõnade hääldusest midagi, seega on suur võimalus genereerida valed vormid.
+Võõrsõnade puhul soovitus genereerida sarnaselt hääldatava muutüübiga eesti sõna vormid ja selle
+tagant tõsta lõpud võõrsõna taha.
 
-## Väljundi TSV.kuju
+## Väljundi TSV-kuju
 
 Väljundi esimeses read on veerunimed.
 
 Veerud on:
+
 * location -- sama numbriga read sisaldavad sama sisendsõna (genereerimse aluseks olevat lemmat)
 * input -- genereerime aluseks oleva sõne (soovitatavalt lemma)
 * stem  -- genereerutud sõnavormi tüvi (sellest on tuletatud (osa) vorme)
@@ -27,10 +28,13 @@ Veerud on:
 
 ## Kasutusnäited
 
-```cmdline
+```bash
 curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"tss":"tere\ttalv"}' \
-        https://smart-search.tartunlp.ai/api/sl_generator/tss
+        https://smart-search.tartunlp.ai/api/generator/tss
+```
+
+```tsv
 location        input   stem    wordform
 0       tere    tere    tere
 0       tere    tere    tered
@@ -96,117 +100,11 @@ location        input   stem    wordform
 1       talv    talve   talveta
 ```
 
-```cmdline
+```bash
 curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"params":["with_apostrophe"], "tss":"Strassbourg"}' \
-        https://smart-search.tartunlp.ai/api/sl_generator/tss
-location        input   stem    wordform
-0       Strassbourg     Strassbourg     Strassbourg
-0       Strassbourg     Strassbourg     Strassbourg'e
-0       Strassbourg     Strassbourg     Strassbourg'eks
-0       Strassbourg     Strassbourg     Strassbourg'el
-0       Strassbourg     Strassbourg     Strassbourg'ele
-0       Strassbourg     Strassbourg     Strassbourg'elt
-0       Strassbourg     Strassbourg     Strassbourg'es
-0       Strassbourg     Strassbourg     Strassbourg'esse
-0       Strassbourg     Strassbourg     Strassbourg'est
-0       Strassbourg     Strassbourg     Strassbourg-e
-0       Strassbourg     Strassbourg     Strassbourg-eks
-0       Strassbourg     Strassbourg     Strassbourg-el
-0       Strassbourg     Strassbourg     Strassbourg-ele
-0       Strassbourg     Strassbourg     Strassbourg-elt
-0       Strassbourg     Strassbourg     Strassbourg-es
-0       Strassbourg     Strassbourg     Strassbourg-esse
-0       Strassbourg     Strassbourg     Strassbourg-est
-0       Strassbourg     Strassbourg     Strassbourge
-0       Strassbourg     Strassbourg     Strassbourgeks
-0       Strassbourg     Strassbourg     Strassbourgel
-0       Strassbourg     Strassbourg     Strassbourgele
-0       Strassbourg     Strassbourg     Strassbourgelt
-0       Strassbourg     Strassbourg     Strassbourges
-0       Strassbourg     Strassbourg     Strassbourgesse
-0       Strassbourg     Strassbourg     Strassbourgest
-0       Strassbourg     Strassbourgi    Strassbourgi
-0       Strassbourg     Strassbourgi    Strassbourgi'd
-0       Strassbourg     Strassbourgi    Strassbourgi'de
-0       Strassbourg     Strassbourgi    Strassbourgi'dega
-0       Strassbourg     Strassbourgi    Strassbourgi'deks
-0       Strassbourg     Strassbourgi    Strassbourgi'del
-0       Strassbourg     Strassbourgi    Strassbourgi'dele
-0       Strassbourg     Strassbourgi    Strassbourgi'delt
-0       Strassbourg     Strassbourgi    Strassbourgi'dena
-0       Strassbourg     Strassbourgi    Strassbourgi'deni
-0       Strassbourg     Strassbourgi    Strassbourgi'des
-0       Strassbourg     Strassbourgi    Strassbourgi'desse
-0       Strassbourg     Strassbourgi    Strassbourgi'dest
-0       Strassbourg     Strassbourgi    Strassbourgi'deta
-0       Strassbourg     Strassbourgi    Strassbourgi'ga
-0       Strassbourg     Strassbourgi    Strassbourgi'ks
-0       Strassbourg     Strassbourgi    Strassbourgi'l
-0       Strassbourg     Strassbourgi    Strassbourgi'le
-0       Strassbourg     Strassbourgi    Strassbourgi'lt
-0       Strassbourg     Strassbourgi    Strassbourgi'na
-0       Strassbourg     Strassbourgi    Strassbourgi'ni
-0       Strassbourg     Strassbourgi    Strassbourgi's
-0       Strassbourg     Strassbourgi    Strassbourgi'sid
-0       Strassbourg     Strassbourgi    Strassbourgi'sse
-0       Strassbourg     Strassbourgi    Strassbourgi'st
-0       Strassbourg     Strassbourgi    Strassbourgi'ta
-0       Strassbourg     Strassbourgi    Strassbourgi-d
-0       Strassbourg     Strassbourgi    Strassbourgi-de
-0       Strassbourg     Strassbourgi    Strassbourgi-dega
-0       Strassbourg     Strassbourgi    Strassbourgi-deks
-0       Strassbourg     Strassbourgi    Strassbourgi-del
-0       Strassbourg     Strassbourgi    Strassbourgi-dele
-0       Strassbourg     Strassbourgi    Strassbourgi-delt
-0       Strassbourg     Strassbourgi    Strassbourgi-dena
-0       Strassbourg     Strassbourgi    Strassbourgi-deni
-0       Strassbourg     Strassbourgi    Strassbourgi-des
-0       Strassbourg     Strassbourgi    Strassbourgi-desse
-0       Strassbourg     Strassbourgi    Strassbourgi-dest
-0       Strassbourg     Strassbourgi    Strassbourgi-deta
-0       Strassbourg     Strassbourgi    Strassbourgi-ga
-0       Strassbourg     Strassbourgi    Strassbourgi-ks
-0       Strassbourg     Strassbourgi    Strassbourgi-l
-0       Strassbourg     Strassbourgi    Strassbourgi-le
-0       Strassbourg     Strassbourgi    Strassbourgi-lt
-0       Strassbourg     Strassbourgi    Strassbourgi-na
-0       Strassbourg     Strassbourgi    Strassbourgi-ni
-0       Strassbourg     Strassbourgi    Strassbourgi-s
-0       Strassbourg     Strassbourgi    Strassbourgi-sid
-0       Strassbourg     Strassbourgi    Strassbourgi-sse
-0       Strassbourg     Strassbourgi    Strassbourgi-st
-0       Strassbourg     Strassbourgi    Strassbourgi-ta
-0       Strassbourg     Strassbourgi    Strassbourgid
-0       Strassbourg     Strassbourgi    Strassbourgide
-0       Strassbourg     Strassbourgi    Strassbourgidega
-0       Strassbourg     Strassbourgi    Strassbourgideks
-0       Strassbourg     Strassbourgi    Strassbourgidel
-0       Strassbourg     Strassbourgi    Strassbourgidele
-0       Strassbourg     Strassbourgi    Strassbourgidelt
-0       Strassbourg     Strassbourgi    Strassbourgidena
-0       Strassbourg     Strassbourgi    Strassbourgideni
-0       Strassbourg     Strassbourgi    Strassbourgides
-0       Strassbourg     Strassbourgi    Strassbourgidesse
-0       Strassbourg     Strassbourgi    Strassbourgidest
-0       Strassbourg     Strassbourgi    Strassbourgideta
-0       Strassbourg     Strassbourgi    Strassbourgiga
-0       Strassbourg     Strassbourgi    Strassbourgiks
-0       Strassbourg     Strassbourgi    Strassbourgil
-0       Strassbourg     Strassbourgi    Strassbourgile
-0       Strassbourg     Strassbourgi    Strassbourgilt
-0       Strassbourg     Strassbourgi    Strassbourgina
-0       Strassbourg     Strassbourgi    Strassbourgini
-0       Strassbourg     Strassbourgi    Strassbourgis
-0       Strassbourg     Strassbourgi    Strassbourgisid
-0       Strassbourg     Strassbourgi    Strassbourgisse
-0       Strassbourg     Strassbourgi    Strassbourgist
-0       Strassbourg     Strassbourgi    Strassbourgita        
+        https://smart-search.tartunlp.ai/api/generator/version
 ```
 
-```cmdline
- curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/sl_generator/version
+```json
 {"version":"2023.11.33"}
 ```
-
