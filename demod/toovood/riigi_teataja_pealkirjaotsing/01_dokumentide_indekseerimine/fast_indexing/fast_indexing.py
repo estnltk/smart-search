@@ -37,7 +37,7 @@ def extract_spans_of_sub_wordforms(word, ignore_pos: List[str] = (), combine: bo
     Returns an empty list if the word is not a compound word.
     If the decomposition is ambiguous returns all variants.
     All analyses with part-of-speech tags in ignore_pos list are omitted.
-    If the combine flag is set then sequentual subwords are combined into
+    If the combine flag is set then sequential subwords are combined into
     bigrams, trigrams and tetragrams.
     """
     spans = set()
@@ -91,7 +91,6 @@ def extract_sub_wordforms(word: Span, ignore_pos: List[str] = ()):
             continue
 
         split_point = sum(list(map(len, annotation['root_tokens']))[:-1])
-        ##? respect letters
         result.append(tuple(map(lambda x: x.lower(), [*annotation['root_tokens'][:-1], word.text[split_point:]])))
     return list(set(result))
 
@@ -149,22 +148,20 @@ def extract_lemma_index(text_id: str, text: Text, ignore_pos: List[str] = None):
         weight = 1/len(lemmas)
         result.extend([[lemma, text_id, token.start, token.end, weight, False] for lemma in lemmas])
 
-        word_splits = extract_sub_wordforms(token, ignore_pos)
-        if len(word_splits) == 0:
-            continue
-        # TODO: liitsõnade genereerimine word_split --> compounds--> get_lemma
-        # Analyse all possible lemmas of the sub-words
+        # Siim says that for very rare occasions the analysis of subwords fails, since the first compound changes
+        # for a lemma,  but it does not crash the code.
+        # TODO: Consult Tarmo about this
         weights = dict()
-        prob = 1/len(word_splits)
-        for word_split in extract_sub_wordforms(token, ignore_pos):
-            for subword in word_split:
-                sublemmas = get_lemma(subword, ignore_pos)
-                if len(sublemmas) == 0:
-                    continue
+        subword_spans = extract_spans_of_sub_wordforms(token, ignore_pos=ignore_pos, combine=True)
+        for start, end in subword_spans:
+            subword = token.text[start:end]
+            sublemmas = get_lemma(subword, ignore_pos)
+            if len(sublemmas) == 0:
+                continue
 
-                subprob = prob * 1/len(sublemmas)
-                for sublemma in sublemmas:
-                    weights[sublemma] = weights.get(sublemma, 0) + subprob
+            delta_w = 1/len(sublemmas)
+            for sublemma in sublemmas:
+                weights[sublemma] = weights.get(sublemma, 0) + delta_w
 
         result.extend([[word, text_id, token.start, token.end, weight, True] for word, weight in weights.items()])
 
