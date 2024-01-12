@@ -11,6 +11,7 @@
 
 Väljundi esimene rida sisaldab veerunimesid.
 Veerud on:
+
 * location -- sama numbriga ridadel on sama sisendsõne "input"
 * token -- sisendsõne
 * stem -- sisendsõne tüvi
@@ -24,10 +25,10 @@ Veerud on:
 
 ## Kasutusnäited
 
-```cmdline
+```bash
 curl --silent --request POST --header "Content-Type: application/json" \
     --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \
-    https://smart-search.tartunlp.ai/api/sl_lemmatizer/tsv
+    https://smart-search.tartunlp.ai/api/lemmatizer/tsv
 ```
 
 ```tsv
@@ -45,111 +46,14 @@ location        token   stem    is_component    weight  lemmas
 2       allmaaraudteejaamas     tee     True    0.2     ['tegema', 'tee']
 ```
 
-```cmdline
- curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/sl_lemmatizer/version | jq
-```
-
-```json
-{
-  "version": "2023.12.02"
-}
-```
-
-```cmdline
+```bash
 curl --silent --request POST --header "Content-Type: application/json" \
-        --data '{"tss":"kinnipeetuga\tpeeti\tallmaaraudteejaamas"}' \  
-        https://smart-search.tartunlp.ai/api/sl_lemmatizer/json | jq
+        https://smart-search.tartunlp.ai/api/lemmatizer/version | jq
 ```
 
 ```json
 {
-  "allmaaraudteejaamas": {
-    "all": {
-      "component": true,
-      "lemmas": [
-        "all"
-      ],
-      "weight": 0.2
-    },
-    "allmaaraudteejaama": {
-      "component": false,
-      "lemmas": [
-        "allmaaraudteejaam"
-      ],
-      "weight": 1
-    },
-    "jaama": {
-      "component": true,
-      "lemmas": [
-        "jaam"
-      ],
-      "weight": 0.2
-    },
-    "maa": {
-      "component": true,
-      "lemmas": [
-        "maa"
-      ],
-      "weight": 0.2
-    },
-    "raud": {
-      "component": true,
-      "lemmas": [
-        "raud"
-      ],
-      "weight": 0.2
-    },
-    "tee": {
-      "component": true,
-      "lemmas": [
-        "tegema",
-        "tee"
-      ],
-      "weight": 0.2
-    }
-  },
-  "kinnipeetuga": {
-    "kinni": {
-      "component": true,
-      "lemmas": [
-        "kinni"
-      ],
-      "weight": 0.5
-    },
-    "kinnipeetu": {
-      "component": false,
-      "lemmas": [
-        "kinnipeetud",
-        "kinnipeetu"
-      ],
-      "weight": 1
-    },
-    "peetu": {
-      "component": true,
-      "lemmas": [
-        "peetuma",
-        "peetud",
-        "peetu"
-      ],
-      "weight": 0.5
-    }
-  },
-  "peeti": {
-    "pee": {
-      "component": false,
-      "lemmas": [
-        "pee"
-      ],
-      "weight": 1
-    },
-    "peeti": {
-      "component": false,
-      "lemmas": [
-        "peet",
-        "pidama"
-      ],
-      "weight": 1
-    }
-  }
+  "api_version": "2024.01.10",
+  "flask_liidese_versiooon": "2024.01.10"
+}
 ```
