@@ -6,11 +6,11 @@ from estnltk import EnvelopingBaseSpan
 from estnltk.taggers import VabamorfAnalyzer
 
 from typing import List
-from typing import Union
 
 
 VM_ANALYZER = VabamorfAnalyzer(propername=False)
 DASH_SYMBOLS = '-−‒'
+
 
 def get_lemma(word: str, ignore_pos: List[str] = ()) -> List[str]:
     """
@@ -33,7 +33,8 @@ def get_lemma(word: str, ignore_pos: List[str] = ()) -> List[str]:
     return list(result)
 
 
-def extract_spans_of_sub_wordforms(word: Span, annotation: Annotation = None, ignore_pos: List[str] = (), combine: bool = True):
+def extract_spans_of_sub_wordforms(
+        word: Span, annotation: Annotation = None, ignore_pos: List[str] = (), combine: bool = True):
     """
     Extracts all possible decompositions of a word into its sub-words.
     Returns an empty list if the word is not a compound word.
@@ -45,7 +46,9 @@ def extract_spans_of_sub_wordforms(word: Span, annotation: Annotation = None, ig
     spans = set()
     # Specific analysis
     if annotation is not None:
-        if annotation['partofspeech'] in ignore_pos or len(annotation['root_tokens']) <= 1:
+        if annotation['partofspeech'] in ignore_pos:
+            return spans
+        if annotation['root_tokens'] is None or len(annotation['root_tokens']) <= 1:
             return spans
 
         split_points = [0] * (len(annotation['root_tokens']) + 1)
@@ -80,7 +83,8 @@ def extract_spans_of_sub_wordforms(word: Span, annotation: Annotation = None, ig
     for annotation in word.annotations:
         if annotation['partofspeech'] in ignore_pos:
             continue
-        if len(annotation['root_tokens']) <= 1:
+
+        if annotation['root_tokens'] is None or len(annotation['root_tokens']) <= 1:
             continue
 
         split_points = [0] * (len(annotation['root_tokens']) + 1)
@@ -155,7 +159,7 @@ def extract_wordform_index(text_id: str, text: Text, ignore_pos: List[str] = Non
 
             # We lower the case when the root is in lowercase
             # This does not happen only for pos tags H and Y
-            token_text = token.text.lower() if annotation['partofspeech'] not in ['H','Y'] else token.text
+            token_text = token.text.lower() if annotation['partofspeech'] not in ['H', 'Y'] else token.text
 
             # Erase trailing dashes like nalja- ja pullimees
             if token_text[-1] in DASH_SYMBOLS and len(token_text) > 1:
