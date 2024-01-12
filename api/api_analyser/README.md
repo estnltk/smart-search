@@ -36,7 +36,7 @@ Repositoorium sisaldab kompileeritud [Filosofti morfoloogilist analüsaatorit](h
 * **_vmetajson_** morfoloogilise analüüsi programm.
 * **_et.dct_** programmi poolt kasutatav leksikon.
 
-Kui soovite ise programmi (**_vmetajson_**) kompileerida või leksikoni (**_et.dct_**) täiendada/muuta ja uuesti kokku panna, 
+Kui soovite ise programmi (**_vmetajson_**) kompileerida või leksikoni (**_et.dct_**) täiendada/muuta ja uuesti kokku panna,
 vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/doc/programmid_ja_sonastikud.md).
 
 ### 2. Konteineri kokkupanemine
@@ -185,10 +185,9 @@ Kui kasutame TÜ pilves töötavat konteinerit:
 export HOST4ANALYSER='https://smart-search.tartunlp.ai'
 ```
 
-
 ### Näide 1
 
-Analüüsime tabulatsiooniga eraldatud sõnesid. Väljundisse analüüsitavate 
+Analüüsime tabulatsiooniga eraldatud sõnesid. Väljundisse analüüsitavate
 sõnede tüved, lõpud jms. Leksikonist puuduvate sõnede võimalikud analüüsid
 oletame sõnakujust lähtuvalt.
 
@@ -315,7 +314,7 @@ curl --silent --request POST --header "Content-Type: application/json" \
 
 ### Näide 2
 
-Analüüsime tabulatsiooniga eraldatud sõnesid. Väljundisse analüüsitavate 
+Analüüsime tabulatsiooniga eraldatud sõnesid. Väljundisse analüüsitavate
 sõnede lemmad, lõpud jms. Leksikonist puuduvate sõnede võimalikud analüüsid
 oletame sõnakujust lähtuvalt.
 
