@@ -33,8 +33,6 @@ Dokumendid on pakitud JSON-formaati:
 
 ### Väljundi formaat
 
-Parameetri abil saab määrata, mida tabelites kuvatakse
-
 ```json
    {   "tabelid":
         {   "indeks_vormid":[(VORM, DOCID, START, END, LIITSÕNA_OSA)],
@@ -47,13 +45,14 @@ Parameetri abil saab määrata, mida tabelites kuvatakse
         }
     }
 ```
+Vaikimisi kuvatatkse "indeks_vormid", "indeks_lemmad", "liitsõnad".
+
+JSON-formaadi '''params'''-võtme väärtustega saab muuta kuvatavate tabelite hulka.
 
 
 ## Kasutamine
 
 ### 1 Lähtekoodist pythoni skripti kasutamine
-
-Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2) ja käivitamine(1.3)
 
 #### 1.1 Lähtekoodi allalaadimine
 
@@ -86,8 +85,6 @@ venv/bin/python3 ./api_advanced_indexing.py --verbose --csv_input \
 ```
 
 ### 2 Lähtekoodist veebiserveri käivitamine & kasutamine
-
-Lähtekoodi allalaadimine (2.1), virtuaalkeskkonna loomine (2.2), veebiteenuse käivitamine pythoni koodist (2.3) ja CURLiga veebiteenuse kasutamise näited (2.4)
 
 #### 2.1 Lähtekoodi allalaadimine
 
@@ -146,8 +143,6 @@ curl --silent --request POST --header "Content-Type: application/json" \
 ```
 
 ### 3 Lähtekoodist tehtud konteineri kasutamine
-
-Lähtekoodi allalaadimine (3.1), konteineri kokkupanemine (3.2), konteineri käivitamine (3.3) ja CURLiga veebiteenuse kasutamise näited  (2.4).
 
 #### 3.1 Lähtekoodi allalaadimine
 
@@ -229,16 +224,27 @@ curl --silent --request POST --header "Content-Type: application/json" \
 
 ### 6 DockerHubis oleva konteineri lisamine oma KUBERNETESesse
 
-Vaikeväärtustega ```deployment```-konfiguratsioonifaili loomine
+#### 6.1 Vaikeväärtustega ```deployment```-konfiguratsioonifaili loomine
 
 ```bash
 kubectl create deployment smart-search-api-advanced-indexing \
   --image=tilluteenused/smart_search_api_advanced_indexing:2024.01.10
 ```
 
-Vajadusel lisage konfifaili sobilike väärtustega keskkonnamuutujad
+Keskkonnamuutujate abil saab muuta:
+* maksimaalse lubatava päringu suurust,
+* kas kirjavigade tabelit arvutatakse või mitte.
+
+Selleks redigeeriga konfiguratsioonifaili
+
+```bash
+kubectl edit deployment smart-search-api-advanced-indexing
+```
+
+Lisades sinna soovitud keskkonnamuutujate väärtused:
 
 ```yml
+    env:
     - name: SMART_SEARCH_GENE_TYPOS
       value: "TRUE"
     - name: MART_SEARCH_MAX_CONTENT_LENGTH
@@ -246,14 +252,14 @@ Vajadusel lisage konfifaili sobilike väärtustega keskkonnamuutujad
 
 ```
 
-Vaikeväärtustega ```service```-konfiguratsioonifaili loomine
+#### 6.2 Vaikeväärtustega ```service```-konfiguratsioonifaili loomine
 
 ```bash
 kubectl expose deployment smart-search-api-advanced-indexing \
   --type=ClusterIP --port=80 --target-port=6602
 ```
 
-Redigeeriga vastavat ```ingress```-konfiguratsioonifaili
+#### 6.3 ```ingress```-konfiguratsioonifaili täiendamine
 
 ```bash
 kubectl edit ingress smart-search-api-ingress
