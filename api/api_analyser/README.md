@@ -17,7 +17,7 @@
 Valmis konteineri saab laadida alla Docker Hub'ist, kasutades Linux'i käsurida (Windows'i/Mac'i käsurida on analoogiline):
 
 ```commandline
-docker pull tilluteenused/smart_search_api_sl_analyser:2023.11.21
+docker pull tilluteenused/smart_search_api_analyser:2024.01.11
 ```
 
 Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine).
@@ -25,14 +25,6 @@ Seejärel saab jätkata osaga [Konteineri käivitamine](#Konteineri_käivitamine
 ## Ise konteineri tegemine
 
 ### 1. Lähtekoodi allalaadimine
-
-<!---
-Lähtekood koosneb 2 osast
-1. json liides, veebiserver ja konteineri tegemise asjad
-2. FSi morf analüsaator
-
-git clone git@github.com:Filosoft/vabamorf.git vabamorf_github
----->
 
 ```commandline
 mkdir -p ~/git; cd ~/git
@@ -50,19 +42,14 @@ vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/
 ### 2. Konteineri kokkupanemine
 
 ```commandline
-cd ~/git/smart-search_github/api/sl_analyser
-docker build -t tilluteenused/smart_search_api_sl_analyser:2023.11.21 .
+cd ~/git/smart_search_github/api/analyser
+docker build -t tilluteenused/smart_search_api_analyser:2024.01.11 .
 ```
-
-<!---
-docker login -u tilluteenused   # access token
-docker push tilluteenused/vmetajson:2023.04.19 
---->
 
 ## Konteineri käivitamine <a name="Konteineri_käivitamine"></a>
 
 ```commandline
-docker run -p 7007:7007 tilluteenused/smart_search_api_sl_analyser:2023.11.21
+docker run -p 7007:7007 tilluteenused/smart_search_api_analyser:2024.01.11
 ```
 
 Käivitatud konteineri töö lõpetab Ctrl+C selles terminaliaknas, kust konteiner käivitati.
@@ -186,16 +173,29 @@ Morf analüüsi tulemuste selgutust vaata programmi [vmetajson](https://github.c
 
 ## Kasutusnäide
 
+Kui kasutame kohalikus masinas töötavat konteinerit:
+
+```bash
+export HOST4ANALYSER='localhost:7007'
+```
+
+Kui kasutame TÜ pilves töötavat konteinerit:
+
+```bash
+export HOST4ANALYSER='https://smart-search.tartunlp.ai'
+```
+
+
 ### Näide 1
 
 Analüüsime tabulatsiooniga eraldatud sõnesid. Väljundisse analüüsitavate 
 sõnede tüved, lõpud jms. Leksikonist puuduvate sõnede võimalikud analüüsid
 oletame sõnakujust lähtuvalt.
 
-```cmdline
+```bash
 curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--stem", "--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
-        localhost:7007/api/sl_analyser/process | jq
+        ${HOST4ANALYSER}/api/analyser/process | jq       
 ```
 
 ```json
@@ -319,10 +319,10 @@ Analüüsime tabulatsiooniga eraldatud sõnesid. Väljundisse analüüsitavate
 sõnede lemmad, lõpud jms. Leksikonist puuduvate sõnede võimalikud analüüsid
 oletame sõnakujust lähtuvalt.
 
-```cmdline
+```bash
 curl --silent --request POST --header "Content-Type: application/json" \
         --data '{"params":{"vmetajson":["--guess"]} ,"tss":"punameremaoga\tlambiõliga\tpeeti\t_a"}' \
-        localhost:7007/api/sl_analyser/process | jq
+        ${HOST4ANALYSER}/api/analyser/process | jq       
 ```
 
 ```json
