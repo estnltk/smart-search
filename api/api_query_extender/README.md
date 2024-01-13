@@ -211,6 +211,8 @@ Lisades sinna soovitud keskkonnamuutujate väärtused:
     env:
     - name: MART_SEARCH_MAX_CONTENT_LENGTH
       value: "100000"
+    - name: SMART_SEARCH_QE_DBASE
+      value: ./smart_search.sqlite
 
 ```
 
