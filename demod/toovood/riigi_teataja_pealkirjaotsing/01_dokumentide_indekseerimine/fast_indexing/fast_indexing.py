@@ -216,13 +216,18 @@ def extract_lemma_index(text_id: str, text: Text, ignore_pos: List[str] = None):
         weights = dict()
         subword_spans = extract_spans_of_sub_wordforms(token, ignore_pos=ignore_pos, combine=True)
         for start, end in subword_spans:
-            subword = token.text[start:end]
+            # On rare occasions subwords end with spaces F. J. Wiedemanni --> F. J.
+            # To fix this we strip whitespaces from the ends of the text
+            subword = token.text[start:end].strip()
             sublemmas = get_lemma(subword, ignore_pos)
             if len(sublemmas) == 0:
                 continue
 
             delta_w = 1/len(sublemmas)
             for sublemma in sublemmas:
+                # On rare occasions subwords ends with space F . J . --> F. J.
+                # To fix this we strip whitespaces from the ends of the text
+                sublemma = sublemma.strip()
                 weights[sublemma] = weights.get(sublemma, 0) + delta_w
 
         result.extend([[word, text_id, token.start, token.end, weight, True] for word, weight in weights.items()])
