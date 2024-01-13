@@ -20,21 +20,20 @@ Kui tarkvara on tõmmatud teise kataloogi või CVS-kujul pealkirjafailid on teis
 
 Luua pythoni skriptide tööks vajalikud virtuaalkeskkonnad (täita pythoni skriptide lähetkoodi sisaldavates kataloogides ```./create_venv.sh``` käsk).
 Vaata lähemalt:
-* [Pythoni skripti kasutamine: api_advanced_indexing.py](https://github.com/estnltk/smart-search/blob/main/api/api_advanced_indexing/flask_api_advanced_indexing.py)
-* [Pythoni skripti kasutamine: api_misspellings_generator.py](https://github.com/estnltk/smart-search/blob/main/api/api_misspellings_generator/flask_api_misspellings_generator.py)
-* [Pythoni skripti kasutamine: query_extender_setup.py](https://github.com/estnltk/smart-search/blob/main/scripts/query_extender_setup/example_script_based_workflow/query_extender_setup.py)
 
+* [Pythoni skripti kasutamine: api_advanced_indexing.py](https://github.com/estnltk/smart-search/blob/main/api/api_advanced_indexing/README.md)
+* [Pythoni skripti kasutamine: api_misspellings_generator.py](https://github.com/estnltk/smart-search/blob/main/api/api_misspellings_generator/README.md)
+* [Pythoni skripti kasutamine: query_extender_setup.py](https://github.com/estnltk/smart-search/blob/main/scripts/query_extender_setup/example_script_based_workflow/README.md)
 
 Töötleb kõik kataloogis ```~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts``` olevad pealkirjafailid
 
 ## Käivitamine
 
 ```cmdline
-~/git/smart-search_github/scripts/query_extender_setup/example_script_based_workflow 
+cd ~/git/smart_search_github/scripts/query_extender_setup/example_script_based_workflow 
 ./pealkirjad_andmebaasi_py.sh
 ```
 
 ## Tulemus
 
 Kataloogi ```~/git/smart-search_github/scripts/query_extender_setup/example_script_based_workflow``` luuakse SQLITE-andmebaas ```koond.sqlite```
-
