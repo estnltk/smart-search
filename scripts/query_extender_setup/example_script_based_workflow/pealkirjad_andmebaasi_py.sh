@@ -2,7 +2,7 @@
  
 # cd  ~/git/smart-search_github/scripts/query_extender_setup/example_script_based_workflow
 
-DIR_PREF=~/git/smart-search_github
+DIR_PREF=~/git/smart_search_github
 DIR_HEADINGS=${DIR_PREF}/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts
 DIR_INDEXING=${DIR_PREF}/api/api_advanced_indexing
 DIR_MISPGEN=${DIR_PREF}/api/api_misspellings_generator
@@ -100,8 +100,8 @@ teeme_andmebaasi()
     popd >& /dev/null
 }
 
-#teeme_json_tabelid
-#teeme_sonavormide_loendi
-#teeme_kirjavigade_tabeli
+teeme_json_tabelid
+teeme_sonavormide_loendi
+teeme_kirjavigade_tabeli
 teeme_andmebaasi
 

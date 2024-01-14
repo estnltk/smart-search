@@ -13,10 +13,13 @@ git clone git@github.com:estnltk/smart-search.git smart_search_github
 
 Kui tarkvara on tõmmatud teise kataloogi või CVS-kujul pealkirjafailid on teises kataloogis tuleb skriptis kirjutada õiged rajad järgmistesse keskkonnamuutujatesse:
 
-* ```DIR_HEADINGS``` CSV kujul pealkirjafailide asukoht
-* ```DIR_INDEXING``` skripti ```api_advanced_indexing.py``` asukoht
-* ```DIR_MISPGEN```  skripti ```api_misspellings_generator.py``` asukoht
-* ```DIR_QUERYEXT``` skripti ```query_extender_setup.py``` asukoht
+* `DIR_PREF` GITHUBist allalaaditud repo juurkataloog (vaikimisi `~/git/smart_search_github`)
+* `DIR_HEADINGS` CSV kujul pealkirjafailide kataloog (vaikimisi `${DIR_PREF}/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts`)
+* `DIR_INDEXING` skripti `api_advanced_indexing.py` kataloog (vaikimisi `${DIR_PREF}/api/api_advanced_indexing`)
+* `DIR_MISPGEN`  skripti `api_misspellings_generator.py` kataloog (vaikimisi `${DIR_PREF}/api/api_misspellings_generator`)
+* `DIR_QUERYEXT` skripti `query_extender_setup.py` kataloog (vaikimisi `${DIR_PREF}/scripts/query_extender_setup/example_make_based_workflow`)
+* `DIR_IGNOWFORMS` ignoreeritavate sõnavormide loendit `ignore.json` sisaldav kataloog (vaikimisi `${DIR_PREF}/demod/toovood/riigi_teataja_pealkirjaotsing/01_dokumentide_indekseerimine/inputs`)
+* `DIR_WFORMS2ADD` täiendavate sõnavormide genereerimise aluseks olev JSON-faili `lisavormide_tabelid.json` sisaldav kataloog (vaikimisi `${DIR_PREF}/demod/toovood/riigi_teataja_pealkirjaotsing/01_dokumentide_indekseerimine/inputs`)
 
 Luua pythoni skriptide tööks vajalikud virtuaalkeskkonnad (täita pythoni skriptide lähetkoodi sisaldavates kataloogides ```./create_venv.sh``` käsk).
 Vaata lähemalt:
@@ -25,7 +28,7 @@ Vaata lähemalt:
 * [Pythoni skripti kasutamine: api_misspellings_generator.py](https://github.com/estnltk/smart-search/blob/main/api/api_misspellings_generator/README.md)
 * [Pythoni skripti kasutamine: query_extender_setup.py](https://github.com/estnltk/smart-search/blob/main/scripts/query_extender_setup/example_script_based_workflow/README.md)
 
-Töötleb kõik kataloogis ```~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts``` olevad pealkirjafailid
+Töötleb kõik kataloogis ```~/git/smart-search_github/demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts``` olevad pealkirjafailid (`.csv` laiendiga failid)
 
 ## Käivitamine
 
