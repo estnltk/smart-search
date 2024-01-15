@@ -58,7 +58,7 @@ Järgi punkti 1.1
 
 ```bash
 cd ~/git/smart_search_github/demod/veebilehed/rt_pealkirjaotsing
-docker build -t tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.12 .
+docker build -t tilluteenused/smart_search_rt_pealkirjaotsing:s .
 ```
 
 #### 2.3.1 Valikud eeltööd
@@ -90,7 +90,7 @@ docker-compose down && docker-compose ps
 #### 3.1 DockerHUBist konteineri tõmbamine
 
 ```bash
-docker pull tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.12
+docker pull tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.14
 ```
 
 #### 3.2 Konteinerite allalaadimine ja käivitamine
@@ -118,7 +118,7 @@ google-chrome https://smart-search.tartunlp.ai/rt_pealkirjaotsing/version &
 
 ```bash
 kubectl create deployment smart-search-rt-pealkirjaotsing \
-  --image=tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.12
+  --image=tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.14
 ```
 
 Keskkonnamuutujate abil saab muuta maksimaalse lubatava päringu suurust ja andmebaasi nime.
