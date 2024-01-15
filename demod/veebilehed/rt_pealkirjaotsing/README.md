@@ -58,7 +58,7 @@ Järgi punkti 1.1
 
 ```bash
 cd ~/git/smart_search_github/demod/veebilehed/rt_pealkirjaotsing
-docker build -t tilluteenused/smart_search_rt_pealkirjaotsing:s .
+docker build -t tilluteenused/smart_search_rt_pealkirjaotsing:2024.01.14 .
 ```
 
 #### 2.3.1 Valikud eeltööd
