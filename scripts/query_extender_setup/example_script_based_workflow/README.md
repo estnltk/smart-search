@@ -132,6 +132,8 @@ allikad(
     )
 ```
 
+#### Tabelite täiendamise logi
+
 ```text
  uuendatud(
     uuendamise_aeg TEXT NOT NULL,   -- tabeli(te) uuendamise aasta.kuu.päev
