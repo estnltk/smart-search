@@ -137,6 +137,6 @@ allikad(
 ```text
  uuendatud(
     uuendamise_aeg TEXT NOT NULL,   -- tabeli(te) uuendamise aasta.kuu.päev
-    tabelid TEXT NOT NULL,          -- uuendatavate tabeli(te) loend
+    tabelid TEXT NOT NULL,          -- uuendatatud tabelite loend
     PRIMARY KEY(uuendamise_aeg, tabelid))
 ```
