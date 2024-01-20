@@ -40,3 +40,31 @@ cd ~/git/smart_search_github/scripts/query_extender_setup/example_script_based_w
 ## Tulemus
 
 Kataloogi ```~/git/smart-search_github/scripts/query_extender_setup/example_script_based_workflow``` luuakse SQLITE-andmebaas ```koond.sqlite```
+
+Andmebaasi tegemisel saab valida, millised allkirjeldatud tabelitest andmbebaasi lisatakse.
+Kui andmbeaas on juba varem tehtud, siis saab valida, milliseid tabeleid täiendatakse uue infoga.
+
+### Tabelid
+
+'''
+lemma_kõik_vormid( 
+            lemma TEXT NOT NULL,        -- korpuses esinenud sõnavormi lemma
+            kaal INT NOT NULL,          -- suurem number on sagedasem
+            vorm TEXT NOT NULL,         -- lemma kõikvõimalikud vormid genereerijast
+            PRIMARY KEY(lemma, vorm))
+'''
+
+'''
+lemma_korpuse_vormid(
+            lemma TEXT NOT NULL,        -- dokumendis esinenud sõnavormi lemma
+            kaal INT NOT NULL,          -- suurem number on sagedasem            
+            vorm TEXT NOT NULL,         -- lemma need sõnavormid, mis on mingis dokumendis dokumendis esinenud
+            PRIMARY KEY(vorm, lemma))
+'''
+
+'''
+liitsõnad( 
+            osalemma TEXT NOT NULL,     -- liitsõna osasõna lemma
+            liitlemma TEXT NOT NULL,    -- liitsõna osasõna lemmat sisaldav liitsõna lemma
+            PRIMARY KEY(osalemma, liitlemma))
+'''
