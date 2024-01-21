@@ -151,7 +151,7 @@ Järgi punkti 1.1
 #### 3.2 Konteineri kokkupanemine
 
 ```bash
-cd ~/git/smart-search_github/api/api_advanced_indexing \
+cd ~/git/smart_search_github/api/api_advanced_indexing \
     && docker build -t tilluteenused/smart_search_api_advanced_indexing:2024.01.10 . 
 ```
 
