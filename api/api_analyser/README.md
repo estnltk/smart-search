@@ -42,7 +42,7 @@ vaadake sellekohast [juhendit](https://github.com/Filosoft/vabamorf/blob/master/
 ### 2. Konteineri kokkupanemine
 
 ```commandline
-cd ~/git/smart_search_github/api/analyser
+cd ~/git/smart_search_github/api/api_analyser
 docker build -t tilluteenused/smart_search_api_analyser:2024.01.11 .
 ```
 
