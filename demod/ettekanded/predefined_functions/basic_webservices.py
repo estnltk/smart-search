@@ -54,7 +54,7 @@ def spell_text(text: str):
     """
 
     # Webservice call
-    speller_query = "https://smart-search.tartunlp.ai/api/speller/process"
+    speller_query = "https://smart-search.tartunlp.ai/api/vm/speller/process"
     headers = {"Content-Type": "application/json; charset=utf-8"}
     post_data_template = {"content": text}
     response = requests.post(speller_query, json=post_data_template, headers=headers)
@@ -72,7 +72,7 @@ def spell_text(text: str):
     return tbl.reset_index().explode('suggestion')
 
 
-def generate_all_wordforms(lemma: str):
+def generate_all_wordforms(lemma: str, foreign_name: bool = False):
     """
     Generates all possible wordforms for input wordform.
     Returns a dataframe with columns input, wordform
@@ -82,6 +82,8 @@ def generate_all_wordforms(lemma: str):
     generator_query = "https://smart-search.tartunlp.ai/api/generator/tss"
     headers = {"Content-Type": "application/json; charset=utf-8"}
     post_data_template = {'tss': lemma}
+    if foreign_name:
+        post_data_template["params"] = ["with_apostrophe"]
     response = requests.post(generator_query, json=post_data_template, headers=headers)
 
     # Reshaping. Let us drop the confusing stem columns
