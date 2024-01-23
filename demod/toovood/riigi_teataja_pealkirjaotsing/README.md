@@ -37,7 +37,7 @@ vahetulemused salvestada. Dokumentide indekseerimine koosneb neljast põhiülesa
 
 * Tekstide indekseerimine ja täiendavate nimistute moodustamine.
 
-[Vastav näitetöövoog](01_dokumentide_indekseerimine/README.md)
+[Vastav näitetöövoog](01_dokumentide_indekseerimine/)
 
 
 ## II. Päringulaiendaja seadistamine
@@ -50,7 +50,7 @@ Päringulaiendaja seadistamine koosneb kolmest sammust:
 * Uuendatud andmebaasi valideerimisest ja päringukvaliteedi hindamisest.
 * Veebiteenuses oleva andmebaasi uuendamisest ja teenuse taaskäivitamisest.    
 
-[Vastav näitetöövoog](02_paringulaiendaja_seadistamine/README.md)
+[Vastav näitetöövoog](02_paringulaiendaja_seadistamine/)
 
 ## III. Nutika otsingu veebilehega liidestamine 
 
@@ -61,4 +61,4 @@ Olenemata kasutatavast keelest tuleb liidestestamiseks vastata järgmistele küs
 * Milline on otsingu kasutusloogika?
 * Kuidas informeeritakse kasutajat erinevat tüüpi tulemustest.
 
-[Vastav näitekood](03_nutikas_otsing/README.md)
+[Vastav näitekood](03_nutikas_otsing/)
