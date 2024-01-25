@@ -56,7 +56,7 @@ Lähtekoodist tehtud konteineri kasutamine
 2.5 Konteineri peatamine
     $ cd ~/git/smart_search_github/api/api_generator \
         && docker-compose down
-        
+
 ----------------------------------------------
 
 DockerHUBist tõmmatud konteineri kasutamine
@@ -81,6 +81,7 @@ TÜ pilves töötava konteineri kasutamine
         https://smart-search.tartunlp.ai/api/generator/version
 
 ----------------------------------------------
+
 DockerHubis oleva konteineri lisamine oma KUBERNETESesse
 
 kubectl create deployment smart-search-api-generator \
