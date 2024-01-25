@@ -45,10 +45,10 @@ Dokumendid on pakitud JSON-formaati:
         }
     }
 ```
+
 Vaikimisi kuvatatkse "indeks_vormid", "indeks_lemmad", "liitsõnad".
 
 JSON-formaadi '''params'''-võtme väärtustega saab muuta kuvatavate tabelite hulka.
-
 
 ## Kasutamine
 
@@ -100,7 +100,6 @@ Järgi punkti 1.2
 
 ```bash
 cd ~/git/smart_search_github/api/api_advanced_indexing
-
 ./venv/bin/python3 ./flask_api_advanced_indexing.py
 ```
 
@@ -108,7 +107,6 @@ cd ~/git/smart_search_github/api/api_advanced_indexing
 
 ```bash
 cd ~/git/smart_search_github/api/api_advanced_indexing
-
 SMART_SEARCH_GENE_TYPOS=false SMART_SEARCH_MAX_CONTENT_LENGTH='5000000' \
     venv/bin/python3 ./flask_api_advanced_indexing.py
 ```
@@ -138,8 +136,8 @@ curl --silent --request POST --header "Content-Type: application/json" \
     localhost:6602/api/advanced_indexing/json  | gron
 
 curl --silent --request POST --header "Content-Type: application/json" \
-    --data '{"params":{"tables":["liitsõnad"]}, "sources":{"testdoc_1":{"content":"allmaaraudtee"}}}' \     
-    https://smart-search.tartunlp.ai/api/advanced_indexing/json  | gron
+    --data '{"params":{"tables":["liitsõnad"]}, "sources":{"testdoc_1":{"content":"allmaaraudtee"}}}' \
+    localhost:6602//api/advanced_indexing/json  | gron
 ```
 
 ### 3 Lähtekoodist tehtud konteineri kasutamine
@@ -152,21 +150,26 @@ Järgi punkti 1.1
 
 ```bash
 cd ~/git/smart_search_github/api/api_advanced_indexing \
-    && docker build -t tilluteenused/smart_search_api_advanced_indexing:2024.01.10 . 
+    && docker-compose build
 ```
 
 #### 3.3 Konteineri käivitamine
 
 ```bash
-docker run -p 6602:6602  \
-        --env SMART_SEARCH_MAX_CONTENT_LENGTH='500000000' \
-        --env SMART_SEARCH_GENE_TYPOS='false' \
-        tilluteenused/smart_search_api_advanced_indexing:2024.01.10
+cd ~/git/smart_search_github/api/api_advanced_indexing \
+    && docker-compose up -d
 ```
 
 #### 3.4 CURLi abil veebiteenuse kasutamise näited
 
 Järgi punkti 1.4
+
+#### 3.5 Konteineri peatamine
+
+```bash
+cd ~/git/smart_search_github/api/api_advanced_indexing \
+    && docker-compose down
+```
 
 ### 4 DockerHUBist tõmmatud konteineri kasutamine
 
@@ -175,7 +178,8 @@ DockerHUBist koneineri tõmbamine (4.1), konteineri käivitamine (4.2) ja CURLig
 #### 4.1 DockerHUBist konteineri tõmbamine
 
 ```bash
-docker pull tilluteenused/smart_search_api_advanced_indexing:2024.01.10
+cd ~/git/smart_search_github/api/api_advanced_indexing \
+    && docker-compose pull
 ```
 
 #### 4.2 Konteineri käivitamine
@@ -185,6 +189,10 @@ Järgi punkti 3.3
 #### 4.3 CURLiga veebiteenuse kasutamise näited
 
 Järgi punkti 1.4
+
+#### 4.4 Konteineri peatamine
+
+Järgi punkti 3.5
 
 ### 5 TÜ KUBERNETESes töötava konteineri kasutamine
 
@@ -228,7 +236,7 @@ curl --silent --request POST --header "Content-Type: application/json" \
 
 ```bash
 kubectl create deployment smart-search-api-advanced-indexing \
-  --image=tilluteenused/smart_search_api_advanced_indexing:2024.01.10
+  --image=tilluteenused/smart_search_api_advanced_indexing:2024.01.24
 ```
 
 Keskkonnamuutujate abil saab muuta:

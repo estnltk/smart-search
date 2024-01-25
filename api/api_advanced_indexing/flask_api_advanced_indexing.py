@@ -5,6 +5,8 @@ Mida uut:
 2024-01-09
     * /api/advanced_indexing/json
     * /api/advanced_indexing/csv_input
+2024-01-11
+    * Veakäsitlust & kommentaare kohendatud
 
 ----------------------------------------------
 // code (serveri käivitamine silumiseks):
@@ -20,10 +22,10 @@ Mida uut:
 ----------------------------------------------
 '''
 import os
-import sys
+#import sys
 import json
-import requests
-import subprocess
+#import requests
+#import subprocess
 import json
 import argparse
 from flask import Flask, request, jsonify, make_response, abort
@@ -33,16 +35,16 @@ from collections import OrderedDict
 
 import api_advanced_indexing
 
-VERSION="2024.01.10"
+VERSION="2024.01.24"
 
 try:
     SMART_SEARCH_GENE_TYPOS=(os.environ.get('SMART_SEARCH_GENE_TYPOS').upper()=="TRUE")
 except:
     SMART_SEARCH_GENE_TYPOS = False # vaikimisi ei genereeri kirjavigasid
-    
+
 tj = api_advanced_indexing.TEE_JSON(verbose=False, kirjavead=SMART_SEARCH_GENE_TYPOS, tabelid=[])
 
-app = Flask("api_ea_jsoncontent_2_jsontabelid")
+app = Flask(__name__)
 
 # JSONsisendi max suuruse piiramine {{
 try:
@@ -60,13 +62,25 @@ def limit_content_length(max_length):
             return f(*args, **kwargs)
         return wrapper
     return decorator
-
-@app.errorhandler(413) # Liiga mahukas päring
-def request_entity_too_large(error):
-    #return 'File Too Large', 413
-    return jsonify({"error":"Request Entity Too Large"})
-
 # }} JSONsisendi max suuruse piiramine 
+
+@app.errorhandler(413) # Request Entity Too Large: The data value transmitted exceeds the capacity limit.
+def request_entity_too_large(e):
+    return jsonify(error=str(e)), 413
+
+@app.errorhandler(404) # The requested URL was not found on the server.
+def page_not_found(e):
+    return jsonify(error=str(e)), 404
+
+@app.errorhandler(400) # Rotten JSON
+def rotten_json(e):
+    return jsonify(error=str(e)), 400
+
+@app.errorhandler(500) # Internal Error
+def internal_error(e):
+    return jsonify(error=str(e)), 500
+
+#---------------------------------------------------------------------------
 
 @app.route('/api/advanced_indexing/csv_input', methods=['POST'])
 @app.route('/csv_input', methods=['POST'])
@@ -95,7 +109,6 @@ def api_advanced_indexing_headers():
             "allikad":[(DOCID, CONTENT)],
         }
 
-    https://stackoverflow.com/questions/62685107/open-csv-file-in-flask-sent-as-binary-data-with-curl
     """
     try:
         csv_data = request.data.decode("utf-8")
@@ -111,10 +124,9 @@ def api_advanced_indexing_headers():
         tj.tee_sources_tabeliks()
         tj.kustuta_vahetulemused()
         tj.kordused_tabelitest_välja()
-
         return jsonify(tj.json_io)
     except Exception as e:
-        return jsonify({"warning": str(e)})    
+        abort(500, description=str(e))     
 
 @app.route('/api/advanced_indexing/json', methods=['POST'])
 @app.route('/json', methods=['POST'])
@@ -141,9 +153,12 @@ def api_advanced_indexing_document():
     https://stackoverflow.com/questions/62685107/open-csv-file-in-flask-sent-as-binary-data-with-curl
     """
     try:
-        if request.json is None:
-            return jsonify({"warning": "the request does not contain valid JSON"})
-        tj.json_io = request.json
+        request_json = json.loads(request.data)
+    except ValueError as e:
+        abort(400, description=str(e))        
+        
+    try:    
+        tj.json_io = request_json
         tj.tee_sõnestamine()
         tj.tee_kõigi_terviksõnede_indeks()
         tj.tee_mõistlike_tervik_ja_osasõnede_indeks()
@@ -155,14 +170,13 @@ def api_advanced_indexing_document():
         tj.tee_sources_tabeliks()
         tj.kustuta_vahetulemused()
         tj.kordused_tabelitest_välja()
-
         return jsonify(tj.json_io)
     except Exception as e:
-        return jsonify({"warning": str(e)})    
-
+        abort(500, description=str(e))        
 
 @app.route('/api/advanced_indexing/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['POST'])
+@limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
 def api_advanced_indexing_version():
     """Kuvame versiooni ja muud infot
 

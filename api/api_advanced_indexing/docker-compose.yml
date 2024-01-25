@@ -1,0 +1,18 @@
+# cd ~/git/smart_search_github/api/api_advanced_indexing
+# docker-compose build
+# docker-compose up -d
+# docker-compose down
+# docker-compose pull
+# docker-compose push
+
+services:
+  api_vm_speller:
+    image: tilluteenused/smart_search_api_advanced_indexing:2024.01.24
+    ports:
+      - 6602:6602
+    environment:
+      - SMART_SEARCH_MAX_CONTENT_LENGTH=5000000
+      - SMART_SEARCH_GENE_TYPOS=false
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
