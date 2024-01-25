@@ -1,4 +1,4 @@
-# cd ~/git/smart-search_github/scripts/query_extender_setup/example_make_based_workflow
+# cd ~/git/smart_search_github/scripts/query_extender_setup/example_script_based_workflow
 # docker-compose up -d
 # docker-compose down
 

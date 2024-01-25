@@ -18,103 +18,8 @@ code:
 
 
 ---------------------------------
-
-Lähtekoodist pythoni skripti kasutamine
-1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2), veebiteenuse käivitamine pythoni koodist (1.3) ja CURLiga veebiteenuse kasutamise näited (1.4)
-1.1 Lähtekoodi allalaadimine
-    $ mkdir -p ~/git/ ; cd ~/git/
-    $ git clone git@github.com:estnltk/smart-search.git smart_search_github
-1.2 Virtuaalkeskkonna loomine
-    $ cd ~/git/smart_search_github/api/api_query_extender
-    $ ./create_venv.sh
-1.3 Veebiserveri käivitamine pythoni koodist
-    $ cd  ~/git/smart_search_github/api/api_query_extender
-    $ cp ../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite ./smart_search.sqlite
-    $ SMART_SEARCH_QE_DBASE="./smart_search.sqlite" \
-        venv/bin/python3 ./flask_api_query_extender.py
-1.4 CURLiga veebiteenuse kasutamise näited
-
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data "{\"tss\":\"Strasbourg'i\\tStrasbourg'iga\\tpresidendi\\tpresident\\tpresidendiga\"}" \
-        localhost:6604/api/query_extender/wordform_check | jq
-
-    $ curl --silent --request POST \
-        --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
-        localhost:6604/api/query_extender/tsv
-        
-    $ curl --silent --request POST \
-        --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presitendigas\"}" \
-        localhost:6604/api/query_extender/tsv
-        
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data "{\"content\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
-        localhost:6604/api/query_extender/process | jq
-        
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presidemdiga\\tpresitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
-        localhost:6604/api/query_extender/json | jq
-        
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        localhost:6604/api/query_extender/version | jq
-
-----------------------------------------------
-
-Lähtekoodist tehtud konteineri kasutamine
-2 Lähtekoodi allalaadimine (2.1), konteineri kokkupanemine (2.2), konteineri käivitamine (2.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
-2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
-2.2 Konteineri kokkupanemine
-    $ cd ~/git/smart_search_github/api/api_query_extender
-    $ cp ../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite ./smart_search.sqlite
-    $ docker build -t tilluteenused/smart_search_api_query_extender:2024.01.11 . 
-2.3 Konteineri käivitamine
-    $ docker run -p 6604:6604 \
-        --env  SMART_SEARCH_QE_DBASE='./smart_search.sqlite' \
-        tilluteenused/smart_search_api_query_extender:2024.01.11
-2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
-
-----------------------------------------------
-
-DockerHUBist tõmmatud konteineri kasutamine
-3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
-3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_query_extender:2024.01.11
-3.2 Konteineri käivitamine: järgi punkti 2.3
-3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
-
-----------------------------------------------
-
-TÜ pilves töötava konteineri kasutamine
-4 CURLiga veebiteenuse kasutamise näited
-
-    $ curl --silent --request POST \
-        --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
-        https://smart-search.tartunlp.ai/api/query_extender/tsv
-
-    $ curl --silent --request POST \
-        --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presitendiga\\tpresitendiga\\tpresidendiga\"}" \
-        https://smart-search.tartunlp.ai/api/query_extender/tsv
-        
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data "{\"content\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
-        https://smart-search.tartunlp.ai/api/query_extender/process | jq
-        
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data "{\"tss\":\"presitendi\\tpresidendiga\", \"params\":{\"otsi_liitsõnadest\":\"false\"}}" \
-        https://smart-search.tartunlp.ai/api/query_extender/json | jq
-        
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        --data "{\"tss\":\"Strasbourg'i\\tStrasbourg'iga\\tpresidendi\\tpresident\\tpresidendiga\"}" \
-        https://smart-search.tartunlp.ai/api/query_extender/wordform_check | jq
-
-    $ curl --silent --request POST --header "Content-Type: application/json" \
-        https://smart-search.tartunlp.ai/api/query_extender/version | jq
-----------------------------------------------
-
 '''
+import json
 import os
 import argparse
 from flask import Flask, request, jsonify, make_response, abort
@@ -122,18 +27,19 @@ from typing import Dict, List, Tuple
 from functools import wraps
 import api_query_extender
 
-VERSION_CONTAINER='2024.01.11'
-VERSION_FLASK_SHELL='2024.01.05'
+VERSION_FLASK_SHELL='2024.01.21'
 
 paring_soned = api_query_extender.Q_EXTENDER("", csthread=False)
 
 app = Flask("api_query_extender")
 
+#---------------------------------------------------------------------------
+
 # JSONsisendi max suuruse piiramine {{
 try:
     SMART_SEARCH_MAX_CONTENT_LENGTH=int(os.environ.get('SMART_SEARCH_MAX_CONTENT_LENGTH'))
 except:
-    SMART_SEARCH_MAX_CONTENT_LENGTH = 1 * 100000 # 1 GB 
+    SMART_SEARCH_MAX_CONTENT_LENGTH = 10 * 1000000000 # 10 GB 
 
 def limit_content_length(max_length):
     def decorator(f):
@@ -145,25 +51,43 @@ def limit_content_length(max_length):
             return f(*args, **kwargs)
         return wrapper
     return decorator
-
-@app.errorhandler(413) # Liiga mahukas päring
-def request_entity_too_large(error):
-    #return 'File Too Large', 413
-    return jsonify({"error":"Request Entity Too Large"})
-
 # }} JSONsisendi max suuruse piiramine 
+
+@app.errorhandler(413) # Request Entity Too Large: The data value transmitted exceeds the capacity limit.
+def request_entity_too_large(e):
+    return jsonify(error=str(e)), 413
+
+@app.errorhandler(404) # The requested URL was not found on the server.
+def page_not_found(e):
+    return jsonify(error=str(e)), 404
+
+@app.errorhandler(400) # Rotten JSON
+def rotten_json(e):
+    return jsonify(error=str(e)), 400
+
+@app.errorhandler(500) # Internal Error
+def internal_error(e):
+    return jsonify(error=str(e)), 500
+
+#---------------------------------------------------------------------------
+
 
 @app.route('/api/query_extender/wordform_check', methods=['POST'])
 @app.route('/wordform_check', methods=['POST'])
 @limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
 def api_ea_paring_wordform_check():
+    try:
+        request_json = json.loads(request.data)
+    except ValueError as e:
+        abort(400, description=str(e)) 
 
     try:
-        paring_soned.response_json = request.json
+        paring_soned.response_json = request_json
         paring_soned.in_indeks_vormid()
-        return jsonify(paring_soned.response_json)
     except Exception as e:
-        return jsonify({"warning":str(e)}) 
+        abort(500, description=str(e)) 
+
+    return jsonify(paring_soned.response_json)
 
 @app.route('/api/query_extender/process', methods=['POST'])
 @app.route('/process', methods=['POST'])
@@ -181,29 +105,46 @@ def api_ea_paring_process():
     }
     '''
     try:
-        paring_soned.response_json = request.json
+        request_json = json.loads(request.data)
+    except ValueError as e:
+        abort(400, description=str(e))
+
+    try:
+        paring_soned.response_json = request_json
         paring_soned.paring_process()
-        return jsonify(paring_soned.response_json)
     except Exception as e:
-        return jsonify(list(e.args))    
+        abort(500, description=str(e))
+    
+    return jsonify(paring_soned.response_json)
 
 @app.route('/api/query_extender/json', methods=['POST'])
 @app.route('/json', methods=['POST'])
 @limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
 def api_ea_paring_json_json():
     try:
-        paring_soned.response_json = request.json
+        request_json = json.loads(request.data)
+    except ValueError as e:
+        abort(400, description=str(e))
+
+    try:
+        paring_soned.response_json = request_json
         paring_soned.paring_jsontsv()
-        return jsonify(paring_soned.response_json)
     except Exception as e:
-        return jsonify(list(e.args))    
+        abort(500, description=str(e))    
+
+    return jsonify(paring_soned.response_json)
 
 @app.route('/api/query_extender/tsv', methods=['POST'])
 @app.route('/tsv', methods=['POST'])
 @limit_content_length(SMART_SEARCH_MAX_CONTENT_LENGTH)
 def api_ea_paring_tsv():
     try:
-        paring_soned.response_json = request.json
+        request_json = json.loads(request.data)
+    except ValueError as e:
+        abort(400, description=str(e))
+
+    try:
+        paring_soned.response_json = request_json
         paring_soned.paring_jsontsv()
         res_str = ''
         for rec in paring_soned.response_table:
@@ -212,7 +153,7 @@ def api_ea_paring_tsv():
         response.headers["Content-type"] = "text/tsv"
         return response
     except Exception as e:
-        return jsonify(list(e.args))   
+        abort(500, description=str(e))  
 
 @app.route('/api/query_extender/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['POST'])
@@ -223,7 +164,6 @@ def api_ea_paring_version():
         ~flask.Response: Versiooni-info
     """
     version_json = paring_soned.version_json()
-    version_json["VERSION_CONTAINER"] = VERSION_CONTAINER
     version_json["VERSION_FLASK_SHELL"] = VERSION_FLASK_SHELL
     version_json["SMART_SEARCH_MAX_CONTENT_LENGTH"] = SMART_SEARCH_MAX_CONTENT_LENGTH
     return jsonify(version_json)

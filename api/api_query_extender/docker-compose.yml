@@ -4,9 +4,12 @@
 
 services:
   advanced_indexing:
-    image: tilluteenused/smart_search_api_query_extender:2024.01.04
+    image: tilluteenused/smart_search_api_query_extender:2024.01.21
     ports:
       - 6604:6604
     environment:
       - SMART_SEARCH_MAX_CONTENT_LENGTH=5000000
       - SMART_SEARCH_QE_DBASE=./smart_search.sqlite
+    build:
+      context: ./
+      dockerfile: ./Dockerfile

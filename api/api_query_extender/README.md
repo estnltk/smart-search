@@ -75,8 +75,7 @@ git clone git@github.com:estnltk/smart-search.git smart_search_github
 #### 1.2 Virtuaalkeskkonna loomine
 
 ```bash
-cd ~/git/smart_search_github/api/api_query_extender
-./create_venv.sh
+cd ~/git/smart_search_github/api/api_query_extender && ./create_venv.sh
 ```
 
 #### 1.3 Veebiserveri käivitamine pythoni koodist
@@ -126,27 +125,34 @@ curl --silent --request POST --header "Content-Type: application/json" \
 ```bash
 cd ~/git/smart_search_github/api/api_query_extender
 cp ../../demod/toovood/riigi_teataja_pealkirjaotsing/results/source_texts/koond.sqlite ./smart_search.sqlite
-docker build -t tilluteenused/smart_search_api_query_extender:2024.01.11 . 
+docker-compose build
 ```
 
 #### 2.3 Konteineri käivitamine
 
 ```bash
-docker run -p 6604:6604 \
-        --env  SMART_SEARCH_QE_DBASE='./smart_search.sqlite' \
-        tilluteenused/smart_search_api_query_extender:2024.01.11
+cd ~/git/smart_search_github/api/api_query_extender \
+        && docker-compose up -d
 ```
 
 #### 2.4 CURLiga veebiteenuse kasutamise näited
 
 Järgi punkti 1.4
 
+#### 2.5 Konteineri peatamine
+
+```bash
+cd ~/git/smart_search_github/api/api_query_extender \
+        && docker-compose down
+```
+
 ### 3 DockerHUBist tõmmatud konteineri kasutamine
 
 #### 3.1 DockerHUBist konteineri tõmbamine
 
 ```bash
-docker pull tilluteenused/smart_search_api_query_extender:2024.01.11
+cd ~/git/smart_search_github/api/api_query_extender \
+        && docker-compose pull
 ```
 
 #### 3.2 Konteineri käivitamine
@@ -156,6 +162,8 @@ Järgi punkti 2.3
 #### 3.3 CURLiga veebiteenuse kasutamise näited
 
 Järgi punkti 1.4
+
+#### 3.4 Konteineri peatamine: järgi punkti 2.5
 
 ### 4 TÜ pilves töötava konteineri kasutamine
 
@@ -194,7 +202,7 @@ curl --silent --request POST --header "Content-Type: application/json" \
 
 ```bash
 kubectl create deployment smart-search-api-query-extender \
-  --image=tilluteenused/smart_search_api_advanced_indexing:2024.01.10
+  --image=tilluteenused/smart_search_api_advanced_indexing:2024.01.21
 ```
 
 Keskkonnamuutujate abil saab muuta maksimaalse lubatava päringu suurust,
