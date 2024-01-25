@@ -107,7 +107,6 @@ pathType: Prefix
 import subprocess
 import json
 import argparse
-from flask import Flask, request, jsonify
 import os
 from flask import Flask, request, jsonify, make_response, abort
 from functools import wraps
