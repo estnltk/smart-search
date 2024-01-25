@@ -19,7 +19,9 @@ Silumiseks (serveri käivtamine code'is, päringud vt 1.4):
         "env": {},
         "args": []
     },
+
 ----------------------------------------------
+
 Lähtekoodist pythoni skripti kasutamine
 1.1 Lähtekoodi allalaadimine
     $ mkdir -p ~/git/ ; cd ~/git/
@@ -39,6 +41,7 @@ Lähtekoodist pythoni skripti kasutamine
         localhost:7008/api/sl_generator/tss
     $ curl --silent --request POST --header "Content-Type: application/json" \
         localhost:7008/api/sl_generator/version
+
 ----------------------------------------------
 
 Lähtekoodist tehtud konteineri kasutamine
@@ -53,14 +56,16 @@ Lähtekoodist tehtud konteineri kasutamine
 2.5 Konteineri peatamine
     $ cd ~/git/smart_search_github/api/api_generator \
         && docker-compose down
+        
 ----------------------------------------------
 
 DockerHUBist tõmmatud konteineri kasutamine
-3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
 3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_generator.2024.01.21 
+    $ cd ~/git/smart_search_github/api/api_generator \
+        && docker-compose pull
 3.2 Konteineri käivitamine: järgi punkti 2.3
 3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
+4.4 Konteineri peatamine: järgi punkti 2.5
 
 ----------------------------------------------
 
