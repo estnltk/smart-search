@@ -17,26 +17,25 @@ Mida uut:
             "args": []
         },
 ----------------------------------------------
-Lähtekoodist pythoni skripti kasutamine:
-1 Lähtekoodi allalaadimine (1.1), virtuaalkeskkonna loomine (1.2) ja käivitamine(1.3)
+1 Lähtekoodist pythoni skripti kasutamine:
 1.1 Lähtekoodi allalaadimine
     $ mkdir -p ~/git/ ; cd ~/git/
     $ git clone git@github.com:estnltk/smart-search.git sqmart_search_github
 1.2 Virtuaalkeskkonna loomine
-    $ cd ~/git/smart_search_github/api/api_misspellings_generator
-    $ ./create_venv.sh
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator \
+        && ./create_venv.sh
 1.3 Sätime paika kasutatvad teenused: kasutame veebis olevaid konteinereid (1.3.1) või kasutame kohalikus masinas töötavaid konteinereid (1.3.2)
 1.3 Pythoni skripti käivitamine:
-    $ venv/bin/python3 ./api_misspellings_generator.py --verbose test.txt > test.json
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator \
+        && venv/bin/python3 ./api_misspellings_generator.py --verbose test.txt > test.json
 ----------------------------------------------
-Lähtekoodist veebiserveri käivitamine & kasutamine
-2 Lähtekoodi allalaadimine (2.1), virtuaalkeskkonna loomine (2.2), veebiteenuse käivitamine pythoni koodist (2.3) ja CURLiga veebiteenuse kasutamise näited (2.4)
+2 Lähtekoodist veebiserveri käivitamine & kasutamine
 2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
 2.2 Virtuaalkeskkonna loomine: järgi punkti 1.2
 2.3 Veebiteenuse käivitamine pythoni koodist
 2.3.1 Vaikeseadetaga
-    $ cd ~/git/smart_search_github/api/api_misspellings_generator
-    $ ./venv/bin/python3 ./flask_api_misspellings_generator.py
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator \
+        && ./venv/bin/python3 ./flask_api_misspellings_generator.py
 2.3.2 Etteantud parameetriga
     $ SMART_SEARCH_MAX_CONTENT_LENGTH='500000' \
         venv/bin/python3 ./flask_api_misspellings_generator.py
@@ -47,36 +46,54 @@ Lähtekoodist veebiserveri käivitamine & kasutamine
       --data-binary @test.txt \
       localhost:6603/api/misspellings_generator/process  | jq
 ----------------------------------------------
-Lähtekoodist tehtud konteineri kasutamine
-3 Lähtekoodi allalaadimine (3.1), konteineri kokkupanemine (3.2), konteineri käivitamine (3.3) ja CURLiga veebiteenuse kasutamise näited  (2.4)
-2.1 Lähtekoodi allalaadimine: järgi punkti 1.1
-2.2 Konteineri kokkupanemine
-    $ cd ~/git/smart_search_github/api/api_misspellings_generator
-    $ docker build -t tilluteenused/smart_search_api_misspellings_generator:2023.12.27 . 
-    # docker login -u tilluteenused
-    # docker push tilluteenused/smart_search_api_misspellings_generator:2023.12.27 
-2.3 Konteineri käivitamine
-    $ docker run -p 6603:6603  \
-        --env SMART_SEARCH_MAX_CONTENT_LENGTH='500000' \
-       tilluteenused/smart_search_api_misspellings_generator:2023.12.27 
-2.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
+3 Lähtekoodist tehtud konteineri kasutamine
+3.1 Lähtekoodi allalaadimine: järgi punkti 1.1
+3.2 Konteineri kokkupanemine
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator \
+        && docker-compose build
+3.3 Konteineri käivitamine
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator \
+        && docker-compose up -d
+3.4 CURLiga veebiteenuse kasutamise näited: järgi punkti 2.4
+3.5 Konteineri peatamine
+    $ cd ~/git/smart_search_github/api/api_misspellings_generator \
+        && docker-compose down
 ----------------------------------------------
-DockerHUBist tõmmatud konteineri kasutamine
-3 DockerHUBist koneineri tõmbamine (3.1), konteineri käivitamine (3.2) ja CURLiga veebiteenuse kasutamise näited (3.3)
-3.1 DockerHUBist konteineri tõmbamine
-    $ docker pull tilluteenused/smart_search_api_misspellings_generator:2023.12.27 
-3.2 Konteineri käivitamine: järgi punkti 2.3
-3.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 1.4
+4 DockerHUBist tõmmatud konteineri kasutamine
+4.1 DockerHUBist konteineri tõmbamine
+    $  cd ~/git/smart_search_github/api/api_misspellings_generator \
+        && docker-compose pull
+4.2 Konteineri käivitamine: järgi punkti 3.3
+4.3 CURLiga veebiteenuse kasutamise näited: järgi punkti 2.4
+4.4 Konteineri peatamine: järgi punkti 3.5
 ----------------------------------------------
-TÜ pilves töötava konteineri kasutamine
-4 CURLiga veebiteenuse kasutamise näited
-    $ cd ~/git/smart_search_github/api/api_misspellings_generator # selles kataloogis on test.txt
-    $ curl --silent --request POST --header "Content-Type: application/text" \
-        --data-binary @test.txt \
-        https://smart-search.tartunlp.ai/api/misspellings_generator/process | jq | less
+5 TÜ pilves töötava konteineri kasutamine
     $ curl --silent --request POST --header "Content-Type: application/text" \
         https://smart-search.tartunlp.ai/api/misspellings_generator/version | jq
+    $ curl --silent --request POST --header "Content-Type: application/text" \
+        --data-binary @test.txt \
+        https://smart-search.tartunlp.ai/api/misspellings_generator/process  | jq
+----------------------------------------------
+6 DockerHUBis oleva konteineri lisamine KUBERNETESesse
+6.1 Tekitame vaikeväärtustega deployment-i
 
+$ kubectl create deployment smart-search-api-misspellings-generator \
+  --image=tilluteenused/smart_search_api_misspellings_generator:2024.01.21
+
+6.2 Tekitame vaikeväärtustega service'i
+
+$ kubectl expose deployment smart-search-api-misspellings-generator \
+    --type=ClusterIP --port=80 --target-port=6603
+
+6.3 Lisame ingress-i konfiguratsioonifaili
+
+- backend:
+    service:
+    name: smart-search-api-misspellings-generator
+    port:
+        number: 80
+path: /api/misspellings_generator/?(.*)
+pathType: Prefix     
 ----------------------------------------------
 '''
 import os
@@ -92,18 +109,19 @@ from typing import Dict, List, Tuple
 from collections import OrderedDict
 
 import api_misspellings_generator
-
-VERSION="2023.12.27"
-
 kv = api_misspellings_generator.KIRJAVIGUR(verbose=False)
 
-app = Flask("flask_api_misspellings_generator")
+app = Flask(__name__)
+
+VERSION="2024.01.21"
+
+#---------------------------------------------------------------------------
 
 # JSONsisendi max suuruse piiramine {{
 try:
     SMART_SEARCH_MAX_CONTENT_LENGTH=int(os.environ.get('SMART_SEARCH_MAX_CONTENT_LENGTH'))
 except:
-    SMART_SEARCH_MAX_CONTENT_LENGTH = 6 * 100000 # 6 GB 
+    SMART_SEARCH_MAX_CONTENT_LENGTH = 10 * 1000000000 # 10 GB 
 
 def limit_content_length(max_length):
     def decorator(f):
@@ -115,13 +133,25 @@ def limit_content_length(max_length):
             return f(*args, **kwargs)
         return wrapper
     return decorator
-
-@app.errorhandler(413) # Liiga mahukas päring
-def request_entity_too_large(error):
-    #return 'File Too Large', 413
-    return jsonify({"error":"Request Entity Too Large"})
-
 # }} JSONsisendi max suuruse piiramine 
+
+@app.errorhandler(413) # Request Entity Too Large: The data value transmitted exceeds the capacity limit.
+def request_entity_too_large(e):
+    return jsonify(error=str(e)), 413
+
+@app.errorhandler(404) # The requested URL was not found on the server.
+def page_not_found(e):
+    return jsonify(error=str(e)), 404
+
+@app.errorhandler(400) # Rotten JSON
+def rotten_json(e):
+    return jsonify(error=str(e)), 400
+
+@app.errorhandler(500) # Internal Error
+def internal_error(e):
+    return jsonify(error=str(e)), 500
+
+#---------------------------------------------------------------------------
 
 @app.route('/api/misspellings_generator/process', methods=['POST'])
 @app.route('/process', methods=['POST'])
@@ -134,7 +164,7 @@ def api_amisspellings_generator_process():
         kv.tee_kirjavead()
         return jsonify(kv.json_out)
     except Exception as e:
-        return jsonify({"warning": list(e.args)})    
+        abort(500, description=str(e))
 
 @app.route('/api/misspellings_generator/version', methods=['GET', 'POST'])
 @app.route('/version', methods=['POST'])

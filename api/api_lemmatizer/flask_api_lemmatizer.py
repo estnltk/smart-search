@@ -73,7 +73,7 @@ DockerHUBist tõmmatud konteineri kasutamine
          https://smart-search.tartunlp.ai/api/lemmatizer/version | jq
 ----------------------------------------------
 5 DockerHUBis oleva konteineri lisamine KUBERNETESesse
-4.1 Tekitame vaikeväärtustega deployment-i
+5.1 Tekitame vaikeväärtustega deployment-i
 
 $ kubectl create deployment smart-search-api-lemmatizerr \
   --image=tilluteenused/smart_search_api_advanced_indexing:2024.01.10
