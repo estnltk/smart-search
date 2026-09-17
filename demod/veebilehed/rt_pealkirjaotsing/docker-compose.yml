@@ -1,6 +1,8 @@
 # cd ~/git/smart-search_github/demod/veebilehed/ea_paring_otsing
-# MY_IP=$(hostname -I | sed 's/ .*$//g') docker-compose up -d && docker-compose ps
-# docker-compose down && docker-compose ps
+# MY_IP=$(hostname -I | sed 's/ .*$//g') docker compose up -d && docker compose ps
+# docker compose down && docker compose ps
+# google-chrome http://localhost:6605/rt_pealkirjaotsing/process &
+# google-chrome http://localhost:6605/rt_pealkirjaotsing/version &
 
 services:
   advanced_indexing:
